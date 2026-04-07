@@ -6,6 +6,7 @@ import { ShoppingBag, Shield, Beaker, TreePine, PaintBucket, Tag } from "lucide-
 export default function Shop() {
   const { tomatoesBalance, spendTomatoes } = useFarmStore();
 
+  // Ensure purchase logic accounts for async database updates to maintain streak consistency
   const handlePurchase = async (item: string, cost: number) => {
     if (await spendTomatoes(cost)) {
       alert(`Successfully purchased ${item}!`);
