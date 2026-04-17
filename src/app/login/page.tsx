@@ -245,6 +245,15 @@ function LoginPageContent() {
                                 >
                                     {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Sign In <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" /></>}
                                 </button>
+                                
+                                <div className="text-center pt-4">
+                                    <p className="text-xs font-bold text-stone-500">
+                                        Don't have an account?{' '}
+                                        <Link href="/register" className="text-[#FF9056] hover:text-[#ff7a33] transition-colors">
+                                            Register here
+                                        </Link>
+                                    </p>
+                                </div>
                             </motion.form>
                         ) : isOtpVerified ? (
                             <motion.form 
