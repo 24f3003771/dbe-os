@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2, KeyRound, ArrowLeft, CheckCircle2, Code2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, KeyRound, ArrowLeft, CheckCircle2, Code2, BookOpen, BrainCircuit, FileText, Trophy } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -150,25 +150,93 @@ function LoginPageContent() {
     };
 
     return (
-        <div className="h-screen w-screen overflow-hidden flex font-body bg-[#FAF9F6] p-4 md:p-6">
-            {/* The Mac Block Container */}
-            <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden shadow-2xl flex items-center justify-center border border-stone-200/50">
-                {/* Background Image perfectly fitted with lowered saturation for blending */}
-                <div 
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat saturate-[0.85] contrast-[0.95]"
-                    style={{ backgroundImage: "url('/login-bg.jpg')" }}
-                />
-
-                {/* Main Content - Only the Login Box */}
-                <div className="relative z-10 w-full px-4 flex flex-col items-center justify-center h-full">
+        <div className="min-h-screen w-full overflow-x-hidden flex font-body bg-[#FAF9F6] p-4 md:p-6">
+            {/* The Main Container */}
+            <div className="relative w-full min-h-[calc(100vh-3rem)] rounded-[2.5rem] overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-2 border border-stone-200/50 bg-white">
+                
+                {/* Left Pane - Feature Showcase (Hidden on Mobile) */}
+                <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden">
+                    {/* Background Image perfectly fitted with lowered saturation for blending */}
+                    <div 
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat saturate-[0.85] contrast-[0.95]"
+                        style={{ backgroundImage: "url('/login-bg.jpg')" }}
+                    />
+                    <div className="absolute inset-0 bg-stone-900/70 backdrop-blur-[4px]" />
                     
-                    {/* Login Form Box */}
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="w-full max-w-[420px] bg-white/95 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative"
-                    >
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-12">
+                            <div className="w-12 h-12 bg-[#FF9056] rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+                                <BookOpen className="w-6 h-6 text-white" />
+                            </div>
+                            <h1 className="text-2xl font-black text-white tracking-tight">DBE Scholar OS</h1>
+                        </div>
+                        
+                        <h2 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-6">
+                            Everything you need to <br/> <span className="text-[#FF9056]">excel in your degree.</span>
+                        </h2>
+                        <p className="text-stone-300 font-medium text-lg max-w-md">
+                            A unified platform designed exclusively for the DBE curriculum.
+                        </p>
+                    </div>
+
+                    <div className="relative z-10 grid gap-4 mt-8">
+                        {[
+                            {
+                                icon: <BrainCircuit className="w-6 h-6 text-[#FF9056]" />,
+                                title: "Interactive Quiz Engine",
+                                desc: "Subject-scoped exams, PYQs, and module-scoped practice with real-time timers."
+                            },
+                            {
+                                icon: <FileText className="w-6 h-6 text-[#FF9056]" />,
+                                title: "AI Resume Forge",
+                                desc: "Build ATS-optimized resumes powered by NVIDIA AI with intelligent JD matching."
+                            },
+                            {
+                                icon: <BookOpen className="w-6 h-6 text-[#FF9056]" />,
+                                title: "Dynamic Curriculum",
+                                desc: "Access structured modules, comprehensive notes, and interactive learning tools."
+                            },
+                            {
+                                icon: <Trophy className="w-6 h-6 text-[#FF9056]" />,
+                                title: "Study & Productivity",
+                                desc: "Built-in Pomodoro timers, deadline tracking, and student leaderboards."
+                            }
+                        ].map((feature, idx) => (
+                            <motion.div 
+                                key={idx}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.2 + idx * 0.1 }}
+                                className="flex items-start gap-4 p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/15 transition-colors group"
+                            >
+                                <div className="mt-1 bg-white/10 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                                    {feature.icon}
+                                </div>
+                                <div>
+                                    <h3 className="text-white font-bold text-lg">{feature.title}</h3>
+                                    <p className="text-stone-300 text-sm mt-1 leading-relaxed">{feature.desc}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Right Pane - Login Form */}
+                <div className="relative w-full flex flex-col items-center justify-center bg-[#FAF9F6]">
+                    {/* Mobile Background */}
+                    <div 
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat lg:hidden opacity-30"
+                        style={{ backgroundImage: "url('/login-bg.jpg')" }}
+                    />
+                    
+                    <div className="relative z-10 w-full px-4 lg:px-12 flex flex-col items-center justify-center h-full py-12">
+                        {/* Login Form Box */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ duration: 0.5, ease: "easeOut" }}
+                            className="w-full max-w-[420px] bg-white/95 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative"
+                        >
                     <div className="text-center mb-10">
                         <div className="w-16 h-16 bg-[#FFF0EB] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
                             <KeyRound className="w-8 h-8 text-[#FF5F56]" />
@@ -380,6 +448,7 @@ function LoginPageContent() {
                 </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 }
