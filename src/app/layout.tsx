@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-import GlobalProgress from "@/components/GlobalProgress";
 import NavLinks from "@/components/NavLinks";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -48,8 +47,6 @@ export default function RootLayout({
             </Link>
             <nav className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-on-surface-variant">
               <NavLinks />
-              <div className="hidden sm:block border-l border-outline-variant/30 h-6 mx-2" />
-              <GlobalProgress />
             </nav>
           </div>
         </header>
