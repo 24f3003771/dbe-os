@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Question } from "@/data/db";
 import { Check, X, ArrowRight, Clock, Flag, Eraser, Eye, LogOut, CheckCircle2, Calculator } from "lucide-react";
-import { useProgress } from "@/hooks/useProgress";
-import { useQuizHistory } from "@/hooks/useQuizHistory";
 import { useFarmStore } from "@/hooks/useFarmStore";
 
 interface QuizEngineProps {
@@ -28,8 +26,6 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, onCom
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const startTimeRef = useRef<number>(Date.now());
 
-    const { markModuleComplete } = useProgress();
-    const { saveAttempt } = useQuizHistory();
     const { earnTomatoes } = useFarmStore();
     const [earnedTomatoes, setEarnedTomatoes] = useState(0);
 
@@ -152,12 +148,7 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, onCom
         const elapsed = Math.round((Date.now() - startTimeRef.current) / 1000);
         setTotalTimeSpent(elapsed);
         
-        try {
-            markModuleComplete(subjectId, moduleId, score, questions.length);
-            saveAttempt({ subjectId, moduleId, mode, score, total: questions.length, timeSpent: elapsed });
-        } catch(e) {
-            console.error("Progress save error:", e);
-        }
+        // Progress persistence disabled for simplified OS
         
         try {
             // Yield tomatoes
@@ -168,7 +159,7 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, onCom
                 tomatoes = Math.ceil(score * 0.5); // Practice mode low reward
             }
             if (tomatoes > 0) {
-                earnTomatoes(tomatoes, "general");
+                earnTomatoes(tomatoes);
                 setEarnedTomatoes(tomatoes);
             }
         } catch(e) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useFarmStore } from "@/hooks/useFarmStore";
 
 export interface Deadline {
     id: string;
@@ -31,6 +32,7 @@ import { getDeadlinesAction, addDeadlineAction, toggleDeadlineAction, deleteDead
 export function useDeadlines() {
     const [deadlines, setDeadlines] = useState<Deadline[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const { earnTomatoes } = useFarmStore();
 
     const fetchDeadlines = useCallback(async () => {
         try {
@@ -65,10 +67,16 @@ export function useDeadlines() {
         setDeadlines((prev) => {
             const target = prev.find(d => d.id === id);
             if (!target) return prev;
-            toggleDeadlineAction(id, !target.completed).catch(console.error);
-            return prev.map((d) => d.id === id ? { ...d, completed: !d.completed } : d);
+            
+            const nextCompleted = !target.completed;
+            if (nextCompleted) {
+                earnTomatoes(5); // Award 5 tomatoes for completing a deadline
+            }
+            
+            toggleDeadlineAction(id, nextCompleted).catch(console.error);
+            return prev.map((d) => d.id === id ? { ...d, completed: nextCompleted } : d);
         });
-    }, []);
+    }, [earnTomatoes]);
 
     const deleteDeadline = useCallback(async (id: string) => {
         setDeadlines((prev) => prev.filter((d) => d.id !== id));

@@ -16,53 +16,22 @@ model User {
   totalTomatoesEarned   Int      @default(0)
   tomatoesBalance       Int      @default(0)
   streak                Int      @default(0)
-  farmName              String   @default("My Awesome Farm")
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   
-  plots                 Plot[]
   tomatoEvents          TomatoEvent[]
-  purchases             FarmShopPurchase[]
-}
-
-// ─── Farm Plots ──────────────────────────────────────
-model Plot {
-  id               String   @id @default(cuid())
-  userId           String
-  subject          String
-  treeStage        Int      @default(1) // 1: Seedling to 5: Ancient Tree
-  healthPct        Int      @default(100) // 0 to 100
-  lastWateredAt    DateTime @default(now())
-  tomatoesFromPlot Int      @default(0)
-  treeSkin         String   @default("default")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile               Profile?
 }
 
 // ─── Tomato Economy Events ───────────────────────────
 model TomatoEvent {
   id               String   @id @default(cuid())
   userId           String
-  plotId           String?
-  actionType       String   // "pomodoro", "quiz", "task", "login"
+  actionType       String   // "quiz", "task", "login"
   tomatoesEarned   Int
   timestamp        DateTime @default(now())
   sessionMetadata  String?  // JSON string
   
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-// ─── Shop Purchases ──────────────────────────────────
-model FarmShopPurchase {
-  id               String   @id @default(cuid())
-  userId           String
-  itemId           String
-  costTomatoes     Int
-  purchasedAt      DateTime @default(now())
-  equippedOnPlot   String?  // plotId if applicable
-
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -78,30 +47,6 @@ model Note {
   updatedAt DateTime @updatedAt
 }
 
-// ─── Forum (Doubt & Community) ───────────────────────
-model ForumPost {
-  id        String       @id @default(cuid())
-  title     String
-  body      String
-  category  String       @default("general")
-  postType  String       @default("question") // "question" | "answer"
-  author    String       @default("Anonymous")
-  upvotes   Int          @default(0)
-  reported  Boolean      @default(false)
-  createdAt DateTime     @default(now())
-  replies   ForumReply[]
-}
-
-model ForumReply {
-  id        String    @id @default(cuid())
-  body      String
-  author    String    @default("Anonymous")
-  upvotes   Int       @default(0)
-  createdAt DateTime  @default(now())
-  postId    String
-  post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-}
-
 // ─── Deadlines (Tasks) ───────────────────────────────
 model Deadline {
   id        String   @id @default(cuid())
@@ -112,15 +57,6 @@ model Deadline {
   dueDate   DateTime
   completed Boolean  @default(false)
   createdAt DateTime @default(now())
-}
-
-// ─── Study Sessions (Pomodoro & Rooms) ───────────────
-model StudySession {
-  id          String   @id @default(cuid())
-  room        String
-  subject     String
-  duration    Int      // minutes
-  completedAt DateTime @default(now())
 }
 
 // ─── Todos ──────────────────────────────────────────
@@ -134,16 +70,150 @@ model Todo {
   createdAt DateTime @default(now())
 }
 
-// ─── Module Progress ─────────────────────────────────
-model ModuleProgress {
-  id        String   @id @default(cuid())
-  userId    String   @default("default-user")
-  subjectId String
-  moduleId  Int
-  score     Int
-  total     Int
-  completed Boolean  @default(true)
-  updatedAt DateTime @updatedAt
+// ─── MatchForge Models (V2) ───────────────────────────
+model Profile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio               String?
+  photoUrl          String?
+  linkedinUrl       String?
+  portfolioUrl      String?
   
-  @@unique([userId, subjectId, moduleId])
+  // A. Identity & Background
+  ageRange          String?  // Bucketed e.g. "18-22", "23-28"
+  location          String?
+  timezone          String?
+  educationLevel    String?
+  currentStatus     String?  // STUDENT, PROFESSIONAL, FOUNDER, FREELANCER
+  
+  // C. Goals & Intent
+  goal              String   // LEARNING, COFOUNDER, TEAM, ACCOUNTABILITY
+  timeHorizon       String   // SHORT_TERM, MEDIUM_TERM, LONG_TERM
+  goalDescription   String?
+  industryInterest  String?  // JSON string or tags
+  
+  // D. Work Style & Personality
+  workStyle         String?  // ASYNC, SYNC
+  workingHours      String?  // FIXED, FLEXIBLE
+  commitmentLevel   String   // CASUAL, MODERATE, SERIOUS
+  riskAppetite      String   // LOW, MEDIUM, HIGH
+  decisionStyle     String?  // FAST, ANALYTICAL
+  
+  // Personality Traits (1-10 Sliders)
+  introvertExtrovert Int     @default(5)
+  plannerExecutor    Int     @default(5)
+  leaderSupporter    Int     @default(5)
+  
+  // E. Logistics
+  hoursPerWeek      Int      @default(0)
+  preferredTimeSlots String? // JSON string
+  
+  // F. Collaboration Prefs
+  partnerSkillPref  String?  // SAME, HIGHER, LOWER
+  teamSizePref      String?  // 1:1, SMALL, OPEN
+  commTools         String?  // JSON string
+  
+  skills            ProfileSkill[]
+  domainExpertise   String?  // JSON or tags
+  
+  matches           Match[]  @relation("UserMatches")
+  matchedWith       Match[]  @relation("TargetMatches")
+  
+  connections       Connection[] @relation("UserConnections")
+  connectedTo       Connection[] @relation("TargetConnections")
+  
+  completenessScore Int      @default(0)
+  isVerified        Boolean  @default(false)
+  isActive          Boolean  @default(true)
+  lastActive        DateTime @default(now())
+}
+
+model ProfileSkill {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  skillName String
+  level     Int      // 1-5 scale
+  isPrimary Boolean  @default(false)
+}
+
+model Match {
+  id             String   @id @default(cuid())
+  profileId      String
+  targetProfileId String
+  score          Float
+  matchType      String   // LEARNING_PARTNER, SKILL_COMPLEMENT, COFOUNDER, EXECUTION_PARTNER
+  explanation    String?
+  createdAt      DateTime @default(now())
+  
+  profile        Profile  @relation("UserMatches", fields: [profileId], references: [id], onDelete: Cascade)
+  targetProfile  Profile  @relation("TargetMatches", fields: [targetProfileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, targetProfileId])
+}
+
+// ─── Opportunity Hub Models ──────────────────────────
+model Opportunity {
+  id              String   @id @default(cuid())
+  type            String   // COMPETITION, INTERNSHIP
+  name            String
+  organizer       String
+  deadline        DateTime
+  eligibility     String
+  mode            String   @default("ONLINE") // ONLINE, OFFLINE
+  domain          String   // Marketing, Finance, Consulting, Product, Analytics
+  difficulty      String   @default("Medium") // Easy, Medium, Hard
+  tags            String   @default("[]")     // JSON string of tags
+  description     String
+  stipend         String?
+  role            String?
+  applicationLink String?
+  
+  stages          OpportunityStage[]
+  guide           PreparationGuide?
+  submissions     WinnerSubmission[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model OpportunityStage {
+  id              String   @id @default(cuid())
+  opportunityId   String
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  stepNumber      Int
+  title           String
+  description     String
+}
+
+model PreparationGuide {
+  id              String   @id @default(cuid())
+  opportunityId   String   @unique
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  content         String   // Markdown
+}
+
+model WinnerSubmission {
+  id              String   @id @default(cuid())
+  opportunityId   String
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  title           String
+  fileUrl         String?
+  description     String?
+  strategy        String?
+  author          String   @default("Verified Top Performer")
+}
+
+model Connection {
+  id             String   @id @default(cuid())
+  profileId      String
+  targetProfileId String
+  status         String   // INTERESTED, CONNECTED, DECLINED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  profile        Profile  @relation("UserConnections", fields: [profileId], references: [id], onDelete: Cascade)
+  targetProfile  Profile  @relation("TargetConnections", fields: [targetProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, targetProfileId])
 }
