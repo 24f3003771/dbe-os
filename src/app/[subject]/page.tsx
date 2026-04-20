@@ -5,8 +5,6 @@ import { getSubjectById, getNotesLink } from "@/data/db";
 import { BookOpen, Activity, Play, ChevronLeft, CheckCircle2, Timer, Target, Clock, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import QuizEngine from "@/components/QuizEngine";
-import { useProgress } from "@/hooks/useProgress";
-import { useQuizHistory } from "@/hooks/useQuizHistory";
 
 export default function SubjectPage({ params }: { params: Promise<{ subject: string }> }) {
     const { subject } = React.use(params);
@@ -16,10 +14,13 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
     const [quizMode, setQuizMode] = useState<"practice" | "exam">("practice");
     const [showModeSelect, setShowModeSelect] = useState(false);
     const [pendingModuleId, setPendingModuleId] = useState<number | null>(null);
-    const { progress, getSubjectProgress, isLoaded } = useProgress();
-    const { getModuleStats, isLoaded: historyLoaded } = useQuizHistory();
-
-    const subjectProgress = getSubjectProgress(subject);
+    
+    // Mocks for simplified OS
+    const isLoaded = true;
+    const progress: any = {};
+    const historyLoaded = false;
+    const getModuleStats = (s:string, m:number) => ({ attempts: 0, bestAccuracy: 0, totalTimeSpent: 0 });
+    const subjectProgress = { total: 0, completed: 0, percentage: 0 };
 
     if (!data) {
         return (
