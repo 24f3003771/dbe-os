@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // Using SQLite for local setup, PRD mentions Supabase tracking but keeping it simple locally
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ─── Gamified User Profile ───────────────────────────
