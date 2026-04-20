@@ -1,40 +1,46 @@
 "use server";
 
 import { PrismaClient } from "@prisma/client";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 const prisma = new PrismaClient();
-const DEFAULT_USER_EMAIL = "scholar@dbe-os.com";
 
-// Helper to get or create the default user (mocking auth)
-async function getDefaultUser() {
-    let user = await prisma.user.findUnique({ where: { email: DEFAULT_USER_EMAIL } });
-    if (!user) {
-        user = await prisma.user.create({
-            data: {
-                email: DEFAULT_USER_EMAIL,
-                name: "Scholar",
-                streak: 1,
-                tomatoesBalance: 10,
-                totalTomatoesEarned: 10,
-            }
-        });
-    }
-    return user;
+// Helper to get or create the authenticated user
+async function getAuthUser() {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const userRecord = await currentUser();
+    const email = userRecord?.emailAddresses[0]?.emailAddress || "pending@iimb.ac.in";
+    const name = userRecord?.firstName || "Scholar";
+
+    return await prisma.user.upsert({
+        where: { id: userId },
+        update: {},
+        create: {
+            id: userId,
+            email: email,
+            name: name,
+            streak: 1,
+            tomatoesBalance: 10,
+            totalTomatoesEarned: 10,
+        },
+    });
 }
 
 export async function getFarmState() {
-    const user = await getDefaultUser();
+    const user = await getAuthUser();
     
     return {
         totalTomatoesEarned: user.totalTomatoesEarned,
         tomatoesBalance: user.tomatoesBalance,
         streak: user.streak,
-        plots: [] // Return empty array to avoid breaking UI that expects it
+        plots: [] // Return empty array to avoid breaking UI
     };
 }
 
 export async function updateTomatoes(amount: number) {
-    const user = await getDefaultUser();
+    const user = await getAuthUser();
     
     const updatedUser = await prisma.user.update({
         where: { id: user.id },
@@ -48,7 +54,7 @@ export async function updateTomatoes(amount: number) {
 }
 
 export async function spendTomatoesAction(amount: number) {
-    const user = await getDefaultUser();
+    const user = await getAuthUser();
     if (user.tomatoesBalance < amount) return false;
     
     await prisma.user.update({

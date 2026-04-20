@@ -1,25 +1,38 @@
 "use server";
 
 import { PrismaClient } from "@prisma/client";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 const prisma = new PrismaClient();
-const DEFAULT_USER_EMAIL = "scholar@dbe-os.com";
 
-async function getDefaultUser() {
-    const user = await prisma.user.findUnique({ 
-        where: { email: DEFAULT_USER_EMAIL },
+async function getAuthUser() {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const userRecord = await currentUser();
+    const email = userRecord?.emailAddresses[0]?.emailAddress || "pending@iimb.ac.in";
+    const name = userRecord?.firstName || "Scholar";
+
+    // In Next.js App Router, using include: { profile: true } inside findUnique is fine
+    const user = await prisma.user.upsert({
+        where: { id: userId },
+        update: {},
+        create: {
+            id: userId,
+            email: email,
+            name: name,
+        },
         include: { profile: true }
     });
     return user;
 }
 
 export async function saveOnboardingData(data: any) {
-    const user = await getDefaultUser();
+    const user = await getAuthUser();
     if (!user) return null;
 
     const { skills, ...profileData } = data;
 
-    // Convert arrays to JSON strings if necessary for fields not handled by relations
     const sanitizedData = {
         ...profileData,
         industryInterest: profileData.industryInterest ? JSON.stringify(profileData.industryInterest) : null,
@@ -59,7 +72,7 @@ export async function saveOnboardingData(data: any) {
 }
 
 export async function getMatches() {
-    const user = await getDefaultUser();
+    const user = await getAuthUser();
     if (!user || !user.profile) return [];
 
     const allProfiles = await prisma.profile.findMany({
@@ -74,13 +87,11 @@ export async function getMatches() {
         let score = 0;
         let reasons: string[] = [];
 
-        // 1. Goal Alignment (30%)
         if (target.goal === myProfile.goal) {
             score += 30;
             reasons.push("Aligned on goal: " + target.goal.toLowerCase());
         }
 
-        // 2. Skill Complementarity (20%)
         const mySkillNames = mySkills.map(s => s.skillName.toLowerCase());
         const targetSkillNames = target.skills.map(s => s.skillName.toLowerCase());
         const complementary = targetSkillNames.filter(s => !mySkillNames.includes(s));
@@ -90,8 +101,6 @@ export async function getMatches() {
             reasons.push("Complementary skills: " + complementary.slice(0, 2).join(", "));
         }
 
-        // 3. Skill Level Compatibility (15%)
-        // Matches prefer similar level or higher as per PRD
         const myAvgLevel = mySkills.length > 0 ? mySkills.reduce((acc, s) => acc + s.level, 0) / mySkills.length : 1;
         const targetAvgLevel = target.skills.length > 0 ? target.skills.reduce((acc, s) => acc + s.level, 0) / target.skills.length : 1;
         
@@ -102,7 +111,6 @@ export async function getMatches() {
             score += 10;
         }
 
-        // 4. Work Style Match (15%)
         if (target.workStyle === myProfile.workStyle) {
             score += 7.5;
         }
@@ -113,7 +121,6 @@ export async function getMatches() {
             reasons.push("Perfect work style match (" + target.workStyle + ")");
         }
 
-        // 5. Availability Overlap (10%)
         const hourDiff = Math.abs(target.hoursPerWeek - myProfile.hoursPerWeek);
         if (hourDiff <= 5) {
             score += 10;
@@ -122,7 +129,6 @@ export async function getMatches() {
             score += 5;
         }
 
-        // 6. Personality Compatibility (5%)
         const personalityDiff = 
             Math.abs(target.introvertExtrovert - myProfile.introvertExtrovert) +
             Math.abs(target.plannerExecutor - myProfile.plannerExecutor) +
@@ -133,11 +139,9 @@ export async function getMatches() {
             reasons.push("High personality compatibility");
         }
 
-        // 7. Credibility Score (5%)
         if (target.linkedinUrl) score += 2.5;
         if (target.completenessScore > 80) score += 2.5;
 
-        // Determine Match Type
         let matchType = "LEARNING_PARTNER";
         if (target.goal === "COFOUNDER" && myProfile.goal === "COFOUNDER") matchType = "COFOUNDER_POTENTIAL";
         else if (complementary.length >= 2) matchType = "SKILL_COMPLEMENT";
@@ -160,7 +164,7 @@ export async function getMatches() {
 }
 
 export async function connectWithUser(targetProfileId: string) {
-    const user = await getDefaultUser();
+    const user = await getAuthUser();
     if (!user || !user.profile) return null;
 
     const connection = await prisma.connection.upsert({

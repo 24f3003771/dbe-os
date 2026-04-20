@@ -1,17 +1,25 @@
 import { prisma } from "@/lib/db.server";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
-// GET /api/deadlines — list all deadlines
+// GET /api/deadlines — list all deadlines for the authenticated user
 export async function GET() {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const deadlines = await prisma.deadline.findMany({
+        where: { userId },
         orderBy: { dueDate: "asc" },
     });
 
     return NextResponse.json(deadlines);
 }
 
-// POST /api/deadlines — create a new deadline
+// POST /api/deadlines — create a new deadline for the authenticated user
 export async function POST(req: NextRequest) {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const body = await req.json();
     const { title, subject, type, dueDate } = body;
 
@@ -24,6 +32,7 @@ export async function POST(req: NextRequest) {
 
     const deadline = await prisma.deadline.create({
         data: {
+            userId,
             title,
             subject,
             type: type || "assignment",
