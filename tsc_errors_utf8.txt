@@ -1,0 +1,1 @@
+﻿src/app/shop/page.tsx(10,9): error TS2801: This condition will always return true since this 'Promise<boolean>' is always defined.

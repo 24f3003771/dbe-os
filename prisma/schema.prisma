@@ -9,7 +9,7 @@ datasource db {
 
 // ─── Gamified User Profile ───────────────────────────
 model User {
-  id                    String   @id @default(cuid())
+  id                    String   @id // Using Clerk User ID
   email                 String   @unique
   name                  String
   role                  String   @default("student") // student, moderator, admin, guest
@@ -20,6 +20,8 @@ model User {
   updatedAt             DateTime @updatedAt
   
   tomatoEvents          TomatoEvent[]
+  deadlines             Deadline[]
+  todos                 Todo[]
   profile               Profile?
 }
 
@@ -42,6 +44,7 @@ model Note {
   content   String   // Markdown content
   subject   String
   author    String   @default("Anonymous")
+  authorId  String?  // Clerk ID of the contributor
   upvotes   Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,6 +53,7 @@ model Note {
 // ─── Deadlines (Tasks) ───────────────────────────────
 model Deadline {
   id        String   @id @default(cuid())
+  userId    String
   title     String
   subject   String
   type      String   @default("assignment") // "assignment" | "quiz" | "exam" | "task"
@@ -57,17 +61,20 @@ model Deadline {
   dueDate   DateTime
   completed Boolean  @default(false)
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ─── Todos ──────────────────────────────────────────
 model Todo {
   id        String   @id @default(cuid())
+  userId    String
   title     String
   subject   String
   time      String
   completed Boolean  @default(false)
   date      String
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ─── MatchForge Models (V2) ───────────────────────────
