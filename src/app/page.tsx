@@ -2,50 +2,33 @@
 
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag } from "lucide-react";
+import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
-// Mock tree stage SVGs/renders using standard unicode or CSS
-const TreeStageRenderer = ({ stage, health, skin }: { stage: number, health: number, skin: string }) => {
-  const isWilting = health < 30;
-  const healthColor = isWilting ? "opacity-50 grayscale" : "opacity-100";
-  
-  const getTreeIcon = () => {
-    switch (stage) {
-      case 1: return <div className="text-4xl text-primary-dim">🌱</div>;
-      case 2: return <div className="text-5xl text-primary">🌿</div>;
-      case 3: return <div className="text-6xl text-primary drop-shadow-sm">🪴</div>;
-      case 4: return <div className="text-7xl text-primary drop-shadow-md">🌳</div>;
-      case 5: return <div className="text-8xl text-primary drop-shadow-[0_0_15px_rgba(45,106,79,0.8)]">🌲</div>;
-      default: return <div className="text-4xl">🌱</div>;
-    }
-  };
-
-  return (
-    <motion.div 
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className={`flex flex-col items-center justify-end h-32 ${healthColor} ${isWilting ? 'animate-pulse' : ''}`}
-    >
-      {getTreeIcon()}
-      {isWilting && <span className="absolute top-0 text-[10px] text-on-error font-bold bg-error px-2 py-0.5 rounded-full uppercase tracking-tighter shadow-sm">Needs Water!</span>}
-    </motion.div>
-  );
-};
-
 import { Caveat } from "next/font/google";
+import { useTodos } from "@/hooks/useTodos";
+import { getAllSubjects } from "@/data/db";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
-import { useTodos } from "@/hooks/useTodos";
-
 const IPadSidebar = () => {
   const { tasks, addTask: persistTask, toggleTask: togglePersistedTask, deleteTask: deletePersistedTask } = useTodos(new Date());
+  const { earnTomatoes } = useFarmStore();
   const [newTaskText, setNewTaskText] = useState("");
+  const [showTomatoAnim, setShowTomatoAnim] = useState(false);
+  const [lastEarned, setLastEarned] = useState(2);
 
   const toggleTask = (id: string) => {
+    const task = tasks.find(t => t.id === id);
+    if (task && !task.completed) {
+      // Award tomatoes when completing a task
+      // 2 or 5 tomatoes per task
+      const amount = Math.random() > 0.5 ? 5 : 2;
+      earnTomatoes(amount);
+      setLastEarned(amount);
+      setShowTomatoAnim(true);
+      setTimeout(() => setShowTomatoAnim(false), 2000);
+    }
     togglePersistedTask(id);
   };
 
@@ -71,6 +54,19 @@ const IPadSidebar = () => {
 
   return (
     <div className="sticky top-24 bg-[#FFFCF8] rounded-[2rem] border-[8px] border-[#E5E5EA] shadow-xl p-6 md:p-8 flex flex-col h-[75vh] min-h-[600px] overflow-y-auto" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px)', backgroundAttachment: 'local', backgroundPosition: '0 1rem' }}>
+        <AnimatePresence>
+          {showTomatoAnim && (
+            <motion.div 
+              initial={{ opacity: 0, y: 0, scale: 0.5 }}
+              animate={{ opacity: 1, y: -100, scale: 1.5 }}
+              exit={{ opacity: 0, scale: 2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 text-6xl pointer-events-none drop-shadow-2xl"
+            >
+              🍅 +{lastEarned}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* iPad Camera details */}
         <div className="absolute top-3 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-black/80 ring-2 ring-black/10"></div>
         <div className="absolute top-3.5 left-[calc(50%+1rem)] w-1 h-1 rounded-full bg-green-500 shadow-[0_0_4px_#22c55e]"></div>
@@ -138,34 +134,20 @@ const IPadSidebar = () => {
                 <button type="submit" className="text-4xl text-[#3498db] hover:text-[#2980b9] font-bold p-2 transition-colors">+</button>
             </form>
 
-            <div className="mt-8 text-center text-[#95a5a6] text-xl opacity-80 italic">-- scribble down ideas! --</div>
+            <div className="mt-8 text-center text-[#95a5a6] text-xl opacity-80 italic">-- points for every task! --</div>
         </div>
     </div>
   )
 }
 
-export default function FarmDashboard() {
-  const { totalTomatoesEarned, tomatoesBalance, streak, plots, earnTomatoes, waterPlot, fetchFarmData, isInitialized } = useFarmStore();
-  const [showTomatoAnim, setShowTomatoAnim] = useState(false);
-  const [notes, setNotes] = useState<any[]>([]);
+export default function Dashboard() {
+  const { totalTomatoesEarned, tomatoesBalance, streak, fetchFarmData, isInitialized } = useFarmStore();
+  const subjects = getAllSubjects();
+  const notesPreview = subjects.slice(0, 3);
 
   useEffect(() => {
     if (!isInitialized) fetchFarmData();
   }, [isInitialized, fetchFarmData]);
-
-  useEffect(() => {
-    fetch("/api/notes")
-      .then(res => res.ok ? res.json() : [])
-      .then(data => setNotes(data.slice(0, 3)))
-      .catch(() => setNotes([]));
-  }, []);
-
-  const handleManualWater = (id: string) => {
-    waterPlot(id);
-    earnTomatoes(1, id);
-    setShowTomatoAnim(true);
-    setTimeout(() => setShowTomatoAnim(false), 2000);
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-700 max-w-7xl mx-auto pb-20">
@@ -175,163 +157,115 @@ export default function FarmDashboard() {
         {/* Header Status Section */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 bg-surface-container rounded-3xl p-8 flex flex-col justify-between items-start relative overflow-hidden shadow-sm border border-outline-variant/10 hover-lift">
-                <div className="relative z-10 w-full flex justify-between items-start">
-                    <div>
-                        <h1 className="text-3xl md:text-4xl font-black font-headline text-on-surface mb-2 tracking-tight">Welcome Back, Scholar.</h1>
-                        <p className="text-on-surface-variant max-w-sm font-medium">Your greenhouse is thriving. You have {plots.filter(p=>p.healthPct < 50).length} plots seeking attention.</p>
-                    </div>
+                <div className="relative z-10 w-full">
+                    <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tight">Your OS.</h1>
+                    <p className="text-on-surface-variant max-w-sm font-medium">Keep track of your academic journey. Notes, Quizzes, and Connections in one place.</p>
                 </div>
-                <div className="mt-6 flex flex-wrap items-center gap-3 z-10 w-full">
-                    <div className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full font-bold text-sm shadow-sm border border-outline-variant/10">
-                        <span className="text-secondary text-lg">🍅</span>
-                        <span className="text-on-surface">Balance: {tomatoesBalance}</span>
+                <div className="mt-8 flex flex-wrap items-center gap-4 z-10 w-full">
+                    <div className="flex items-center gap-3 bg-surface-container-highest px-5 py-3 rounded-2xl font-bold text-lg shadow-sm border border-outline-variant/10">
+                        <span className="text-2xl">🍅</span>
+                        <div className="flex flex-col">
+                            <span className="text-on-surface leading-none">{tomatoesBalance}</span>
+                            <span className="text-xs text-on-surface-variant font-medium">Balance</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 text-primary bg-primary/10 px-4 py-2 rounded-full font-bold text-sm border border-primary/20">
-                        <Sun className="w-4 h-4" />
-                        <span>Rank: {totalTomatoesEarned} XP</span>
-                    </div>
-                    <div className="flex-1"></div>
-                    <Link href="/shop" className="group flex items-center gap-2 px-5 py-2.5 bg-secondary text-on-secondary font-bold text-sm rounded-xl shadow-lg shadow-secondary/20 hover:scale-105 active:scale-95 transition-all">
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>Visit Farm Shop</span>
+                    <Link href="/leaderboard" className="flex items-center gap-3 bg-primary/10 px-5 py-3 rounded-2xl font-bold text-lg border border-primary/20 hover:bg-primary/20 transition-colors">
+                        <Flame className="w-6 h-6 text-primary" />
+                        <div className="flex flex-col">
+                            <span className="text-primary leading-none">#{totalTomatoesEarned}</span>
+                            <span className="text-xs text-primary/70 font-medium">Rank XP</span>
+                        </div>
                     </Link>
+                    <div className="flex-1"></div>
                 </div>
-                {/* Decorative blurred blob */}
-                <div className="absolute -right-10 -top-10 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute -right-10 -top-10 w-48 h-48 bg-primary/15 rounded-full blur-3xl pointer-events-none"></div>
             </div>
             
             <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-sm hover-lift relative overflow-hidden">
-                <p className="text-xs font-bold font-headline text-secondary uppercase tracking-widest mb-2 flex items-center gap-1 z-10"><Flame className="w-4 h-4"/> Streak</p>
+                <p className="text-xs font-bold font-headline text-secondary uppercase tracking-widest mb-2 flex items-center gap-1 z-10"><Zap className="w-4 h-4"/> Activity</p>
                 <p className="text-5xl font-black text-secondary mb-2 leading-none z-10">{streak}</p>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mt-2 z-10">Days Growing Strong</p>
+                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mt-2 z-10">Day Streak</p>
                 <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-secondary/10 rounded-full blur-2xl pointer-events-none"></div>
             </div>
         </section>
 
-        {/* Floating Animation */}
-        <AnimatePresence>
-          {showTomatoAnim && (
-            <motion.div 
-              initial={{ opacity: 0, y: 50, scale: 0.5 }}
-              animate={{ opacity: 1, y: -50, scale: 1.2 }}
-              exit={{ opacity: 0, scale: 1.5 }}
-              transition={{ duration: 0.6 }}
-              className="fixed inset-0 m-auto w-32 h-32 flex items-center justify-center pointer-events-none z-50 text-6xl drop-shadow-md"
-            >
-              🍅 +1
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <section className="space-y-4">
-          <h2 className="text-2xl font-black font-headline text-on-surface">The Digital Farm</h2>
-          {/* Farm Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {plots.map((plot) => (
-              <motion.div 
-                key={plot.id}
-                whileHover={{ y: -5 }}
-                className="bg-surface-container-lowest border border-outline-variant/15 p-6 rounded-3xl relative overflow-hidden shadow-[0_4px_12px_rgba(66,40,32,0.02)] hover:shadow-[0_16px_32px_rgba(66,40,32,0.06)] flex flex-col items-center justify-end h-72 transition-all group"
-              >
-                {/* Top Details */}
-                <div className="absolute top-5 left-5 right-5 flex justify-between items-start z-20">
-                  <div>
-                    <h3 className="text-on-surface font-black font-headline text-lg tracking-tight leading-tight">{plot.subject}</h3>
-                    <p className="text-primary font-black text-[10px] uppercase tracking-widest mt-1 bg-primary/10 inline-block px-2 py-0.5 rounded-full border border-primary/20">Lv {plot.treeStage}</p>
-                  </div>
-                  <div className="bg-surface-container px-2 py-1 rounded-full border border-outline-variant/10 flex items-center gap-1 shadow-sm">
-                    <span className="text-sm">🍅</span>
-                    <span className="text-on-surface font-black text-xs">{plot.tomatoesFromPlot}</span>
-                  </div>
+        {/* Feature Grid */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* MatchForge Teaser */}
+            <Link href="/matchforge" className="md:col-span-2 group">
+                <div className="bg-gradient-to-br from-indigo-600 to-violet-700 text-white rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-500 transform group-hover:-translate-y-1">
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                        <div className="flex-1 space-y-4 text-center md:text-left">
+                            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                <Users className="w-4 h-4" /> New Feature
+                            </div>
+                            <h2 className="text-4xl md:text-6xl font-black font-headline tracking-tighter leading-none">MatchForge</h2>
+                            <p className="text-indigo-100 text-lg md:text-xl font-medium max-w-lg">Find your perfect learning partner or cofounder. Intelligent pairing based on goals, skills, and style.</p>
+                            <div className="pt-4">
+                                <span className="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-indigo-50 transition-colors inline-block">Forge a Connection</span>
+                            </div>
+                        </div>
+                        <div className="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-white/10 rounded-full animate-pulse border border-white/20"></div>
+                            <Users className="w-24 h-24 md:w-32 md:h-32 text-white/90 drop-shadow-2xl" />
+                        </div>
+                    </div>
+                    {/* Decorative elements */}
+                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+                    <div className="absolute top-10 right-10 w-32 h-32 bg-indigo-400/20 rounded-full blur-2xl pointer-events-none animate-bounce" style={{animationDuration: '4s'}}></div>
                 </div>
+            </Link>
 
-                {/* Tree Render */}
-                <TreeStageRenderer stage={plot.treeStage} health={plot.healthPct} skin={plot.treeSkin} />
-
-                {/* Ground/Dirt */}
-                <div className="w-full h-8 mt-4 bg-outline/20 rounded-[100%] border-t border-outline/30 relative">
-                  <div className="absolute left-1/2 -ml-6 -top-3 w-12 h-4 bg-outline/40 rounded-[100%]" />
-                </div>
-
-                {/* Health Indicator */}
-                <div className="absolute bottom-4 left-6 right-6">
-                  <div className="flex justify-between text-[10px] font-bold text-on-surface-variant mb-1.5 uppercase tracking-wide">
-                    <span>Hydration</span>
-                    <span className={plot.healthPct < 30 ? "text-error" : "text-primary"}>{plot.healthPct}%</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden border border-outline-variant/10">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${plot.healthPct}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                      className={`h-full rounded-full ${plot.healthPct < 30 ? 'bg-error' : 'bg-primary'}`}
-                    />
-                  </div>
-                </div>
-
-                {/* Hover Actions */}
-                <div className="absolute inset-0 bg-surface/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6 z-30 backdrop-blur-sm">
-                  <div className="flex gap-4">
-                    <button 
-                      onClick={() => handleManualWater(plot.id)}
-                      className="bg-secondary hover:scale-105 active:scale-95 text-on-secondary w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg shadow-secondary/20"
-                      title="Water plot for 1 Tomato"
-                    >
-                      <Droplet className="w-6 h-6" />
-                    </button>
-                    <Link href={`/study?plot=${plot.id}`}>
-                      <button 
-                        className="bg-primary hover:scale-105 active:scale-95 text-on-primary w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg shadow-primary/20"
-                        title="Start Pomodoro Session here"
-                      >
-                        <Timer className="w-6 h-6" />
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Secondary Features Grid */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full pt-4">
-            <div className="bg-primary text-on-primary rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between shadow-lg shadow-primary/10 hover-lift">
-                <div className="relative z-10 w-full space-y-3">
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary-fixed-dim bg-on-primary-fixed/20 inline-block px-3 py-1 rounded-full border border-primary-fixed/30">Deep Work</p>
-                    <h3 className="text-3xl font-black font-headline tracking-tighter text-white">Focus Session</h3>
-                    <p className="text-primary-fixed opacity-90 font-medium">Start a 25-minute Pomodoro to nurture your crops.</p>
-                </div>
-                <Link href="/study" className="relative z-10 mt-6">
-                    <button className="bg-on-primary text-on-primary-container px-6 py-3 rounded-full font-bold shadow-lg hover:bg-surface transition-colors flex items-center justify-center gap-2 w-full">
-                        <Timer className="w-5 h-5" /> Start Growing
-                    </button>
-                </Link>
-                <Leaf className="absolute -bottom-10 -right-10 w-56 h-56 text-on-primary-fixed opacity-10 rotate-12 pointer-events-none" />
-            </div>
-
+            {/* Notes Section preview */}
             <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift">
                 <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-xl font-black font-headline text-on-surface tracking-tight">Recent Notes</h3>
+                    <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
+                        <BookOpen className="w-5 h-5 text-primary" /> Universal Library
+                    </h3>
                     <Link href="/notes" className="text-xs font-bold text-primary hover:underline">View All</Link>
                 </div>
                 <div className="space-y-4">
-                    {notes.length === 0 ? (
-                        <p className="text-xs text-on-surface-variant">No notes found. Create one in the Notes library!</p>
-                    ) : (
-                        notes.map((note: any) => (
-                            <Link key={note.id} href={`/notes/${note.id}`} className="flex items-center gap-4 bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container transition-colors group">
-                                <div className="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center shadow-sm shrink-0">
-                                    <BookOpen className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold font-headline text-on-surface group-hover:text-primary transition-colors">{note.title}</p>
-                                    <p className="text-xs text-on-surface-variant font-medium mt-0.5">{note.subject}</p>
-                                </div>
-                            </Link>
-                        ))
-                    )}
+                    {notesPreview.map((note: any) => (
+                        <Link key={note.id} href={`/dbe_notes/${note.id}`} className="flex items-center gap-4 bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container transition-colors group">
+                            <div className="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center shadow-sm shrink-0">
+                                <BookOpen className="w-5 h-5" />
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-sm font-bold font-headline text-on-surface group-hover:text-primary transition-colors truncate uppercase tracking-tight">{note.title}</p>
+                                <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mt-0.5">{note.id}</p>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
+                <Link href="/notes" className="block pt-2">
+                    <button className="w-full py-3 bg-indigo-600/5 hover:bg-indigo-600/10 rounded-xl text-xs font-black uppercase tracking-widest text-indigo-600 transition-all border border-indigo-600/10">Browse Universal Library</button>
+                </Link>
+            </div>
+
+            {/* Opportunity Hub Section preview */}
+            <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift flex flex-col justify-between group overflow-hidden relative">
+                <div className="space-y-6 relative z-10">
+                    <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
+                            <Rocket className="w-5 h-5 text-indigo-600" /> Opportunity Hub
+                        </h3>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="p-5 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
+                            <p className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-1">Featured Today</p>
+                            <h4 className="text-sm font-bold text-[#1A1A1A]">HUL L.I.M.E. 16</h4>
+                            <p className="text-[10px] font-bold text-stone-400 mt-0.5">Marketing Case • 12 Days Left</p>
+                        </div>
+                        <p className="text-xs font-medium text-on-surface-variant leading-relaxed">Access 150+ curated B-school competitions and MNC internships with winning roadmaps.</p>
+                    </div>
+                </div>
+                <Link href="/opportunities" className="relative z-10">
+                    <button className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                        Enter Hub <ArrowRight className="w-4 h-4" />
+                    </button>
+                </Link>
+                {/* Decorative circle */}
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
             </div>
         </section>
       </div>
