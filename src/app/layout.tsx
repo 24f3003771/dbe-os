@@ -33,7 +33,39 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-surface text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body">
-        <ClerkProvider>
+        <ClerkProvider
+          appearance={{
+            elements: {
+              formButtonPrimary: 
+                "bg-primary hover:bg-primary-dim text-white transition-all shadow-md hover:shadow-lg rounded-xl text-sm font-bold py-2.5",
+              card: "bg-surface border border-outline-variant/20 shadow-2xl rounded-3xl overflow-hidden",
+              headerTitle: "text-on-surface font-headline font-bold text-2xl tracking-tight",
+              headerSubtitle: "text-on-surface-variant font-body",
+              socialButtonsBlockButton: 
+                "border-outline-variant/20 hover:bg-surface-container transition-colors rounded-xl h-11",
+              socialButtonsBlockButtonText: "text-on-surface font-semibold",
+              formFieldLabel: "text-on-surface-variant font-bold mb-1.5 text-xs uppercase tracking-wider",
+              formFieldInput: 
+                "bg-surface-container-lowest border-outline-variant/20 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all h-11",
+              footerActionText: "text-on-surface-variant font-medium",
+              footerActionLink: "text-primary hover:text-primary-dim font-bold",
+              identityPreviewText: "text-on-surface",
+              identityPreviewEditButtonIcon: "text-primary",
+              userButtonAvatarBox: "shadow-md border-2 border-primary/20 hover:scale-105 transition-transform",
+              userButtonPopoverCard: "bg-surface border border-outline-variant/20 shadow-2xl rounded-2xl",
+              userButtonPopoverActionButtonText: "text-on-surface font-medium",
+              userButtonPopoverFooter: "hidden", // Clean up the footer
+            },
+            variables: {
+              colorPrimary: "#29664c",
+              colorText: "#422820",
+              colorBackground: "#fff4f1",
+              colorInputBackground: "#ffffff",
+              colorInputText: "#422820",
+              borderRadius: "12px",
+            },
+          }}
+        >
           <header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
@@ -53,7 +85,9 @@ export default function RootLayout({
                   <Show when="signed-out">
                     <div className="flex flex-col items-end gap-1">
                       <SignInButton mode="modal">
-                        <button className="bg-primary/10 text-primary px-4 py-1.5 rounded-full font-bold hover:bg-primary/20 transition-colors">Sign In</button>
+                        <button className="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 text-sm uppercase tracking-wider">
+                          Sign In
+                        </button>
                       </SignInButton>
                       <span className="text-[10px] text-primary/60 font-black uppercase tracking-tighter">Use Student ID (@iimb.ac.in)</span>
                     </div>
