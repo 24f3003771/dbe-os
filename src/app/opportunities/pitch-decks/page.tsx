@@ -187,7 +187,7 @@ function DeckCard({ deck, onClick }: { deck: PitchDeck, onClick: () => void }) {
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, shadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
+      whileHover={{ y: -4, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
       onClick={onClick}
       className="group cursor-pointer bg-surface border border-outline-variant/10 rounded-[2rem] p-6 flex flex-col gap-4 shadow-sm hover:border-primary/20 transition-all duration-300 overflow-hidden relative"
     >
