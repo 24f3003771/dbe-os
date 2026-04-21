@@ -2,7 +2,7 @@
 
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight } from "lucide-react";
+import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
@@ -267,6 +267,62 @@ export default function Dashboard() {
                 {/* Decorative circle */}
                 <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
             </div>
+
+            {/* Pitch Decks Advertisement Section */}
+            <Link href="/opportunities/pitch-decks" className="md:col-span-2 group">
+                <div className="bg-[#1A1A1A] text-white rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/5">
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                        <div className="flex-1 space-y-4">
+                            <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-4 py-1.5 rounded-full text-emerald-400 font-black text-[10px] tracking-widest uppercase mb-2">
+                                <Trophy className="w-3.5 h-3.5" /> High-Impact Resource
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-black font-headline tracking-tighter leading-none">
+                                Pro Pitch <span className="text-emerald-500">Decks.</span>
+                            </h2>
+                            <p className="text-stone-400 text-lg font-medium max-w-lg">
+                                Master the architecture of winning with 50+ award-winning case decks from L'Oréal, Maersk, and more.
+                            </p>
+                            <div className="pt-4 flex items-center gap-4">
+                                <span className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                                    Browse Library <ArrowRight className="w-4 h-4 text-emerald-500" />
+                                </span>
+                            </div>
+                        </div>
+                        <div className="hidden md:flex items-center justify-center w-40 h-40 bg-emerald-500/10 rounded-3xl border border-emerald-500/20">
+                            <div className="relative">
+                                <Rocket className="w-16 h-16 text-emerald-500 animate-pulse" />
+                                <div className="absolute -inset-4 bg-emerald-500/20 rounded-full blur-xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Decorative flow */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                </div>
+            </Link>
+
+            {/* Leaderboard Section card */}
+            <Link href="/leaderboard" className="md:col-span-2 group">
+                <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2.5rem] p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-primary/30 transition-all shadow-sm">
+                    <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                            <Flame className="w-8 h-8" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight leading-none mb-2">Community Leaderboard</h3>
+                            <p className="text-on-surface-variant font-medium">See where you stand among your peers. Earn tomatoes, climb ranks.</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-4 bg-surface-container-low px-6 py-4 rounded-2xl border border-outline-variant/10">
+                        <div className="text-center border-r border-outline-variant/20 pr-6">
+                            <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1">Your Rank</p>
+                            <p className="text-2xl font-black text-primary leading-none">#{totalTomatoesEarned}</p>
+                        </div>
+                        <div className="pl-2">
+                             <ArrowRight className="w-6 h-6 text-on-surface-variant" />
+                        </div>
+                    </div>
+                </div>
+            </Link>
         </section>
       </div>
 

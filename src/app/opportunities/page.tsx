@@ -70,15 +70,27 @@ export default function OpportunityHubPage() {
             </div>
 
             {/* Preparation Sections */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
                 <Link href="/opportunities/winning-repository" className="bg-[#EEF2FF] p-8 rounded-[2rem] border border-indigo-100/50 hover:shadow-xl transition-all group">
                     <div className="flex flex-col gap-6">
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
                             <Star className="w-6 h-6 text-indigo-600" />
                         </div>
                         <div className="space-y-1">
-                            <h3 className="font-black text-indigo-900 text-lg">Winning Repository</h3>
-                            <p className="text-indigo-600/70 text-sm font-bold uppercase tracking-widest leading-tight">Past case solutions</p>
+                            <h3 className="font-black text-indigo-900 text-lg">Winners Bank</h3>
+                            <p className="text-indigo-600/70 text-sm font-bold uppercase tracking-widest leading-tight">Student Submissions</p>
+                        </div>
+                    </div>
+                </Link>
+
+                <Link href="/opportunities/pitch-decks" className="bg-[#F0FDF4] p-8 rounded-[2rem] border border-emerald-100/50 hover:shadow-xl transition-all group">
+                    <div className="flex flex-col gap-6">
+                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                            <Trophy className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <div className="space-y-1">
+                            <h3 className="font-black text-emerald-900 text-lg">Pitch Decks</h3>
+                            <p className="text-emerald-600/70 text-sm font-bold uppercase tracking-widest leading-tight">Pro Case Decks</p>
                         </div>
                     </div>
                 </Link>
@@ -90,22 +102,22 @@ export default function OpportunityHubPage() {
                         </div>
                         <div className="space-y-1">
                             <h3 className="font-black text-pink-900 text-lg">Interview Guides</h3>
-                            <p className="text-pink-600/70 text-sm font-bold uppercase tracking-widest leading-tight">BCG, Google, HUL Prep</p>
+                            <p className="text-pink-600/70 text-sm font-bold uppercase tracking-widest leading-tight">BCG, Google, HUL</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-[#ECFDF5] p-8 rounded-[2rem] border border-emerald-100/50 hover:shadow-xl transition-all cursor-not-allowed opacity-80">
+                <Link href="/opportunities/career-guides" className="bg-[#FEFCE8] p-8 rounded-[2rem] border border-yellow-100/50 hover:shadow-xl transition-all group">
                     <div className="flex flex-col gap-6">
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <Rocket className="w-6 h-6 text-emerald-600" />
+                            <BookOpen className="w-6 h-6 text-yellow-600" />
                         </div>
                         <div className="space-y-1">
-                            <h3 className="font-black text-emerald-900 text-lg">Preparation Tools</h3>
-                            <p className="text-emerald-600/70 text-sm font-bold uppercase tracking-widest leading-tight">Frameworks & Templates</p>
+                            <h3 className="font-black text-yellow-900 text-lg">Career Guides</h3>
+                            <p className="text-yellow-600/70 text-sm font-bold uppercase tracking-widest leading-tight">Official Playbooks</p>
                         </div>
                     </div>
-                </div>
+                </Link>
             </div>
         </div>
     );
