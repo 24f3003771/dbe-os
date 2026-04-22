@@ -51,19 +51,19 @@ export default function OpportunityHubPage() {
                 </Link>
 
                 {/* Internships Card */}
-                <Link href="/opportunities/INTERNSHIP" className="group">
+                <Link href="/opportunities/internships" className="group">
                     <div className="h-full bg-white border border-stone-100 rounded-[2.5rem] p-10 flex flex-col justify-between hover:border-indigo-600/30 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-500 transform group-hover:-translate-y-2">
                         <div className="space-y-6">
                             <div className="w-16 h-16 bg-stone-50 rounded-2xl flex items-center justify-center text-stone-400 group-hover:bg-[#1A1A1A] group-hover:text-white transition-all">
                                 <Briefcase className="w-8 h-8" />
                             </div>
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black text-[#1A1A1A]">Internships.</h2>
-                                <p className="text-stone-500 font-medium">structured programs for MNCs, startups, and consulting giants.</p>
+                                <h2 className="text-4xl font-black text-[#1A1A1A]">Internship <span className="text-indigo-600">Hunter.</span></h2>
+                                <p className="text-stone-500 font-medium">The ultimate aggregation platform for Tier 1 programs and recurring cycles.</p>
                             </div>
                         </div>
                         <div className="mt-12 flex items-center gap-3 font-black text-[#1A1A1A] uppercase tracking-widest text-xs">
-                            View Programs <ChevronRight className="w-4 h-4" />
+                            Launch Hunter Engine <ChevronRight className="w-4 h-4" />
                         </div>
                     </div>
                 </Link>

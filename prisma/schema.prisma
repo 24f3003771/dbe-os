@@ -23,6 +23,20 @@ model User {
   deadlines             Deadline[]
   todos                 Todo[]
   profile               Profile?
+  examResults           ExamResult[]
+}
+
+model ExamResult {
+  id               String   @id @default(cuid())
+  userId           String
+  subject          String
+  score            Int
+  totalQuestions   Int
+  timerPerQuestion Int      // 60, 90, 180
+  mistakes         String   // JSON string of missed questions/answers: [{ questionId, questionText, selectedAnswer, correctAnswer }]
+  createdAt        DateTime @default(now())
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ─── Tomato Economy Events ───────────────────────────
@@ -157,6 +171,74 @@ model Match {
   profile        Profile  @relation("UserMatches", fields: [profileId], references: [id], onDelete: Cascade)
   targetProfile  Profile  @relation("TargetMatches", fields: [targetProfileId], references: [id], onDelete: Cascade)
   @@unique([profileId, targetProfileId])
+}
+
+// ─── Internship Hunter (Aggregator) ────────────────────
+model InternshipHunterCompany {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  slug            String   @unique
+  tier            Int      @default(3) // 1: FAANG/Fortune500, 2: Well-funded startups, 3: Growing, 4: Small
+  industry        String?
+  description     String?
+  logoUrl         String?
+  websiteUrl      String?
+  careerPageUrl   String?
+  headquarters    String?
+  size            String?  // e.g. "1000-5000"
+  
+  internships     InternshipPost[]
+  recurringPrograms RecurringProgram[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model InternshipPost {
+  id              String   @id @default(cuid())
+  title           String
+  companyId       String
+  company         InternshipHunterCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  description     String
+  requirements    String?
+  responsibilities String?
+  
+  location        String   @default("Remote")
+  remoteType      String   @default("REMOTE") // ON_SITE, HYBRID, REMOTE
+  domain          String   // Technology, Marketing, Business, Design, Finance
+  
+  stipendMin      Int?
+  stipendMax      Int?
+  currency        String   @default("INR")
+  
+  durationMonths  Int?
+  deadline        DateTime?
+  postedDate      DateTime @default(now())
+  isCloseToClosing Boolean @default(false)
+  
+  applicationUrl  String
+  sourcePlatform  String   // LinkedIn, Internshala, AngelList, etc.
+  sourceUrl       String?
+  
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model RecurringProgram {
+  id              String   @id @default(cuid())
+  companyId       String
+  company         InternshipHunterCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  programName     String
+  opensIn         String?  // Month name
+  startsIn        String?  // Month name
+  description     String?
+  historicalPattern String? // JSON string
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 // ─── Opportunity Hub Models ──────────────────────────
