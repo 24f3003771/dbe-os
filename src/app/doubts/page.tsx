@@ -74,32 +74,40 @@ export default function DoubtsPage() {
         }
     }, [messages]);
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (!input.trim()) return;
 
-        const userMsg = { role: 'user', text: input };
-        setMessages(prev => [...prev, userMsg]);
+        const userMsg = { role: 'user', text: input } as const;
+        const newMessages = [...messages, userMsg];
+        setMessages(newMessages);
         setInput("");
         setIsTyping(true);
 
-        // Simulated Local "Manual-Grounded" Response
-        setTimeout(() => {
-            let response = "I couldn't find specific details for that in the programme manual. However, based on general IIMB DBE regulations, you should contact the programme office. Would you like me to look up information regarding Grading or Course Structure?";
-            
-            const lowerInput = input.toLowerCase();
-            if (lowerInput.includes("pass") || lowerInput.includes("criteria") || lowerInput.includes("mark")) {
-                response = "According to the Programme Manual, the passing criteria involves a weighted average of your continuous assessment (40%) and final exam (60%). You generally need a minimum of 40% overall score to pass a course.";
-            } else if (lowerInput.includes("exam") || lowerInput.includes("centre")) {
-                response = "Final Exams are In-Centre and Proctored. For Term-2, the tentative dates are May 23rd and May 24th, 2026. You must carry your official ID and hall ticket.";
-            } else if (lowerInput.includes("module") || lowerInput.includes("release")) {
-                response = "New modules for all courses are released weekly on Fridays. Quizzes associated with these modules should be attempted promptly to stay on track with the academic calendar.";
-            } else if (lowerInput.includes("credit")) {
-                response = "Courses are weighted differently. Foundations of Business Communication is 1.5 credits, while Indian Knowledge System and Website Development are 3.0 credits each.";
-            }
+        try {
+            const response = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    messages: newMessages.map(m => ({
+                        role: m.role === 'bot' ? 'assistant' : 'user',
+                        content: m.text
+                    }))
+                }),
+            });
 
-            setMessages(prev => [...prev, { role: 'bot', text: response }]);
+            const data = await response.json();
+            
+            if (data.text) {
+                setMessages(prev => [...prev, { role: 'bot', text: data.text }]);
+            } else {
+                setMessages(prev => [...prev, { role: 'bot', text: "I'm having trouble connecting to my central manual right now. Please try again or refers to the Knowledge Base on the left!" }]);
+            }
+        } catch (error) {
+            console.error("Chat Error:", error);
+            setMessages(prev => [...prev, { role: 'bot', text: "System connection error. Please refresh and try again." }]);
+        } finally {
             setIsTyping(false);
-        }, 1000);
+        }
     };
 
     return (
