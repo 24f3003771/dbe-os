@@ -22,7 +22,7 @@ const Founders = [
     linkedin: "https://www.linkedin.com/in/madhwendra-shukla-77a13920b/",
     github: "https://github.com/madhwendrashukla",
     email: "madhwendra@dbeos.in",
-    image: "https://github.com/madhwendrashukla.png",
+    image: "/madhwendra_profile.png",
     skills: ["User Experience", "Product Growth", "Community Strategy"]
   }
 ];

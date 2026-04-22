@@ -349,7 +349,7 @@ export default function Dashboard() {
             <Link href="/about" className="group flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/5 hover:text-primary transition-all border border-outline-variant/5">
                 Meet the Founders <div className="flex -space-x-2 ml-1">
                     <img src="https://github.com/Ishaan-jha-dev.png" className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Ishaan"/>
-                    <img src="https://github.com/madhwendrashukla.png" className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Madhwendra"/>
+                    <img src="/madhwendra_profile.png" className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Madhwendra"/>
                 </div>
             </Link>
         </footer>
