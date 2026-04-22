@@ -7,8 +7,8 @@ import { LayoutDashboard, CalendarClock, BookOpen, Timer, MessageSquare, Shoppin
 const links = [
     { href: "/notes", label: "Notes", icon: BookOpen },
     { href: "/quiz", label: "Quiz", icon: Target },
-    { href: "/deadlines", label: "Tasks", icon: CalendarClock },
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/deadlines", label: "Tasks", icon: CalendarClock },
     { href: "/opportunities", label: "Opportunities", icon: Rocket },
 ];
 
