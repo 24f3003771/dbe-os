@@ -69,7 +69,6 @@ export default function Navbar() {
                                 <span className="text-xs font-black text-white">{user.firstName || "Scholar"}</span>
                             </div>
                             <UserButton 
-                                afterSignOutUrl="/"
                                 appearance={{
                                     elements: {
                                         avatarBox: "h-9 w-9 border-2 border-indigo-500/30 hover:border-indigo-400 transition-all shadow-lg"
