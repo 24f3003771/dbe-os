@@ -19,9 +19,60 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "DBE OS – Student Operating System",
-  description:
-    "Your academic command center. Deadlines, practice, focus, community — all in one place.",
+  title: {
+    default: "DBE OS | IIM Bangalore DBE Student Guide & Operating System",
+    template: "%s | DBE OS - IIM Bangalore",
+  },
+  description: "The ultimate student operating system for IIM Bangalore DBE. Access guides, UG resources, BBA DBE notes, and official IIM B resources for the 2024-25 academic year.",
+  keywords: [
+    "IIM Bangalore",
+    "IIM Bangalore UG",
+    "IIM Bangalore BBA DBE",
+    "IIM Bangalore DBE guide",
+    "IIMB Digital Business",
+    "IIM Bangalore BBA resources",
+    "DBE OS",
+    "IIM Bangalore student portal",
+  ],
+  authors: [{ name: "DBE OS Team" }],
+  creator: "DBE OS",
+  publisher: "DBE OS",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://dbeos.in"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "DBE OS | The IIM Bangalore DBE Command Center",
+    description: "Official-grade guide and resources for IIM Bangalore DBE students. Mastering the Digital Business & Entrepreneurship program.",
+    url: "https://dbeos.in",
+    siteName: "DBE OS",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DBE OS | IIM Bangalore DBE Guide",
+    description: "Your academic command center for IIM Bangalore BBA DBE.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: "LL-fVntN9gq1K5rpRna57WTsM4pgf3bLtXciqqYlBKA",
+  },
 };
 
 export default function RootLayout({

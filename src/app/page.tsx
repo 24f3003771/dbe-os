@@ -160,8 +160,8 @@ export default function Dashboard() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 bg-surface-container rounded-3xl p-8 flex flex-col justify-between items-start relative overflow-hidden shadow-sm border border-outline-variant/10 hover-lift">
                 <div className="relative z-10 w-full">
-                    <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tight">
-                        {user?.firstName ? `${user.firstName}'s` : 'Your'} OS.
+                    <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tighter leading-[1.1]">
+                        IIM Bangalore DBE <span className="text-primary tracking-normal">Scholar OS.</span>
                     </h1>
                     <p className="text-on-surface-variant max-w-sm font-medium">Welcome back, {user?.firstName || 'Scholar'}. Keep track of your academic journey.</p>
                 </div>
@@ -321,6 +321,27 @@ export default function Dashboard() {
                 </div>
             </div>
         </Link>
+
+        {/* SEO Content Section for Google Ranking */}
+        <section className="mt-16 border-t border-outline-variant/10 pt-12 pb-8">
+            <h2 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Academic Directory & Guide</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-on-surface-variant/70 text-sm font-medium leading-relaxed">
+                <div>
+                    <h3 className="text-on-surface font-bold mb-2">IIM Bangalore DBE Resources</h3>
+                    <p>
+                        The DBE OS is the premier student-built platform for the <strong>IIM Bangalore Digital Business & Entrepreneurship (DBE)</strong> program. 
+                        We provide a comprehensive <strong>IIM Bangalore DBE guide</strong>, curated notes, and practice materials for UG and BBA students.
+                    </p>
+                </div>
+                <div>
+                    <h3 className="text-on-surface font-bold mb-2">UG & BBA DBE Support</h3>
+                    <p>
+                        Searching for <strong>IIM Bangalore UG</strong> or <strong>IIM Bangalore BBA DBE</strong> materials? 
+                        Our platform aggregates winning pitch decks, case studies, and academic deadlines specifically for the IIM B community.
+                    </p>
+                </div>
+            </div>
+        </section>
       </div>
 
       {/* Right iPad Sidebar */}
