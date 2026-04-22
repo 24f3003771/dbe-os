@@ -4,7 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, CalendarClock, BookOpen, Timer, MessageSquare, ShoppingBag, Map, Target, Flame, Rocket, Presentation } from "lucide-react";
 
-const links = [
+// Desktop: Dashboard first
+const desktopLinks = [
+    { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/notes", label: "Notes", icon: BookOpen },
+    { href: "/quiz", label: "Quiz", icon: Target },
+    { href: "/deadlines", label: "Tasks", icon: CalendarClock },
+    { href: "/opportunities", label: "Opportunities", icon: Rocket },
+];
+
+// Mobile bottom nav: Dashboard in 3rd position (center)
+const mobileLinks = [
     { href: "/notes", label: "Notes", icon: BookOpen },
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -19,6 +29,8 @@ interface NavLinksProps {
 
 export default function NavLinks({ showLabels = false, isBottomNav = false }: NavLinksProps) {
     const pathname = usePathname();
+
+    const links = isBottomNav ? mobileLinks : desktopLinks;
 
     return (
         <>
