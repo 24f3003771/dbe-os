@@ -1,12 +1,12 @@
-"use client";
-
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Linkedin, ArrowLeft } from "lucide-react";
+import { Linkedin, ArrowLeft, User } from "lucide-react";
+import { UserButton, useUser } from "@clerk/nextjs";
 
 export default function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
+    const { user, isLoaded } = useUser();
     const isHome = pathname === "/";
 
     return (
@@ -57,10 +57,30 @@ export default function Navbar() {
                         </div>
                     </Link>
                 </div>
-                <a href="https://www.linkedin.com/in/madhavgupta2002/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-blue-600/90 to-indigo-600/90 hover:from-blue-500 hover:to-indigo-500 text-white rounded-full transition-all duration-300 text-xs sm:text-sm font-semibold shadow-md hover:shadow-blue-500/30 hover:shadow-lg group border border-blue-400/30">
-                    <Linkedin className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="hidden sm:inline">Connect</span>
-                </a>
+                <div className="flex items-center gap-4">
+                    <a href="https://www.linkedin.com/in/madhavgupta2002/" target="_blank" rel="noopener noreferrer" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/50 hover:bg-slate-700/80 text-slate-300 hover:text-white rounded-full transition-all duration-300 text-xs font-semibold border border-slate-600/30">
+                        <Linkedin className="h-3.5 w-3.5" />
+                        <span>Connect</span>
+                    </a>
+                    {isLoaded && user ? (
+                        <div className="flex items-center gap-3 pl-2 border-l border-slate-700/50">
+                            <div className="hidden md:flex flex-col items-end mr-1">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em]">Student</span>
+                                <span className="text-xs font-black text-white">{user.firstName || "Scholar"}</span>
+                            </div>
+                            <UserButton 
+                                afterSignOutUrl="/"
+                                appearance={{
+                                    elements: {
+                                        avatarBox: "h-9 w-9 border-2 border-indigo-500/30 hover:border-indigo-400 transition-all shadow-lg"
+                                    }
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <div className="h-8 w-8 rounded-full bg-slate-800 animate-pulse" />
+                    )}
+                </div>
             </div>
         </nav>
     );

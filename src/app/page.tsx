@@ -8,10 +8,12 @@ import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
 import { useTodos } from "@/hooks/useTodos";
 import { getAllSubjects } from "@/data/db";
+import { useUser } from "@clerk/nextjs";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
 const IPadSidebar = () => {
+  const { user } = useUser();
   const { tasks, addTask: persistTask, toggleTask: togglePersistedTask, deleteTask: deletePersistedTask } = useTodos(new Date());
   const { earnTomatoes } = useFarmStore();
   const [newTaskText, setNewTaskText] = useState("");
@@ -22,7 +24,6 @@ const IPadSidebar = () => {
     const task = tasks.find(t => t.id === id);
     if (task && !task.completed) {
       // Award tomatoes when completing a task
-      // 2 or 5 tomatoes per task
       const amount = Math.random() > 0.5 ? 5 : 2;
       earnTomatoes(amount);
       setLastEarned(amount);
@@ -73,7 +74,7 @@ const IPadSidebar = () => {
         
         <div className={`mt-8 ${caveat.className}`}>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-4xl text-[#2c3e50] font-bold drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">My Month</h2>
+                <h2 className="text-4xl text-[#2c3e50] font-bold drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">{user?.firstName ? `${user.firstName}'s` : 'My'} Month</h2>
                 <span className="text-xl text-[#e74c3c] font-bold rotate-[-5deg] border-b-2 border-[#e74c3c] border-dashed">{today.toLocaleString('default', { month: 'long' })}</span>
             </div>
             
@@ -141,6 +142,7 @@ const IPadSidebar = () => {
 }
 
 export default function Dashboard() {
+  const { user } = useUser();
   const { totalTomatoesEarned, tomatoesBalance, streak, fetchFarmData, isInitialized } = useFarmStore();
   const subjects = getAllSubjects();
   const notesPreview = subjects.slice(0, 3);
@@ -158,8 +160,10 @@ export default function Dashboard() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 bg-surface-container rounded-3xl p-8 flex flex-col justify-between items-start relative overflow-hidden shadow-sm border border-outline-variant/10 hover-lift">
                 <div className="relative z-10 w-full">
-                    <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tight">Your OS.</h1>
-                    <p className="text-on-surface-variant max-w-sm font-medium">Keep track of your academic journey. Notes, Quizzes, and Connections in one place.</p>
+                    <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tight">
+                        {user?.firstName ? `${user.firstName}'s` : 'Your'} OS.
+                    </h1>
+                    <p className="text-on-surface-variant max-w-sm font-medium">Welcome back, {user?.firstName || 'Scholar'}. Keep track of your academic journey.</p>
                 </div>
                 <div className="mt-8 flex flex-wrap items-center gap-4 z-10 w-full">
                     <div className="flex items-center gap-3 bg-surface-container-highest px-5 py-3 rounded-2xl font-bold text-lg shadow-sm border border-outline-variant/10">
