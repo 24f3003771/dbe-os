@@ -13,7 +13,7 @@ export default function UniversalNotesListPage() {
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest">
                     <FileText className="w-3 h-3" /> Universal Library
                 </div>
-                <h1 className="text-5xl font-black font-headline tracking-tighter text-[#1A1A1A]">Study Notes.</h1>
+                <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter text-[#1A1A1A]">Study Notes.</h1>
                 <p className="text-stone-500 font-medium">Access verified, universal study notes for every subject.</p>
             </header>
 

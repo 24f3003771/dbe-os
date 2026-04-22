@@ -17,7 +17,7 @@ export default function OpportunityHubPage() {
                     <div className="inline-flex items-center gap-2 bg-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 font-black text-[10px] tracking-widest uppercase">
                         <Sparkles className="w-3.5 h-3.5" /> Discovery + Preparation Engine
                     </div>
-                    <h1 className="text-6xl md:text-8xl font-black font-headline tracking-tighter text-white leading-none">
+                    <h1 className="text-4xl md:text-8xl font-black font-headline tracking-tighter text-white leading-none">
                         Opportunity <span className="text-indigo-500">Hub.</span>
                     </h1>
                     <p className="text-stone-400 text-lg md:text-2xl font-medium max-w-2xl mx-auto italic">

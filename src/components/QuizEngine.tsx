@@ -330,128 +330,112 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
         }));
 
         return (
-            <div className="w-full h-[calc(100vh-140px)] flex flex-col lg:flex-row gap-6 animate-in fade-in duration-700">
-                {/* Left Side: Summary Report */}
-                <div className="w-full lg:w-[450px] flex flex-col gap-6 h-full overflow-hidden">
-                    <div className="bg-surface-container rounded-[2.5rem] p-8 text-center border-4 border-primary/5 shadow-xl relative overflow-hidden group flex flex-col justify-center flex-1">
+            <div className="fixed inset-0 z-[70] bg-surface flex flex-col animate-in fade-in duration-700 overflow-y-auto custom-scrollbar">
+                <div className="max-w-4xl mx-auto w-full px-4 py-8 space-y-6">
+                    {/* Summary Card */}
+                    <div className="bg-surface-container rounded-[2.5rem] p-8 text-center border-4 border-primary/5 shadow-xl relative overflow-hidden group">
                         <div className="absolute top-4 left-4 z-20">
                             <span className="px-3 py-1 bg-primary text-on-primary text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg">Simulator V2.0</span>
                         </div>
-                        <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
-                             <Target className="w-64 h-64 rotate-12" />
-                        </div>
                         <div className="relative z-10">
-                            <div className="w-20 h-20 rounded-[1.8rem] bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/20">
-                                <Check className="w-10 h-10 text-white" strokeWidth={4} />
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/20">
+                                <Check className="w-8 h-8 text-white" strokeWidth={4} />
                             </div>
-                            <h2 className="text-4xl font-black font-headline text-on-surface mb-2 tracking-tighter italic">
-                                Exam Concluded.
-                            </h2>
-                            <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full border border-primary/10 text-xs font-black">
-                                    <Clock className="w-4 h-4 text-primary" /> {formatTime(totalTimeSpent)}
+                            <h2 className="text-3xl font-black font-headline text-on-surface mb-2 tracking-tighter italic">Exam Concluded.</h2>
+                            
+                            <div className="flex items-center justify-center gap-3 mb-6">
+                                <div className="flex items-center gap-1.5 px-3 py-1 bg-primary/5 rounded-full border border-primary/10 text-[10px] font-black">
+                                    <Clock className="w-3.5 h-3.5 text-primary" /> {formatTime(totalTimeSpent)}
                                 </div>
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/5 rounded-full border border-amber-500/10 text-xs font-black">
-                                    <Target className="w-4 h-4 text-amber-500" /> {questions.length} Q
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-3 mb-8">
-                                <div className="bg-surface rounded-2xl p-4 border border-outline-variant/10 shadow-inner">
-                                    <p className="text-2xl font-black text-green-500 leading-none">{score}</p>
-                                    <p className="text-[8px] font-black uppercase tracking-widest mt-1">Correct</p>
-                                </div>
-                                <div className="bg-surface rounded-2xl p-4 border border-outline-variant/10 shadow-inner">
-                                    <p className="text-2xl font-black text-error leading-none">{questions.length - score}</p>
-                                    <p className="text-[8px] font-black uppercase tracking-widest mt-1">Mistakes</p>
-                                </div>
-                                <div className="bg-surface rounded-2xl p-4 border border-outline-variant/10 shadow-inner">
-                                    <p className="text-2xl font-black text-primary leading-none">{percentage}%</p>
-                                    <p className="text-[8px] font-black uppercase tracking-widest mt-1">Accuracy</p>
+                                <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/5 rounded-full border border-amber-500/10 text-[10px] font-black">
+                                    <Target className="w-3.5 h-3.5 text-amber-500" /> {questions.length} Q
                                 </div>
                             </div>
 
-                            <div className="bg-surface-container-highest/30 rounded-3xl p-6 flex flex-col items-center justify-center gap-2 border-2 border-outline-variant/10 shadow-inner mb-6">
-                                <p className="text-[10px] text-secondary font-black uppercase tracking-[0.4em] leading-none">Scholar Harvest</p>
-                                <div className="text-5xl font-black font-headline text-secondary tracking-tighter flex items-center gap-2">
-                                     <span className="text-3xl opacity-50">+</span>{earnedTomatoes} 🍅
+                            <div className="grid grid-cols-3 gap-2 mb-6">
+                                <div className="bg-surface rounded-2xl p-3 border border-outline-variant/10">
+                                    <p className="text-xl font-black text-green-500 leading-none">{score}</p>
+                                    <p className="text-[7px] font-black uppercase tracking-widest mt-1">Correct</p>
                                 </div>
+                                <div className="bg-surface rounded-2xl p-3 border border-outline-variant/10">
+                                    <p className="text-xl font-black text-error leading-none">{questions.length - score}</p>
+                                    <p className="text-[7px] font-black uppercase tracking-widest mt-1">Mistakes</p>
+                                </div>
+                                <div className="bg-surface rounded-2xl p-3 border border-outline-variant/10">
+                                    <p className="text-xl font-black text-primary leading-none">{percentage}%</p>
+                                    <p className="text-[7px] font-black uppercase tracking-widest mt-1">Accuracy</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-surface-container-highest/30 rounded-2xl p-4 flex flex-col items-center justify-center gap-1 border-2 border-outline-variant/10 mb-4">
+                                <p className="text-[8px] text-secondary font-black uppercase tracking-[0.3em] leading-none">Scholar Harvest</p>
+                                <div className="text-3xl font-black font-headline text-secondary tracking-tighter flex items-center gap-2">
+                                     <span className="text-xl opacity-50">+</span>{earnedTomatoes} 🍅
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button onClick={() => window.location.reload()} className="flex-1 py-3 bg-surface border-2 border-outline-variant/20 font-black rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
+                                    <RotateCcw className="w-4 h-4 text-primary" /> Retake
+                                </button>
+                                <button onClick={onComplete} className="flex-[2] py-3 bg-primary text-on-primary font-black text-sm rounded-xl shadow-lg shadow-primary/10 uppercase tracking-widest">
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex gap-4 mb-4">
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="flex-1 py-4 bg-surface border-2 border-outline-variant/20 text-on-surface font-black rounded-2xl hover:bg-surface-container-highest transition-all flex items-center justify-center gap-3 uppercase tracking-tighter text-sm shadow-md"
-                        >
-                            <RotateCcw className="w-5 h-5 text-primary" /> Retake
-                        </button>
-                        <button
-                            onClick={onComplete}
-                            className="flex-[2] py-4 bg-primary text-on-primary font-black text-lg rounded-2xl shadow-xl shadow-primary/20 hover:brightness-110 active:scale-95 transition-all text-center uppercase tracking-tighter"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-
-                {/* Right Side: Detailed Analysis (Scrollable) */}
-                <div className="flex-1 flex flex-col h-full overflow-hidden bg-surface-container rounded-[2.5rem] border border-outline-variant/10 shadow-sm">
-                    <div className="p-6 border-b border-outline-variant/10 flex items-center justify-between bg-surface-container-low shrink-0">
-                         <div className="flex items-center gap-3">
-                             <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-                             <h3 className="text-xl font-black font-headline text-on-surface tracking-tighter italic">Detailed Analysis</h3>
+                    {/* Detailed Solutions Section */}
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-xl font-black font-headline text-on-surface tracking-tighter italic">Mistake Review</h3>
+                            <span className="text-[8px] font-black text-on-surface-variant uppercase tracking-widest bg-surface-container-highest px-3 py-1 rounded-full">
+                                {questions.length - score} items
+                            </span>
                         </div>
-                        <span className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest bg-surface-container-highest px-4 py-1.5 rounded-full">
-                            Mistake Review
-                        </span>
-                    </div>
-                    
-                    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6">
-                        {mistakes.length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
-                                <CheckCircle2 className="w-16 h-16 mb-4 text-green-500" />
-                                <p className="text-xl font-black uppercase tracking-widest">Perfect Score achieved.</p>
-                            </div>
-                        ) : (
-                            mistakes.map((m) => (
-                                <div key={m.id} className={`p-8 rounded-[2rem] border-2 relative overflow-hidden group/mistake ${m.isCorrect ? "bg-green-50/5 border-green-500/10" : "bg-error/5 border-error/10"}`}>
-                                    <div className="flex items-start justify-between gap-6 mb-6">
-                                        <div className="flex gap-4">
-                                            <span className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 shadow-md ${m.isCorrect ? "bg-green-500 text-white" : "bg-error text-white"}`}>
+                        
+                        <div className="space-y-4 pb-12">
+                            {mistakes.length === 0 ? (
+                                <div className="pt-10 flex flex-col items-center justify-center text-center opacity-40">
+                                    <CheckCircle2 className="w-12 h-12 mb-3 text-green-500" />
+                                    <p className="text-lg font-black uppercase tracking-widest">Perfect Score!</p>
+                                </div>
+                            ) : (
+                                mistakes.map((m) => (
+                                    <div key={m.id} className={`p-6 rounded-[2rem] border-2 relative overflow-hidden bg-surface-container shadow-sm ${m.isCorrect ? "border-green-500/10" : "border-error/10"}`}>
+                                        <div className="flex items-start gap-4 mb-4">
+                                            <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm ${m.isCorrect ? "bg-green-500 text-white" : "bg-error text-white"}`}>
                                                 {m.id}
                                             </span>
-                                            <p className="text-lg font-bold text-on-surface leading-tight tracking-tight">{m.text}</p>
+                                            <p className="text-base font-bold text-on-surface leading-snug tracking-tight pt-1">{m.text}</p>
                                         </div>
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${m.isCorrect ? "bg-green-100 text-green-600" : "bg-error/10 text-error"}`}>
-                                            {m.isCorrect ? <CheckCircle2 className="w-6 h-6" /> : <X className="w-6 h-6" />}
-                                        </div>
-                                    </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                        <div className={`p-5 rounded-2xl border ${m.isCorrect ? "bg-green-500/5 border-green-500/10 text-green-700" : "bg-error/5 border-error/10 text-error"}`}>
-                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-60 mb-1">Your Selection</p>
-                                            <p className="text-sm font-bold italic">{m.your}</p>
-                                        </div>
-                                        <div className="p-5 rounded-2xl bg-surface border-2 border-green-500/20">
-                                            <p className="text-[8px] font-black uppercase tracking-widest text-green-600 mb-1">Correct Solution</p>
-                                            <p className="text-sm font-black text-on-surface">{m.correct}</p>
-                                        </div>
-                                    </div>
-
-                                    {m.explanation && (
-                                        <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 shadow-inner">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Eye className="w-4 h-4 text-primary" />
-                                                <p className="text-[8px] font-black uppercase tracking-widest text-primary">Explanation</p>
+                                        <div className="grid grid-cols-1 gap-3 mb-4">
+                                            {!m.isCorrect && (
+                                                <div className="p-4 rounded-xl bg-error/5 border border-error/10 text-error">
+                                                    <p className="text-[7px] font-black uppercase tracking-widest opacity-60 mb-1">Your Incorrect Response</p>
+                                                    <p className="text-xs font-bold italic">{m.your}</p>
+                                                </div>
+                                            )}
+                                            <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/20 text-green-700">
+                                                <p className="text-[7px] font-black uppercase tracking-widest text-green-600/60 mb-1">Correct Solution</p>
+                                                <p className="text-xs font-black">{m.correct}</p>
                                             </div>
-                                            <p className="text-sm font-medium text-on-surface-variant leading-relaxed italic">{m.explanation}</p>
                                         </div>
-                                    )}
-                                </div>
-                            ))
-                        )}
+
+                                        {m.explanation && (
+                                            <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
+                                                <div className="flex items-center gap-2 mb-1.5">
+                                                    <Eye className="w-3.5 h-3.5 text-primary" />
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-primary">Scholar's Explanation</p>
+                                                </div>
+                                                <p className="text-[12px] font-medium text-on-surface-variant leading-relaxed italic">{m.explanation}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -459,40 +443,44 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
     }
 
     return (
-        <div className="w-full flex flex-col gap-3 animate-in fade-in duration-300 h-[calc(100vh-140px)] overflow-hidden">
-            {/* Control Bar - More Compact */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 shrink-0">
-                <div className="lg:col-span-3 bg-surface-container rounded-2xl px-5 py-3 border border-outline-variant/10 shadow-sm flex flex-col justify-center">
-                    <p className="text-[8px] font-black text-on-surface-variant uppercase tracking-widest mb-1 leading-none">COURSE MODULE</p>
-                    <div className="bg-primary/10 text-primary px-2 py-0.5 rounded-md text-[10px] font-black w-fit uppercase tracking-tighter border border-primary/20">
-                        {subjectId} UNIT 0{moduleId}
+        <div className="fixed inset-0 z-[60] bg-surface flex flex-col md:static md:h-[calc(100vh-140px)] md:inset-auto md:z-auto animate-in fade-in duration-300 overflow-hidden">
+            {/* Ultra-Condensed Header - Sticky on Mobile */}
+            <div className="bg-surface-container border-b border-outline-variant/10 px-4 py-2 flex items-center justify-between shrink-0 shadow-sm">
+                <div className="flex flex-col">
+                    <span className="text-[7px] font-black text-primary uppercase tracking-[0.2em] leading-none mb-0.5">Problem</span>
+                    <div className="flex items-center gap-1.5 leading-none">
+                        <span className="font-black text-on-surface text-sm tabular-nums">{currentIndex + 1}</span>
+                        <span className="text-[10px] text-on-surface-variant/40 font-bold">/</span>
+                        <span className="text-[10px] text-on-surface-variant font-bold tabular-nums">{questions.length}</span>
                     </div>
                 </div>
-                
-                <div className="lg:col-span-6 bg-surface-container rounded-2xl px-6 py-2 border border-outline-variant/10 shadow-sm flex items-center justify-between gap-4">
-                    <div className="flex flex-col">
-                         <p className="text-[8px] text-on-surface-variant font-black uppercase tracking-widest mb-0.5 leading-none">Elapsed</p>
-                         <div className="flex items-center gap-1.5">
-                            <Clock className="w-4 h-4 text-primary" />
-                            <span className="font-black font-headline text-xl text-on-surface tabular-nums leading-none">{formatTime(totalTimeSpent)}</span>
-                         </div>
-                    </div>
 
-                    {timerPerQuestion && (
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="flex flex-col items-center">
-                            <p className="text-[8px] text-error font-black uppercase tracking-widest mb-0.5 leading-none">Time Remaining</p>
-                            <div className={`flex items-center gap-1.5 ${questionTimer <= 10 ? "animate-pulse text-error" : "text-on-surface"}`}>
-                                <span className="font-black font-headline text-2xl tabular-nums leading-none">{questionTimer}s</span>
-                            </div>
+                             <p className="text-[6px] text-on-surface-variant font-black uppercase tracking-widest leading-none mb-0.5">Time</p>
+                             <div className="flex items-center gap-1 leading-none">
+                                <Clock className="w-3 h-3 text-primary" />
+                                <span className="font-black text-xs text-on-surface tabular-nums">{formatTime(totalTimeSpent)}</span>
+                             </div>
                         </div>
-                    )}
+
+                        {timerPerQuestion && (
+                            <div className="flex flex-col items-center border-l border-outline-variant/20 pl-3">
+                                <p className="text-[6px] text-error font-black uppercase tracking-widest leading-none mb-0.5">Left</p>
+                                <div className={`flex items-center gap-1 leading-none ${questionTimer <= 10 ? "animate-pulse text-error" : "text-on-surface"}`}>
+                                    <span className="font-black text-sm tabular-nums">{questionTimer}s</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="relative">
                         <button 
                             onClick={() => setShowCalc(!showCalc)} 
-                            className={`p-2.5 rounded-xl transition-all shadow-md flex items-center justify-center ${showCalc ? "bg-primary text-on-primary scale-105" : "bg-surface-container-highest text-on-surface hover:bg-surface-container-lowest"}`}
+                            className={`p-2 rounded-lg transition-all shadow-sm flex items-center justify-center ${showCalc ? "bg-primary text-on-primary scale-105" : "bg-surface-container-highest text-on-surface"}`}
                         >
-                            <Calculator className="w-5 h-5" />
+                            <Calculator className="w-4 h-4" />
                         </button>
                         {showCalc && (
                             <div className="absolute top-12 right-0 z-[110] w-72 bg-surface rounded-[2rem] shadow-2xl border-4 border-outline-variant/10 p-5 animate-in zoom-in-95 duration-200">
@@ -530,184 +518,117 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                         )}
                     </div>
                 </div>
-
-                <div className="lg:col-span-3 bg-surface-container rounded-2xl px-5 py-2 border border-outline-variant/10 shadow-sm flex items-center gap-3">
-                    <img 
-                        src={user?.imageUrl} 
-                        className="w-10 h-10 rounded-full border border-primary/10" 
-                        alt="Profile"
-                    />
-                    <div className="min-w-0">
-                        <p className="font-black font-headline text-on-surface text-xs truncate leading-none mb-0.5">{user?.firstName || "Scholar"}</p>
-                        <p className="text-[7px] font-black text-on-surface-variant truncate uppercase tracking-widest bg-primary/5 px-1 rounded italic">Active</p>
-                    </div>
-                </div>
             </div>
 
-            {/* Main Double Column - Viewport height restricted */}
-            <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0 overflow-hidden">
-                {/* Question Panel */}
-                <div className="flex-1 bg-surface-container rounded-[2rem] border border-outline-variant/10 shadow-sm flex flex-col min-w-0 overflow-hidden">
-                    <div className="p-5 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-low shrink-0">
-                        <div className="flex flex-col">
-                            <span className="text-[8px] font-black text-primary uppercase tracking-[0.2em] mb-0.5 leading-none">Question Palette</span>
-                            <h2 className="text-xl font-black font-headline text-on-surface tracking-tighter leading-none">
-                                Problem 0{currentIndex + 1}
-                            </h2>
-                        </div>
-                        <span className="px-4 py-1 rounded-xl bg-surface border border-outline-variant/20 text-on-surface-variant text-[8px] font-black uppercase tracking-widest shadow-sm">
-                            Single Correct
-                        </span>
-                    </div>
-                    
-                    <div className="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar">
-                        <div className="text-xl font-bold text-on-surface leading-snug mb-8 whitespace-pre-wrap font-body max-w-4xl tracking-tight">
+            {/* Scrollable Main Interaction Area */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar pb-24">
+                <div className="max-w-4xl mx-auto px-4 py-4 space-y-4">
+                    {/* Question Content */}
+                    <div className="bg-surface border border-outline-variant/10 rounded-2xl p-5 shadow-sm">
+                        <div className="text-base font-bold text-on-surface leading-snug mb-6 whitespace-pre-wrap font-body tracking-tight">
                             {question.text}
                         </div>
 
-                        <div className="grid grid-cols-1 gap-2.5 max-w-3xl">
+                        <div className="grid grid-cols-1 gap-2">
                             {question.options.map((opt, idx) => {
                                 const isSelected = selectedOption === idx;
                                 const isCorrect = idx === question.correctAnswer;
 
-                                let btnClass = "w-full p-4 rounded-2xl border-2 text-left transition-all relative font-bold group flex items-start gap-3.5 ";
+                                let btnClass = "w-full p-3 rounded-xl border-2 text-left transition-all relative font-bold group flex items-start gap-3 ";
 
                                 if (showAnswer) {
                                     if (isCorrect) {
-                                        btnClass += "bg-green-500/10 border-green-500 text-green-700 shadow-lg shadow-green-500/5";
+                                        btnClass += "bg-green-500/10 border-green-500 text-green-700";
                                     } else if (isSelected && !isCorrect) {
-                                        btnClass += "bg-error/10 border-error text-error shadow-lg shadow-error/5";
+                                        btnClass += "bg-error/10 border-error text-error";
                                     } else {
                                         btnClass += "bg-surface border-outline-variant/10 text-on-surface-variant opacity-40";
                                     }
                                 } else if (isSelected) {
-                                    btnClass += "bg-primary/5 border-primary text-primary shadow-xl shadow-primary/5";
+                                    btnClass += "bg-primary/5 border-primary text-primary shadow-md shadow-primary/5";
                                 } else {
-                                    btnClass += "bg-surface border-outline-variant/20 text-on-surface hover:border-primary/50 hover:bg-surface-container-highest active:scale-[0.99]";
+                                    btnClass += "bg-surface border-outline-variant/20 text-on-surface active:scale-[0.99]";
                                 }
 
                                 return (
                                     <button key={idx} onClick={() => selectOption(idx)} className={btnClass} disabled={showAnswer}>
-                                        <div className={`mt-0.5 w-4 h-4 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-                                            isSelected || (showAnswer && isCorrect) ? "bg-current border-transparent" : "border-outline-variant group-hover:border-primary"
+                                        <div className={`mt-0.5 w-3.5 h-3.5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                                            isSelected || (showAnswer && isCorrect) ? "bg-current border-transparent" : "border-outline-variant"
                                         }`}>
-                                            {(isSelected || (showAnswer && isCorrect)) && <Check className="w-3 h-3 text-white" strokeWidth={4} />}
+                                            {(isSelected || (showAnswer && isCorrect)) && <Check className="w-2.5 h-2.5 text-white" strokeWidth={4} />}
                                         </div>
-                                        <span className="flex-1 text-base leading-snug tracking-tight">{opt}</span>
-                                        {showAnswer && isCorrect && <CheckCircle2 className="w-5 h-5 text-current mt-0.5" />}
-                                        {showAnswer && isSelected && !isCorrect && <X className="w-5 h-5 text-current mt-0.5" />}
+                                        <span className="flex-1 text-sm leading-tight tracking-tight">{opt}</span>
+                                        {showAnswer && isCorrect && <CheckCircle2 className="w-4 h-4 text-current mt-0.5" />}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Question Actions */}
+                    <div className="flex flex-wrap items-center gap-2">
+                        <button onClick={markForReview} className="flex-1 py-2.5 rounded-xl bg-[#9b59b6]/10 text-[#9b59b6] font-black text-[9px] uppercase tracking-widest border border-[#9b59b6]/20">Review</button>
+                        <button onClick={clearResponse} className="flex-1 py-2.5 rounded-xl bg-surface border-2 border-outline-variant/20 text-on-surface-variant font-black text-[9px] uppercase tracking-widest">Reset</button>
+                        {mode === "practice" && (
+                            <button onClick={() => setShowAnswer(!showAnswer)} className="flex-1 py-2.5 rounded-xl bg-surface border-2 border-primary/20 text-primary font-black text-[9px] uppercase tracking-widest leading-none">
+                                {showAnswer ? "Hide Ans" : "Ans"}
+                            </button>
+                        )}
+                        <button onClick={submitAndNext} className="flex-[2] py-3 rounded-xl bg-primary text-on-primary font-black text-[11px] uppercase tracking-tighter shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                            {currentIndex === questions.length - 1 ? "Submit" : "Next"} <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+
+                    {/* Secondary Status Section - One Scroll Away */}
+                    <div className="pt-8 border-t border-outline-variant/10 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <span className="text-[8px] font-black text-on-surface-variant uppercase tracking-widest leading-none mb-1">Current Session</span>
+                                <p className="text-xs font-black text-on-surface uppercase">{subjectId} • Unit 0{moduleId}</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="text-right">
+                                    <p className="text-[7px] font-black text-green-500 uppercase">Solved</p>
+                                    <p className="text-sm font-black text-on-surface leading-none">{counts.answered}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[7px] font-black text-error uppercase">Left</p>
+                                    <p className="text-sm font-black text-on-surface leading-none">{counts.unanswered}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-6 sm:grid-cols-10 gap-1.5">
+                            {questions.map((_, i) => {
+                                const status = statuses[i];
+                                const isCurrent = i === currentIndex;
+                                let style = "bg-surface-container-highest text-on-surface border border-outline-variant/30";
+                                if (status === "unanswered") style = "bg-[#ff6b6b] text-white border-transparent";
+                                if (status === "answered") style = "bg-[#27ae60] text-white border-transparent";
+                                if (status === "marked") style = "bg-[#9b59b6] text-white border-transparent";
+                                if (status === "answered-marked") style = "bg-[#9b59b6] text-white border-[#27ae60] border-2";
+
+                                return (
+                                    <button
+                                        key={i}
+                                        onClick={() => {
+                                            setCurrentIndex(i);
+                                            if (timerPerQuestion) setQuestionTimer(timerPerQuestion);
+                                        }}
+                                        className={`aspect-square rounded-lg text-[10px] font-black flex items-center justify-center transition-all ${style} ${isCurrent ? "ring-2 ring-primary ring-offset-1 ring-offset-surface scale-105 z-10" : "opacity-70 hover:opacity-100"}`}
+                                    >
+                                        {i + 1}
                                     </button>
                                 );
                             })}
                         </div>
                         
-                        {showAnswer && question.explanation && (
-                            <div className="mt-8 p-6 rounded-2xl bg-indigo-50/20 border border-indigo-100 italic text-sm font-medium text-on-surface-variant/80">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Eye className="w-4 h-4 text-indigo-400" />
-                                    <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">Scholar's Lens</p>
-                                </div>
-                                {question.explanation}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="p-5 bg-surface-container-low rounded-b-2xl border-t border-outline-variant/10 flex flex-wrap items-center gap-3 shrink-0">
-                        <button
-                            onClick={markForReview}
-                            className="px-4 py-2.5 rounded-xl bg-[#9b59b6]/10 text-[#9b59b6] font-black text-[10px] uppercase tracking-widest hover:bg-[#9b59b6]/20 transition-all border border-[#9b59b6]/20"
-                        >
-                            Review
-                        </button>
-                        <button
-                            onClick={clearResponse}
-                            className="px-4 py-2.5 rounded-xl bg-surface border-2 border-outline-variant/20 text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-highest transition-all"
-                        >
-                            Reset
-                        </button>
-                        {mode === "practice" && (
-                            <button
-                                onClick={() => setShowAnswer(!showAnswer)}
-                                className="px-4 py-2.5 rounded-xl bg-surface border-2 border-primary/20 text-primary font-black text-[10px] uppercase tracking-widest hover:bg-primary/5 transition-all"
-                            >
-                                {showAnswer ? "Hide Ans" : "Peek Ans"}
+                        <div className="flex gap-2">
+                            <button onClick={onComplete} className="flex-1 py-3 rounded-xl bg-error/10 text-error font-black text-[10px] uppercase tracking-tighter">Abort Exam</button>
+                            <button onClick={() => submitAll()} disabled={isSaving} className="flex-[2] py-3 rounded-xl bg-green-600 text-white font-black text-[10px] uppercase tracking-tighter flex items-center justify-center gap-2">
+                                {isSaving ? "Saving..." : "Submit All"} <Save className="w-3.5 h-3.5" />
                             </button>
-                        )}
-                        <button
-                            onClick={submitAndNext}
-                            className="ml-auto px-8 py-3 rounded-xl bg-primary text-on-primary font-black text-sm uppercase tracking-tighter shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
-                        >
-                            {currentIndex === questions.length - 1 ? "Submit" : "Next Problem"}
-                            <ArrowRight className="w-4 h-4" />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Sidebar Navigation - Viewport height restricted */}
-                <div className="w-full lg:w-[320px] flex flex-col gap-4 overflow-hidden shrink-0">
-                    {/* Progress Info */}
-                    <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm shrink-0">
-                        <div className="grid grid-cols-2 gap-4">
-                            <MiniStat label="Done" val={counts.answered} color="bg-green-500" />
-                            <MiniStat label="Left" val={counts.unanswered} color="bg-error" />
                         </div>
-                    </div>
-
-                    {/* Question Grid */}
-                    <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden">
-                        <div className="flex justify-between items-center mb-4 shrink-0">
-                            <h4 className="font-black text-on-surface text-[10px] uppercase tracking-widest opacity-60">Status Grid</h4>
-                            <span className="text-[10px] font-black text-primary px-2 py-0.5 bg-primary/10 rounded-md">{currentIndex + 1}/{questions.length}</span>
-                        </div>
-                        <div className="flex-1 overflow-y-auto pr-1.5 custom-scrollbar">
-                            <div className="grid grid-cols-4 gap-2 pb-2">
-                                {questions.map((_, i) => {
-                                    const status = statuses[i];
-                                    const isCurrent = i === currentIndex;
-                                    
-                                    let style = "bg-surface-container-highest text-on-surface border border-outline-variant/30";
-                                    if (status === "unanswered") style = "bg-[#ff6b6b] text-white border-transparent";
-                                    if (status === "answered") style = "bg-[#27ae60] text-white border-transparent";
-                                    if (status === "marked") style = "bg-[#9b59b6] text-white border-transparent";
-                                    if (status === "answered-marked") style = "bg-[#9b59b6] text-white border-[#27ae60] border-2 shadow-md";
-
-                                    return (
-                                        <button
-                                            key={i}
-                                            onClick={() => {
-                                                setCurrentIndex(i);
-                                                if (timerPerQuestion) setQuestionTimer(timerPerQuestion);
-                                            }}
-                                            className={`relative aspect-square rounded-xl text-xs font-black flex items-center justify-center transition-all ${style} ${isCurrent ? "ring-2 ring-primary ring-offset-2 ring-offset-surface scale-105 z-10" : "hover:scale-105 active:scale-95"}`}
-                                        >
-                                            {i + 1}
-                                            {status === "answered-marked" && (
-                                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-surface">
-                                                    <Check className="w-2 h-2 text-white" strokeWidth={6} />
-                                                </div>
-                                            )}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                        <button
-                            onClick={onComplete}
-                            className="flex-1 py-3.5 rounded-xl bg-surface border-2 border-error/40 text-error font-black text-[10px] uppercase tracking-tighter hover:bg-error/5 transition-all"
-                        >
-                            Abort
-                        </button>
-                        <button
-                            onClick={() => submitAll()}
-                            disabled={isSaving}
-                            className="flex-[2] py-3.5 rounded-xl bg-primary text-on-primary font-black text-xs uppercase tracking-tighter shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
-                        >
-                            {isSaving ? "Saving..." : "Submit All"}
-                            <Save className="w-4 h-4" />
-                        </button>
                     </div>
                 </div>
             </div>

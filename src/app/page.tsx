@@ -2,7 +2,7 @@
 
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy } from "lucide-react";
+import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
@@ -193,84 +193,59 @@ export default function Dashboard() {
             </div>
         </section>
 
-        {/* Feature Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* MatchForge Teaser */}
-            <Link href="/matchforge" className="md:col-span-2 group">
-                <div className="bg-gradient-to-br from-indigo-600 to-violet-700 text-white rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-500 transform group-hover:-translate-y-1">
-                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                        <div className="flex-1 space-y-4 text-center md:text-left">
-                            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                                <Users className="w-4 h-4" /> New Feature
-                            </div>
-                            <h2 className="text-4xl md:text-6xl font-black font-headline tracking-tighter leading-none">MatchForge</h2>
-                            <p className="text-indigo-100 text-lg md:text-xl font-medium max-w-lg">Find your perfect learning partner or cofounder. Intelligent pairing based on goals, skills, and style.</p>
-                            <div className="pt-4">
-                                <span className="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-indigo-50 transition-colors inline-block">Forge a Connection</span>
-                            </div>
-                        </div>
-                        <div className="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-white/10 rounded-full animate-pulse border border-white/20"></div>
-                            <Users className="w-24 h-24 md:w-32 md:h-32 text-white/90 drop-shadow-2xl" />
-                        </div>
-                    </div>
-                    {/* Decorative elements */}
-                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
-                    <div className="absolute top-10 right-10 w-32 h-32 bg-indigo-400/20 rounded-full blur-2xl pointer-events-none animate-bounce" style={{animationDuration: '4s'}}></div>
-                </div>
-            </Link>
-
-            {/* Notes Section preview */}
-            <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift">
-                <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
-                        <BookOpen className="w-5 h-5 text-primary" /> Universal Library
-                    </h3>
-                    <Link href="/notes" className="text-xs font-bold text-primary hover:underline">View All</Link>
-                </div>
-                <div className="space-y-4">
-                    {notesPreview.map((note: any) => (
-                        <Link key={note.id} href={`/dbe_notes/${note.id}`} className="flex items-center gap-4 bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container transition-colors group">
-                            <div className="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center shadow-sm shrink-0">
-                                <BookOpen className="w-5 h-5" />
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-sm font-bold font-headline text-on-surface group-hover:text-primary transition-colors truncate uppercase tracking-tight">{note.title}</p>
-                                <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mt-0.5">{note.id}</p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-                <Link href="/notes" className="block pt-2">
-                    <button className="w-full py-3 bg-indigo-600/5 hover:bg-indigo-600/10 rounded-xl text-xs font-black uppercase tracking-widest text-indigo-600 transition-all border border-indigo-600/10">Browse Universal Library</button>
-                </Link>
-            </div>
-
-            {/* Opportunity Hub Section preview */}
-            <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift flex flex-col justify-between group overflow-hidden relative">
-                <div className="space-y-6 relative z-10">
+            {/* Feature Grid */}
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Notes Section preview */}
+                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift">
                     <div className="flex justify-between items-center mb-2">
                         <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
-                            <Rocket className="w-5 h-5 text-indigo-600" /> Opportunity Hub
+                            <BookOpen className="w-5 h-5 text-primary" /> Universal Library
                         </h3>
+                        <Link href="/notes" className="text-xs font-bold text-primary hover:underline">View All</Link>
                     </div>
                     <div className="space-y-4">
-                        <div className="p-5 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
-                            <p className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-1">Featured Today</p>
-                            <h4 className="text-sm font-bold text-[#1A1A1A]">HUL L.I.M.E. 16</h4>
-                            <p className="text-[10px] font-bold text-stone-400 mt-0.5">Marketing Case • 12 Days Left</p>
-                        </div>
-                        <p className="text-xs font-medium text-on-surface-variant leading-relaxed">Access 150+ curated B-school competitions and MNC internships with winning roadmaps.</p>
+                        {notesPreview.map((note: any) => (
+                            <Link key={note.id} href={`/dbe_notes/${note.id}`} className="flex items-center gap-4 bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container transition-colors group">
+                                <div className="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center shadow-sm shrink-0">
+                                    <BookOpen className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-bold font-headline text-on-surface group-hover:text-primary transition-colors truncate uppercase tracking-tight">{note.title}</p>
+                                    <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mt-0.5">{note.id}</p>
+                                </div>
+                            </Link>
+                        ))}
                     </div>
+                    <Link href="/notes" className="block pt-2">
+                        <button className="w-full py-3 bg-indigo-600/5 hover:bg-indigo-600/10 rounded-xl text-xs font-black uppercase tracking-widest text-indigo-600 transition-all border border-indigo-600/10">Browse Universal Library</button>
+                    </Link>
                 </div>
-                <Link href="/opportunities" className="relative z-10">
-                    <button className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
-                        Enter Hub <ArrowRight className="w-4 h-4" />
-                    </button>
-                </Link>
-                {/* Decorative circle */}
-                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-            </div>
+
+                {/* Opportunity Hub Section preview */}
+                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift flex flex-col justify-between group overflow-hidden relative">
+                    <div className="space-y-6 relative z-10">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
+                                <Rocket className="w-5 h-5 text-indigo-600" /> Opportunity Hub
+                            </h3>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="p-5 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
+                                <p className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-1">Featured Today</p>
+                                <h4 className="text-sm font-bold text-[#1A1A1A]">HUL L.I.M.E. 16</h4>
+                                <p className="text-[10px] font-bold text-stone-400 mt-0.5">Marketing Case • 12 Days Left</p>
+                            </div>
+                            <p className="text-xs font-medium text-on-surface-variant leading-relaxed">Access 150+ curated B-school competitions and MNC internships with winning roadmaps.</p>
+                        </div>
+                    </div>
+                    <Link href="/opportunities" className="relative z-10">
+                        <button className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                            Enter Hub <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </Link>
+                    {/* Decorative circle */}
+                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                </div>
 
             {/* Pitch Decks Advertisement Section */}
             <Link href="/opportunities/pitch-decks" className="md:col-span-2 group">
@@ -280,7 +255,7 @@ export default function Dashboard() {
                             <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-4 py-1.5 rounded-full text-emerald-400 font-black text-[10px] tracking-widest uppercase mb-2">
                                 <Trophy className="w-3.5 h-3.5" /> High-Impact Resource
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black font-headline tracking-tighter leading-none">
+                            <h2 className="text-3xl md:text-5xl font-black font-headline tracking-tighter leading-none">
                                 Pro Pitch <span className="text-emerald-500">Decks.</span>
                             </h2>
                             <p className="text-stone-400 text-lg font-medium max-w-lg">
@@ -328,6 +303,24 @@ export default function Dashboard() {
                 </div>
             </Link>
         </section>
+
+        {/* Minimal MatchForge Footer Card */}
+        <Link href="/matchforge" className="group block mt-8">
+            <div className="bg-surface-container-high border border-outline-variant/10 rounded-[2.5rem] p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-indigo-500/30 transition-all shadow-sm">
+                <div className="flex items-center gap-6">
+                    <div className="w-16 h-16 bg-indigo-500/10 rounded-[1.5rem] flex items-center justify-center text-indigo-600 shadow-inner">
+                        <Users className="w-8 h-8" />
+                    </div>
+                    <div>
+                        <h4 className="text-xl font-black font-headline text-on-surface">MatchForge Network</h4>
+                        <p className="text-sm text-on-surface-variant font-medium">Find learning partners & cofounders in your academic community.</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4 bg-indigo-500 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all">
+                    Launch Engine <ChevronRight className="w-4 h-4" />
+                </div>
+            </div>
+        </Link>
       </div>
 
       {/* Right iPad Sidebar */}

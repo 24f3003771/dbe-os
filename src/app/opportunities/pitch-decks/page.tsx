@@ -23,6 +23,7 @@ import Link from "next/link";
 export default function PitchDecksPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDeck, setSelectedDeck] = useState<PitchDeck | null>(null);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     year: "All",
     type: "All",
@@ -33,7 +34,7 @@ export default function PitchDecksPage() {
   // Extract unique values for filters
   const years = ["All", ...Array.from(new Set(pitchDecks.map(d => d.year.toString())))].sort().reverse();
   const types = ["All", ...Array.from(new Set(pitchDecks.map(d => d.type)))].sort();
-  const companies = ["All", ...Array.from(new Set(pitchDecks.map(d => d.company)))].sort();
+  const companies = ["All", ...Array.from(new Set(pitchDecks.map(d => d.company)))].sort().slice(0, 10); // Limit on mobile
   const placings = ["All", ...Array.from(new Set(pitchDecks.map(d => d.placing)))].sort();
 
   const filteredDecks = useMemo(() => {
@@ -53,105 +54,126 @@ export default function PitchDecksPage() {
   }, [searchQuery, activeFilters]);
 
   return (
-    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-32">
       <Link href="/opportunities" className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary font-bold text-sm transition-colors group mb-2 w-fit">
-        <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Opportunity Hub
+        <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
       </Link>
       
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-bold font-headline tracking-tight text-primary">Pitch Decks</h1>
-          <p className="text-on-surface-variant mt-1 text-lg">Award-winning case competition entries and investment theses.</p>
-        </div>
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50" />
-          <input
-            type="text"
-            placeholder="Search decks, companies, or tags..."
-            className="w-full pl-10 pr-4 py-3 bg-surface-container border border-outline-variant/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      <div className="flex flex-col gap-4">
+        <h1 className="text-3xl font-black font-headline tracking-tighter text-primary">Pitch Decks.</h1>
+        
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/40" />
+            <input
+              type="text"
+              placeholder="Search winning decks..."
+              className="w-full pl-12 pr-4 py-4 bg-surface-container border border-outline-variant/20 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button 
+            onClick={() => setShowMobileFilters(!showMobileFilters)}
+            className="md:hidden flex items-center justify-center gap-2 px-6 py-4 bg-surface-container-high border border-outline-variant/20 rounded-[1.5rem] font-black text-xs uppercase tracking-widest text-primary"
+          >
+            <Filter className="w-4 h-4" /> {showMobileFilters ? 'Hide Filters' : 'Filter Results'}
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Filters Sidebar - iPad style */}
-        <aside className="lg:col-span-1 space-y-6 bg-surface-container-low p-6 rounded-3xl h-fit border border-outline-variant/10 shadow-sm sticky top-24">
-          <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-xs">
-            <Filter className="w-4 h-4" />
-            Filters
+        {/* Filters Sidebar */}
+        <aside className={`${showMobileFilters ? 'block' : 'hidden md:block'} lg:col-span-1 space-y-6 bg-surface-container-low p-6 rounded-[2rem] h-fit border border-outline-variant/10 shadow-sm sticky top-24`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px]">
+              <Filter className="w-3.5 h-3.5" /> Filters
+            </div>
+            <button 
+              onClick={() => setActiveFilters({ year: "All", type: "All", company: "All", placing: "All" })}
+              className="text-[10px] font-black text-primary uppercase underline underline-offset-4"
+            >
+              Reset
+            </button>
           </div>
 
-          <div className="space-y-4">
-            <FilterGroup 
-              label="Year" 
-              options={years} 
-              active={activeFilters.year} 
-              onSelect={(val) => setActiveFilters({ ...activeFilters, year: val })} 
-            />
-            <FilterGroup 
-              label="Competition Type" 
-              options={types} 
-              active={activeFilters.type} 
-              onSelect={(val) => setActiveFilters({ ...activeFilters, type: val })} 
-            />
-            <FilterGroup 
-              label="Company" 
-              options={companies} 
-              active={activeFilters.company} 
-              onSelect={(val) => setActiveFilters({ ...activeFilters, company: val })} 
-            />
-            <FilterGroup 
-              label="Placing" 
-              options={placings} 
-              active={activeFilters.placing} 
-              onSelect={(val) => setActiveFilters({ ...activeFilters, placing: val })} 
-            />
+          <div className="space-y-6">
+            <FilterGroup label="Year" options={years} active={activeFilters.year} onSelect={(val) => setActiveFilters({ ...activeFilters, year: val })} />
+            <FilterGroup label="Competition" options={types} active={activeFilters.type} onSelect={(val) => setActiveFilters({ ...activeFilters, type: val })} />
+            <FilterGroup label="Company" options={companies} active={activeFilters.company} onSelect={(val) => setActiveFilters({ ...activeFilters, company: val })} />
+            <FilterGroup label="Placing" options={placings} active={activeFilters.placing} onSelect={(val) => setActiveFilters({ ...activeFilters, placing: val })} />
           </div>
-
-          <button 
-            onClick={() => setActiveFilters({ year: "All", type: "All", company: "All", placing: "All" })}
-            className="w-full py-2 text-sm font-medium text-on-surface-variant hover:text-primary transition-colors underline decoration-dotted underline-offset-4"
-          >
-            Clear all filters
-          </button>
         </aside>
 
-        {/* Main Content - Grid of Decks */}
+        {/* Main Content */}
         <div className="lg:col-span-3">
           {filteredDecks.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredDecks.map((deck) => (
-                <DeckCard 
-                  key={deck.id} 
-                  deck={deck} 
-                  onClick={() => setSelectedDeck(deck)} 
-                />
+                <DeckCard key={deck.id} deck={deck} onClick={() => setSelectedDeck(deck)} />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-on-surface-variant/60 bg-surface-container-lowest rounded-3xl border-2 border-dashed border-outline-variant/20">
+            <div className="flex flex-col items-center justify-center py-20 text-on-surface-variant/40 bg-surface-container-low rounded-[2.5rem] border-2 border-dashed border-outline-variant/20">
               <FileText className="w-16 h-16 mb-4 opacity-20" />
-              <p className="text-xl font-medium">No decks found matching your criteria</p>
-              <button 
-                onClick={() => {setSearchQuery(""); setActiveFilters({ year: "All", type: "All", company: "All", placing: "All" });}}
-                className="mt-4 text-primary font-bold hover:underline"
-              >
-                Reset search
-              </button>
+              <p className="text-lg font-black uppercase tracking-widest">Nothing Found</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* PDF Modal Viewer */}
+      {/* Simplified Mobile-First Modal */}
       <AnimatePresence>
         {selectedDeck && (
-          <PDFViewerModal 
-            deck={selectedDeck} 
-            onClose={() => setSelectedDeck(null)} 
-          />
+          <div className="fixed inset-0 z-[100] bg-surface flex flex-col md:bg-black/60 md:backdrop-blur-md md:p-8 md:items-center md:justify-center">
+            {/* Header / Actions bar */}
+            <div className="p-4 bg-primary text-white flex items-center justify-between shrink-0 shadow-lg relative z-20">
+                <button onClick={() => setSelectedDeck(null)} className="p-2 hover:bg-white/10 rounded-full transition-all">
+                    <ChevronLeft className="w-6 h-6" />
+                </button>
+                <div className="flex flex-col items-center text-center">
+                    <span className="text-[8px] font-black uppercase tracking-[0.3em] opacity-70 leading-none mb-1">Winning Pitch Deck</span>
+                    <h3 className="font-bold text-xs truncate max-w-[200px] leading-none uppercase">{selectedDeck.title}</h3>
+                </div>
+                <div className="w-10"></div> {/* Spacer */}
+            </div>
+
+            <div className="flex-1 flex flex-col bg-white overflow-hidden md:rounded-[2.5rem] md:max-w-5xl md:w-full md:max-h-[90vh]">
+                {/* PDF Viewer */}
+                <div className="flex-1 bg-neutral-900 overflow-hidden relative">
+                    <iframe 
+                        src={selectedDeck.url?.includes("drive.google.com") 
+                        ? selectedDeck.url.replace("/view", "/preview")
+                        : `https://docs.google.com/viewer?url=${encodeURIComponent(selectedDeck.url || "")}&embedded=true`
+                        }
+                        className="w-full h-full border-none"
+                    />
+                </div>
+
+                {/* Direct Action Footer */}
+                <div className="p-6 bg-surface-container border-t border-outline-variant/10 flex flex-col gap-4">
+                    <div className="grid grid-cols-2 gap-4">
+                         <a 
+                            href={selectedDeck.url} 
+                            target="_blank"
+                            className="bg-primary text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                         >
+                            View Full <Maximize2 className="w-4 h-4" />
+                         </a>
+                         <a 
+                            href={selectedDeck.localPath || selectedDeck.url} 
+                            download
+                            className="bg-surface border-2 border-outline-variant/20 py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2"
+                         >
+                            Download <Download className="w-4 h-4 text-primary" />
+                         </a>
+                    </div>
+                    <button onClick={() => setSelectedDeck(null)} className="text-xs font-black text-on-surface-variant uppercase tracking-widest py-2">
+                        Close Gallery
+                    </button>
+                </div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </div>
@@ -161,16 +183,16 @@ export default function PitchDecksPage() {
 function FilterGroup({ label, options, active, onSelect }: { label: string, options: string[], active: string, onSelect: (val: string) => void }) {
   return (
     <div className="space-y-2">
-      <label className="text-xs font-bold text-on-surface-variant/70 uppercase tracking-widest">{label}</label>
-      <div className="flex flex-wrap gap-2">
+      <label className="text-[8px] font-black text-on-surface-variant/60 uppercase tracking-widest">{label}</label>
+      <div className="flex flex-wrap gap-1.5">
         {options.map(option => (
           <button
             key={option}
             onClick={() => onSelect(option)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition-all ${
               active === option 
                 ? "bg-primary text-white shadow-md shadow-primary/20" 
-                : "bg-surface hover:bg-surface-container-highest text-on-surface border border-outline-variant/10 shadow-sm"
+                : "bg-surface hover:bg-surface-container-highest text-on-surface border border-outline-variant/10"
             }`}
           >
             {option}
@@ -183,63 +205,46 @@ function FilterGroup({ label, options, active, onSelect }: { label: string, opti
 
 function DeckCard({ deck, onClick }: { deck: PitchDeck, onClick: () => void }) {
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
+    <div
       onClick={onClick}
-      className="group cursor-pointer bg-surface border border-outline-variant/10 rounded-[2rem] p-6 flex flex-col gap-4 shadow-sm hover:border-primary/20 transition-all duration-300 overflow-hidden relative"
+      className="group cursor-pointer bg-surface border border-outline-variant/10 rounded-[2.5rem] p-6 flex flex-col gap-4 shadow-sm hover:border-primary/20 transition-all duration-300"
     >
-      <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-        <div className="bg-primary/10 p-2 rounded-full backdrop-blur-sm">
-          <Maximize2 className="w-4 h-4 text-primary" />
-        </div>
-      </div>
-
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center border border-primary/10">
-            <Trophy className={`w-6 h-6 ${deck.placing === '1st' ? 'text-yellow-600' : 'text-primary'}`} />
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center border border-primary/10 shadow-sm shrink-0">
+            <Trophy className={`w-7 h-7 ${deck.placing === '1st' ? 'text-amber-500' : 'text-primary/60'}`} />
           </div>
           <div>
-            <span className="text-[10px] font-black text-primary uppercase tracking-tighter bg-primary/10 px-2 py-0.5 rounded-full mb-1 inline-block">
-              {deck.placing} Place
-            </span>
-            <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{deck.title}</h3>
+            <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-0.5 rounded-lg border border-primary/10">
+                {deck.placing}
+                </span>
+                <span className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest">{deck.year}</span>
+            </div>
+            <h3 className="font-black text-lg leading-tight uppercase tracking-tight">{deck.title}</h3>
           </div>
         </div>
       </div>
 
-      <p className="text-on-surface-variant text-sm line-clamp-2">{deck.description}</p>
+      <p className="text-on-surface-variant text-[13px] font-medium leading-relaxed italic line-clamp-2">{deck.description}</p>
 
-      <div className="grid grid-cols-2 gap-y-3 gap-x-2 mt-auto">
-        <div className="flex items-center gap-2 text-xs text-on-surface-variant">
-          <Building2 className="w-3.5 h-3.5 opacity-50" />
+      <div className="grid grid-cols-2 gap-3 mt-auto">
+        <div className="flex items-center gap-2 text-[11px] font-bold text-on-surface-variant">
+          <Building2 className="w-3.5 h-3.5 opacity-40" />
           <span className="truncate">{deck.company}</span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-on-surface-variant">
-          <Calendar className="w-3.5 h-3.5 opacity-50" />
-          <span>{deck.year}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-on-surface-variant">
-          <Tag className="w-3.5 h-3.5 opacity-50" />
-          <span className="truncate">{deck.type}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-on-surface-variant">
-          <FileText className="w-3.5 h-3.5 opacity-50" />
-          <span>{deck.pages} slides</span>
+        <div className="flex items-center gap-2 text-[11px] font-bold text-on-surface-variant">
+          <FileText className="w-3.5 h-3.5 opacity-40" />
+          <span>{deck.pages} Slides</span>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 pt-2 border-t border-outline-variant/5">
-        {deck.tags.map(tag => (
-          <span key={tag} className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-widest">
-            #{tag}
-          </span>
-        ))}
+      <div className="pt-2">
+        <button className="w-full py-4 bg-primary text-white rounded-[1.2rem] text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group-hover:scale-[1.02] transition-transform">
+          View Pitch Deck <Maximize2 className="w-4 h-4" />
+        </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -266,6 +271,14 @@ function PDFViewerModal({ deck, onClose }: { deck: PitchDeck, onClose: () => voi
         exit={{ scale: 0.9, opacity: 0, y: 40 }}
         className="relative w-full h-full max-w-6xl bg-white rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col md:flex-row"
       >
+        {/* Mobile Header */}
+        <div className="md:hidden bg-primary p-4 text-white flex items-center justify-between shrink-0">
+          <div className="flex flex-col">
+            <span className="text-[8px] font-black uppercase tracking-widest opacity-70 leading-none mb-1">{deck.placing} Place</span>
+            <h3 className="font-bold text-xs truncate max-w-[200px] leading-none">{deck.title}</h3>
+          </div>
+          <Download className="w-4 h-4 opacity-80" onClick={() => { if(deck.localPath) window.open(deck.localPath) }} />
+        </div>
         {/* Sidebar Info - iPad Style */}
         <div className="w-full md:w-80 bg-surface-container-highest p-8 md:overflow-y-auto border-r border-outline-variant/10">
           <div className="flex items-center gap-4 mb-8">

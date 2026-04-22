@@ -25,17 +25,17 @@ export default function GlobalQuizDashboard() {
                             </span>
                             <h1 className="text-4xl lg:text-5xl font-black text-on-surface font-headline tracking-tight">Quiz Simulator</h1>
                         </div>
-                        <p className="text-lg text-on-surface-variant max-w-2xl font-medium ml-[52px]">Select a subject below to access practice tests and timed exam simulators for every module.</p>
+                        <p className="text-lg text-on-surface-variant max-w-2xl font-medium md:ml-[52px]">Select a subject below to access practice tests and timed exam simulators for every module.</p>
                     </div>
                 </div>
 
-                <div className="relative max-w-xl ml-[52px]">
+                <div className="relative max-w-xl md:ml-[52px]">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pt-1 pointer-events-none">
                         <Search className="h-5 w-5 text-on-surface-variant opacity-70" />
                     </div>
                     <input
                         type="text"
-                        className="w-full bg-surface-container-high border border-outline-variant/20 rounded-2xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm shadow-surface shadow-outline-variant/5"
+                        className="w-full bg-surface-container-high border border-outline-variant/20 rounded-2xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
                         placeholder="Search for a subject or course code..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -43,7 +43,7 @@ export default function GlobalQuizDashboard() {
                 </div>
             </header>
 
-            <div className="ml-[52px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="md:ml-[52px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredSubjects.length === 0 ? (
                     <div className="col-span-full border border-dashed border-outline-variant/30 rounded-3xl p-16 text-center">
                         <p className="text-on-surface-variant font-medium">No subjects found matching "{searchQuery}"</p>
