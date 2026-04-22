@@ -18,6 +18,7 @@ import {
     Check,
     Rocket,
     Users,
+    Target,
     ChevronDown,
     ExternalLink,
     FileText,
@@ -281,7 +282,5 @@ function PortalCard({ company }: any) {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
         </a>
-    );
-}iv>
     );
 }
