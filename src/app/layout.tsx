@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Info } from "lucide-react";
 import NavLinks from "@/components/NavLinks";
 import AssistantWidget from "@/components/AssistantWidget";
 
@@ -154,6 +154,11 @@ export default function RootLayout({
                           label="Doubt Resolver"
                           labelIcon={<HelpCircle className="w-4 h-4" />}
                           href="/doubts"
+                        />
+                        <UserButton.Link
+                          label="About The Founders"
+                          labelIcon={<Info className="w-4 h-4" />}
+                          href="/about"
                         />
                       </UserButton.MenuItems>
                     </UserButton>

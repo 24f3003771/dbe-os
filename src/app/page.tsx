@@ -342,6 +342,17 @@ export default function Dashboard() {
                 </div>
             </div>
         </section>
+
+        {/* Footer Link to Founders */}
+        <footer className="mt-20 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row items-center justify-between gap-4 text-on-surface-variant/50">
+            <p className="text-xs font-medium italic">Built with passion by the IIM Bangalore community.</p>
+            <Link href="/about" className="group flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/5 hover:text-primary transition-all border border-outline-variant/5">
+                Meet the Founders <div className="flex -space-x-2 ml-1">
+                    <img src="https://github.com/Ishaan-jha-dev.png" className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Ishaan"/>
+                    <img src="https://github.com/madhwendrashukla.png" className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Madhwendra"/>
+                </div>
+            </Link>
+        </footer>
       </div>
 
       {/* Right iPad Sidebar */}
