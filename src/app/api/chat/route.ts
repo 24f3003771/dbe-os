@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export const maxDuration = 60; 
 
 const NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
-const MODEL_NAME = "meta/llama-3.1-405b-instruct";
+const MODEL_NAME = "meta/llama-3.1-70b-instruct";
 
 export async function POST(req: Request) {
     try {
@@ -39,26 +39,39 @@ export async function POST(req: Request) {
                         
                         Behavioral Rules:
                         - Be professional, encouraging, and clear.
-                        - If a student asks something NOT in the manuals or beyond your absolute knowledge, advise them to check the official programme email or visit the dashboard.
-                        - Use short, impactful bullet points for complicated rules.
-                        - Keep responses concise and academic.`,
+                        - If a student asks something NOT in the manuals, advise them to check the official programme email.
+                        - Use short bullet points.`,
                     },
                     ...messages,
                 ],
                 temperature: 0.2,
                 top_p: 0.7,
                 max_tokens: 1024,
+                stream: true,
             }),
         });
 
-        const data = await response.json();
-        
-        if (data.choices && data.choices[0]) {
-            return NextResponse.json({ text: data.choices[0].message.content });
-        } else {
-            console.error("NVIDIA Response Error:", data);
-            return NextResponse.json({ error: "Failed to get response from AI" }, { status: 500 });
-        }
+        // Use the native ReadableStream to pipe the response
+        const stream = new ReadableStream({
+            async start(controller) {
+                const reader = response.body?.getReader();
+                if (!reader) return;
+
+                const decoder = new TextDecoder();
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value, { stream: true });
+                    controller.enqueue(chunk);
+                }
+                controller.close();
+            },
+        });
+
+        return new Response(stream, {
+            headers: { "Content-Type": "text/event-stream" },
+        });
     } catch (error) {
         console.error("Chat API Error:", error);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });

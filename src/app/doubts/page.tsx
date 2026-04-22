@@ -83,6 +83,9 @@ export default function DoubtsPage() {
         setInput("");
         setIsTyping(true);
 
+        // Add a placeholder bot message for streaming
+        setMessages(prev => [...prev, { role: 'bot', text: "" }]);
+
         try {
             const response = await fetch("/api/chat", {
                 method: "POST",
@@ -95,12 +98,39 @@ export default function DoubtsPage() {
                 }),
             });
 
-            const data = await response.json();
+            if (!response.body) throw new Error("No response body");
             
-            if (data.text) {
-                setMessages(prev => [...prev, { role: 'bot', text: data.text }]);
-            } else {
-                setMessages(prev => [...prev, { role: 'bot', text: "I'm having trouble connecting to my central manual right now. Please try again or refers to the Knowledge Base on the left!" }]);
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let accumulatedResponse = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                
+                const chunk = decoder.decode(value);
+                const lines = chunk.split("\n");
+                
+                for (const line of lines) {
+                    if (line.startsWith("data: ")) {
+                        const dataStr = line.slice(6).trim();
+                        if (dataStr === "[DONE]") continue;
+                        try {
+                            const data = JSON.parse(dataStr);
+                            const content = data.choices[0]?.delta?.content || "";
+                            accumulatedResponse += content;
+                            
+                            // Update the last message in the state
+                            setMessages(prev => {
+                                const newPrev = [...prev];
+                                newPrev[newPrev.length - 1] = { role: 'bot', text: accumulatedResponse };
+                                return newPrev;
+                            });
+                        } catch (e) {
+                            // Ignore parse errors for incomplete chunks
+                        }
+                    }
+                }
             }
         } catch (error) {
             console.error("Chat Error:", error);

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { HelpCircle } from "lucide-react";
 import NavLinks from "@/components/NavLinks";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -95,7 +96,15 @@ export default function RootLayout({
                     </div>
                   </Show>
                   <Show when="signed-in">
-                    <UserButton />
+                    <UserButton>
+                      <UserButton.MenuItems>
+                        <UserButton.Link
+                          label="Doubt Resolver"
+                          labelIcon={<HelpCircle className="w-4 h-4" />}
+                          href="/doubts"
+                        />
+                      </UserButton.MenuItems>
+                    </UserButton>
                   </Show>
                 </div>
               </nav>
