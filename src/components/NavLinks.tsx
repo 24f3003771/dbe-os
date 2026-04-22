@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CalendarClock, BookOpen, Timer, MessageSquare, ShoppingBag, Map, Target, Flame, Rocket, Presentation } from "lucide-react";
+import { LayoutDashboard, CalendarClock, BookOpen, Timer, MessageSquare, ShoppingBag, Map, Target, Flame, Rocket, Presentation, HelpCircle } from "lucide-react";
 
 const links = [
     { href: "/notes", label: "Notes", icon: BookOpen },
@@ -10,6 +10,7 @@ const links = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
     { href: "/opportunities", label: "Opportunities", icon: Rocket },
+    { href: "/doubts", label: "Help", icon: HelpCircle },
 ];
 
 interface NavLinksProps {
