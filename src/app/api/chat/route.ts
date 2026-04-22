@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const maxDuration = 60; 
+
 const NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
 const MODEL_NAME = "meta/llama-3.1-405b-instruct";
 
