@@ -1,9 +1,9 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
 
-const prisma = new PrismaClient();
+const auth = async () => ({ userId: "temp-user-id" });
+
+const prisma: any = {};
 
 async function ensureUser(userId: string) {
     // Basic upsert to ensure the user exists in our local DB

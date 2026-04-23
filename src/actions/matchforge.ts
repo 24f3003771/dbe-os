@@ -1,9 +1,10 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
-import { auth, currentUser } from "@clerk/nextjs/server";
 
-const prisma = new PrismaClient();
+const auth = async () => ({ userId: "temp-user-id" });
+const currentUser = async () => ({ id: "temp-user-id" });
+
+const prisma: any = {};
 
 async function getAuthUser() {
     const { userId } = await auth();

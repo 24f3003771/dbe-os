@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Linkedin, ArrowLeft, User } from "lucide-react";
-import { UserButton, useUser } from "@clerk/nextjs";
+
 
 export default function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
-    const { user, isLoaded } = useUser();
+    // TODO: Replace with Supabase session fetching
+    const user = null;
+    const isLoaded = true;
     const isHome = pathname === "/";
 
     return (
@@ -66,18 +68,16 @@ export default function Navbar() {
                         <div className="flex items-center gap-3 pl-2 border-l border-slate-700/50">
                             <div className="hidden md:flex flex-col items-end mr-1">
                                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em]">Student</span>
-                                <span className="text-xs font-black text-white">{user.firstName || "Scholar"}</span>
+                                <span className="text-xs font-black text-white">Scholar</span>
                             </div>
-                            <UserButton 
-                                appearance={{
-                                    elements: {
-                                        avatarBox: "h-9 w-9 border-2 border-indigo-500/30 hover:border-indigo-400 transition-all shadow-lg"
-                                    }
-                                }}
-                            />
+                            <div className="h-9 w-9 rounded-full border-2 border-indigo-500/30 flex items-center justify-center bg-slate-800 text-slate-400">
+                                <User className="w-4 h-4" />
+                            </div>
                         </div>
                     ) : (
-                        <div className="h-8 w-8 rounded-full bg-slate-800 animate-pulse" />
+                        <Link href="/login" className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-xs font-bold transition-colors">
+                            Sign In
+                        </Link>
                     )}
                 </div>
             </div>
