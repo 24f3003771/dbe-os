@@ -6,6 +6,7 @@ import { BookOpen, Activity, Play, ChevronLeft, CheckCircle2, Timer, Target, Clo
 import Link from "next/link";
 import QuizEngine from "@/components/QuizEngine";
 import { getExamHistory, deleteExamResult } from "@/actions/quiz";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function SubjectPage({ params }: { params: Promise<{ subject: string }> }) {
     const { subject } = React.use(params);
@@ -157,9 +158,7 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
                     </div>
 
                     {loadingHistory ? (
-                        <div className="flex items-center justify-center py-20">
-                            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                        </div>
+                        <LoadingScreen message="Fetching history..." fullScreen={false} />
                     ) : examHistory.length === 0 ? (
                         <div className="bg-surface-container rounded-[2rem] p-16 text-center border-2 border-dashed border-outline-variant/20">
                             <Target className="w-16 h-16 text-on-surface-variant/20 mx-auto mb-4" />

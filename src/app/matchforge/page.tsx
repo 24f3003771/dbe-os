@@ -8,6 +8,7 @@ import {
     Layers, MessageSquare, ArrowRight, CheckCircle, Info
 } from "lucide-react";
 import { saveOnboardingData, getMatches, connectWithUser } from "@/actions/matchforge";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const steps = [
     { id: "intro", title: "MatchForge V2", icon: Users },
@@ -97,7 +98,7 @@ export default function MatchForgePage() {
         setSaving(false);
     };
 
-    if (loading) return <div className="flex justify-center py-20"><div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>;
+    if (loading) return <LoadingScreen message="Forging your matches..." fullScreen={false} />;
 
     if (profile) return <MatchFeed matches={matches} />;
 

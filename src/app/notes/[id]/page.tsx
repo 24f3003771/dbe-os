@@ -15,6 +15,7 @@ import { Kalam } from "next/font/google";
 import { getAllSubjects } from "@/data/db";
 import DrawingOverlay from "@/components/DrawingOverlay";
 import PdfExportButton from "@/components/PdfExportButton";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const kalam = Kalam({ weight: ["400", "700"], subsets: ["latin"] });
 
@@ -70,11 +71,7 @@ export default function NoteDetailPage({ params }: { params: Promise<{ id: strin
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center py-32">
-                <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-            </div>
-        );
+        return <LoadingScreen message="Opening your note..." />;
     }
 
     if (!note) {

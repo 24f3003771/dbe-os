@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getLeaderboardData } from "@/actions/leaderboard";
 import { motion } from "framer-motion";
 import { Flame, Trophy, Medal, Star } from "lucide-react";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function LeaderboardPage() {
     const [users, setUsers] = useState<any[]>([]);
@@ -36,9 +37,7 @@ export default function LeaderboardPage() {
             </header>
 
             {loading ? (
-                <div className="flex justify-center py-20">
-                    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                </div>
+                <LoadingScreen message="Calculating rankings..." fullScreen={false} />
             ) : (
                 <div className="bg-surface-container rounded-[2.5rem] overflow-hidden border border-outline-variant/10 shadow-xl">
                     <div className="overflow-x-auto">

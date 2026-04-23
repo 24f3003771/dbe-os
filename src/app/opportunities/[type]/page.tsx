@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function OpportunityListPage({ params }: { params: Promise<{ type: string }> }) {
     const { type } = use(params);
@@ -30,7 +31,7 @@ export default function OpportunityListPage({ params }: { params: Promise<{ type
         (o.name.toLowerCase().includes(searchQuery.toLowerCase()) || o.organizer.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-    if (loading) return <div className="flex justify-center py-20"><div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>;
+    if (loading) return <LoadingScreen message={`Curating ${type === 'COMPETITION' ? 'Competitions' : 'Internships'}...`} />;
 
     return (
         <div className="max-w-7xl mx-auto py-12 px-6 space-y-12 min-h-screen">
