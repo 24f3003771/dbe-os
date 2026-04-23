@@ -8,12 +8,12 @@ import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
 import { useTodos } from "@/hooks/useTodos";
 import { getAllSubjects } from "@/data/db";
-import { useUser } from "@clerk/nextjs";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
 const IPadSidebar = () => {
-  const { user } = useUser();
+  // TODO: Fetch user session from Supabase
+  const user = null as any;
   const { tasks, addTask: persistTask, toggleTask: togglePersistedTask, deleteTask: deletePersistedTask } = useTodos(new Date());
   const { earnTomatoes } = useFarmStore();
   const [newTaskText, setNewTaskText] = useState("");
@@ -142,7 +142,8 @@ const IPadSidebar = () => {
 }
 
 export default function Dashboard() {
-  const { user } = useUser();
+  // TODO: Fetch user session from Supabase
+  const user = null as any;
   const { totalTomatoesEarned, tomatoesBalance, streak, fetchFarmData, isInitialized } = useFarmStore();
   const subjects = getAllSubjects();
   const notesPreview = subjects.slice(0, 3);

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Question } from "@/data/db";
-import { Check, X, ArrowRight, Clock, Flag, Eraser, Eye, LogOut, CheckCircle2, Calculator, Save, RotateCcw, Target, Play } from "lucide-react";
+import { Check, X, ArrowRight, Clock, Flag, Eraser, Eye, LogOut, CheckCircle2, Calculator, Save, RotateCcw, Target, Play, User } from "lucide-react";
 import { useFarmStore } from "@/hooks/useFarmStore";
-import { useUser } from "@clerk/nextjs";
 import { saveExamResult } from "@/actions/quiz";
 
 interface QuizEngineProps {
@@ -17,7 +16,8 @@ interface QuizEngineProps {
 type QuestionStatus = "not-visited" | "unanswered" | "answered" | "marked" | "answered-marked";
 
 export default function QuizEngine({ subjectId, moduleId, questions, mode, timerPerQuestion, onComplete }: QuizEngineProps) {
-    const { user } = useUser();
+    // TODO: Fetch user session from Supabase
+    const user = null as any;
     const [showInstructions, setShowInstructions] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<(number | null)[]>(new Array(questions.length).fill(null));
@@ -277,15 +277,13 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                 <div className="w-full md:w-[340px] flex flex-col gap-6">
                     <div className="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 shadow-sm flex flex-col items-center">
                         <div className="relative mb-6">
-                           <img 
-                            src={user?.imageUrl} 
-                            className="w-24 h-24 rounded-full border-4 border-primary/20 shadow-xl" 
-                            alt={user?.fullName || "Scholar"}
-                           />
+                           <div className="w-24 h-24 rounded-full border-4 border-primary/20 shadow-xl bg-surface-container-highest flex items-center justify-center">
+                               <User className="w-10 h-10 text-on-surface-variant" />
+                           </div>
                            <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full border-4 border-surface shadow-sm" />
                         </div>
-                        <p className="font-black font-headline text-on-surface text-xl text-center mb-1 leading-none">{user?.fullName || "Scholar"}</p>
-                        <p className="text-xs text-on-surface-variant text-center mb-8 font-bold opacity-60">{user?.primaryEmailAddress?.emailAddress}</p>
+                        <p className="font-black font-headline text-on-surface text-xl text-center mb-1 leading-none">Scholar</p>
+                        <p className="text-xs text-on-surface-variant text-center mb-8 font-bold opacity-60">student@iimb.ac.in</p>
                         
                         <div className="w-full space-y-4 bg-surface-container-low p-5 rounded-2xl border border-outline-variant/10">
                             <div className="flex justify-between items-center text-[10px] font-black text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/10 pb-2">

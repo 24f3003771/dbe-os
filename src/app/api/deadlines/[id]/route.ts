@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db.server";
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+const auth = async () => ({ userId: "temp-user-id" });
 
 // PATCH /api/deadlines/:id — toggle complete
 export async function PATCH(
