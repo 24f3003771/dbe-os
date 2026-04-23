@@ -123,14 +123,13 @@ export default function RootLayout({
           <header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm print:hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center font-bold text-white text-xs shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
-                  DB
+                <div className="relative w-9 h-9 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-red-500 rounded-full shadow-lg shadow-red-500/20 group-hover:scale-110 transition-transform duration-300" />
+                  <div className="absolute top-0 w-3 h-1.5 bg-[#29664c] rounded-full -translate-y-[20%]" />
+                  <span className="relative z-10 font-black text-white text-xs tracking-tighter">DB</span>
                 </div>
-                <span className="font-bold font-headline tracking-tight text-primary text-lg hidden sm:inline">
-                  DBE OS{" "}
-                  <span className="text-on-surface-variant font-normal ml-1 text-sm border-l border-outline-variant/30 pl-2">
-                    v2
-                  </span>
+                <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-red-500 transition-colors">
+                  DBE OS
                 </span>
               </Link>
               <nav className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-on-surface-variant">
