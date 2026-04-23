@@ -1,0 +1,309 @@
+generator client {
+  provider = "prisma-client-js"
+}
+// Restored to satisfy Vercel build postinstall
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Gamified User Profile ───────────────────────────
+model User {
+  id                    String   @id // Using Clerk User ID
+  email                 String   @unique
+  name                  String
+  role                  String   @default("student") // student, moderator, admin, guest
+  totalTomatoesEarned   Int      @default(0)
+  tomatoesBalance       Int      @default(0)
+  streak                Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  tomatoEvents          TomatoEvent[]
+  deadlines             Deadline[]
+  todos                 Todo[]
+  profile               Profile?
+  examResults           ExamResult[]
+}
+
+model ExamResult {
+  id               String   @id @default(cuid())
+  userId           String
+  subject          String
+  score            Int
+  totalQuestions   Int
+  timerPerQuestion Int      // 60, 90, 180
+  mistakes         String   // JSON string of missed questions/answers: [{ questionId, questionText, selectedAnswer, correctAnswer }]
+  createdAt        DateTime @default(now())
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Tomato Economy Events ───────────────────────────
+model TomatoEvent {
+  id               String   @id @default(cuid())
+  userId           String
+  actionType       String   // "quiz", "task", "login"
+  tomatoesEarned   Int
+  timestamp        DateTime @default(now())
+  sessionMetadata  String?  // JSON string
+  
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Notes Library ───────────────────────────────────
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   // Markdown content
+  subject   String
+  author    String   @default("Anonymous")
+  authorId  String?  // Clerk ID of the contributor
+  upvotes   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Deadlines (Tasks) ───────────────────────────────
+model Deadline {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  subject   String
+  type      String   @default("assignment") // "assignment" | "quiz" | "exam" | "task"
+  priority  String   @default("medium")
+  dueDate   DateTime
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Todos ──────────────────────────────────────────
+model Todo {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  subject   String
+  time      String
+  completed Boolean  @default(false)
+  date      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── MatchForge Models (V2) ───────────────────────────
+model Profile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio               String?
+  photoUrl          String?
+  linkedinUrl       String?
+  portfolioUrl      String?
+  
+  // A. Identity & Background
+  ageRange          String?  // Bucketed e.g. "18-22", "23-28"
+  location          String?
+  timezone          String?
+  educationLevel    String?
+  currentStatus     String?  // STUDENT, PROFESSIONAL, FOUNDER, FREELANCER
+  
+  // C. Goals & Intent
+  goal              String   // LEARNING, COFOUNDER, TEAM, ACCOUNTABILITY
+  timeHorizon       String   // SHORT_TERM, MEDIUM_TERM, LONG_TERM
+  goalDescription   String?
+  industryInterest  String?  // JSON string or tags
+  
+  // D. Work Style & Personality
+  workStyle         String?  // ASYNC, SYNC
+  workingHours      String?  // FIXED, FLEXIBLE
+  commitmentLevel   String   // CASUAL, MODERATE, SERIOUS
+  riskAppetite      String   // LOW, MEDIUM, HIGH
+  decisionStyle     String?  // FAST, ANALYTICAL
+  
+  // Personality Traits (1-10 Sliders)
+  introvertExtrovert Int     @default(5)
+  plannerExecutor    Int     @default(5)
+  leaderSupporter    Int     @default(5)
+  
+  // E. Logistics
+  hoursPerWeek      Int      @default(0)
+  preferredTimeSlots String? // JSON string
+  
+  // F. Collaboration Prefs
+  partnerSkillPref  String?  // SAME, HIGHER, LOWER
+  teamSizePref      String?  // 1:1, SMALL, OPEN
+  commTools         String?  // JSON string
+  
+  skills            ProfileSkill[]
+  domainExpertise   String?  // JSON or tags
+  
+  matches           Match[]  @relation("UserMatches")
+  matchedWith       Match[]  @relation("TargetMatches")
+  
+  connections       Connection[] @relation("UserConnections")
+  connectedTo       Connection[] @relation("TargetConnections")
+  
+  completenessScore Int      @default(0)
+  isVerified        Boolean  @default(false)
+  isActive          Boolean  @default(true)
+  lastActive        DateTime @default(now())
+}
+
+model ProfileSkill {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  skillName String
+  level     Int      // 1-5 scale
+  isPrimary Boolean  @default(false)
+}
+
+model Match {
+  id             String   @id @default(cuid())
+  profileId      String
+  targetProfileId String
+  score          Float
+  matchType      String   // LEARNING_PARTNER, SKILL_COMPLEMENT, COFOUNDER, EXECUTION_PARTNER
+  explanation    String?
+  createdAt      DateTime @default(now())
+  
+  profile        Profile  @relation("UserMatches", fields: [profileId], references: [id], onDelete: Cascade)
+  targetProfile  Profile  @relation("TargetMatches", fields: [targetProfileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, targetProfileId])
+}
+
+// ─── Internship Hunter (Aggregator) ────────────────────
+model InternshipHunterCompany {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  slug            String   @unique
+  tier            Int      @default(3) // 1: FAANG/Fortune500, 2: Well-funded startups, 3: Growing, 4: Small
+  industry        String?
+  description     String?
+  logoUrl         String?
+  websiteUrl      String?
+  careerPageUrl   String?
+  headquarters    String?
+  size            String?  // e.g. "1000-5000"
+  
+  internships     InternshipPost[]
+  recurringPrograms RecurringProgram[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model InternshipPost {
+  id              String   @id @default(cuid())
+  title           String
+  companyId       String
+  company         InternshipHunterCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  description     String
+  requirements    String?
+  responsibilities String?
+  
+  location        String   @default("Remote")
+  remoteType      String   @default("REMOTE") // ON_SITE, HYBRID, REMOTE
+  domain          String   // Technology, Marketing, Business, Design, Finance
+  
+  stipendMin      Int?
+  stipendMax      Int?
+  currency        String   @default("INR")
+  
+  durationMonths  Int?
+  deadline        DateTime?
+  postedDate      DateTime @default(now())
+  isCloseToClosing Boolean @default(false)
+  
+  applicationUrl  String
+  sourcePlatform  String   // LinkedIn, Internshala, AngelList, etc.
+  sourceUrl       String?
+  
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model RecurringProgram {
+  id              String   @id @default(cuid())
+  companyId       String
+  company         InternshipHunterCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  programName     String
+  opensIn         String?  // Month name
+  startsIn        String?  // Month name
+  description     String?
+  historicalPattern String? // JSON string
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── Opportunity Hub Models ──────────────────────────
+model Opportunity {
+  id              String   @id @default(cuid())
+  type            String   // COMPETITION, INTERNSHIP
+  name            String
+  organizer       String
+  deadline        DateTime
+  eligibility     String
+  mode            String   @default("ONLINE") // ONLINE, OFFLINE
+  domain          String   // Marketing, Finance, Consulting, Product, Analytics
+  difficulty      String   @default("Medium") // Easy, Medium, Hard
+  tags            String   @default("[]")     // JSON string of tags
+  description     String
+  stipend         String?
+  role            String?
+  applicationLink String?
+  
+  stages          OpportunityStage[]
+  guide           PreparationGuide?
+  submissions     WinnerSubmission[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model OpportunityStage {
+  id              String   @id @default(cuid())
+  opportunityId   String
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  stepNumber      Int
+  title           String
+  description     String
+}
+
+model PreparationGuide {
+  id              String   @id @default(cuid())
+  opportunityId   String   @unique
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  content         String   // Markdown
+}
+
+model WinnerSubmission {
+  id              String   @id @default(cuid())
+  opportunityId   String
+  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  title           String
+  fileUrl         String?
+  description     String?
+  strategy        String?
+  author          String   @default("Verified Top Performer")
+}
+
+model Connection {
+  id             String   @id @default(cuid())
+  profileId      String
+  targetProfileId String
+  status         String   // INTERESTED, CONNECTED, DECLINED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  profile        Profile  @relation("UserConnections", fields: [profileId], references: [id], onDelete: Cascade)
+  targetProfile  Profile  @relation("TargetConnections", fields: [targetProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, targetProfileId])
+}
