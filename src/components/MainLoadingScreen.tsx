@@ -3,30 +3,36 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const theme = {
+  emerald: '#29664c',
+  tomato: '#FF4D4D',
+  white: '#FFFFFF'
+};
+
 const dots = [
-  { color: '#29664c', x: -45 },
-  { color: '#3d8c6b', x: -15 },
-  { color: '#52b38a', x: 15 },
-  { color: '#29664c', x: 45 },
+  { color: theme.emerald, initialX: -60 },
+  { color: theme.tomato, initialX: -20 },
+  { color: theme.emerald, initialX: 20 },
+  { color: theme.tomato, initialX: 60 },
 ];
 
 export default function MainLoadingScreen() {
   const [isVisible, setIsVisible] = useState(false);
-  const [phase, setPhase] = useState('dance'); // dance -> orbit -> collide -> logo
+  const [phase, setPhase] = useState('sync-bounce'); // sync-bounce -> rotate -> merge -> reveal
 
   useEffect(() => {
     // Show only once per session
-    const hasBooted = sessionStorage.getItem('dbe_os_booted_v4');
+    const hasBooted = sessionStorage.getItem('dbe_os_booted_v5');
     if (hasBooted && process.env.NODE_ENV === 'production') return;
 
     setIsVisible(true);
-    sessionStorage.setItem('dbe_os_booted_v4', 'true');
+    sessionStorage.setItem('dbe_os_booted_v5', 'true');
 
-    // Smooth Sequential Progression
-    const timer1 = setTimeout(() => setPhase('orbit'), 2000);
-    const timer2 = setTimeout(() => setPhase('collide'), 3600);
-    const timer3 = setTimeout(() => setPhase('logo'), 4100);
-    const timer4 = setTimeout(() => setIsVisible(false), 6500);
+    // High-Precision Timing for Symmetry
+    const timer1 = setTimeout(() => setPhase('rotate'), 1800);
+    const timer2 = setTimeout(() => setPhase('merge'), 3200);
+    const timer3 = setTimeout(() => setPhase('reveal'), 3600);
+    const timer4 = setTimeout(() => setIsVisible(false), 5500);
 
     return () => {
       clearTimeout(timer1);
@@ -41,158 +47,141 @@ export default function MainLoadingScreen() {
   return (
     <AnimatePresence>
       <motion.div 
-        exit={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
-        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="fixed inset-0 z-[10000] bg-white flex flex-col items-center justify-center"
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[10000] bg-white flex flex-col items-center justify-center overflow-hidden"
       >
-        <div className="relative w-full h-64 flex items-center justify-center">
+        <div className="relative w-full h-48 flex items-center justify-center">
           
-          {/* Phase: Dance & Orbit */}
-          <AnimatePresence>
-            {(phase === 'dance' || phase === 'orbit') && (
-              <div className="relative">
-                {dots.map((dot, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ x: dot.x, y: 0, scale: 0 }}
-                    animate={phase === 'dance' ? {
-                      x: dot.x,
-                      y: [0, -35, 0],
-                      scale: 1,
-                    } : {
-                      x: [dot.x, 40 * Math.cos(i * Math.PI / 2 + Date.now() / 250)],
-                      y: [0, 40 * Math.sin(i * Math.PI / 2 + Date.now() / 250)],
-                      scale: 1.2,
-                    }}
-                    exit={{ scale: 0, opacity: 0 }}
-                    transition={phase === 'dance' ? {
-                      duration: 0.7,
-                      repeat: Infinity,
-                      delay: i * 0.12,
-                      ease: [0.45, 0, 0.55, 1]
-                    } : {
-                      duration: 2.5,
-                      repeat: Infinity,
-                      ease: "linear"
-                    }}
-                    className="absolute w-6 h-6 rounded-full -translate-x-1/2 -translate-y-1/2 shadow-[0_8px_20px_rgba(41,102,76,0.2)]"
-                    style={{ backgroundColor: dot.color }}
-                  />
-                ))}
-              </div>
-            )}
-          </AnimatePresence>
+          {/* Phase 1: Perfectly Symmetrical Bounce */}
+          {phase === 'sync-bounce' && (
+            <div className="flex gap-6">
+              {dots.map((dot, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ 
+                    y: [0, -40, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    duration: 0.6, 
+                    repeat: Infinity, 
+                    delay: i * 0.1,
+                    ease: "easeInOut"
+                  }}
+                  className="w-5 h-5 rounded-full shadow-lg"
+                  style={{ backgroundColor: dot.color }}
+                />
+              ))}
+            </div>
+          )}
 
-          {/* Phase: Collide (Liquid Merge) */}
-          {phase === 'collide' && (
+          {/* Phase 2: Symmetrical Rotation */}
+          {phase === 'rotate' && (
             <motion.div 
-              initial={{ scale: 0.2, opacity: 0 }}
-              animate={{ 
-                scale: [1, 2.5, 0],
-                opacity: [0, 1, 1, 0],
-              }}
-              transition={{ duration: 0.6, ease: "circIn" }}
-              className="w-12 h-12 bg-primary rounded-full blur-sm"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              className="relative w-20 h-20"
+            >
+              {[0, 90, 180, 270].map((angle, i) => (
+                <div 
+                  key={i}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  style={{ 
+                    transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-35px)` 
+                  }}
+                >
+                   <div 
+                    className="w-5 h-5 rounded-full shadow-md"
+                    style={{ backgroundColor: dots[i].color }}
+                  />
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Phase 3: Symmetrical Merge */}
+          {phase === 'merge' && (
+            <motion.div 
+              initial={{ scale: 2, opacity: 0 }}
+              animate={{ scale: [0.5, 1.5, 0], opacity: [0, 1, 1, 0] }}
+              transition={{ duration: 0.4 }}
+              className="w-12 h-12 bg-primary rounded-full"
             />
           )}
 
-          {/* Phase: Proper Logo Reveal */}
-          {phase === 'logo' && (
+          {/* Phase 4: Symmetrical Logo Reveal */}
+          {phase === 'reveal' && (
             <motion.div
-              initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
-              animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
-              transition={{ type: "spring", damping: 15, stiffness: 100 }}
-              className="flex flex-col items-center gap-8"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center gap-6"
             >
-              <div className="relative w-32 h-32 flex items-center justify-center">
-                {/* Custom Stylized "DB" Logo */}
-                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_20px_40px_rgba(41,102,76,0.15)]">
-                    <defs>
-                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#29664c" />
-                            <stop offset="100%" stopColor="#4ade80" />
-                        </linearGradient>
-                    </defs>
-                    {/* The "D" and "B" connection */}
-                    <motion.path 
-                        d="M 30 20 L 30 80 M 30 20 C 60 20 60 50 30 50 C 60 50 60 80 30 80"
-                        fill="none"
-                        stroke="url(#logoGrad)"
-                        strokeWidth="10"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 1.5, ease: "easeInOut" }}
-                    />
-                    {/* Abstract Circle Enclosure */}
-                    <motion.circle 
-                        cx="50" cy="50" r="45"
-                        fill="none"
-                        stroke="#29664c"
-                        strokeWidth="1"
-                        strokeDasharray="10 5"
-                        opacity="0.2"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    />
+              <div className="relative flex items-center justify-center">
+                {/* Modern Tomato-Inspired "DB" Logo */}
+                <svg viewBox="0 0 100 100" className="w-24 h-24">
+                   {/* Tomato base shape (Emerald Outer) */}
+                   <motion.path 
+                     d="M 50 15 C 30 15 15 30 15 50 C 15 70 30 85 50 85 C 70 85 85 70 85 50 C 85 30 70 15 50 15"
+                     fill="#29664c10"
+                     stroke="#29664c"
+                     strokeWidth="2"
+                     initial={{ pathLength: 0 }}
+                     animate={{ pathLength: 1 }}
+                     transition={{ duration: 1 }}
+                   />
+                   {/* Tomato "Leaf" top in Red */}
+                   <motion.path 
+                     d="M 50 15 L 50 5 M 40 10 L 60 10"
+                     stroke="#FF4D4D"
+                     strokeWidth="4"
+                     strokeLinecap="round"
+                     initial={{ opacity: 0, y: 10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ delay: 0.5 }}
+                   />
+                   {/* Centered Typography */}
+                   <text x="50" y="58" textAnchor="middle" fill="#1A1A1A" className="text-2xl font-black font-headline tracking-tighter" style={{ fontSize: '28px' }}>DB</text>
                 </svg>
               </div>
 
-              <div className="text-center space-y-1">
-                <motion.h1 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-5xl font-black font-headline tracking-[-0.05em] text-[#1A1A1A]"
-                >
+              <div className="text-center">
+                <h1 className="text-4xl font-black font-headline tracking-tighter text-[#1A1A1A]">
                   DBE OS
-                </motion.h1>
-                <motion.div 
-                   initial={{ scaleX: 0 }}
-                   animate={{ scaleX: 1 }}
-                   transition={{ delay: 0.8, duration: 1 }}
-                   className="h-1 w-full bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"
-                />
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2 }}
-                  className="text-[10px] font-black uppercase tracking-[0.5em] text-primary pt-2"
-                >
-                  IIM Bangalore Community
-                </motion.p>
+                </h1>
+                <div className="flex items-center justify-center gap-2 mt-1">
+                  <div className="h-1 w-8 bg-primary rounded-full" />
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-stone-300">Edition V2</span>
+                  <div className="h-1 w-8 bg-red-400 rounded-full" />
+                </div>
               </div>
             </motion.div>
           )}
         </div>
 
-        {/* Global Footer Quote */}
+        {/* The Quote with Tomato Icon */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-16 text-center px-10"
+          transition={{ delay: 1 }}
+          className="absolute bottom-16 flex flex-col items-center gap-6"
         >
-           <p className="text-sm font-medium text-stone-400 max-w-sm leading-relaxed italic">
-              "Built by the <span className="text-[#1A1A1A] font-extrabold px-1">IIMB community</span>,<br/> 
-              for the <span className="text-[#1A1A1A] font-extrabold px-1">IIMB community</span>."
-            </p>
-            <div className="mt-8 flex items-center justify-center gap-3">
-                <div className="h-[1px] w-12 bg-stone-100" />
-                <div className="w-2 h-2 rounded-full border-2 border-primary" />
-                <div className="h-[1px] w-12 bg-stone-100" />
-            </div>
+           <p className="text-xs font-bold text-stone-400 max-w-xs text-center leading-relaxed italic">
+              "Built by the <span className="text-primary">IIMB community</span>, 
+              for the <span className="text-red-400">IIMB community</span>."
+           </p>
+           <div className="flex items-center gap-1.5 px-3 py-1 bg-red-50 rounded-full border border-red-100">
+              <span className="text-xs">🍅</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-red-500">IIMB Tomato Engine</span>
+           </div>
         </motion.div>
 
-        {/* Technical Side-Markers */}
-        <div className="absolute inset-y-0 left-8 flex flex-col justify-center gap-32 opacity-20 pointer-events-none">
-            <div className="w-[1px] h-20 bg-primary" />
-            <div className="w-[1px] h-20 bg-primary" />
-        </div>
-        <div className="absolute inset-y-0 right-8 flex flex-col justify-center gap-32 opacity-20 pointer-events-none">
-            <div className="w-[1px] h-20 bg-primary" />
-            <div className="w-[1px] h-20 bg-primary" />
+        {/* Global Progress Line */}
+        <div className="absolute bottom-0 inset-x-0 h-1 bg-stone-50 overflow-hidden">
+           <motion.div 
+             className="h-full bg-primary"
+             animate={{ width: phase === 'reveal' ? '100%' : '50%' }}
+             transition={{ duration: 5 }}
+           />
         </div>
       </motion.div>
     </AnimatePresence>
