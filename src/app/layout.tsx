@@ -6,6 +6,7 @@ import Link from "next/link";
 import { HelpCircle, Info } from "lucide-react";
 import NavLinks from "@/components/NavLinks";
 import AssistantWidget from "@/components/AssistantWidget";
+import MainLoadingScreen from "@/components/MainLoadingScreen";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -178,6 +179,7 @@ export default function RootLayout({
               <NavLinks showLabels={true} isBottomNav={true} />
             </div>
           </nav>
+          <MainLoadingScreen />
           <AssistantWidget />
         </ClerkProvider>
       </body>
