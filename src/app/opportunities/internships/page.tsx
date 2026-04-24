@@ -97,17 +97,22 @@ export default function InternshipHunterPage() {
     const [isSearching, setIsSearching] = useState(false);
 
     const handleLiveSearch = async () => {
-        if (!searchQuery) return;
+        const query = searchQuery || "Internship";
+        console.log("Starting live search for:", query);
         setIsSearching(true);
         setIsLiveSearch(true);
         try {
-            const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(searchQuery)}&location=India`);
+            const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(query)}&location=India`);
             const data = await response.json();
+            console.log("Search results received:", data);
             if (Array.isArray(data)) {
                 setLiveJobs(data);
+            } else {
+                setLiveJobs([]);
             }
         } catch (error) {
             console.error("Search failed:", error);
+            setLiveJobs([]);
         } finally {
             setIsSearching(false);
         }
@@ -228,9 +233,19 @@ export default function InternshipHunterPage() {
                 {/* Portals Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 px-4">
                     {isLiveSearch ? (
-                        liveJobs.map((job, idx) => (
-                            <LinkedInJobCard key={idx} job={job} />
-                        ))
+                        liveJobs.length > 0 ? (
+                            liveJobs.map((job, idx) => (
+                                <LinkedInJobCard key={idx} job={job} />
+                            ))
+                        ) : !isSearching && (
+                            <div className="col-span-full py-20 text-center space-y-4">
+                                <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto text-stone-300">
+                                    <Search className="w-10 h-10" />
+                                </div>
+                                <h3 className="text-xl font-black italic">No live listings found.</h3>
+                                <p className="text-stone-500 font-medium max-w-xs mx-auto">Try a different keyword or location to discover more opportunities.</p>
+                            </div>
+                        )
                     ) : (
                         filteredPortals.map(company => (
                             <PortalCard key={company.id} company={company} />
