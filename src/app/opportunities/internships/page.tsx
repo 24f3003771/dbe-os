@@ -11,6 +11,7 @@ import {
     Calendar, 
     Zap, 
     ArrowUpRight,
+    ExternalLink,
     Trophy,
     ShieldCheck,
     Globe,
