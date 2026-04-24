@@ -283,14 +283,14 @@ export default function RegisterPage() {
                                         <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">State</label>
                                         <div className="relative">
                                             <Building className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                            <input required readOnly type="text" value={state} placeholder="Auto-fetches from Pincode" className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold text-on-surface-variant cursor-not-allowed outline-none" />
+                                            <input required type="text" value={state} onChange={(e) => setState(e.target.value)} placeholder="Karnataka" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold focus:border-primary transition-all outline-none" />
                                         </div>
                                     </div>
                                     <div className="space-y-1.5">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">City</label>
                                         <div className="relative">
                                             <MapPin className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                            <input required readOnly type="text" value={city} placeholder="Auto-fetches from Pincode" className="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold text-on-surface-variant cursor-not-allowed outline-none" />
+                                            <input required type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Bangalore" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold focus:border-primary transition-all outline-none" />
                                         </div>
                                     </div>
                                 </div>
