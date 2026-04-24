@@ -43,6 +43,7 @@ tsc_errors*.txt
 .agents/
 .claude/
 .clerk/
+skills-lock.json
 
 # typescript
 *.tsbuildinfo

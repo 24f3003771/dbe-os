@@ -1,7 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-
-async function seed() {
+async function seedMatchForge(prisma) {
     const users = [
         { 
             name: "Aarav Sharma", 
@@ -88,7 +85,6 @@ async function seed() {
         });
     }
 
-    console.log("MatchForge V2 Seed complete!");
 }
 
-seed().catch(console.error).finally(() => prisma.$disconnect());
+module.exports = { seedMatchForge };
