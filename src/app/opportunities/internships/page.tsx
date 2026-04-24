@@ -137,46 +137,52 @@ export default function InternshipHunterPage() {
         return COMPANY_CATALOG.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                  item.industry.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesSector = selectedSector === "All" || item.category === selectedSector || item.industry.includes(selectedSector);
+            const matchesSector = selectedSector === "All" || item.category === selectedSector || (item.industry && item.industry.includes(selectedSector));
             const matchesTier = selectedTier === "All" || item.tier === selectedTier;
             return matchesSearch && matchesSector && matchesTier;
         });
     }, [searchQuery, selectedSector, selectedTier]);
 
     return (
-        <div className="min-h-screen bg-surface-container-lowest text-on-surface animate-in fade-in duration-1000 pb-40">
-            {/* Dark Premium Hero */}
-            <header className="relative py-20 px-6 lg:px-12 bg-[#0A0A0A] overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-50" />
+        <div className="min-h-screen bg-stone-50/50 text-slate-900 animate-in fade-in duration-1000 pb-40">
+            {/* Soft Premium Hero */}
+            <header className="relative py-28 px-6 lg:px-12 bg-slate-950 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-primary/5 opacity-40" />
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
-                        <div className="space-y-6">
-                            <div className="inline-flex items-center gap-2 bg-primary/20 px-4 py-1.5 rounded-full text-primary font-black text-[10px] tracking-widest uppercase border border-primary/20">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-16">
+                        <div className="space-y-8 max-w-3xl">
+                            <div className="inline-flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-full text-emerald-400 font-black text-[10px] tracking-widest uppercase border border-emerald-500/20">
                                 <Rocket className="w-3.5 h-3.5" /> Direct Access Engine
                             </div>
-                            <h1 className="text-6xl lg:text-8xl font-black font-headline tracking-tighter text-white leading-none italic">
-                                Internship <span className="text-primary">Hunter.</span>
+                            <h1 className="text-6xl lg:text-8xl font-black font-headline tracking-tighter text-white leading-[0.9] italic">
+                                Internship <br/><span className="text-emerald-400">Hunter.</span>
                             </h1>
-                            <p className="text-stone-400 text-xl md:text-2xl font-medium max-w-2xl italic leading-relaxed">
-                                "Stop scrolling, start applying. Access the official career portals of 50+ elite global firms in one click."
+                            <p className="text-slate-400 text-xl md:text-2xl font-medium italic leading-relaxed">
+                                Access the official career portals of 50+ elite global firms. Real-time extraction. Zero marketing fluff.
                             </p>
                         </div>
                         
-                        <div className="hidden lg:flex items-center gap-4">
-                            <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 shadow-2xl space-y-4 w-80">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">Global Coverage</p>
-                                <div className="flex -space-x-3">
-                                    {[1,2,3,4,5].map(i => <div key={i} className="w-10 h-10 rounded-full border-2 border-[#0A0A0A] bg-stone-800" />)}
+                        <div className="hidden xl:flex items-center gap-4">
+                            <div className="bg-white/5 backdrop-blur-2xl rounded-[3rem] p-10 border border-white/10 shadow-2xl space-y-6 w-96 transform hover:-translate-y-2 transition-transform duration-500">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 leading-none">Global Coverage</p>
+                                <div className="flex -space-x-4">
+                                    {['G', 'A', 'M', 'T', 'B'].map((letter, i) => (
+                                        <div key={i} className="w-12 h-12 rounded-full border-4 border-slate-950 bg-slate-800 flex items-center justify-center text-white font-black text-sm">
+                                            {letter}
+                                        </div>
+                                    ))}
+                                    <div className="w-12 h-12 rounded-full border-4 border-slate-950 bg-emerald-500 flex items-center justify-center text-white font-black text-xs">
+                                        +50
+                                    </div>
                                 </div>
-                                <h4 className="text-white font-bold text-lg">MAANG to Unicorns.</h4>
-                                <p className="text-stone-500 text-xs font-medium italic">Verified career links only. 0% marketing fluff.</p>
+                                <div className="space-y-2">
+                                    <h4 className="text-white font-bold text-xl tracking-tight italic">MAANG to Unicorns.</h4>
+                                    <p className="text-slate-500 text-xs font-medium leading-relaxed">Direct links to verified corporate hiring pipelines.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                {/* Decorative float */}
-                <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
             </header>
 
             {/* Mode Selection Gatekeeper */}
@@ -228,30 +234,30 @@ export default function InternshipHunterPage() {
             {viewMode !== "CHOOSE" && (
                 <section className="max-w-7xl mx-auto px-6 space-y-10">
                     {/* Simplified Switcher Bar */}
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                        <div className="flex bg-stone-100 p-1.5 rounded-full w-fit">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 pt-10">
+                        <div className="flex bg-slate-100 p-1.5 rounded-[2rem] w-fit border border-slate-200">
                             <button 
                                 onClick={() => setViewMode("PORTALS")}
-                                className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'PORTALS' ? 'bg-white shadow-sm text-primary' : 'text-stone-400 hover:text-stone-600'}`}
+                                className={`px-10 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'PORTALS' ? 'bg-white shadow-lg shadow-slate-200 text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Official Portals
                             </button>
                             <button 
                                 onClick={() => handleLiveSearch()}
-                                className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'LIVE' ? 'bg-[#1A1A1A] shadow-sm text-white' : 'text-stone-400 hover:text-stone-600'}`}
+                                className={`px-10 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'LIVE' ? 'bg-slate-900 shadow-xl text-white' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Live AI Hunter
                             </button>
                         </div>
                         
-                        <div className="flex-1 flex flex-wrap items-center gap-4">
+                        <div className="flex flex-wrap items-center justify-center md:justify-end gap-3">
                             {SECTORS.map(sector => (
                                 <button 
                                     key={sector.id}
                                     onClick={() => setSelectedSector(sector.id)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedSector === sector.id ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-white border-stone-100 text-stone-500 hover:border-stone-200'}`}
+                                    className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl text-xs font-black transition-all border ${selectedSector === sector.id ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200'}`}
                                 >
-                                    <sector.icon className="w-3.5 h-3.5" />
+                                    <sector.icon className="w-4 h-4" />
                                     {sector.name}
                                 </button>
                             ))}
@@ -259,22 +265,22 @@ export default function InternshipHunterPage() {
                     </div>
 
                     {/* Search & Tier Filter Bar */}
-                    <div className="flex flex-col md:flex-row items-center gap-4 bg-white border border-stone-100 p-4 rounded-[2.5rem] shadow-xl shadow-stone-200/50 sticky top-4 z-50">
+                    <div className="flex flex-col md:flex-row items-center gap-6 bg-white/80 backdrop-blur-md border border-slate-100 p-6 rounded-[3.5rem] shadow-2xl shadow-slate-200/40 sticky top-8 z-50">
                         <div className="relative flex-1 w-full">
-                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-300" />
+                            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-300" />
                             <input 
                                 type="text"
-                                placeholder={viewMode === 'PORTALS' ? "Search 50+ Corporate Portals..." : "Describe your ideal role (e.g. Marketing Intern Bangalore)..."}
-                                className="w-full bg-stone-50/50 border-none rounded-[1.8rem] py-4 pl-14 pr-6 focus:ring-2 focus:ring-primary/20 transition-all font-bold text-stone-600"
+                                placeholder={viewMode === 'PORTALS' ? "Find top firms (Google, BCG, HUL)..." : "Describe your ideal role (e.g. Marketing Intern Bangalore)..."}
+                                className="w-full bg-slate-50 border-none rounded-[2rem] py-5 pl-16 pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-lg placeholder:text-slate-300"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && (viewMode === 'LIVE' ? handleLiveSearch() : null)}
                             />
                         </div>
                         {viewMode === 'PORTALS' && (
-                            <div className="flex gap-2 w-full md:w-auto">
+                            <div className="w-full md:w-auto">
                                 <select 
-                                    className="bg-stone-50/50 border-none rounded-[1.8rem] px-8 py-4 font-black text-sm text-stone-600 focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
+                                    className="w-full bg-slate-50 border-none rounded-[2rem] px-10 py-5 font-black text-sm text-slate-600 focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer appearance-none"
                                     value={selectedTier}
                                     onChange={(e) => setSelectedTier(e.target.value)}
                                 >
@@ -288,9 +294,9 @@ export default function InternshipHunterPage() {
                             <button 
                                 onClick={() => handleLiveSearch()}
                                 disabled={isSearching}
-                                className="bg-[#1A1A1A] text-white px-8 py-4 rounded-[1.8rem] font-black text-xs uppercase tracking-widest hover:bg-primary transition-all flex items-center gap-2 disabled:opacity-50 min-w-[180px] justify-center"
+                                className="w-full md:w-auto bg-slate-900 text-white px-12 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-emerald-500 transition-all flex items-center gap-3 disabled:opacity-50 justify-center shadow-xl shadow-slate-900/10"
                             >
-                                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Linkedin className="w-4 h-4" />}
+                                {isSearching ? <Loader2 className="w-5 h-5 animate-spin" /> : <Linkedin className="w-5 h-5" />}
                                 {isSearching ? "Extracting..." : "Live Fetch"}
                             </button>
                         )}
@@ -437,40 +443,46 @@ function LinkedInJobCard({ job }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-white border border-stone-100 rounded-[2rem] p-8 flex flex-col justify-between hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden">
-                <div className="space-y-6">
+            <div className="h-full bg-white border border-slate-100 rounded-[2.5rem] p-10 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 relative overflow-hidden">
+                <div className="space-y-8">
                     <div className="flex justify-between items-start">
-                        <div className="w-14 h-14 bg-stone-50 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-stone-100 overflow-hidden">
+                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-inner border border-slate-100 overflow-hidden relative">
                             {job.companyLogo ? (
-                                <img src={job.companyLogo} alt={job.company} className="w-full h-full object-cover" />
-                            ) : (
-                                <Linkedin className="w-7 h-7" />
-                            )}
+                                <img 
+                                    src={job.companyLogo} 
+                                    alt={job.company} 
+                                    className="w-full h-full object-cover" 
+                                    onError={(e: any) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                                />
+                            ) : null}
+                            <div className={`w-full h-full items-center justify-center bg-slate-50 text-slate-400 font-black text-xl ${job.companyLogo ? 'hidden' : 'flex'}`}>
+                                {job.company?.charAt(0)}
+                            </div>
                         </div>
-                        <div className="flex flex-col items-end gap-1">
-                            <span className="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-indigo-50 text-indigo-600 border border-indigo-100">
+                        <div className="flex flex-col items-end gap-1.5">
+                            <span className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] bg-emerald-50 text-emerald-600 border border-emerald-100">
                                 Live Listing
                             </span>
-                            <span className="text-[8px] font-bold text-stone-400">{job.postDate}</span>
+                            <span className="text-[10px] font-bold text-slate-400">{job.postDate}</span>
                         </div>
                     </div>
                     
-                    <div>
-                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">{job.location}</p>
-                        <h3 className="text-xl font-black font-headline text-stone-900 tracking-tighter italic leading-tight group-hover:text-primary transition-colors">{job.title}</h3>
-                        <p className="text-stone-500 text-xs font-bold mt-2">{job.company}</p>
+                    <div className="space-y-2">
+                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em]">{job.location}</p>
+                        <h3 className="text-2xl font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-emerald-600 transition-colors">{job.title}</h3>
+                        <p className="text-slate-500 text-sm font-bold">{job.company}</p>
                     </div>
                 </div>
 
-                <div className="mt-8 flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">View on LinkedIn</span>
-                    <div className="w-10 h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform shadow-sm">
-                        <ExternalLink className="w-5 h-5 text-primary" />
+                <div className="mt-12 flex items-center justify-between border-t border-slate-50 pt-8">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">View on LinkedIn</span>
+                    <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-emerald-50 group-hover:text-emerald-600">
+                        <ExternalLink className="w-6 h-6" />
                     </div>
                 </div>
 
                 {/* Decorative bg light */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
         </a>
     );
