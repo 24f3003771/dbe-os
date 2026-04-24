@@ -35,7 +35,12 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
     const toggleUserStatus = async (userId: string, currentType: number) => {
         setLoadingId(userId + "-status");
         try {
-            const newType = currentType === 0 ? 1 : 0;
+            const user = users.find(u => u.id === userId);
+            let newType = 0;
+            if (currentType === 0) {
+                newType = user?.email.toLowerCase().endsWith('@iimb.ac.in') ? 1 : 2;
+            }
+            
             const { error } = await supabase
                 .from('users')
                 .update({ type: newType })
@@ -85,7 +90,7 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
         setCurrentPage(1); // Reset to first page on new search
     };
 
-    const activeUsers = users.filter(u => u.type === 1).length;
+    const activeUsers = users.filter(u => u.type !== 0).length;
     const disabledUsers = users.filter(u => u.type === 0).length;
     const adminUsers = users.filter(u => u.role === 'SUPER_ADMIN' || u.role === 'MODERATOR').length;
 
