@@ -36,8 +36,21 @@ yarn-error.log*
 # vercel
 .vercel
 
+# logs & temp
+*.log
+build_log*.txt
+tsc_errors*.txt
+.agents/
+.claude/
+.clerk/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
+# prisma
 /src/generated/prisma
+
+# OS files
+.DS_Store
+Thumbs.db

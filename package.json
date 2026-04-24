@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:seed": "node scripts/seed.js",
+    "clean": "rm -rf .next node_modules package-lock.json"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",

@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎓 DBE OS — The Scholar Operating System
 
-## Getting Started
+[![Built for IIM Bangalore](https://img.shields.io/badge/Built%20for-IIM%20Bangalore-003366)](https://www.iimb.ac.in)
+[![Next.js](https://img.shields.io/badge/Frontend-Next.js%2015-black)](https://nextjs.org)
+[![Supabase](https://img.shields.io/badge/Database-Supabase-green)](https://supabase.com)
+[![Prisma](https://img.shields.io/badge/ORM-Prisma-indigo)](https://prisma.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-First, run the development server:
+**DBE OS** is a premium, full-stack student-built platform designed specifically for the **IIM Bangalore Digital Business & Entrepreneurship (DBE)** program. It transforms the academic experience into a gamified, collaborative, and professional ecosystem.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## ✨ Core Pillars
+
+### 🤝 MatchForge Network
+An advanced matchmaking engine that uses behavioral traits and skill gaps to connect students with perfect learning partners or potential startup co-founders within the IIMB community.
+
+### 🚀 Opportunity Hub
+A curated aggregator of 150+ high-impact B-school competitions and MNC internships. It doesn't just list opportunities; it provides winning roadmaps and preparation guides.
+
+### 🏆 Pro Pitch Decks
+Exclusive access to a library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.), allowing students to reverse-engineer success.
+
+### 📚 Universal Library
+A community-driven repository of academic notes, guides, and resources tailored specifically for the DBE curriculum.
+
+### 🍅 Tomato Economy
+A gamified productivity system where students earn "Tomatoes" for completing tasks and contributing, climbing the community leaderboard.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend:** Next.js (App Router), Tailwind CSS, Framer Motion
+- **Backend:** Next.js Server Actions, Supabase (PostgreSQL)
+- **Database ORM:** Prisma
+- **Auth:** Clerk / Supabase Auth
+- **AI Integration:** NVIDIA NIM (Doubt Resolver)
+- **State Management:** Zustand
+
+---
+
+## 📂 Project Architecture
+
+```text
+/
+├── prisma/             # Database schema & migrations
+├── supabase/           # Edge functions & storage configs
+├── scripts/            # Database seeding & maintenance scripts
+├── public/             # Static assets (images, lotties)
+└── src/
+    ├── app/            # Next.js Pages & API routes
+    ├── components/     # UI components (shared & feature-specific)
+    ├── services/       # Core business logic (Matchmaking, API wrappers)
+    ├── actions/        # Server Actions for DB mutations
+    ├── hooks/          # Custom React hooks (Store, Auth)
+    ├── lib/            # Utility libraries (Prisma client, Supabase)
+    ├── types/          # TypeScript interfaces
+    └── data/           # Static data & JSON databases
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+- Node.js (Latest LTS)
+- Supabase Project
+- Clerk Account
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/dbe-os.git
+   cd dbe-os
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Environment Setup**
+   Copy `.env.example` to `.env.local` and fill in your credentials.
+   ```bash
+   cp .env.example .env.local
+   ```
 
-## Deploy on Vercel
+4. **Database Sync**
+   ```bash
+   npx prisma db push
+   npm run db:seed
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🛣 Roadmap
+- [ ] Mobile App (PWA) extension
+- [ ] Real-time peer-to-peer chat for MatchForge
+- [ ] AI-powered resume analyzer for Internship Hunter
+- [ ] Automated deadline sync with Google Calendar
+
+---
+
+## 🤝 Contributing
+We welcome contributions from the IIMB community! Please check our `CONTRIBUTING.md` (coming soon) for guidelines.
+
+## 👨‍💻 Team
+Built with Passion by **Ishaan Jha** & **Madhwendra**.
+Special thanks to the IIM Bangalore DBE community.
+
+---
+
+*“Built by students, for students.”*
