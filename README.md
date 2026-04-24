@@ -57,6 +57,38 @@ A gamified productivity system where students earn "Tomatoes" for completing tas
     ├── lib/            # Utility libraries (Prisma client, Supabase)
     ├── types/          # TypeScript interfaces
     └── data/           # Static data & JSON databases
+
+                ┌────────────────────────────┐
+                │        Frontend (UI)       │
+                │  Next.js + Tailwind + FM   │
+                └────────────┬───────────────┘
+                             │
+                             ▼
+                ┌────────────────────────────┐
+                │   Next.js Server Layer     │
+                │  (Server Actions / Routes) │
+                └────────────┬───────────────┘
+                             │
+        ┌────────────────────┼────────────────────┐
+        ▼                    ▼                    ▼
+┌───────────────┐   ┌────────────────┐   ┌──────────────────┐
+│  Services     │   │  Auth Layer    │   │ External Services│
+│ (Business     │   │ Clerk + Supa   │   │ NVIDIA NIM (AI)  │
+│ Logic Layer)  │   └────────────────┘   └──────────────────┘
+└──────┬────────┘
+       │
+       ▼
+┌────────────────────────────┐
+│     Database Layer         │
+│ PostgreSQL (Supabase)      │
+│ + Prisma ORM               │
+└────────────┬───────────────┘
+             │
+             ▼
+┌────────────────────────────┐
+│   Supabase Infrastructure  │
+│ (Storage, Edge Functions)  │
+└────────────────────────────┘
 ```
 
 ---
