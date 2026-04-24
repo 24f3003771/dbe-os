@@ -97,12 +97,47 @@ export default async function RootLayout({
       }
   );
   const { data: { user } } = await supabase.auth.getUser();
+
+  let isUserDisabled = false;
+  if (user) {
+    const { data: profile } = await supabase.from('users').select('type').eq('id', user.id).single();
+    if (profile && profile.type === 0) {
+      isUserDisabled = true;
+    }
+  }
+
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${beVietnamPro.variable}`}>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-surface text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body">
+
+          {isUserDisabled && (
+            <div className="fixed inset-0 z-[9999] bg-surface/95 backdrop-blur-xl flex items-center justify-center p-4">
+              <div className="bg-surface-container border border-error/20 p-8 md:p-10 rounded-[2.5rem] max-w-md w-full shadow-2xl text-center relative overflow-hidden">
+                <div className="absolute top-[-20%] left-[-20%] w-48 h-48 bg-error/10 rounded-full blur-[50px] pointer-events-none" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-32 h-32 bg-primary/5 rounded-full blur-[40px] pointer-events-none" />
+                
+                <div className="w-20 h-20 bg-error/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-error/20 shadow-inner">
+                  <span className="material-symbols-outlined text-error text-4xl">block</span>
+                </div>
+                
+                <h2 className="text-3xl font-black font-headline text-on-surface tracking-tight mb-3">Account Disabled</h2>
+                <p className="text-sm font-medium text-on-surface-variant leading-relaxed mb-8 px-2">
+                  Your account has been disabled. You no longer have access to the DBE OS. Please contact an administrator if you believe this is a mistake.
+                </p>
+                
+                <a 
+                  href="mailto:admin@dbeos.in" 
+                  className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">mail</span>
+                  Contact Admin
+                </a>
+              </div>
+            </div>
+          )}
 
           <ClientNavbarWrapper user={user} />
 

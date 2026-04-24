@@ -59,14 +59,9 @@ export const updateSession = async (request: NextRequest) => {
     if (user && isProtectedRoute) {
         const { data: profile } = await supabase.from('users').select('type, role').eq('id', user.id).single();
         
-        if (profile && profile.type === 0) {
-            // If disabled, sign them out and redirect to login with an error message
-            await supabase.auth.signOut();
-            const url = request.nextUrl.clone();
-            url.pathname = "/login";
-            url.searchParams.set("error", "Your account has been disabled. Please contact support.");
-            return NextResponse.redirect(url);
-        }
+        // If disabled, we let them through to the page, but layout.tsx will render a global un-dismissible dialog.
+        // We do not sign them out so they stay logged in.
+
 
         // If trying to access /hq-admin without SUPER_ADMIN role, redirect to dashboard
         if (request.nextUrl.pathname.startsWith('/hq-admin') && (!profile || profile.role !== 'SUPER_ADMIN')) {
