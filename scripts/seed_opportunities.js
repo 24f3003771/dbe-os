@@ -1,7 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-
-async function seed() {
+async function seedOpportunities(prisma) {
     // 1. Competitions
     const competitions = [
         {
@@ -110,7 +107,6 @@ async function seed() {
         }
     }
 
-    console.log("Opportunity Hub Seeded successfully!");
 }
 
-seed().catch(console.error).finally(() => prisma.$disconnect());
+module.exports = { seedOpportunities };

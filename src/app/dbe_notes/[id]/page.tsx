@@ -9,7 +9,7 @@ export default async function UniversalNotePage({ params }: { params: Promise<{ 
     const { id } = await params;
     const subject = getSubjectById(id);
     
-    const filePath = path.join(process.cwd(), 'term2_data', 'notes', `${id}.md`);
+    const filePath = path.join(process.cwd(), 'src', 'data', 'notes', `${id}.md`);
     let content = '';
     
     try {
