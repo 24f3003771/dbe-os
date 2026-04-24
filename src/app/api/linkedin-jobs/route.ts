@@ -6,14 +6,16 @@ export async function GET(request: Request) {
     const keyword = searchParams.get('keyword') || 'internship';
     const location = searchParams.get('location') || 'India';
 
+    const limit = searchParams.get('limit') || '25';
+
     try {
-        console.log(`Fetching LinkedIn jobs for: ${keyword} in ${location}`);
+        console.log(`Fetching LinkedIn jobs for: ${keyword} in ${location} (Limit: ${limit})`);
         const jobs = await query({
             keyword: keyword,
             location: location,
-            dateSincePosted: 'past Month', // Increased range for better results during testing
+            dateSincePosted: 'past Month', // Covers the 15-day window
             jobType: 'internship',
-            limit: '20',
+            limit: limit,
         });
         
         return NextResponse.json(jobs);

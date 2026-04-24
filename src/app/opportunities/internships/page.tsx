@@ -19,12 +19,17 @@ import {
     Rocket,
     Users,
     Target,
-    ChevronDown,
-    ExternalLink,
-    FileText,
     TrendingUp,
     Linkedin,
-    Loader2
+    Loader2,
+    ShieldCheck as Shield,
+    Cpu,
+    Coins,
+    BarChart3,
+    HeartPulse,
+    Car,
+    ShoppingBag,
+    Gem
 } from "lucide-react";
 import Link from "next/link";
 
@@ -69,42 +74,49 @@ const COMPANY_CATALOG = [
     { id: "pg", name: "P&G", category: "FMCG", portal: "https://www.pgcareers.com/", status: "Selective", industry: "Consumer Goods" },
     { id: "reckitt", name: "Reckitt", category: "FMCG", portal: "https://careers.reckitt.com/", status: "Active", industry: "Health & Hygiene" },
     { id: "nestle", name: "Nestle", category: "FMCG", portal: "https://www.nestle.in/jobs", status: "Active", industry: "Nutrition" },
-    { id: "reliance", name: "Reliance", category: "Corporate", portal: "https://jsf.ril.com/", status: "Volume", industry: "Conglomerate" },
-    { id: "tata", name: "TAS", category: "Corporate", portal: "https://www.tata.com/careers/programs/tas", status: "Seasonal", industry: "Conglomerate" },
+    { id: "reliance", name: "Reliance", category: "Corporate", portal: "https://jsf.ril.com/", status: "Volume", industry: "Conglomerate", tier: "T1" },
+    { id: "tata", name: "TAS", category: "Corporate", portal: "https://www.tata.com/careers/programs/tas", status: "Seasonal", industry: "Conglomerate", tier: "T1" },
 
     // Finance & Banks
-    { id: "goldman", name: "Goldman Sachs", category: "Finance", portal: "https://www.goldmansachs.com/careers/students/", status: "Selective", industry: "IB" },
-    { id: "jpmorgan", name: "J.P. Morgan", category: "Finance", portal: "https://careers.jpmorgan.com/US/en/students/programs", status: "Active", industry: "IB" },
-    { id: "morganstanley", name: "Morgan Stanley", category: "Finance", portal: "https://www.morganstanley.com/people-opportunities/students-graduates", status: "Selective", industry: "IB" },
-    { id: "hsbc", name: "HSBC", category: "Finance", portal: "https://www.hsbc.com/careers/students-and-graduates", status: "Active", industry: "Banking" },
-    { id: "americanexpress", name: "Amex", category: "Finance", portal: "https://www.americanexpress.com/en-us/careers/students/", status: "Active", industry: "Payments" },
+    { id: "goldman", name: "Goldman Sachs", category: "Finance", portal: "https://www.goldmansachs.com/careers/students/", status: "Selective", industry: "IB", tier: "T1" },
+    { id: "jpmorgan", name: "J.P. Morgan", category: "Finance", portal: "https://careers.jpmorgan.com/US/en/students/programs", status: "Active", industry: "IB", tier: "T1" },
+    { id: "morganstanley", name: "Morgan Stanley", category: "Finance", portal: "https://www.morganstanley.com/people-opportunities/students-graduates", status: "Selective", industry: "IB", tier: "T1" },
+    { id: "hsbc", name: "HSBC", category: "Finance", portal: "https://www.hsbc.com/careers/students-and-graduates", status: "Active", industry: "Banking", tier: "T2" },
+    { id: "americanexpress", name: "Amex", category: "Finance", portal: "https://www.americanexpress.com/en-us/careers/students/", status: "Active", industry: "Payments", tier: "T1" },
 
     // E-commerce & Others
-    { id: "flipkart", name: "Flipkart", category: "Consumer Tech", portal: "https://www.flipkartcareers.com/", status: "Active", industry: "E-commerce" },
-    { id: "myntra", name: "Myntra", category: "Consumer Tech", portal: "https://careers.myntra.com/", status: "Active", industry: "E-commerce" },
-    { id: "nykaa", name: "Nykaa", category: "Consumer Tech", portal: "https://www.nykaa.com/gateway-api/careers", status: "Active", industry: "Beauty Tech" },
-    { id: "airbus", name: "Airbus", category: "Core", portal: "https://www.airbus.com/en/careers/students", status: "Selective", industry: "Aerospace" },
-    { id: "telsa", name: "Tesla", category: "Core", portal: "https://www.tesla.com/careers/internships", status: "Exclusive", industry: "EV" }
+    { id: "flipkart", name: "Flipkart", category: "Consumer Tech", portal: "https://www.flipkartcareers.com/", status: "Active", industry: "E-commerce", tier: "T1" },
+    { id: "myntra", name: "Myntra", category: "Consumer Tech", portal: "https://careers.myntra.com/", status: "Active", industry: "E-commerce", tier: "T1" },
+    { id: "nykaa", name: "Nykaa", category: "Consumer Tech", portal: "https://www.nykaa.com/gateway-api/careers", status: "Active", industry: "Beauty Tech", tier: "T1" },
+    { id: "airbus", name: "Airbus", category: "Core", portal: "https://www.airbus.com/en/careers/students", status: "Selective", industry: "Aerospace", tier: "T1" },
+    { id: "tesla", name: "Tesla", category: "Core", portal: "https://www.tesla.com/careers/internships", status: "Exclusive", industry: "EV", tier: "T1" }
 ];
 
-const CATEGORIES = ["All Portals", "Consumer Tech", "Big Tech", "SaaS & Fintech", "Consulting", "FMCG", "Finance"];
+const SECTORS = [
+    { id: "All", name: "All Sectors", icon: Globe },
+    { id: "Tech", name: "Tech & AI", icon: Cpu },
+    { id: "Finance", name: "Finance & IB", icon: Coins },
+    { id: "Consulting", name: "Strategy & Cons", icon: BarChart3 },
+    { id: "FMCG", name: "FMCG & Retail", icon: ShoppingBag },
+    { id: "Healthcare", name: "Healthcare", icon: HeartPulse },
+    { id: "Mobility", name: "Mobility & EV", icon: Car }
+];
 
-export default function InternshipHunterPage() {
+    const [viewMode, setViewMode] = useState<"CHOOSE" | "PORTALS" | "LIVE">("CHOOSE");
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("All Portals");
-    const [isLiveSearch, setIsLiveSearch] = useState(false);
+    const [selectedSector, setSelectedSector] = useState("All");
+    const [selectedTier, setSelectedTier] = useState("All");
     const [liveJobs, setLiveJobs] = useState<any[]>([]);
     const [isSearching, setIsSearching] = useState(false);
 
-    const handleLiveSearch = async () => {
-        const query = searchQuery || "Internship";
+    const handleLiveSearch = async (queryOverride?: string) => {
+        const query = queryOverride || searchQuery || "Internship";
         console.log("Starting live search for:", query);
         setIsSearching(true);
-        setIsLiveSearch(true);
+        setViewMode("LIVE");
         try {
-            const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(query)}&location=India`);
+            const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(query)}&location=India&limit=50`);
             const data = await response.json();
-            console.log("Search results received:", data);
             if (Array.isArray(data)) {
                 setLiveJobs(data);
             } else {
@@ -122,10 +134,11 @@ export default function InternshipHunterPage() {
         return COMPANY_CATALOG.filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                  item.industry.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = selectedCategory === "All Portals" || item.category === selectedCategory;
-            return matchesSearch && matchesCategory;
+            const matchesSector = selectedSector === "All" || item.category === selectedSector || item.industry.includes(selectedSector);
+            const matchesTier = selectedTier === "All" || item.tier === selectedTier;
+            return matchesSearch && matchesSector && matchesTier;
         });
-    }, [searchQuery, selectedCategory]);
+    }, [searchQuery, selectedSector, selectedTier]);
 
     return (
         <div className="min-h-screen bg-surface-container-lowest text-on-surface animate-in fade-in duration-1000 pb-40">
@@ -163,96 +176,155 @@ export default function InternshipHunterPage() {
                 <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
             </header>
 
-            {/* Preparation Roadmap Section */}
-            <section className="max-w-7xl mx-auto px-6 py-20">
-                <div className="flex items-center gap-4 mb-12 px-4">
-                    <div className="w-1.5 h-8 bg-primary rounded-full" />
-                    <h2 className="text-3xl font-black font-headline italic tracking-tight">The B-School Prep Roadmap</h2>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 px-4">
-                    <RoadmapItem step="01" label="Profile Design" detail="High-yield resume, LinkedIn SEO, and Portfolio setup." icon={FileText} color="bg-indigo-500" />
-                    <RoadmapItem step="02" label="Core Preparation" detail="Aptitude logic, Domain depth, and Case prep." icon={Zap} color="bg-amber-500" />
-                    <RoadmapItem step="03" label="Hunter Phase" detail="Apply via official portals and Referral networking." icon={ExternalLink} color="bg-primary" />
-                    <RoadmapItem step="04" label="Closing" detail="Mock behavioral rounds and Negotiation style." icon={Target} color="bg-rose-500" />
-                </div>
-            </section>
-
-            {/* Application Engine */}
-            <section className="max-w-7xl mx-auto px-6 space-y-10">
-                {/* Search & Filter Bar */}
-                <div className="flex flex-col md:flex-row items-center gap-4 bg-white border border-stone-100 p-4 rounded-[2.5rem] shadow-xl shadow-stone-200/50 sticky top-4 z-50">
-                    <div className="relative flex-1 w-full">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-300" />
-                        <input 
-                            type="text"
-                            placeholder="Find Blinkit, Swiggy, Google..."
-                            className="w-full bg-stone-50/50 border-none rounded-[1.8rem] py-4 pl-14 pr-6 focus:ring-2 focus:ring-primary/20 transition-all font-bold text-stone-600"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex gap-2 w-full md:w-auto">
-                        <select 
-                            className="bg-stone-50/50 border-none rounded-[1.8rem] px-8 py-4 font-black text-sm text-stone-600 focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
-                            value={selectedCategory}
-                            onChange={(e) => {
-                                setSelectedCategory(e.target.value);
-                                setIsLiveSearch(false);
-                            }}
-                        >
-                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
+            {/* Mode Selection Gatekeeper */}
+            {viewMode === "CHOOSE" && (
+                <section className="max-w-7xl mx-auto px-6 -mt-20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <button 
-                            onClick={handleLiveSearch}
-                            disabled={isSearching}
-                            className="bg-[#1A1A1A] text-white px-8 py-4 rounded-[1.8rem] font-black text-xs uppercase tracking-widest hover:bg-primary transition-all flex items-center gap-2 disabled:opacity-50"
+                            onClick={() => setViewMode("PORTALS")}
+                            className="group relative bg-white border border-stone-100 rounded-[3rem] p-12 text-left hover:border-primary transition-all shadow-2xl shadow-stone-200/50"
                         >
-                            {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Linkedin className="w-4 h-4" />}
-                            Live Search
-                        </button>
-                    </div>
-                </div>
-
-                {/* Search Results Summary */}
-                {isLiveSearch && (
-                    <div className="flex items-center justify-between px-4">
-                        <div className="flex items-center gap-3">
-                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <p className="text-sm font-bold text-stone-500">Found {liveJobs.length} live listings on LinkedIn</p>
-                        </div>
-                        <button 
-                            onClick={() => setIsLiveSearch(false)}
-                            className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
-                        >
-                            Back to Portals
-                        </button>
-                    </div>
-                )}
-
-                {/* Portals Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 px-4">
-                    {isLiveSearch ? (
-                        liveJobs.length > 0 ? (
-                            liveJobs.map((job, idx) => (
-                                <LinkedInJobCard key={idx} job={job} />
-                            ))
-                        ) : !isSearching && (
-                            <div className="col-span-full py-20 text-center space-y-4">
-                                <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto text-stone-300">
-                                    <Search className="w-10 h-10" />
+                            <div className="space-y-6">
+                                <div className="w-20 h-20 bg-stone-50 rounded-[1.8rem] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                    <Building2 className="w-10 h-10" />
                                 </div>
-                                <h3 className="text-xl font-black italic">No live listings found.</h3>
-                                <p className="text-stone-500 font-medium max-w-xs mx-auto">Try a different keyword or location to discover more opportunities.</p>
+                                <div className="space-y-2">
+                                    <h3 className="text-4xl font-black font-headline tracking-tight leading-none italic">Verified Corporate <br/><span className="text-primary">Portals.</span></h3>
+                                    <p className="text-stone-500 font-medium text-lg leading-relaxed">Direct links to official career pages of Tier 1 firms, MAANG, and Elite Consulting.</p>
+                                </div>
+                                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+                                    Direct Redirect <ChevronRight className="w-4 h-4" />
+                                </div>
                             </div>
-                        )
-                    ) : (
-                        filteredPortals.map(company => (
-                            <PortalCard key={company.id} company={company} />
-                        ))
-                    )}
-                </div>
-            </section>
+                        </button>
+
+                        <button 
+                            onClick={() => handleLiveSearch()}
+                            className="group relative bg-[#1A1A1A] rounded-[3rem] p-12 text-left hover:ring-2 hover:ring-primary/50 transition-all shadow-2xl"
+                        >
+                            <div className="space-y-6">
+                                <div className="w-20 h-20 bg-white/10 rounded-[1.8rem] flex items-center justify-center text-white group-hover:bg-primary transition-all">
+                                    <Linkedin className="w-10 h-10" />
+                                </div>
+                                <div className="space-y-2">
+                                    <h3 className="text-4xl font-black font-headline tracking-tight leading-none italic text-white">Live AI Job <br/><span className="text-primary">Hunter.</span></h3>
+                                    <p className="text-stone-300 font-medium text-lg leading-relaxed">Real-time LinkedIn scraping for internships posted in the <span className="text-primary underline underline-offset-4 decoration-2">last 15 days</span>.</p>
+                                </div>
+                                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover:text-primary">
+                                    Extract Openings <ChevronRight className="w-4 h-4" />
+                                </div>
+                            </div>
+                            <div className="absolute top-8 right-8">
+                                <div className="px-3 py-1 bg-primary text-[8px] font-black uppercase tracking-widest text-white rounded-full animate-pulse">Live Now</div>
+                            </div>
+                        </button>
+                    </div>
+                </section>
+            )}
+
+            {viewMode !== "CHOOSE" && (
+                <section className="max-w-7xl mx-auto px-6 space-y-10">
+                    {/* Simplified Switcher Bar */}
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                        <div className="flex bg-stone-100 p-1.5 rounded-full w-fit">
+                            <button 
+                                onClick={() => setViewMode("PORTALS")}
+                                className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'PORTALS' ? 'bg-white shadow-sm text-primary' : 'text-stone-400 hover:text-stone-600'}`}
+                            >
+                                Official Portals
+                            </button>
+                            <button 
+                                onClick={() => handleLiveSearch()}
+                                className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'LIVE' ? 'bg-[#1A1A1A] shadow-sm text-white' : 'text-stone-400 hover:text-stone-600'}`}
+                            >
+                                Live AI Hunter
+                            </button>
+                        </div>
+                        
+                        <div className="flex-1 flex flex-wrap items-center gap-4">
+                            {SECTORS.map(sector => (
+                                <button 
+                                    key={sector.id}
+                                    onClick={() => setSelectedSector(sector.id)}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedSector === sector.id ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-white border-stone-100 text-stone-500 hover:border-stone-200'}`}
+                                >
+                                    <sector.icon className="w-3.5 h-3.5" />
+                                    {sector.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Search & Tier Filter Bar */}
+                    <div className="flex flex-col md:flex-row items-center gap-4 bg-white border border-stone-100 p-4 rounded-[2.5rem] shadow-xl shadow-stone-200/50 sticky top-4 z-50">
+                        <div className="relative flex-1 w-full">
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-300" />
+                            <input 
+                                type="text"
+                                placeholder={viewMode === 'PORTALS' ? "Search 50+ Corporate Portals..." : "Describe your ideal role (e.g. Marketing Intern Bangalore)..."}
+                                className="w-full bg-stone-50/50 border-none rounded-[1.8rem] py-4 pl-14 pr-6 focus:ring-2 focus:ring-primary/20 transition-all font-bold text-stone-600"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && (viewMode === 'LIVE' ? handleLiveSearch() : null)}
+                            />
+                        </div>
+                        {viewMode === 'PORTALS' && (
+                            <div className="flex gap-2 w-full md:w-auto">
+                                <select 
+                                    className="bg-stone-50/50 border-none rounded-[1.8rem] px-8 py-4 font-black text-sm text-stone-600 focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
+                                    value={selectedTier}
+                                    onChange={(e) => setSelectedTier(e.target.value)}
+                                >
+                                    <option value="All">All Quality Tiers</option>
+                                    <option value="T1">Tier 1 (Global Elite)</option>
+                                    <option value="T2">Tier 2 (Growth Firms)</option>
+                                </select>
+                            </div>
+                        )}
+                        {viewMode === 'LIVE' && (
+                            <button 
+                                onClick={() => handleLiveSearch()}
+                                disabled={isSearching}
+                                className="bg-[#1A1A1A] text-white px-8 py-4 rounded-[1.8rem] font-black text-xs uppercase tracking-widest hover:bg-primary transition-all flex items-center gap-2 disabled:opacity-50 min-w-[180px] justify-center"
+                            >
+                                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Linkedin className="w-4 h-4" />}
+                                {isSearching ? "Extracting..." : "Live Fetch"}
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Results Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 px-4">
+                        {viewMode === 'LIVE' ? (
+                            isSearching ? (
+                                Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+                            ) : liveJobs.length > 0 ? (
+                                liveJobs.map((job, idx) => <LinkedInJobCard key={idx} job={job} />)
+                            ) : (
+                                <EmptyState onReset={() => setViewMode("CHOOSE")} />
+                            )
+                        ) : (
+                            filteredPortals.map(company => <PortalCard key={company.id} company={company} />)
+                        )}
+                    </div>
+                </section>
+            )}
+
+            {/* Preparation Roadmap Section (Moved below Mode Selector) */}
+            {viewMode === "CHOOSE" && (
+                <section className="max-w-7xl mx-auto px-6 py-20 mt-10">
+                    <div className="flex items-center gap-4 mb-12 px-4">
+                        <div className="w-1.5 h-8 bg-primary rounded-full" />
+                        <h2 className="text-3xl font-black font-headline italic tracking-tight">The B-School Prep Roadmap</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 px-4">
+                        <RoadmapItem step="01" label="Profile Design" detail="High-yield resume, LinkedIn SEO, and Portfolio setup." icon={FileText} color="bg-indigo-500" />
+                        <RoadmapItem step="02" label="Core Preparation" detail="Aptitude logic, Domain depth, and Case prep." icon={Zap} color="bg-amber-500" />
+                        <RoadmapItem step="03" label="Hunter Phase" detail="Apply via official portals and Referral networking." icon={ExternalLink} color="bg-primary" />
+                        <RoadmapItem step="04" label="Closing" detail="Mock behavioral rounds and Negotiation style." icon={Target} color="bg-rose-500" />
+                    </div>
+                </section>
+            )}
 
             {/* General Preparation Guide (Minimal Footer) */}
             <section className="max-w-5xl mx-auto px-6 mt-32">
@@ -398,5 +470,45 @@ function LinkedInJobCard({ job }: any) {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
         </a>
+    );
+}
+
+function SkeletonCard() {
+    return (
+        <div className="bg-white border border-stone-100 rounded-[2rem] p-8 animate-pulse space-y-6">
+            <div className="flex justify-between">
+                <div className="w-14 h-14 bg-stone-100 rounded-2xl" />
+                <div className="w-16 h-4 bg-stone-100 rounded-full" />
+            </div>
+            <div className="space-y-3">
+                <div className="w-1/2 h-2 bg-stone-100 rounded-full" />
+                <div className="w-full h-4 bg-stone-100 rounded-full" />
+                <div className="w-2/3 h-4 bg-stone-100 rounded-full" />
+            </div>
+            <div className="pt-8 flex justify-between">
+                <div className="w-20 h-2 bg-stone-100 rounded-full" />
+                <div className="w-8 h-8 bg-stone-100 rounded-full" />
+            </div>
+        </div>
+    );
+}
+
+function EmptyState({ onReset }: any) {
+    return (
+        <div className="col-span-full py-20 text-center space-y-4 bg-white border border-stone-100 rounded-[3rem]">
+            <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto text-stone-300">
+                <Search className="w-10 h-10" />
+            </div>
+            <h3 className="text-xl font-black italic leading-none">No live listings found.</h3>
+            <p className="text-stone-500 font-medium max-w-xs mx-auto text-sm leading-relaxed">
+                LinkedIn extraction failed or returned zero results for the last 15 days. Try broadening your keywords.
+            </p>
+            <button 
+                onClick={onReset}
+                className="mt-4 text-xs font-black uppercase tracking-widest text-primary hover:underline"
+            >
+                Reset Search Engine
+            </button>
+        </div>
     );
 }
