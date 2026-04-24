@@ -143,8 +143,32 @@ export default function InternshipHunterPage() {
         });
     }, [searchQuery, selectedSector, selectedTier]);
 
+    const OPPORTUNITY_NAV = [
+        { name: "Hub", href: "/opportunities", icon: Globe },
+        { name: "Internships", href: "/opportunities/internships", icon: Briefcase, active: true },
+        { name: "Competitions", href: "/opportunities/COMPETITION", icon: Trophy },
+        { name: "Winners Bank", href: "/opportunities/winning-repository", icon: Star },
+        { name: "Pitch Decks", href: "/opportunities/pitch-decks", icon: Sparkles },
+    ];
+
     return (
         <div className="min-h-screen bg-stone-50/50 text-slate-900 animate-in fade-in duration-1000 pb-40">
+            {/* Global Opportunity Nav */}
+            <nav className="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-3 flex justify-center overflow-x-auto">
+                <div className="flex items-center gap-2 bg-slate-100/50 p-1 rounded-2xl border border-slate-200/50">
+                    {OPPORTUNITY_NAV.map((nav) => (
+                        <Link 
+                            key={nav.name}
+                            href={nav.href}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${nav.active ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
+                        >
+                            <nav.icon className="w-3 h-3" />
+                            {nav.name}
+                        </Link>
+                    ))}
+                </div>
+            </nav>
+
             {/* Soft Premium Hero */}
             <header className="relative py-28 px-6 lg:px-12 bg-slate-950 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-primary/5 opacity-40" />
@@ -446,7 +470,7 @@ function LinkedInJobCard({ job }: any) {
             <div className="h-full bg-white border border-slate-100 rounded-[2.5rem] p-10 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 relative overflow-hidden">
                 <div className="space-y-8">
                     <div className="flex justify-between items-start">
-                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-inner border border-slate-100 overflow-hidden relative">
+                        <div className="w-16 h-16 rounded-[1.4rem] flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-lg border border-slate-100 overflow-hidden relative">
                             {job.companyLogo ? (
                                 <img 
                                     src={job.companyLogo} 
@@ -455,7 +479,9 @@ function LinkedInJobCard({ job }: any) {
                                     onError={(e: any) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                                 />
                             ) : null}
-                            <div className={`w-full h-full items-center justify-center bg-slate-50 text-slate-400 font-black text-xl ${job.companyLogo ? 'hidden' : 'flex'}`}>
+                            <div className={`w-full h-full items-center justify-center bg-gradient-to-br font-black text-2xl ${
+                                ['from-indigo-500 to-blue-600', 'from-emerald-500 to-teal-600', 'from-rose-500 to-pink-600', 'from-amber-500 to-orange-600', 'from-violet-500 to-purple-600'][job.company?.length % 5]
+                            } ${job.companyLogo ? 'hidden' : 'flex'}`}>
                                 {job.company?.charAt(0)}
                             </div>
                         </div>
@@ -469,8 +495,8 @@ function LinkedInJobCard({ job }: any) {
                     
                     <div className="space-y-2">
                         <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em]">{job.location}</p>
-                        <h3 className="text-2xl font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-emerald-600 transition-colors">{job.title}</h3>
-                        <p className="text-slate-500 text-sm font-bold">{job.company}</p>
+                        <h3 className="text-xl font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-emerald-600 transition-colors line-clamp-2">{job.title}</h3>
+                        <p className="text-slate-500 text-[11px] font-bold">{job.company}</p>
                     </div>
                 </div>
 
