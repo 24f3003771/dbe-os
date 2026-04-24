@@ -22,7 +22,9 @@ import {
     ChevronDown,
     ExternalLink,
     FileText,
-    TrendingUp
+    TrendingUp,
+    Linkedin,
+    Loader2
 } from "lucide-react";
 import Link from "next/link";
 
@@ -90,6 +92,26 @@ const CATEGORIES = ["All Portals", "Consumer Tech", "Big Tech", "SaaS & Fintech"
 export default function InternshipHunterPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All Portals");
+    const [isLiveSearch, setIsLiveSearch] = useState(false);
+    const [liveJobs, setLiveJobs] = useState<any[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+
+    const handleLiveSearch = async () => {
+        if (!searchQuery) return;
+        setIsSearching(true);
+        setIsLiveSearch(true);
+        try {
+            const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(searchQuery)}&location=India`);
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                setLiveJobs(data);
+            }
+        } catch (error) {
+            console.error("Search failed:", error);
+        } finally {
+            setIsSearching(false);
+        }
+    };
 
     const filteredPortals = useMemo(() => {
         return COMPANY_CATALOG.filter(item => {
@@ -169,18 +191,51 @@ export default function InternshipHunterPage() {
                         <select 
                             className="bg-stone-50/50 border-none rounded-[1.8rem] px-8 py-4 font-black text-sm text-stone-600 focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
                             value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedCategory(e.target.value);
+                                setIsLiveSearch(false);
+                            }}
                         >
                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
+                        <button 
+                            onClick={handleLiveSearch}
+                            disabled={isSearching}
+                            className="bg-[#1A1A1A] text-white px-8 py-4 rounded-[1.8rem] font-black text-xs uppercase tracking-widest hover:bg-primary transition-all flex items-center gap-2 disabled:opacity-50"
+                        >
+                            {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Linkedin className="w-4 h-4" />}
+                            Live Search
+                        </button>
                     </div>
                 </div>
 
+                {/* Search Results Summary */}
+                {isLiveSearch && (
+                    <div className="flex items-center justify-between px-4">
+                        <div className="flex items-center gap-3">
+                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                            <p className="text-sm font-bold text-stone-500">Found {liveJobs.length} live listings on LinkedIn</p>
+                        </div>
+                        <button 
+                            onClick={() => setIsLiveSearch(false)}
+                            className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
+                        >
+                            Back to Portals
+                        </button>
+                    </div>
+                )}
+
                 {/* Portals Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 px-4">
-                    {filteredPortals.map(company => (
-                        <PortalCard key={company.id} company={company} />
-                    ))}
+                    {isLiveSearch ? (
+                        liveJobs.map((job, idx) => (
+                            <LinkedInJobCard key={idx} job={job} />
+                        ))
+                    ) : (
+                        filteredPortals.map(company => (
+                            <PortalCard key={company.id} company={company} />
+                        ))
+                    )}
                 </div>
             </section>
 
@@ -275,6 +330,52 @@ function PortalCard({ company }: any) {
                     <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">Internship Portal</span>
                     <div className="w-10 h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform shadow-sm">
                         <ArrowUpRight className="w-5 h-5 text-primary" />
+                    </div>
+                </div>
+
+                {/* Decorative bg light */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+        </a>
+    );
+}
+
+function LinkedInJobCard({ job }: any) {
+    return (
+        <a 
+            href={job.jobUrl} 
+            target="_blank" 
+            className="group block h-full"
+        >
+            <div className="h-full bg-white border border-stone-100 rounded-[2rem] p-8 flex flex-col justify-between hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden">
+                <div className="space-y-6">
+                    <div className="flex justify-between items-start">
+                        <div className="w-14 h-14 bg-stone-50 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-stone-100 overflow-hidden">
+                            {job.companyLogo ? (
+                                <img src={job.companyLogo} alt={job.company} className="w-full h-full object-cover" />
+                            ) : (
+                                <Linkedin className="w-7 h-7" />
+                            )}
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                            <span className="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-indigo-50 text-indigo-600 border border-indigo-100">
+                                Live Listing
+                            </span>
+                            <span className="text-[8px] font-bold text-stone-400">{job.postDate}</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">{job.location}</p>
+                        <h3 className="text-xl font-black font-headline text-stone-900 tracking-tighter italic leading-tight group-hover:text-primary transition-colors">{job.title}</h3>
+                        <p className="text-stone-500 text-xs font-bold mt-2">{job.company}</p>
+                    </div>
+                </div>
+
+                <div className="mt-8 flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">View on LinkedIn</span>
+                    <div className="w-10 h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform shadow-sm">
+                        <ExternalLink className="w-5 h-5 text-primary" />
                     </div>
                 </div>
 
