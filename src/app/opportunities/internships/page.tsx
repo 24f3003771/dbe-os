@@ -12,6 +12,7 @@ import {
     Zap, 
     ArrowUpRight,
     ExternalLink,
+    FileText,
     Trophy,
     ShieldCheck,
     Globe,
