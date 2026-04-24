@@ -33,7 +33,7 @@ export default function OpportunityHubPage() {
             {/* Main Categories */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
                 {/* Competitions Card */}
-                <Link href="/opportunities/COMPETITION" className="group">
+                <Link href="/opportunities/competitions" className="group">
                     <div className="h-full bg-white border border-stone-100 rounded-[2.5rem] p-10 flex flex-col justify-between hover:border-indigo-600/30 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-500 transform group-hover:-translate-y-2">
                         <div className="space-y-6">
                             <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all">

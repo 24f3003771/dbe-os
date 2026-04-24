@@ -155,7 +155,7 @@ export default function InternshipHunterPage() {
     const OPPORTUNITY_NAV = [
         { name: "Hub", href: "/opportunities", icon: Globe },
         { name: "Internships", href: "/opportunities/internships", icon: Briefcase, active: true },
-        { name: "Competitions", href: "/opportunities/COMPETITION", icon: Trophy },
+        { name: "Competitions", href: "/opportunities/competitions", icon: Trophy },
         { name: "Winners Bank", href: "/opportunities/winning-repository", icon: Star },
         { name: "Pitch Decks", href: "/opportunities/pitch-decks", icon: Sparkles },
     ];
