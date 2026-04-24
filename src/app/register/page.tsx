@@ -298,7 +298,7 @@ export default function RegisterPage() {
                                     <button type="button" onClick={() => setStep(1)} className="py-4 px-6 bg-surface border border-outline-variant/20 rounded-2xl font-black text-on-surface-variant hover:bg-surface-container transition-all">
                                         Back
                                     </button>
-                                    <button type="submit" className="flex-1 py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2">
+                                    <button type="submit" disabled={isFetchingLocation} className="flex-1 py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2 disabled:opacity-50">
                                         Continue <ArrowRight className="w-4 h-4" />
                                     </button>
                                 </div>
