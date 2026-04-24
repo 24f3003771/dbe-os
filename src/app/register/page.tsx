@@ -82,6 +82,14 @@ export default function RegisterPage() {
             }
         }
 
+        // Step 2 Validation
+        if (step === 2) {
+            if (!pincode || pincode.trim().length !== 6 || !city.trim() || !state.trim()) {
+                setError("Please provide a valid 6-digit Pincode, City, and State.");
+                return;
+            }
+        }
+
         setStep(prev => prev + 1);
     };
 

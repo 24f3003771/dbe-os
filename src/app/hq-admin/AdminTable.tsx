@@ -35,7 +35,12 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
     const toggleUserStatus = async (userId: string, currentType: number) => {
         setLoadingId(userId + "-status");
         try {
-            const newType = currentType === 0 ? 1 : 0;
+            const user = users.find(u => u.id === userId);
+            let newType = 0;
+            if (currentType === 0) {
+                newType = user?.email.toLowerCase().endsWith('@iimb.ac.in') ? 1 : 2;
+            }
+            
             const { error } = await supabase
                 .from('users')
                 .update({ type: newType })
