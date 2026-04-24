@@ -23,6 +23,8 @@ import {
     Target,
     TrendingUp,
     Linkedin,
+    Star,
+    Sparkles,
     Loader2,
     ShieldCheck as Shield,
     Cpu,
