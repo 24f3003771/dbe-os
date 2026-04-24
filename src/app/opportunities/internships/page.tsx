@@ -111,9 +111,16 @@ export default function InternshipHunterPage() {
     const [selectedTier, setSelectedTier] = useState("All");
     const [liveJobs, setLiveJobs] = useState<any[]>([]);
     const [isSearching, setIsSearching] = useState(false);
+    const [customKeyword, setCustomKeyword] = useState("Digital Business");
+
+    const PRESETS = [
+        { id: "Marketing", label: "Marketing & Strategy", icon: TrendingUp },
+        { id: "Product", label: "Product Management", icon: Target },
+        { id: "Analytics", label: "Business Analytics", icon: BarChart3 },
+    ];
 
     const handleLiveSearch = async (queryOverride?: string) => {
-        const query = queryOverride || searchQuery || "Internship";
+        const query = queryOverride || customKeyword || "Internship";
         console.log("Starting live search for:", query);
         setIsSearching(true);
         setViewMode("LIVE");
@@ -289,41 +296,64 @@ export default function InternshipHunterPage() {
                     </div>
 
                     {/* Search & Tier Filter Bar */}
-                    <div className="flex flex-col md:flex-row items-center gap-6 bg-white/80 backdrop-blur-md border border-slate-100 p-6 rounded-[3.5rem] shadow-2xl shadow-slate-200/40 sticky top-8 z-50">
-                        <div className="relative flex-1 w-full">
-                            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-300" />
-                            <input 
-                                type="text"
-                                placeholder={viewMode === 'PORTALS' ? "Find top firms (Google, BCG, HUL)..." : "Describe your ideal role (e.g. Marketing Intern Bangalore)..."}
-                                className="w-full bg-slate-50 border-none rounded-[2rem] py-5 pl-16 pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-lg placeholder:text-slate-300"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && (viewMode === 'LIVE' ? handleLiveSearch() : null)}
-                            />
-                        </div>
-                        {viewMode === 'PORTALS' && (
-                            <div className="w-full md:w-auto">
-                                <select 
-                                    className="w-full bg-slate-50 border-none rounded-[2rem] px-10 py-5 font-black text-sm text-slate-600 focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer appearance-none"
-                                    value={selectedTier}
-                                    onChange={(e) => setSelectedTier(e.target.value)}
-                                >
-                                    <option value="All">All Quality Tiers</option>
-                                    <option value="T1">Tier 1 (Global Elite)</option>
-                                    <option value="T2">Tier 2 (Growth Firms)</option>
-                                </select>
+                    <div className="space-y-6">
+                        {viewMode === 'LIVE' && (
+                            <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">Tailor your Search</p>
+                                <div className="flex flex-wrap justify-center gap-3">
+                                    {PRESETS.map((preset) => (
+                                        <button 
+                                            key={preset.id}
+                                            onClick={() => {
+                                                setCustomKeyword(preset.label);
+                                                handleLiveSearch(preset.label);
+                                            }}
+                                            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white border border-slate-100 hover:border-emerald-500 hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 font-bold text-xs transition-all shadow-sm"
+                                        >
+                                            <preset.icon className="w-3.5 h-3.5" />
+                                            {preset.label}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         )}
-                        {viewMode === 'LIVE' && (
-                            <button 
-                                onClick={() => handleLiveSearch()}
-                                disabled={isSearching}
-                                className="w-full md:w-auto bg-slate-900 text-white px-12 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-emerald-500 transition-all flex items-center gap-3 disabled:opacity-50 justify-center shadow-xl shadow-slate-900/10"
-                            >
-                                {isSearching ? <Loader2 className="w-5 h-5 animate-spin" /> : <Linkedin className="w-5 h-5" />}
-                                {isSearching ? "Extracting..." : "Live Fetch"}
-                            </button>
-                        )}
+
+                        <div className="flex flex-col md:flex-row items-center gap-6 bg-white/80 backdrop-blur-md border border-slate-100 p-6 rounded-[3.5rem] shadow-2xl shadow-slate-200/40 sticky top-24 z-50">
+                            <div className="relative flex-1 w-full">
+                                <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-300" />
+                                <input 
+                                    type="text"
+                                    placeholder={viewMode === 'PORTALS' ? "Find top firms (Google, BCG, HUL)..." : "Or type your own field (e.g. UX Design, HR)..."}
+                                    className="w-full bg-slate-50 border-none rounded-[2rem] py-5 pl-16 pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-lg placeholder:text-slate-300"
+                                    value={viewMode === 'PORTALS' ? searchQuery : customKeyword}
+                                    onChange={(e) => viewMode === 'PORTALS' ? setSearchQuery(e.target.value) : setCustomKeyword(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && (viewMode === 'LIVE' ? handleLiveSearch() : null)}
+                                />
+                            </div>
+                            {viewMode === 'PORTALS' && (
+                                <div className="w-full md:w-auto">
+                                    <select 
+                                        className="w-full bg-slate-50 border-none rounded-[2rem] px-10 py-5 font-black text-sm text-slate-600 focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer appearance-none"
+                                        value={selectedTier}
+                                        onChange={(e) => setSelectedTier(e.target.value)}
+                                    >
+                                        <option value="All">All Quality Tiers</option>
+                                        <option value="T1">Tier 1 (Global Elite)</option>
+                                        <option value="T2">Tier 2 (Growth Firms)</option>
+                                    </select>
+                                </div>
+                            )}
+                            {viewMode === 'LIVE' && (
+                                <button 
+                                    onClick={() => handleLiveSearch()}
+                                    disabled={isSearching}
+                                    className="w-full md:w-auto bg-slate-900 text-white px-12 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-emerald-500 transition-all flex items-center gap-3 disabled:opacity-50 justify-center shadow-xl shadow-slate-900/10"
+                                >
+                                    {isSearching ? <Loader2 className="w-5 h-5 animate-spin" /> : <Linkedin className="w-5 h-5" />}
+                                    {isSearching ? "Extracting..." : "Live Fetch"}
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     {/* Results Grid */}
