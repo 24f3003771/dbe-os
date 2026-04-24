@@ -8,6 +8,7 @@ import NavLinks from "@/components/NavLinks";
 import AssistantWidget from "@/components/AssistantWidget";
 import MainLoadingScreen from "@/components/MainLoadingScreen";
 import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
+import OfflineOverlay from "@/components/OfflineOverlay";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -146,6 +147,7 @@ export default async function RootLayout({
           </main>
           <MainLoadingScreen />
           <AssistantWidget />
+          <OfflineOverlay />
 
       </body>
     </html>
