@@ -102,6 +102,7 @@ const SECTORS = [
     { id: "Mobility", name: "Mobility & EV", icon: Car }
 ];
 
+export default function InternshipHunterPage() {
     const [viewMode, setViewMode] = useState<"CHOOSE" | "PORTALS" | "LIVE">("CHOOSE");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedSector, setSelectedSector] = useState("All");
