@@ -331,23 +331,23 @@ function LoginPageContent() {
                             ) : (
                                 <>
                                     <div className="p-4 bg-primary/5 border border-primary/10 rounded-2xl mb-6">
-                                        <p className="text-xs font-bold text-center text-primary">We sent an 8-digit login code to<br/><span className="text-on-surface font-black">{email}</span></p>
+                                        <p className="text-xs font-bold text-center text-primary">We sent a 6-digit login code to<br/><span className="text-on-surface font-black">{email}</span></p>
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">8-Digit Code</label>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">6-Digit Code</label>
                                         <input 
                                             type="text" 
                                             value={otp}
                                             onChange={(e) => setOtp(e.target.value)}
-                                            placeholder="12345678" 
+                                            placeholder="123456" 
                                             className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-4 px-4 text-center text-2xl tracking-[0.5em] font-black text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                                            maxLength={8}
+                                            maxLength={6}
                                             required
                                         />
                                     </div>
                                     <button 
                                         type="submit" 
-                                        disabled={isLoading || otp.length !== 8}
+                                        disabled={isLoading || otp.length !== 6}
                                         className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all disabled:opacity-50 flex items-center justify-center mt-2"
                                     >
                                         {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify Code"}

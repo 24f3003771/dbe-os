@@ -316,36 +316,38 @@ export default function RegisterPage() {
                                         <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 9876543210" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary transition-all outline-none" />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Zone</label>
-                                        <div className="relative">
-                                            <Compass className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                            <select required value={zone} onChange={(e) => setZone(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-xs font-bold focus:border-primary transition-all outline-none appearance-none">
-                                                <option value="" disabled>Select Zone</option>
-                                                <option value="NORTH ZONE 01">NORTH ZONE 01</option>
-                                                <option value="NORTH ZONE 02">NORTH ZONE 02</option>
-                                                <option value="SOUTH ZONE 01">SOUTH ZONE 01</option>
-                                                <option value="SOUTH ZONE 02">SOUTH ZONE 02</option>
-                                                <option value="WEST ZONE 01">WEST ZONE 01</option>
-                                                <option value="WEST ZONE 02">WEST ZONE 02</option>
-                                                <option value="EAST ZONE">EAST ZONE</option>
-                                                <option value="CENTRAL ZONE">CENTRAL ZONE</option>
-                                            </select>
+                                {email.toLowerCase().endsWith("@iimb.ac.in") && (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1.5">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Zone</label>
+                                            <div className="relative">
+                                                <Compass className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
+                                                <select required value={zone} onChange={(e) => setZone(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-xs font-bold focus:border-primary transition-all outline-none appearance-none">
+                                                    <option value="" disabled>Select Zone</option>
+                                                    <option value="NORTH ZONE 01">NORTH ZONE 01</option>
+                                                    <option value="NORTH ZONE 02">NORTH ZONE 02</option>
+                                                    <option value="SOUTH ZONE 01">SOUTH ZONE 01</option>
+                                                    <option value="SOUTH ZONE 02">SOUTH ZONE 02</option>
+                                                    <option value="WEST ZONE 01">WEST ZONE 01</option>
+                                                    <option value="WEST ZONE 02">WEST ZONE 02</option>
+                                                    <option value="EAST ZONE">EAST ZONE</option>
+                                                    <option value="CENTRAL ZONE">CENTRAL ZONE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Batch</label>
+                                            <div className="relative">
+                                                <GraduationCap className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
+                                                <select required value={batch} onChange={(e) => setBatch(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold focus:border-primary transition-all outline-none appearance-none">
+                                                    <option value="" disabled>Select Batch</option>
+                                                    <option value="Batch 1">Batch 1</option>
+                                                    <option value="Batch 2">Batch 2</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Batch</label>
-                                        <div className="relative">
-                                            <GraduationCap className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                            <select required value={batch} onChange={(e) => setBatch(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold focus:border-primary transition-all outline-none appearance-none">
-                                                <option value="" disabled>Select Batch</option>
-                                                <option value="Batch 1">Batch 1</option>
-                                                <option value="Batch 2">Batch 2</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                                )}
                                 <div className="flex gap-3 pt-6">
                                     <button type="button" onClick={() => setStep(2)} className="py-4 px-6 bg-surface border border-outline-variant/20 rounded-2xl font-black text-on-surface-variant hover:bg-surface-container transition-all">
                                         Back
@@ -374,7 +376,7 @@ export default function RegisterPage() {
                                         <CheckCircle2 className="w-8 h-8 text-green-500" />
                                     </div>
                                     <p className="text-sm font-bold text-on-surface-variant px-4">
-                                        We've sent an 8-digit verification code to <span className="text-on-surface font-black">{email}</span>
+                                        We've sent a 6-digit verification code to <span className="text-on-surface font-black">{email}</span>
                                     </p>
                                 </div>
 
@@ -383,9 +385,9 @@ export default function RegisterPage() {
                                         type="text" 
                                         value={otp}
                                         onChange={(e) => setOtp(e.target.value)}
-                                        placeholder="12345678" 
+                                        placeholder="123456" 
                                         className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-4 px-4 text-center text-3xl tracking-[0.5em] font-black text-on-surface placeholder:text-on-surface-variant/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                                        maxLength={8}
+                                        maxLength={6}
                                         required
                                     />
                                 </div>
@@ -393,7 +395,7 @@ export default function RegisterPage() {
                                 <div className="px-4 mt-4">
                                     <button 
                                         type="submit" 
-                                        disabled={isLoading || otp.length !== 8}
+                                        disabled={isLoading || otp.length !== 6}
                                         className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all disabled:opacity-50 flex items-center justify-center"
                                     >
                                         {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify Account"}
