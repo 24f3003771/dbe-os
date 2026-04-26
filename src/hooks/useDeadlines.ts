@@ -10,6 +10,7 @@ export interface Deadline {
     type: "assignment" | "quiz" | "exam";
     dueDate: string; // ISO string
     completed: boolean;
+    isOfficial?: boolean;
 }
 
 export type DeadlineStatus = "overdue" | "due-today" | "upcoming" | "completed";
@@ -28,6 +29,7 @@ export function getDeadlineStatus(deadline: Deadline): DeadlineStatus {
 }
 
 import { getDeadlinesAction, addDeadlineAction, toggleDeadlineAction, deleteDeadlineAction } from "@/actions/deadlines";
+import { OFFICIAL_SUBJECT_CHECKLISTS } from "@/data/officialChecklist";
 
 export function useDeadlines() {
     const [deadlines, setDeadlines] = useState<Deadline[]>([]);
@@ -35,12 +37,37 @@ export function useDeadlines() {
     const { earnTomatoes } = useFarmStore();
 
     const fetchDeadlines = useCallback(async () => {
+        let fetched: Deadline[] = [];
         try {
             const data = await getDeadlinesAction();
-            setDeadlines(data);
+            fetched = data;
         } catch {
             // fallback silently
         }
+
+        let completedOfficial: string[] = [];
+        if (typeof window !== "undefined") {
+            try {
+                completedOfficial = JSON.parse(localStorage.getItem('completedOfficialTasks') || '[]');
+            } catch (e) { }
+        }
+
+        const officialTasks: Deadline[] = [];
+        Object.values(OFFICIAL_SUBJECT_CHECKLISTS).forEach(tasks => {
+            tasks.forEach(t => {
+                officialTasks.push({
+                    id: t.id,
+                    title: t.title,
+                    subject: t.subject,
+                    type: t.type as any,
+                    dueDate: t.dueDate,
+                    completed: completedOfficial.includes(t.id),
+                    isOfficial: true
+                });
+            });
+        });
+
+        setDeadlines([...officialTasks, ...fetched]);
         setIsLoaded(true);
     }, []);
 
@@ -73,13 +100,33 @@ export function useDeadlines() {
                 earnTomatoes(5); // Award 5 tomatoes for completing a deadline
             }
             
-            toggleDeadlineAction(id, nextCompleted).catch(console.error);
+            if (target.isOfficial) {
+                if (typeof window !== "undefined") {
+                    try {
+                        const completedOfficial = JSON.parse(localStorage.getItem('completedOfficialTasks') || '[]');
+                        if (nextCompleted && !completedOfficial.includes(id)) {
+                            completedOfficial.push(id);
+                        } else if (!nextCompleted) {
+                            const idx = completedOfficial.indexOf(id);
+                            if (idx > -1) completedOfficial.splice(idx, 1);
+                        }
+                        localStorage.setItem('completedOfficialTasks', JSON.stringify(completedOfficial));
+                    } catch (e) {}
+                }
+            } else {
+                toggleDeadlineAction(id, nextCompleted).catch(console.error);
+            }
+
             return prev.map((d) => d.id === id ? { ...d, completed: nextCompleted } : d);
         });
     }, [earnTomatoes]);
 
     const deleteDeadline = useCallback(async (id: string) => {
-        setDeadlines((prev) => prev.filter((d) => d.id !== id));
+        setDeadlines((prev) => {
+            const target = prev.find(d => d.id === id);
+            if (target?.isOfficial) return prev; // Don't allow deleting official deadlines
+            return prev.filter((d) => d.id !== id);
+        });
         deleteDeadlineAction(id).catch(console.error);
     }, []);
 
