@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Linkedin, ArrowLeft, User } from "lucide-react";
+import Lottie from "lottie-react";
+import tomatoAnimation from "@/data/tomato.json";
 
 
 export default function Navbar() {
@@ -26,32 +28,9 @@ export default function Navbar() {
                     )}
 
                     <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group transition-all duration-300 hover:scale-[1.02]">
-                        <div className="relative">
-                            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 sm:h-10 sm:w-10 drop-shadow-lg transition-transform duration-300 group-hover:rotate-3">
-                                <defs>
-                                    <linearGradient id="aceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="#818cf8" />
-                                        <stop offset="50%" stopColor="#6366f1" />
-                                        <stop offset="100%" stopColor="#4f46e5" />
-                                    </linearGradient>
-                                    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="#fbbf24" />
-                                        <stop offset="100%" stopColor="#f59e0b" />
-                                    </linearGradient>
-                                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                                        <feGaussianBlur stdDeviation="1" result="coloredBlur" />
-                                        <feMerge>
-                                            <feMergeNode in="coloredBlur" />
-                                            <feMergeNode in="SourceGraphic" />
-                                        </feMerge>
-                                    </filter>
-                                </defs>
-                                <circle cx="20" cy="20" r="18" fill="url(#aceGradient)" opacity="0.15" />
-                                <path d="M20 6L8 32H13L15.5 26H24.5L27 32H32L20 6ZM17 22L20 13L23 22H17Z" fill="url(#aceGradient)" filter="url(#glow)" />
-                                <path d="M30 8L31.5 11.5L35 13L31.5 14.5L30 18L28.5 14.5L25 13L28.5 11.5L30 8Z" fill="url(#starGradient)" filter="url(#glow)" />
-                                <circle cx="10" cy="12" r="1.5" fill="url(#starGradient)" opacity="0.7" />
-                            </svg>
-                            <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="relative w-10 h-10">
+                            <Lottie animationData={tomatoAnimation} loop={true} />
+                            <div className="absolute inset-0 bg-red-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
                         <div className="flex flex-col items-start">
                             <span className="text-lg sm:text-xl font-extrabold bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 bg-clip-text text-transparent tracking-tight">DBE - OS</span>

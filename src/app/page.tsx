@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
 import { useTodos } from "@/hooks/useTodos";
 import { getAllSubjects } from "@/data/db";
+import Lottie from "lottie-react";
+import tomatoAnimation from "@/data/tomato.json";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -61,9 +63,12 @@ const IPadSidebar = () => {
               initial={{ opacity: 0, y: 0, scale: 0.5 }}
               animate={{ opacity: 1, y: -100, scale: 1.5 }}
               exit={{ opacity: 0, scale: 2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 text-6xl pointer-events-none drop-shadow-2xl"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex items-center gap-2 pointer-events-none drop-shadow-2xl"
             >
-              🍅 +{lastEarned}
+              <div className="w-20 h-20">
+                <Lottie animationData={tomatoAnimation} loop={true} />
+              </div>
+              <span className="text-6xl font-black text-red-500">+{lastEarned}</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -168,7 +173,9 @@ export default function Dashboard() {
                 </div>
                 <div className="mt-8 flex flex-wrap items-center gap-4 z-10 w-full">
                     <div className="flex items-center gap-3 bg-surface-container-highest px-5 py-3 rounded-2xl font-bold text-lg shadow-sm border border-outline-variant/10">
-                        <span className="text-2xl">🍅</span>
+                        <div className="w-8 h-8">
+                           <Lottie animationData={tomatoAnimation} loop={true} />
+                        </div>
                         <div className="flex flex-col">
                             <span className="text-on-surface leading-none">{tomatoesBalance}</span>
                             <span className="text-xs text-on-surface-variant font-medium">Balance</span>
