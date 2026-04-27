@@ -54,7 +54,7 @@ export default function Navbar() {
                             <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
                         <div className="flex flex-col items-start">
-                            <span className="text-lg sm:text-xl font-extrabold bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 bg-clip-text text-transparent tracking-tight">DBE OS</span>
+                            <span className="text-lg sm:text-xl font-extrabold bg-gradient-to-r from-sky-300 via-blue-300 to-indigo-300 bg-clip-text text-transparent tracking-tight">DBE - OS</span>
                             <span className="text-[8px] sm:text-[9px] text-slate-400 font-semibold tracking-wider uppercase -mt-0.5">EXCEL BBA-DBE EXAMS</span>
                         </div>
                     </Link>
