@@ -7,161 +7,187 @@ import tomatoAnimation from '@/data/tomato.json';
 
 export default function MainLoadingScreen() {
   const [isVisible, setIsVisible] = useState(false);
-  const [phase, setPhase] = useState('bouncing'); // bouncing -> merging -> splash -> end
+  const [phase, setPhase] = useState('bouncing'); // bouncing -> impact -> splash -> finish
   const lottieRef = useRef<LottieRefType>(null);
 
   useEffect(() => {
     // Show only once per session
-    const hasBooted = sessionStorage.getItem('dbe_os_booted_v7');
+    const hasBooted = sessionStorage.getItem('dbe_os_booted_v8');
     if (hasBooted && process.env.NODE_ENV === 'production') return;
 
     setIsVisible(true);
-    sessionStorage.setItem('dbe_os_booted_v7', 'true');
+    sessionStorage.setItem('dbe_os_booted_v8', 'true');
 
-    // Smooth Sequential Timing
-    const mergeTimer = setTimeout(() => setPhase('merging'), 2000);
-    const splashTimer = setTimeout(() => setPhase('splash'), 2600);
-    const endTimer = setTimeout(() => setIsVisible(false), 5500);
+    // Precision Timeline
+    const t1 = setTimeout(() => setPhase('impact'), 2200); // Small merge into big
+    const t2 = setTimeout(() => setPhase('splash'), 2600); // Big one splashes
+    const t3 = setTimeout(() => setIsVisible(false), 5800); // Fade to dashboard
 
     return () => {
-      clearTimeout(mergeTimer);
-      clearTimeout(splashTimer);
-      clearTimeout(endTimer);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
     };
   }, []);
+
+  // "Written Way" Text Reveal Variant
+  const textContainer = {
+    hidden: { opacity: 0 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      transition: { staggerChildren: 0.12, delayChildren: 0.04 * i },
+    }),
+  };
+
+  const textChild = {
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      y: 20,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100,
+      },
+    },
+  };
 
   if (!isVisible) return null;
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {isVisible && (
         <motion.div 
           key="loading-screen"
           initial={{ opacity: 1 }}
-          exit={{ 
-            opacity: 0,
-            transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1] } 
-          }}
+          exit={{ opacity: 0, transition: { duration: 0.6 } }}
           className="fixed inset-0 z-[10000] bg-white flex flex-col items-center justify-center overflow-hidden"
         >
-          <div className="relative w-full h-80 flex items-center justify-center">
+          <div className="relative w-full h-96 flex items-center justify-center">
             
-            {/* Phase 1 & 2: Bouncing and Merging */}
+            {/* Phase 1: Small Bouncing Tomatoes */}
             <AnimatePresence>
-              {(phase === 'bouncing' || phase === 'merging') && (
+              {phase === 'bouncing' && (
                 <motion.div 
-                  key="tomatoes-group"
-                  exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.4 } }}
-                  className="flex gap-6 items-center"
+                  key="group"
+                  exit={{ scale: 0, opacity: 0, transition: { duration: 0.4, ease: "backIn" } }}
+                  className="flex gap-8 items-center"
                 >
                   {[0, 1, 2, 3].map((i) => (
                     <motion.div
                       key={i}
-                      initial={{ y: 0, opacity: 0, scale: 0 }}
-                      animate={{ 
-                        y: phase === 'merging' ? 0 : [0, -40, 0],
-                        x: phase === 'merging' ? (1.5 - i) * 80 : 0, // Move towards center
-                        opacity: 1,
-                        scale: phase === 'merging' ? 0 : 1,
-                      }}
+                      animate={{ y: [0, -40, 0] }}
                       transition={{ 
-                        y: {
-                          duration: 0.8, 
-                          repeat: phase === 'merging' ? 0 : Infinity, 
-                          delay: i * 0.1,
-                          ease: "easeInOut"
-                        },
-                        x: { duration: 0.6, ease: "circIn" },
-                        scale: { duration: 0.4, delay: phase === 'merging' ? 0.2 : i * 0.1 },
-                        opacity: { duration: 0.3, delay: i * 0.05 }
+                        duration: 0.6, 
+                        repeat: Infinity, 
+                        delay: i * 0.1,
+                        ease: "easeInOut"
                       }}
-                      className="w-14 h-14"
+                      className="w-12 h-12"
                     >
-                      <Lottie 
-                        animationData={tomatoAnimation} 
-                        loop={true}
-                        autoplay={true}
-                        style={{ width: '100%', height: '100%' }}
-                      />
+                      <Lottie animationData={tomatoAnimation} loop={true} />
                     </motion.div>
                   ))}
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Phase 3: The Big Splash */}
+            {/* Phase 2: Big Tomato Impact Fly-In */}
+            <AnimatePresence>
+              {phase === 'impact' && (
+                <motion.div 
+                  key="big-tomato"
+                  initial={{ scale: 4, opacity: 0, z: 500 }}
+                  animate={{ scale: 1.2, opacity: 1, z: 0 }}
+                  exit={{ scale: 2.5, opacity: 0, transition: { duration: 0.2 } }}
+                  transition={{ duration: 0.4, ease: "circIn" }}
+                  className="w-48 h-48"
+                >
+                  <Lottie animationData={tomatoAnimation} loop={false} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Phase 3: The Splash & Written Text */}
             <AnimatePresence>
               {phase === 'splash' && (
-                <motion.div 
-                  key="splash-container"
-                  initial={{ scale: 0.2, opacity: 0 }}
-                  animate={{ scale: 1.8, opacity: 1 }}
-                  transition={{ 
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 15,
-                    mass: 1
-                  }}
-                  className="relative w-96 h-96 flex items-center justify-center"
-                >
-                  <Lottie 
-                    lottieRef={lottieRef}
-                    animationData={tomatoAnimation} 
-                    loop={false}
-                    autoplay={true}
-                    style={{ width: '100%', height: '100%' }}
-                  />
-                  
-                  {/* Synced Text Reveal */}
+                <div className="relative w-full flex items-center justify-center">
+                  <motion.div 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 2.8, opacity: 1 }}
+                    className="w-64 h-64"
+                  >
+                    <Lottie 
+                      lottieRef={lottieRef}
+                      animationData={tomatoAnimation} 
+                      loop={false}
+                    />
+                  </motion.div>
+
+                  {/* Written Style Reveal */}
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
+                    variants={textContainer}
+                    initial="hidden"
+                    animate="visible"
                     className="absolute inset-0 flex items-center justify-center pointer-events-none"
                   >
-                    <div className="flex flex-col items-center">
-                      <span className="text-4xl font-black text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)] uppercase tracking-tighter">
-                        DBE - OS
-                      </span>
-                    </div>
+                    {"DBE - OS".split("").map((char, index) => (
+                      <motion.span
+                        key={index}
+                        variants={textChild}
+                        className="text-5xl font-black text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)] uppercase tracking-tighter"
+                      >
+                        {char === " " ? "\u00A0" : char}
+                      </motion.span>
+                    ))}
                   </motion.div>
-                </motion.div>
+                </div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Persistent but animated Quote */}
+          {/* Quote Reveal */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
-            className="absolute bottom-24 flex flex-col items-center gap-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: phase === 'splash' ? 1 : 0 }}
+            transition={{ delay: 0.8, duration: 1 }}
+            className="absolute bottom-20 flex flex-col items-center gap-6"
           >
-             <div className="space-y-1">
-                <p className="text-sm font-bold text-stone-400 text-center uppercase tracking-[0.2em] opacity-60">Platform by</p>
-                <p className="text-lg font-black text-stone-800 max-w-sm text-center leading-tight uppercase tracking-tight">
-                   BBA DBE <span className="text-red-500">Community</span> 
+             <div className="flex flex-col items-center">
+                <motion.p 
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ delay: 1, duration: 1.5, ease: "easeInOut" }}
+                  className="text-xs font-black text-stone-300 uppercase tracking-[0.4em] mb-2 whitespace-nowrap overflow-hidden"
+                >
+                  BBA DBE Community Platform
+                </motion.p>
+                <p className="text-sm font-bold text-stone-500 text-center italic">
+                   "By the community, for the community !!"
                 </p>
-                <p className="text-sm font-bold text-stone-400 text-center uppercase tracking-[0.2em] opacity-60">for the community !!</p>
              </div>
              
-             <motion.div 
-               animate={{ scale: [1, 1.05, 1] }}
-               transition={{ duration: 2, repeat: Infinity }}
-               className="flex items-center gap-2 px-5 py-2 bg-red-50 rounded-2xl border border-red-100/50 shadow-sm"
-             >
-                <span className="text-base">🍅</span>
-                <span className="text-[11px] font-black uppercase tracking-[0.15em] text-red-500/80">IIMB Tomato Engine</span>
-             </motion.div>
+             <div className="flex items-center gap-2 px-4 py-1.5 bg-red-50/50 rounded-full border border-red-100 shadow-sm">
+                <span className="text-sm">🍅</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Tomato Engine v2.0</span>
+             </div>
           </motion.div>
 
-          {/* Smooth Global Progress */}
-          <div className="absolute bottom-0 inset-x-0 h-1.5 bg-stone-100 overflow-hidden">
+          {/* Progress Bar */}
+          <div className="absolute bottom-0 inset-x-0 h-1.5 bg-stone-50">
              <motion.div 
-               className="h-full bg-gradient-to-r from-red-400 to-red-600"
+               className="h-full bg-red-500"
                initial={{ width: "0%" }}
                animate={{ width: "100%" }}
-               transition={{ duration: 5.5, ease: "easeInOut" }}
+               transition={{ duration: 5.8, ease: "linear" }}
              />
           </div>
         </motion.div>
