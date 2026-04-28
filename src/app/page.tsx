@@ -9,6 +9,7 @@ import { Caveat } from "next/font/google";
 import { useTodos } from "@/hooks/useTodos";
 import { getAllSubjects } from "@/data/db";
 import Lottie from "lottie-react";
+import TomatoSplash from "@/components/TomatoSplash";
 import tomatoAnimation from "@/data/tomato.json";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
@@ -173,9 +174,7 @@ export default function Dashboard() {
                 </div>
                 <div className="mt-8 flex flex-wrap items-center gap-4 z-10 w-full">
                     <div className="flex items-center gap-3 bg-surface-container-highest px-5 py-3 rounded-2xl font-bold text-lg shadow-sm border border-outline-variant/10">
-                        <div className="w-8 h-8">
-                           <Lottie animationData={tomatoAnimation} loop={true} />
-                        </div>
+                        <TomatoSplash size="w-8 h-8" />
                         <div className="flex flex-col">
                             <span className="text-on-surface leading-none">{tomatoesBalance}</span>
                             <span className="text-xs text-on-surface-variant font-medium">Balance</span>
