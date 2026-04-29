@@ -599,14 +599,14 @@ export default function CGPACalculator() {
                             </p>
                           </div>
                           <button
-                            onClick={() => {
-                              setSelectedTerm(term.id);
-                              setActiveTab("input");
-                            }}
-                            className="p-3 bg-surface-container-high hover:bg-on-surface hover:text-surface rounded-xl transition-all"
-                          >
-                            <ChevronRight className="w-4 h-4" />
-                          </button>
+                             onClick={() => {
+                               setSelectedTerm(term.id);
+                               setActiveTab("input");
+                             }}
+                             className="flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-on-surface hover:text-surface rounded-xl transition-all text-[10px] font-black uppercase tracking-widest"
+                           >
+                             Edit <ChevronRight className="w-4 h-4" />
+                           </button>
                         </div>
                       </div>
                     );
