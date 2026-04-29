@@ -1,0 +1,173 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { ChevronLeft, Download, FileText } from "lucide-react";
+import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
+
+type Note = { id: string; module_number: number; content: string; topic_id: string | null };
+type Subject = { id: string; name: string; code: string; module_count: number; term_id: number };
+
+export default function NoteViewer({ subject, notes }: { subject: Subject; notes: Note[] }) {
+    const [activeModule, setActiveModule] = useState(1);
+    const printRef = useRef<HTMLDivElement>(null);
+
+    const modules = Array.from({ length: subject.module_count }, (_, i) => i + 1);
+    const activeNote = notes.find((n) => n.module_number === activeModule);
+
+    const handlePrint = () => {
+        const content = printRef.current?.innerHTML;
+        if (!content) return;
+        const win = window.open("", "_blank");
+        if (!win) return;
+        win.document.write(`
+            <html>
+            <head>
+                <title>${subject.name} — Module ${activeModule}</title>
+                <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet" />
+                <style>
+                    body { font-family: 'Kalam', cursive; padding: 40px; max-width: 800px; margin: 0 auto; font-size: 15px; line-height: 1.8; color: #2D2422; background: #FFFEF9; }
+                    h1, h2, h3, h4 { font-weight: 700; }
+                    pre { background: #f5f5f5; padding: 12px; border-radius: 8px; overflow-x: auto; font-family: monospace; }
+                    code { font-family: monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 4px; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid #ddd; padding: 8px 12px; }
+                    th { background: #f5f5f5; }
+                </style>
+            </head>
+            <body>
+                <h1 style="font-size: 24px; margin-bottom: 4px">${subject.name}</h1>
+                <p style="opacity: 0.5; font-size: 13px; margin-bottom: 32px">${subject.code} · Module ${activeModule}</p>
+                ${content}
+            </body>
+            </html>
+        `);
+        win.document.close();
+        win.focus();
+        setTimeout(() => { win.print(); }, 500);
+    };
+
+    return (
+        <div className="min-h-screen bg-[#FFFEF9] text-[#2D2422]">
+            {/* Load Kalam font */}
+            <link
+                href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap"
+                rel="stylesheet"
+            />
+
+            {/* Top Navigation */}
+            <div className="max-w-5xl mx-auto px-6 py-8">
+                <Link href="/notes" className="flex items-center gap-2 text-sm font-bold text-[#A69994] hover:text-[#2D2422] transition-colors">
+                    <ChevronLeft className="w-4 h-4" />
+                    Back to Notes
+                </Link>
+
+                <div className="mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EEF2FF] text-[#6366F1] rounded-full text-xs font-bold">
+                                <FileText className="w-3.5 h-3.5" /> Study Notes
+                            </span>
+                            <span className="text-xs font-bold text-[#A69994] uppercase tracking-widest">{subject.code}</span>
+                        </div>
+                        <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter text-[#2D2422]">
+                            {subject.name}
+                        </h1>
+                    </div>
+                    <button
+                        onClick={handlePrint}
+                        className="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-sm shadow-sm transition-all shrink-0"
+                    >
+                        <Download className="w-4 h-4" /> Download PDF
+                    </button>
+                </div>
+
+                {/* Module Tabs */}
+                <div className="flex items-center gap-1 mt-8 bg-stone-100 rounded-2xl p-1 w-fit flex-wrap">
+                    {modules.map((mod) => {
+                        const hasNote = notes.some((n) => n.module_number === mod);
+                        return (
+                            <button
+                                key={mod}
+                                onClick={() => setActiveModule(mod)}
+                                className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${
+                                    activeModule === mod
+                                        ? "bg-white text-[#2D2422] shadow-sm"
+                                        : "text-stone-400 hover:text-stone-600"
+                                }`}
+                            >
+                                M{mod}
+                                {!hasNote && <span className="ml-1 text-[8px] text-stone-300">—</span>}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Note Content */}
+            <div className="max-w-5xl mx-auto px-6 pb-32">
+                <div className="bg-white rounded-[2rem] shadow-2xl shadow-stone-200/50 border border-stone-200/40 overflow-hidden flex flex-col min-h-[600px]">
+                    {/* Mac Window Bar */}
+                    <div className="bg-[#1A1A1A] px-6 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+                            <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                            <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
+                        </div>
+                        <div className="text-[10px] font-mono text-stone-500 uppercase tracking-[0.3em]">
+                            {subject.code}.module-{activeModule}.notes
+                        </div>
+                        <div className="w-12" />
+                    </div>
+
+                    {/* Handwritten Content */}
+                    <div
+                        ref={printRef}
+                        className="flex-1 p-8 md:p-14 overflow-y-auto"
+                        style={{ fontFamily: "'Kalam', cursive" }}
+                    >
+                        {activeNote ? (
+                            <div className="prose max-w-none"
+                                style={{
+                                    fontFamily: "'Kalam', cursive",
+                                    fontSize: "16px",
+                                    lineHeight: "1.9",
+                                    color: "#2D2422",
+                                }}
+                            >
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    rehypePlugins={[rehypeRaw]}
+                                    components={{
+                                        h1: ({ children }) => <h1 style={{ fontFamily: "'Kalam', cursive", fontSize: "28px", fontWeight: 700, marginBottom: "12px", color: "#1A1A1A" }}>{children}</h1>,
+                                        h2: ({ children }) => <h2 style={{ fontFamily: "'Kalam', cursive", fontSize: "22px", fontWeight: 700, marginBottom: "10px", color: "#1A1A1A", borderBottom: "2px solid #f0ebe9", paddingBottom: "6px" }}>{children}</h2>,
+                                        h3: ({ children }) => <h3 style={{ fontFamily: "'Kalam', cursive", fontSize: "18px", fontWeight: 700, marginBottom: "8px" }}>{children}</h3>,
+                                        p: ({ children }) => <p style={{ fontFamily: "'Kalam', cursive", marginBottom: "14px", lineHeight: "1.9" }}>{children}</p>,
+                                        li: ({ children }) => <li style={{ fontFamily: "'Kalam', cursive", marginBottom: "6px" }}>{children}</li>,
+                                        strong: ({ children }) => <strong style={{ fontWeight: 700, color: "#4F46E5" }}>{children}</strong>,
+                                        code: ({ children }) => <code style={{ background: "#f5f5f5", padding: "2px 6px", borderRadius: "4px", fontSize: "14px", fontFamily: "monospace" }}>{children}</code>,
+                                        blockquote: ({ children }) => <blockquote style={{ borderLeft: "3px solid #4F46E5", paddingLeft: "16px", color: "#6B6B6B", fontStyle: "italic" }}>{children}</blockquote>,
+                                        table: ({ children }) => <table style={{ borderCollapse: "collapse", width: "100%", marginBottom: "16px" }}>{children}</table>,
+                                        th: ({ children }) => <th style={{ border: "1px solid #e0d8d4", padding: "8px 12px", background: "#f8f4f2", fontWeight: 700 }}>{children}</th>,
+                                        td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "8px 12px" }}>{children}</td>,
+                                    }}
+                                >
+                                    {activeNote.content}
+                                </ReactMarkdown>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center h-64">
+                                <div className="text-center space-y-2">
+                                    <p className="text-stone-300 text-2xl" style={{ fontFamily: "'Kalam', cursive" }}>No notes yet for Module {activeModule}</p>
+                                    <p className="text-stone-200 text-sm" style={{ fontFamily: "'Kalam', cursive" }}>Check back soon!</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

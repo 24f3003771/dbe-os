@@ -21,6 +21,7 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
     const [showInstructions, setShowInstructions] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<(number | null)[]>(new Array(questions.length).fill(null));
+    const [textAnswers, setTextAnswers] = useState<string[]>(new Array(questions.length).fill(""));
     const [statuses, setStatuses] = useState<QuestionStatus[]>(
         new Array(questions.length).fill("not-visited")
     );
@@ -203,6 +204,11 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
         const next = [...answers];
         next[currentIndex] = null;
         setAnswers(next);
+        if (question.input_type === "text") {
+            const nextText = [...textAnswers];
+            nextText[currentIndex] = "";
+            setTextAnswers(nextText);
+        }
         setStatuses((prev) => {
             const ns = [...prev];
             ns[currentIndex] = "unanswered";
@@ -442,62 +448,57 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
 
     return (
         <div className="fixed inset-0 z-[60] bg-surface flex flex-col md:static md:h-[calc(100vh-140px)] md:inset-auto md:z-auto animate-in fade-in duration-300 overflow-hidden">
-            {/* Ultra-Condensed Header - Sticky on Mobile */}
-            <div className="bg-surface-container border-b border-outline-variant/10 px-4 py-2 flex items-center justify-between shrink-0 shadow-sm">
-                <div className="flex flex-col">
-                    <span className="text-[7px] font-black text-primary uppercase tracking-[0.2em] leading-none mb-0.5">Problem</span>
-                    <div className="flex items-center gap-1.5 leading-none">
-                        <span className="font-black text-on-surface text-sm tabular-nums">{currentIndex + 1}</span>
-                        <span className="text-[10px] text-on-surface-variant/40 font-bold">/</span>
-                        <span className="text-[10px] text-on-surface-variant font-bold tabular-nums">{questions.length}</span>
-                    </div>
+            {/* Header */}
+            <div className="bg-surface-container border-b border-outline-variant/10 px-4 py-2.5 flex items-center justify-between shrink-0">
+                {/* Left: Q counter */}
+                <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-black text-primary/70 uppercase tracking-widest">Q</span>
+                    <span className="font-black text-on-surface text-xs tabular-nums">{currentIndex + 1}</span>
+                    <span className="text-[9px] text-on-surface-variant/40 font-bold">/</span>
+                    <span className="text-[9px] text-on-surface-variant/60 font-bold tabular-nums">{questions.length}</span>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="flex flex-col items-center">
-                             <p className="text-[6px] text-on-surface-variant font-black uppercase tracking-widest leading-none mb-0.5">Time</p>
-                             <div className="flex items-center gap-1 leading-none">
-                                <Clock className="w-3 h-3 text-primary" />
-                                <span className="font-black text-xs text-on-surface tabular-nums">{formatTime(totalTimeSpent)}</span>
-                             </div>
-                        </div>
-
-                        {timerPerQuestion && (
-                            <div className="flex flex-col items-center border-l border-outline-variant/20 pl-3">
-                                <p className="text-[6px] text-error font-black uppercase tracking-widest leading-none mb-0.5">Left</p>
-                                <div className={`flex items-center gap-1 leading-none ${questionTimer <= 10 ? "animate-pulse text-error" : "text-on-surface"}`}>
-                                    <span className="font-black text-sm tabular-nums">{questionTimer}s</span>
-                                </div>
-                            </div>
-                        )}
+                {/* Right: timers + calculator */}
+                <div className="flex items-center gap-3">
+                    {/* Total elapsed */}
+                    <div className="flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-primary/60" />
+                        <span className="font-black text-[11px] text-on-surface tabular-nums">{formatTime(totalTimeSpent)}</span>
                     </div>
 
+                    {timerPerQuestion && (
+                        <div className={`flex items-center gap-1 border-l border-outline-variant/20 pl-3 ${questionTimer <= 10 ? "animate-pulse text-error" : "text-on-surface-variant"}`}>
+                            <span className="text-[9px] font-black uppercase tracking-wider">Left</span>
+                            <span className="font-black text-[11px] tabular-nums">{questionTimer}s</span>
+                        </div>
+                    )}
+
+                    {/* Calculator */}
                     <div className="relative">
-                        <button 
-                            onClick={() => setShowCalc(!showCalc)} 
-                            className={`p-2 rounded-lg transition-all shadow-sm flex items-center justify-center ${showCalc ? "bg-primary text-on-primary scale-105" : "bg-surface-container-highest text-on-surface"}`}
+                        <button
+                            onClick={() => setShowCalc(!showCalc)}
+                            className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${showCalc ? "bg-primary text-on-primary" : "bg-surface-container-highest text-on-surface-variant hover:text-on-surface"}`}
                         >
-                            <Calculator className="w-4 h-4" />
+                            <Calculator className="w-3.5 h-3.5" />
                         </button>
                         {showCalc && (
-                            <div className="absolute top-12 right-0 z-[110] w-72 bg-surface rounded-[2rem] shadow-2xl border-4 border-outline-variant/10 p-5 animate-in zoom-in-95 duration-200">
-                                <div className="flex justify-between items-center mb-3">
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="font-black font-headline text-on-surface text-xs uppercase tracking-widest">Scientific</h3>
-                                        <button 
+                            <div className="absolute top-10 right-0 z-[110] w-64 bg-surface rounded-2xl shadow-2xl border border-outline-variant/20 p-4 animate-in zoom-in-95 duration-200">
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="flex items-center gap-1.5">
+                                        <h3 className="font-black text-on-surface text-[10px] uppercase tracking-widest">Calc</h3>
+                                        <button
                                             onClick={() => setScientificMode(!scientificMode)}
                                             className="text-[8px] font-black text-primary px-1.5 py-0.5 bg-primary/10 rounded uppercase"
                                         >
                                             {scientificMode ? "Basic" : "Adv"}
                                         </button>
                                     </div>
-                                    <X className="w-4 h-4 text-on-surface-variant cursor-pointer hover:text-error transition-colors" onClick={() => setShowCalc(false)} />
+                                    <X className="w-3.5 h-3.5 text-on-surface-variant cursor-pointer hover:text-error transition-colors" onClick={() => setShowCalc(false)} />
                                 </div>
-                                <div className="w-full bg-surface-container-highest text-on-surface font-mono font-bold text-lg p-3 rounded-xl mb-3 text-right shadow-inner border border-outline-variant/10 min-h-[48px] flex items-center justify-end break-all">
+                                <div className="w-full bg-surface-container-highest text-on-surface font-mono font-bold text-base p-2.5 rounded-xl mb-2 text-right shadow-inner border border-outline-variant/10 min-h-[40px] flex items-center justify-end break-all">
                                     {calcInput || "0"}
                                 </div>
-                                <div className="grid grid-cols-4 gap-1.5">
+                                <div className="grid grid-cols-4 gap-1">
                                     {scientificMode && (
                                         <>
                                             {["sin(","cos(","tan(","log(","ln(","sqrt(","pi","^"].map(btn => (
@@ -518,17 +519,100 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                 </div>
             </div>
 
-            {/* Scrollable Main Interaction Area */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar pb-24">
-                <div className="max-w-4xl mx-auto px-4 py-4 space-y-4">
-                    {/* Question Content */}
-                    <div className="bg-surface border border-outline-variant/10 rounded-2xl p-5 shadow-sm">
-                        <div className="text-base font-bold text-on-surface leading-snug mb-6 whitespace-pre-wrap font-body tracking-tight">
-                            {question.text}
+            {/* Main scrollable area */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar pb-20">
+                <div className="max-w-3xl mx-auto px-4 py-4 space-y-3">
+                    {/* Question Card */}
+                    <div className="bg-surface border border-outline-variant/10 rounded-2xl p-4 shadow-sm">
+                        {/* Tags row */}
+                        <div className="flex items-center gap-1.5 mb-3 flex-wrap">
+                            {question.type && (
+                                <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${
+                                    question.type === "cla" ? "bg-blue-50 text-blue-600 border-blue-200" :
+                                    question.type === "midterm" ? "bg-purple-50 text-purple-600 border-purple-200" :
+                                    question.type === "pyq" ? "bg-amber-50 text-amber-600 border-amber-200" :
+                                    "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                }`}>
+                                    {question.type === "cla" ? "CLA" : question.type === "midterm" ? "Midterm" : question.type === "pyq" ? "PYQ" : "Practice"}
+                                </span>
+                            )}
+                            {question.input_type && (
+                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border bg-stone-50 text-stone-500 border-stone-200">
+                                    {question.input_type === "mcq" ? "MCQ" : "Subjective"}
+                                </span>
+                            )}
+                            {question.module_from && (
+                                <span className="text-[9px] font-medium text-stone-400 bg-stone-50 px-2 py-0.5 rounded border border-stone-100">
+                                    Mod {question.module_from === question.module_to ? question.module_from : `${question.module_from}–${question.module_to}`}
+                                </span>
+                            )}
+                            {question.type === "pyq" && question.pyq_year && (
+                                <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">
+                                    {question.pyq_year}{question.pyq_month ? ` · ${question.pyq_month}` : ""}
+                                </span>
+                            )}
+                            {question.input_type === "text" && question.word_limit && (
+                                <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">
+                                    {question.word_limit} words
+                                </span>
+                            )}
                         </div>
+                        {/* Question text */}
+                        <p className="text-sm font-semibold text-on-surface leading-relaxed mb-4 tracking-tight">
+                            {question.text}
+                        </p>
 
                         <div className="grid grid-cols-1 gap-2">
-                            {question.options.map((opt, idx) => {
+                            {question.input_type === "text" ? (
+                                (() => {
+                                    const currentText = textAnswers[currentIndex] || "";
+                                    const wordCount = currentText.trim() === "" ? 0 : currentText.trim().split(/\s+/).length;
+                                    const limit = question.word_limit || null;
+                                    const isOver = limit !== null && wordCount > limit;
+
+                                    const handleTextChange = (val: string) => {
+                                        const next = [...textAnswers];
+                                        next[currentIndex] = val;
+                                        setTextAnswers(next);
+                                        // Mark as answered if user has typed something
+                                        setStatuses((prev) => {
+                                            const ns = [...prev];
+                                            ns[currentIndex] = val.trim().length > 0 ? "answered" : "unanswered";
+                                            return ns;
+                                        });
+                                    };
+
+                                    return (
+                                        <div className="space-y-2">
+                                            <textarea
+                                                value={currentText}
+                                                onChange={(e) => handleTextChange(e.target.value)}
+                                                disabled={submitted}
+                                                rows={8}
+                                                placeholder="Write your answer here..."
+                                                className="w-full p-4 rounded-xl border-2 border-outline-variant/20 bg-surface text-on-surface font-medium text-sm leading-relaxed resize-none outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-on-surface-variant/40 disabled:opacity-60"
+                                            />
+                                            <div className="flex items-center justify-between px-1">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                                                    Word Count
+                                                </span>
+                                                <span className={`text-xs font-black tabular-nums ${
+                                                    isOver ? "text-error" : limit && wordCount >= limit * 0.9 ? "text-amber-500" : "text-on-surface-variant"
+                                                }`}>
+                                                    {wordCount}{limit ? ` / ${limit}` : ""}
+                                                    {isOver && <span className="ml-1 text-[9px]">⚠ Over limit</span>}
+                                                </span>
+                                            </div>
+                                            {showAnswer && question.explanation && (
+                                                <div className="mt-3 p-4 rounded-xl bg-primary/5 border border-primary/10">
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-primary mb-1.5">Model Answer / Explanation</p>
+                                                    <p className="text-xs font-medium text-on-surface-variant leading-relaxed italic">{question.explanation}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })()
+                            ) : question.options.map((opt, idx) => {
                                 const isSelected = selectedOption === idx;
                                 const isCorrect = idx === question.correctAnswer;
 
@@ -563,68 +647,67 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                         </div>
                     </div>
 
-                    {/* Question Actions */}
-                    <div className="flex flex-wrap items-center gap-2">
-                        <button onClick={markForReview} className="flex-1 py-2.5 rounded-xl bg-[#9b59b6]/10 text-[#9b59b6] font-black text-[9px] uppercase tracking-widest border border-[#9b59b6]/20">Review</button>
-                        <button onClick={clearResponse} className="flex-1 py-2.5 rounded-xl bg-surface border-2 border-outline-variant/20 text-on-surface-variant font-black text-[9px] uppercase tracking-widest">Reset</button>
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-2">
+                        <button onClick={markForReview} className="flex-1 py-2 rounded-xl bg-[#9b59b6]/10 text-[#9b59b6] font-black text-[9px] uppercase tracking-widest border border-[#9b59b6]/20 hover:bg-[#9b59b6]/20 transition-all">Review</button>
+                        <button onClick={clearResponse} className="flex-1 py-2 rounded-xl bg-surface border border-outline-variant/30 text-on-surface-variant font-black text-[9px] uppercase tracking-widest hover:bg-surface-container transition-all">Reset</button>
                         {mode === "practice" && (
-                            <button onClick={() => setShowAnswer(!showAnswer)} className="flex-1 py-2.5 rounded-xl bg-surface border-2 border-primary/20 text-primary font-black text-[9px] uppercase tracking-widest leading-none">
-                                {showAnswer ? "Hide Ans" : "Ans"}
+                            <button onClick={() => setShowAnswer(!showAnswer)} className={`flex-1 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest border transition-all ${
+                                showAnswer ? "bg-primary text-on-primary border-transparent" : "bg-surface border-primary/20 text-primary hover:bg-primary/5"
+                            }`}>
+                                {showAnswer ? "Hide" : "Answer"}
                             </button>
                         )}
-                        <button onClick={submitAndNext} className="flex-[2] py-3 rounded-xl bg-primary text-on-primary font-black text-[11px] uppercase tracking-tighter shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                            {currentIndex === questions.length - 1 ? "Submit" : "Next"} <ArrowRight className="w-3.5 h-3.5" />
+                        <button onClick={submitAndNext} className="flex-[2] py-2.5 rounded-xl bg-primary text-on-primary font-black text-[10px] uppercase tracking-wide shadow-sm shadow-primary/20 flex items-center justify-center gap-1.5 hover:opacity-90 transition-all">
+                            {currentIndex === questions.length - 1 ? "Submit" : "Next"} <ArrowRight className="w-3 h-3" />
                         </button>
                     </div>
 
-                    {/* Secondary Status Section - One Scroll Away */}
-                    <div className="pt-8 border-t border-outline-variant/10 space-y-4">
+                    {/* Question Palette */}
+                    <div className="pt-4 border-t border-outline-variant/10 space-y-3">
                         <div className="flex items-center justify-between">
-                            <div className="flex flex-col">
-                                <span className="text-[8px] font-black text-on-surface-variant uppercase tracking-widest leading-none mb-1">Current Session</span>
-                                <p className="text-xs font-black text-on-surface uppercase">{subjectId} • Unit 0{moduleId}</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="text-right">
-                                    <p className="text-[7px] font-black text-green-500 uppercase">Solved</p>
-                                    <p className="text-sm font-black text-on-surface leading-none">{counts.answered}</p>
+                            <p className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">{subjectId} · Module {moduleId}</p>
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1">
+                                    <div className="w-2 h-2 rounded-full bg-[#27ae60]" />
+                                    <span className="text-[9px] font-black text-on-surface-variant">{counts.answered}</span>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-[7px] font-black text-error uppercase">Left</p>
-                                    <p className="text-sm font-black text-on-surface leading-none">{counts.unanswered}</p>
+                                <div className="flex items-center gap-1">
+                                    <div className="w-2 h-2 rounded-full bg-[#ff6b6b]" />
+                                    <span className="text-[9px] font-black text-on-surface-variant">{counts.unanswered}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <div className="w-2 h-2 rounded-full bg-surface-container-highest border border-outline-variant/40" />
+                                    <span className="text-[9px] font-black text-on-surface-variant">{counts.notVisited}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-6 sm:grid-cols-10 gap-1.5">
+                        <div className="grid grid-cols-8 sm:grid-cols-12 gap-1">
                             {questions.map((_, i) => {
                                 const status = statuses[i];
                                 const isCurrent = i === currentIndex;
-                                let style = "bg-surface-container-highest text-on-surface border border-outline-variant/30";
+                                let style = "bg-surface-container-highest text-on-surface-variant border border-outline-variant/30";
                                 if (status === "unanswered") style = "bg-[#ff6b6b] text-white border-transparent";
                                 if (status === "answered") style = "bg-[#27ae60] text-white border-transparent";
                                 if (status === "marked") style = "bg-[#9b59b6] text-white border-transparent";
                                 if (status === "answered-marked") style = "bg-[#9b59b6] text-white border-[#27ae60] border-2";
-
                                 return (
                                     <button
                                         key={i}
-                                        onClick={() => {
-                                            setCurrentIndex(i);
-                                            if (timerPerQuestion) setQuestionTimer(timerPerQuestion);
-                                        }}
-                                        className={`aspect-square rounded-lg text-[10px] font-black flex items-center justify-center transition-all ${style} ${isCurrent ? "ring-2 ring-primary ring-offset-1 ring-offset-surface scale-105 z-10" : "opacity-70 hover:opacity-100"}`}
+                                        onClick={() => { setCurrentIndex(i); if (timerPerQuestion) setQuestionTimer(timerPerQuestion); }}
+                                        className={`aspect-square rounded-md text-[9px] font-black flex items-center justify-center transition-all ${style} ${isCurrent ? "ring-2 ring-primary ring-offset-1 ring-offset-surface scale-110 z-10" : "hover:opacity-90"}`}
                                     >
                                         {i + 1}
                                     </button>
                                 );
                             })}
                         </div>
-                        
-                        <div className="flex gap-2">
-                            <button onClick={onComplete} className="flex-1 py-3 rounded-xl bg-error/10 text-error font-black text-[10px] uppercase tracking-tighter">Abort Exam</button>
-                            <button onClick={() => submitAll()} disabled={isSaving} className="flex-[2] py-3 rounded-xl bg-green-600 text-white font-black text-[10px] uppercase tracking-tighter flex items-center justify-center gap-2">
-                                {isSaving ? "Saving..." : "Submit All"} <Save className="w-3.5 h-3.5" />
+
+                        <div className="flex gap-2 pt-1">
+                            <button onClick={onComplete} className="flex-1 py-2 rounded-xl bg-error/10 text-error font-black text-[9px] uppercase tracking-wide hover:bg-error/20 transition-all">Abort</button>
+                            <button onClick={() => submitAll()} disabled={isSaving} className="flex-[2] py-2 rounded-xl bg-green-600 text-white font-black text-[9px] uppercase tracking-wide flex items-center justify-center gap-1.5 hover:bg-green-700 transition-all">
+                                {isSaving ? "Saving..." : "Submit All"} <Save className="w-3 h-3" />
                             </button>
                         </div>
                     </div>

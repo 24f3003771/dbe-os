@@ -6,6 +6,13 @@ export interface Question {
     options: string[];
     correctAnswer: number;
     explanation: string;
+    type?: string;
+    pyq_year?: number | null;
+    pyq_month?: string | null;
+    input_type?: string;
+    word_limit?: number | null;
+    module_from?: number;
+    module_to?: number;
 }
 
 export interface Module {

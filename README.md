@@ -1,42 +1,53 @@
-# 🎓 DBE OS — The Scholar Operating System
+# 🎓 DBE OS — The Digital Bharat Entrepreneurship OS
 
 [![Built for IIM Bangalore](https://img.shields.io/badge/Built%20for-IIM%20Bangalore-003366)](https://www.iimb.ac.in)
-[![Next.js](https://img.shields.io/badge/Frontend-Next.js%2015-black)](https://nextjs.org)
+[![Next.js](https://img.shields.io/badge/Frontend-Next.js%2015%2B-black)](https://nextjs.org)
 [![Supabase](https://img.shields.io/badge/Database-Supabase-green)](https://supabase.com)
-[![Prisma](https://img.shields.io/badge/ORM-Prisma-indigo)](https://prisma.io)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind%204.0-38b2ac)](https://tailwindcss.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**DBE OS** is a premium, full-stack student-built platform designed specifically for the **IIM Bangalore Digital Business & Entrepreneurship (DBE)** program. It transforms the academic experience into a gamified, collaborative, and professional ecosystem.
+**DBE OS** is a premium, full-stack operating system built for the **IIM Bangalore Digital Business & Entrepreneurship (DBE)** program. It centralizes the academic journey, community networking, and career opportunities into a single, high-performance ecosystem.
+
+---
+
+## 📖 Developer & AI Onboarding
+
+> [!IMPORTANT]
+> **To all Developers and AI Assistants:** Before making structural changes, writing new features, or modifying the database, you **MUST** read the [**CONTEXT.md**](./CONTEXT.md) file. It contains the essential business logic, security protocols (RLS), and architectural patterns that this project follows.
 
 ---
 
 ## ✨ Core Pillars
 
+### 📚 Dynamic Curriculum (New)
+A robust, admin-controlled management system for the entire DBE academic cycle.
+- **Hierarchical Structure:** Managed by Terms -> Subjects -> Modules -> Notes/Quizzes.
+- **HQ Admin Control:** Super Admins can dynamically create/edit/delete subjects, manage markdown-based notes, and build interactive quizzes (with inline editing, AI generation, and bulk imports) without touching the code.
+- **Batch-Specific View:** Students automatically see content relevant to their assigned batch and active term.
+
 ### 🤝 MatchForge Network
-An advanced matchmaking engine that uses behavioral traits and skill gaps to connect students with perfect learning partners or potential startup co-founders within the IIMB community.
+An advanced networking engine designed to bridge the gap between skill sets and startup ambitions. Connect with perfect learning partners or co-founders within the IIMB community.
 
 ### 🚀 Opportunity Hub
-A curated aggregator of 150+ high-impact B-school competitions and MNC internships. It doesn't just list opportunities; it provides winning roadmaps and preparation guides.
+A curated aggregator of high-impact B-school competitions, MNC internships, and case challenges. Includes winning roadmaps and preparation guides to give DBE students a competitive edge.
 
 ### 🏆 Pro Pitch Decks
-Exclusive access to a library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.), allowing students to reverse-engineer success.
-
-### 📚 Universal Library
-A community-driven repository of academic notes, guides, and resources tailored specifically for the DBE curriculum.
+Exclusive access to a library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.). Reverse-engineer success by studying the best in the business.
 
 ### 🍅 Tomato Economy
-A gamified productivity system where students earn "Tomatoes" for completing tasks and contributing, climbing the community leaderboard.
+A gamified productivity system that rewards community contribution and academic consistency. Earn "Tomatoes" to climb the leaderboard and unlock community recognition.
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Frontend:** Next.js (App Router), Tailwind CSS, Framer Motion
-- **Backend:** Next.js Server Actions, Supabase (PostgreSQL)
-- **Database ORM:** Prisma
-- **Auth:** Clerk / Supabase Auth
-- **AI Integration:** NVIDIA NIM (Doubt Resolver)
+- **Frontend:** Next.js 15+ (App Router), React 19
+- **Styling:** Tailwind CSS 4.0, Framer Motion (Animations), Lucide React (Icons)
+- **Backend:** Next.js Server Actions (Type-safe mutations)
+- **Database:** Supabase (PostgreSQL) with SSR Support
+- **Authentication:** Supabase Auth (Strict 6-digit OTP system)
 - **State Management:** Zustand
+- **Content:** React Markdown (for curriculum notes)
 
 ---
 
@@ -44,52 +55,24 @@ A gamified productivity system where students earn "Tomatoes" for completing tas
 
 ```text
 /
-├── prisma/             # Database schema & migrations
-├── supabase/           # Edge functions & storage configs
-├── scripts/            # Database seeding & maintenance scripts
-├── public/             # Static assets (images, lotties)
-└── src/
-    ├── app/            # Next.js Pages & API routes
-    ├── components/     # UI components (shared & feature-specific)
-    ├── services/       # Core business logic (Matchmaking, API wrappers)
-    ├── actions/        # Server Actions for DB mutations
-    ├── hooks/          # Custom React hooks (Store, Auth)
-    ├── lib/            # Utility libraries (Prisma client, Supabase)
-    ├── types/          # TypeScript interfaces
-    └── data/           # Static data & JSON databases
-
-                ┌────────────────────────────┐
-                │        Frontend (UI)       │
-                │  Next.js + Tailwind + FM   │
-                └────────────┬───────────────┘
-                             │
-                             ▼
-                ┌────────────────────────────┐
-                │   Next.js Server Layer     │
-                │  (Server Actions / Routes) │
-                └────────────┬───────────────┘
-                             │
-        ┌────────────────────┼────────────────────┐
-        ▼                    ▼                    ▼
-┌───────────────┐   ┌────────────────┐   ┌──────────────────┐
-│  Services     │   │  Auth Layer    │   │ External Services│
-│ (Business     │   │ Clerk + Supa   │   │ NVIDIA NIM (AI)  │
-│ Logic Layer)  │   └────────────────┘   └──────────────────┘
-└──────┬────────┘
-       │
-       ▼
-┌────────────────────────────┐
-│     Database Layer         │
-│ PostgreSQL (Supabase)      │
-│ + Prisma ORM               │
-└────────────┬───────────────┘
-             │
-             ▼
-┌────────────────────────────┐
-│   Supabase Infrastructure  │
-│ (Storage, Edge Functions)  │
-└────────────────────────────┘
+├── supabase/           # Migrations, Seed scripts & RLS policies
+├── src/
+│   ├── app/            # Next.js Pages (Public & HQ-Admin)
+│   ├── actions/        # Server Actions (Secure DB Operations)
+│   ├── components/     # UI Components (Radix/Lucide based)
+│   ├── hooks/          # Custom React hooks (Auth, Store)
+│   ├── lib/            # Shared utility clients (Supabase)
+│   ├── utils/          # Helper functions & Middleware
+│   └── types/          # Global TypeScript interfaces
+└── CONTEXT.md          # CORE KNOWLEDGE BASE (Read First)
 ```
+
+### Data Flow Overview
+1. **User Request:** Handled by Next.js App Router.
+2. **Middleware:** `src/utils/supabase/middleware.ts` handles session refreshing and protected routes.
+3. **Data Fetching:** Server Components query Supabase directly via `@supabase/ssr`.
+4. **Mutations:** Server Actions (`src/actions/`) handle secure data updates with RLS enforcement.
+5. **Admin Access:** Elevated roles (`SUPER_ADMIN`) gain access to `/hq-admin` for platform management.
 
 ---
 
@@ -97,24 +80,19 @@ A gamified productivity system where students earn "Tomatoes" for completing tas
 
 ### Prerequisites
 - Node.js (Latest LTS)
-- Supabase Project
-- Clerk Account
+- A Supabase Project (PostgreSQL + Auth + Storage)
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone & Install**
    ```bash
    git clone https://github.com/your-username/dbe-os.git
    cd dbe-os
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
    ```
 
 3. **Environment Setup**
-   Copy `.env.example` to `.env.local` and fill in your credentials.
+   Copy `.env.example` to `.env.local` and fill in your credentials. Note that the `SUPABASE_SERVICE_ROLE_KEY` is required for certain admin actions (like permanently deleting users).
    ```bash
    cp .env.example .env.local
    ```

@@ -8,13 +8,13 @@ This document serves as the central knowledge base for the **DBE OS** project. I
 
 ## 1. Technology Stack
 
-- **Framework:** Next.js 14 (App Router)
+- **Framework:** Next.js 15+ (App Router), React 19
 - **Language:** TypeScript
-- **Styling:** Tailwind CSS
+- **Styling:** Tailwind CSS 4.0
 - **Animations:** Framer Motion
 - **Icons:** Lucide React
 - **Backend & Database:** Supabase (PostgreSQL, Supabase SSR Auth, Row Level Security)
-- **Emails:** Resend SMTP (configured directly inside the Supabase dashboard to bypass default rate limits)
+- **Emails:** Resend SMTP (configured directly inside the Supabase dashboard)
 - **Deployment:** Vercel
 
 ---
@@ -22,41 +22,40 @@ This document serves as the central knowledge base for the **DBE OS** project. I
 ## 2. Core Business Logic & Workflows
 
 ### Authentication Flow
-- **OTP System:** The project strictly uses **6-digit OTPs** for both user registration and Magic Link logins/password recovery. (Configured in `src/app/login/page.tsx` and `src/app/register/page.tsx`).
-- **Registration Constraints (`app_settings`):** Registration can be globally restricted to official `@iimb.ac.in` emails via the `restrict_emails` flag in the `app_settings` database table.
-- **Conditional Fields:** During registration (Step 3), the **Zone** and **Batch** fields are ONLY shown and required if the user registers with an `@iimb.ac.in` email address. For non-IIMB emails, these fields are safely left empty (`null` in the DB).
-- **Location Auto-fetch:** The registration form (Step 2) uses the external API `api.postalpincode.in` to auto-fetch the City and State based on the 6-digit Pincode. If the API fails, the inputs are left editable as a fallback.
+- **OTP System:** The project strictly uses **6-digit OTPs** for both user registration and Magic Link logins.
+- **Registration Constraints:** Registration can be restricted to `@iimb.ac.in` emails via the `restrict_emails` flag in `app_settings`.
+- **Conditional Fields:** **Zone** and **Batch** are only required for `@iimb.ac.in` users.
+- **Location Fetch:** Uses `api.postalpincode.in` to auto-fill City/State from Pincode.
 
-### User Classification & Account Status
-The system uses the `type` integer column in the `users` table to manage account classification and active/disabled status:
-- **`type = 0`**: **Disabled Account**. The user is locked out. A global, non-dismissible UI overlay in `src/app/layout.tsx` blocks all interaction.
-- **`type = 1`**: **Active Internal User**. (Registered with an `@iimb.ac.in` email).
-- **`type = 2`**: **Active External User**. (Registered with any other email domain).
-
-*Note: The `handle_new_user` Postgres trigger automatically assigns `type 1` or `type 2` upon signup based on the email domain.*
+### User Classification (`type` column)
+- **`type = 0`**: **Disabled**. Locked out by a global UI overlay in `layout.tsx`.
+- **`type = 1`**: **Active Internal** (`@iimb.ac.in`).
+- **`type = 2`**: **Active External** (Other domains).
 
 ### Roles & Permissions (RBAC)
-The `role` string column dictates access levels:
 - `USER`: Standard access.
-- `MODERATOR`: Elevated access (can be checked via RLS or UI).
-- `SUPER_ADMIN`: Maximum access (can access `src/app/hq-admin`).
+- `MODERATOR`: Elevated access.
+- `SUPER_ADMIN`: Full access to `/hq-admin`. Can permanently hard-delete users from both the database and Supabase Auth.
 
-### Admin Dashboard (`src/app/hq-admin`)
-- Accessible only to Super Admins.
-- **User Management:** Admins can view all users, change roles, and toggle account statuses.
-- **Toggle Logic:** When an admin re-enables a disabled user (`type 0`), the code in `AdminTable.tsx` intelligently restores them to `type 1` or `type 2` based on their email domain, rather than hardcoding a default.
-- **Stats:** Active users are correctly calculated by filtering `type !== 0` (accounting for both internal and external active users).
+### Dynamic Curriculum System
+- **Terms:** Managed by IDs (1-9). Can be marked as `is_active` and assigned to a specific batch.
+- **Subjects:** Linked to Terms. Defined by a `code` (e.g., ES211) and a `module_count` (strictly 4 or 8). Supports full CRUD (Add, Edit, Delete).
+- **Topics:** Granular labels linked to subjects for better organization of notes and questions.
+- **Notes:** One note per module per subject. Supports raw Markdown content, topic assignment, and deletion.
+- **Questions:** Supports MCQ and Text types. Categorized by `type` (`cla`, `midterm`, `pyq`, `practice`). Includes inline editing, bulk import, and AI generation features.
+- **Security:** RLS is configured so that all authenticated users can `SELECT`, but only `SUPER_ADMIN` can `INSERT/UPDATE/DELETE`.
 
 ---
 
 ## 3. Key Files & Directories
 
-- `src/app/layout.tsx`: Root layout containing the global lockdown UI check for disabled users (`type === 0`).
-- `src/utils/supabase/middleware.ts`: Supabase SSR middleware handling session refreshing and route protection.
-- `src/app/register/page.tsx`: Multi-step registration flow handling logic for conditional fields, Pincode validation, and 6-digit OTP verification.
-- `src/app/login/page.tsx`: Handles Magic Link/OTP login with 6-digit validation.
-- `src/app/hq-admin/AdminTable.tsx`: The data table and logic for the Super Admin dashboard.
-- `schema.sql`: Contains the database schema, RLS policies, and the `handle_new_user` trigger.
+- `src/app/layout.tsx`: Global lockdown UI for disabled users.
+- `src/utils/supabase/middleware.ts`: Session management and route protection.
+- `src/actions/curriculum.ts`: Server Actions for curriculum CRUD.
+- `src/app/hq-admin/curriculum/`: Admin interface for managing terms, subjects, and content.
+- `src/app/notes/page.tsx`: Public view for study notes (fetches dynamically from Supabase).
+- `src/app/quiz/`: Interactive quiz engine powered by the `questions` table.
+- `supabase/migrations/`: SQL migration files for schema versioning.
 
 ---
 
@@ -66,11 +65,9 @@ To run the project locally, the following environment variables must be present 
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key # Required for admin API routes (e.g., hard-deleting users from Auth)
 ```
-
-*Note: The legacy Prisma `DATABASE_URL` is no longer used, as the project has fully migrated to `@supabase/ssr`.*
 
 ---
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
-import { Loader2, UserX, UserCheck, Shield, Star, User, MoreVertical, Search, Users as UsersIcon, Activity } from "lucide-react";
+import { Loader2, UserX, UserCheck, Shield, Star, User, Trash2, Search, Users as UsersIcon, Activity, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type UserData = {
@@ -25,6 +25,7 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
     const [loadingId, setLoadingId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [confirmDelete, setConfirmDelete] = useState<UserData | null>(null);
     const usersPerPage = 10;
 
     const supabase = createBrowserClient(
@@ -76,6 +77,25 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
         }
     };
 
+    const deleteUser = async (user: UserData) => {
+        setLoadingId(user.id + "-delete");
+        try {
+            const res = await fetch("/api/admin/delete-user", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: user.id }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Delete failed");
+            setUsers(prev => prev.filter(u => u.id !== user.id));
+            setConfirmDelete(null);
+        } catch (err: any) {
+            alert(`Failed to delete user: ${err.message}`);
+        } finally {
+            setLoadingId(null);
+        }
+    };
+
     const filteredUsers = users.filter(user => 
         user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
         user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -95,6 +115,7 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
     const adminUsers = users.filter(u => u.role === 'SUPER_ADMIN' || u.role === 'MODERATOR').length;
 
     return (
+        <>
         <div className="space-y-6">
             {/* Stats Dashboard */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -234,8 +255,12 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
                                         </div>
                                     </td>
                                     <td className="p-4 text-right">
-                                        <button className="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/10 rounded-xl">
-                                            <MoreVertical className="w-4 h-4" />
+                                        <button
+                                            onClick={() => setConfirmDelete(user)}
+                                            className="p-2 text-on-surface-variant hover:text-error transition-colors hover:bg-error/10 rounded-xl"
+                                            title="Delete user"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                     </td>
                                 </motion.tr>
@@ -282,5 +307,47 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
                 </div>
             )}
         </div>
+
+            {/* Delete Confirmation Modal */}
+            {confirmDelete && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl space-y-5 animate-in zoom-in-95 duration-200">
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center mb-4">
+                                <AlertTriangle className="w-7 h-7 text-error" />
+                            </div>
+                            <p className="text-lg font-black text-stone-800">Delete User?</p>
+                            <p className="text-xs font-bold text-stone-500 mt-1">
+                                This will permanently delete <span className="text-stone-800">{confirmDelete.name}</span> from both the database and Supabase Auth. This action cannot be undone.
+                            </p>
+                        </div>
+                        <div className="bg-stone-50 rounded-xl p-3 space-y-1">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-stone-400">User</p>
+                            <p className="text-xs font-bold text-stone-700">{confirmDelete.email}</p>
+                            <p className="text-[10px] font-medium text-stone-400">{confirmDelete.id}</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setConfirmDelete(null)}
+                                className="flex-1 py-3 rounded-xl border border-stone-200 text-stone-500 font-black text-xs uppercase tracking-widest hover:bg-stone-50 transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => deleteUser(confirmDelete)}
+                                disabled={loadingId === confirmDelete.id + "-delete"}
+                                className="flex-1 py-3 rounded-xl bg-error text-white font-black text-xs uppercase tracking-widest hover:bg-error/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {loadingId === confirmDelete.id + "-delete" ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <><Trash2 className="w-3.5 h-3.5" /> Delete Forever</>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

@@ -5,10 +5,11 @@
 - Focus on stabilizing the farm shop logic and ensuring database consistency.
 
 ## Daily Updates
-### April 8, 2026
-- Finalized database schema validation and pushed all pending updates to maintain streak synchronization.
-- Verified farm shop async handlers.
+### April 29, 2026
+- Overhauled README.md and CONTEXT.md to reflect the Dynamic Curriculum system and full Supabase migration.
+- Verified schema synchronization for curriculum tables.
 
 ## Environment Notes
-- Prisma database used for local development tracking.
-- Next.js development server for UI testing.
+- **Primary Database:** Supabase (PostgreSQL) with SSR Auth.
+- **Frontend:** Next.js 15+ Development Server.
+- **Local Dev:** Use `npm run dev` and ensure `.env.local` is configured.
