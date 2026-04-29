@@ -274,6 +274,7 @@ export default function CGPACalculator() {
   const currentTermWAM = calculateTermWAM(selectedTerm);
   const overallWAM = calculateOverallWAM();
   const overallGrade = getLetterGrade(overallWAM);
+  const cgpa10 = overallWAM / 10;
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 space-y-12">
@@ -337,11 +338,12 @@ export default function CGPACalculator() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 shadow-sm flex flex-col justify-between overflow-hidden relative">
           <div className="relative z-10">
-            <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Overall Performance</p>
+            <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Overall CGPA (10-Point)</p>
             <div className="flex items-end gap-3">
-              <h2 className="text-6xl font-black text-on-surface leading-none">{overallWAM.toFixed(2)}</h2>
-              <span className="text-sm font-bold text-on-surface-variant mb-2">WAM</span>
+              <h2 className="text-6xl font-black text-on-surface leading-none">{cgpa10.toFixed(2)}</h2>
+              <span className="text-sm font-bold text-on-surface-variant mb-2">/ 10.0</span>
             </div>
+            <p className="mt-2 text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest">Weighted Average: {overallWAM.toFixed(2)}%</p>
           </div>
           <div className="mt-6 flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 w-fit px-3 py-1 rounded-full relative z-10">
             <TrendingUp className="w-3 h-3" /> Based on entered marks
@@ -573,11 +575,15 @@ export default function CGPACalculator() {
                       </div>
                       <div className="flex items-center gap-4 bg-white/20 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/20">
                         <div className="text-center pr-6 border-r border-white/20">
+                           <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">CGPA (10.0)</p>
+                           <p className="text-3xl font-black">{cgpa10.toFixed(2)}</p>
+                        </div>
+                        <div className="text-center pr-6 border-r border-white/20">
                            <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">Final WAM</p>
                            <p className="text-3xl font-black">{overallWAM.toFixed(2)}</p>
                         </div>
                         <div className="pl-2 text-center">
-                           <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">Final Grade</p>
+                           <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">Grade</p>
                            <p className="text-3xl font-black">{overallGrade.grade}</p>
                         </div>
                       </div>
