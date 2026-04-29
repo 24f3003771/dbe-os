@@ -1,23 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Calculator, 
-  ChevronLeft, 
-  Plus, 
-  Trash2, 
-  Save, 
-  Download, 
-  Upload, 
-  RefreshCcw, 
-  Info, 
-  CheckCircle2, 
+import {
+  Calculator,
+  ChevronLeft,
+  Plus,
+  Trash2,
+  Save,
+  Download,
+  Upload,
+  RefreshCcw,
+  Info,
+  CheckCircle2,
   AlertCircle,
   TrendingUp,
-  Award
+  Award,
+  FileText
 } from "lucide-react";
 import Link from "next/link";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 // Data from IIMB BBA DBE Programme Manual
 const TERMS_DATA = [
@@ -160,6 +163,8 @@ export default function CGPACalculator() {
   const [selectedTerm, setSelectedTerm] = useState(1);
   const [grades, setGrades] = useState<Record<number, Record<string, number>>>({});
   const [activeTab, setActiveTab] = useState<"input" | "summary">("input");
+  const [isExporting, setIsExporting] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("dbe_os_cgpa_data");
@@ -175,7 +180,7 @@ export default function CGPACalculator() {
   const handleMarkChange = (termId: number, subjectName: string, mark: string) => {
     const val = parseFloat(mark);
     if (isNaN(val) && mark !== "") return;
-    
+
     setGrades(prev => ({
       ...prev,
       [termId]: {
@@ -193,23 +198,23 @@ export default function CGPACalculator() {
   const calculateTermWAM = (termId: number) => {
     const term = TERMS_DATA.find(t => t.id === termId);
     if (!term) return 0;
-    
+
     let totalWeightedMarks = 0;
     let totalCredits = 0;
-    
+
     term.subjects.forEach(sub => {
       const mark = grades[termId]?.[sub.name] || 0;
       totalWeightedMarks += mark * sub.credits;
       totalCredits += sub.credits;
     });
-    
+
     return totalCredits > 0 ? totalWeightedMarks / totalCredits : 0;
   };
 
   const calculateOverallWAM = () => {
     let totalWeightedMarks = 0;
     let totalCredits = 0;
-    
+
     TERMS_DATA.forEach(term => {
       term.subjects.forEach(sub => {
         if (grades[term.id]?.[sub.name]) {
@@ -219,14 +224,14 @@ export default function CGPACalculator() {
         }
       });
     });
-    
+
     return totalCredits > 0 ? totalWeightedMarks / totalCredits : 0;
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
@@ -243,7 +248,7 @@ export default function CGPACalculator() {
   const downloadGrades = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(grades));
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", "dbe_os_grades.json");
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
@@ -254,7 +259,7 @@ export default function CGPACalculator() {
     let totalArrearsCredits = 0;
     const startTerm = (year - 1) * 3 + 1;
     const endTerm = year * 3;
-    
+
     for (let t = startTerm; t <= endTerm; t++) {
       const term = TERMS_DATA.find(item => item.id === t);
       term?.subjects.forEach(sub => {
@@ -276,11 +281,43 @@ export default function CGPACalculator() {
   const overallGrade = getLetterGrade(overallWAM);
   const cgpa10 = overallWAM / 10;
 
+  const handleExportPDF = async () => {
+    if (!reportRef.current) return;
+    setIsExporting(true);
+    
+    // Wait a bit for any animations to settle
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    try {
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#FFFCF8",
+        logging: false,
+      });
+      
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [canvas.width / 2, canvas.height / 2]
+      });
+      
+      pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+      pdf.save(`DBE_Academic_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (error) {
+      console.error("PDF Export failed:", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 space-y-12">
       {/* Arrears Warning */}
       {(y1Arrears > 6 || y2Arrears > 6) && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           className="bg-red-50 border-2 border-red-200 p-6 rounded-[2rem] flex items-start gap-4"
@@ -291,8 +328,8 @@ export default function CGPACalculator() {
           <div className="space-y-2">
             <h3 className="text-lg font-black text-red-600 uppercase tracking-tight">Academic Arrears Alert</h3>
             <p className="text-sm text-red-700 font-medium leading-relaxed">
-              You have <strong>{y1Arrears > 6 ? y1Arrears : y2Arrears} credits</strong> of arrears in Year {y1Arrears > 6 ? '1' : '2'}. 
-              According to the IIMB BBA DBE manual (Section 2.1), learners with more than 6.0 credits of standing arrears 
+              You have <strong>{y1Arrears > 6 ? y1Arrears : y2Arrears} credits</strong> of arrears in Year {y1Arrears > 6 ? '1' : '2'}.
+              According to the IIMB BBA DBE manual (Section 2.1), learners with more than 6.0 credits of standing arrears
               at the end of an academic year are mandated to take a term break.
             </p>
           </div>
@@ -315,17 +352,24 @@ export default function CGPACalculator() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button 
+          <button
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            className={`flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 hover:scale-105 transition-all ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <FileText className="w-4 h-4" /> {isExporting ? 'Generating...' : 'Visual PDF'}
+          </button>
+          <button
             onClick={downloadGrades}
             className="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-xl text-xs font-black uppercase tracking-widest text-on-surface border border-outline-variant/10 hover:bg-surface-container-highest transition-all"
           >
-            <Download className="w-4 h-4" /> Export
+            <Download className="w-4 h-4" /> Export Data
           </button>
           <label className="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-xl text-xs font-black uppercase tracking-widest text-on-surface border border-outline-variant/10 hover:bg-surface-container-highest cursor-pointer transition-all">
             <Upload className="w-4 h-4" /> Import
             <input type="file" className="hidden" accept=".json" onChange={handleFileUpload} />
           </label>
-          <button 
+          <button
             onClick={saveGrades}
             className="flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-100 hover:scale-105 transition-all"
           >
@@ -334,16 +378,22 @@ export default function CGPACalculator() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 shadow-sm flex flex-col justify-between overflow-hidden relative">
-          <div className="relative z-10">
-            <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Overall CGPA (10-Point)</p>
-            <div className="flex items-end gap-3">
-              <h2 className="text-6xl font-black text-on-surface leading-none">{cgpa10.toFixed(2)}</h2>
-              <span className="text-sm font-bold text-on-surface-variant mb-2">/ 10.0</span>
+      <div ref={reportRef} className="space-y-12 p-4 md:p-8 rounded-[3rem] bg-[#FFFCF8]">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 shadow-sm flex flex-col justify-between overflow-hidden relative">
+            <div className="relative z-10">
+              <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Overall CGPA (10-Point)</p>
+              <div className="flex items-end gap-3">
+                <h2 className="text-6xl font-black text-on-surface leading-none">{cgpa10.toFixed(2)}</h2>
+                <span className="text-sm font-bold text-on-surface-variant mb-2">/ 10.0</span>
+              </div>
+              <p className="mt-2 text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest">Weighted Average: {overallWAM.toFixed(2)}%</p>
             </div>
-            <p className="mt-2 text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest">Weighted Average: {overallWAM.toFixed(2)}%</p>
+            <div className="mt-6 flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 w-fit px-3 py-1 rounded-full relative z-10">
+              <TrendingUp className="w-3 h-3" /> Based on entered marks
+            </div>
+            <Award className="absolute -right-6 -bottom-6 w-32 h-32 text-amber-500/10 rotate-12" />
           </div>
           <div className="mt-6 flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 w-fit px-3 py-1 rounded-full relative z-10">
             <TrendingUp className="w-3 h-3" /> Based on entered marks
@@ -357,11 +407,11 @@ export default function CGPACalculator() {
             <div className="flex items-end gap-4">
               <h2 className={`text-6xl font-black ${overallGrade.color} leading-none`}>{overallGrade.grade}</h2>
               <p className="text-sm font-bold text-on-surface-variant mb-2 uppercase tracking-wide">
-                {overallWAM >= 90 ? "Outstanding" : 
-                 overallWAM >= 80 ? "Excellent" : 
-                 overallWAM >= 70 ? "Good" : 
-                 overallWAM >= 60 ? "Satisfactory" : 
-                 overallWAM >= 40 ? "Pass" : "Arrears"}
+                {overallWAM >= 90 ? "Outstanding" :
+                  overallWAM >= 80 ? "Excellent" :
+                    overallWAM >= 70 ? "Good" :
+                      overallWAM >= 60 ? "Satisfactory" :
+                        overallWAM >= 40 ? "Pass" : "Arrears"}
               </p>
             </div>
           </div>
@@ -387,15 +437,17 @@ export default function CGPACalculator() {
             </div>
           </div>
           <div className="mt-6 w-full bg-stone-800 rounded-full h-2 overflow-hidden">
-             <div 
-               className="bg-amber-500 h-full transition-all duration-1000" 
-               style={{ width: `${(TERMS_DATA.reduce((acc, term) => {
+            <div
+              className="bg-amber-500 h-full transition-all duration-1000"
+              style={{
+                width: `${(TERMS_DATA.reduce((acc, term) => {
                   term.subjects.forEach(sub => {
                     if (grades[term.id]?.[sub.name]) acc += sub.credits;
                   });
                   return acc;
-                }, 0) / 135) * 100}%` }}
-             />
+                }, 0) / 135) * 100}%`
+              }}
+            />
           </div>
         </div>
       </div>
@@ -404,13 +456,13 @@ export default function CGPACalculator() {
       <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2.5rem] shadow-sm overflow-hidden">
         {/* Tabs */}
         <div className="flex border-b border-outline-variant/10">
-          <button 
+          <button
             onClick={() => setActiveTab("input")}
             className={`flex-1 py-6 text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'input' ? 'text-amber-600 bg-amber-50/30 border-b-4 border-amber-600' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'}`}
           >
             Mark Entry
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab("summary")}
             className={`flex-1 py-6 text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'summary' ? 'text-amber-600 bg-amber-50/30 border-b-4 border-amber-600' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'}`}
           >
@@ -421,7 +473,7 @@ export default function CGPACalculator() {
         <div className="p-8">
           <AnimatePresence mode="wait">
             {activeTab === "input" ? (
-              <motion.div 
+              <motion.div
                 key="input"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -459,18 +511,18 @@ export default function CGPACalculator() {
                         </div>
                         <div className="col-span-3 text-right">
                           <div className="flex items-center justify-end gap-3">
-                             <div className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold ${getLetterGrade(grades[selectedTerm]?.[sub.name] || 0).bg} ${getLetterGrade(grades[selectedTerm]?.[sub.name] || 0).color}`}>
-                                {getLetterGrade(grades[selectedTerm]?.[sub.name] || 0).grade}
-                             </div>
-                             <input 
-                                type="number"
-                                min="0"
-                                max="100"
-                                placeholder="0"
-                                value={grades[selectedTerm]?.[sub.name] === undefined ? "" : grades[selectedTerm]?.[sub.name]}
-                                onChange={(e) => handleMarkChange(selectedTerm, sub.name, e.target.value)}
-                                className="w-20 bg-surface-container text-right p-3 rounded-xl font-black text-sm outline-none border border-outline-variant/10 focus:border-amber-500 transition-all"
-                             />
+                            <div className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold ${getLetterGrade(grades[selectedTerm]?.[sub.name] || 0).bg} ${getLetterGrade(grades[selectedTerm]?.[sub.name] || 0).color}`}>
+                              {getLetterGrade(grades[selectedTerm]?.[sub.name] || 0).grade}
+                            </div>
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              placeholder="0"
+                              value={grades[selectedTerm]?.[sub.name] === undefined ? "" : grades[selectedTerm]?.[sub.name]}
+                              onChange={(e) => handleMarkChange(selectedTerm, sub.name, e.target.value)}
+                              className="w-20 bg-surface-container text-right p-3 rounded-xl font-black text-sm outline-none border border-outline-variant/10 focus:border-amber-500 transition-all"
+                            />
                           </div>
                         </div>
                       </div>
@@ -488,9 +540,9 @@ export default function CGPACalculator() {
                       <h3 className="text-2xl font-black text-on-surface">{currentTermWAM.toFixed(2)} <span className="text-xs font-bold text-on-surface-variant">WAM</span></h3>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
-                    <button 
+                    <button
                       onClick={() => {
                         const newGrades = { ...grades };
                         delete newGrades[selectedTerm];
@@ -502,7 +554,7 @@ export default function CGPACalculator() {
                       <RefreshCcw className="w-5 h-5" />
                     </button>
                     {selectedTerm < 9 && (
-                      <button 
+                      <button
                         onClick={() => setSelectedTerm(prev => prev + 1)}
                         className="px-8 py-4 bg-on-surface text-surface rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
                       >
@@ -513,7 +565,7 @@ export default function CGPACalculator() {
                 </div>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 key="summary"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -527,7 +579,7 @@ export default function CGPACalculator() {
                     const grade = getLetterGrade(wam);
 
                     return (
-                      <div 
+                      <div
                         key={term.id}
                         className={`p-6 rounded-[2rem] border transition-all ${hasData ? 'bg-surface-container-low border-outline-variant/20' : 'bg-surface-container-lowest border-outline-variant/10 opacity-60'}`}
                       >
@@ -544,21 +596,21 @@ export default function CGPACalculator() {
                         </div>
 
                         <div className="flex items-end justify-between">
-                           <div>
-                              <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Performance</p>
-                              <p className="text-3xl font-black text-on-surface">
-                                {hasData ? wam.toFixed(1) : "---"}
-                              </p>
-                           </div>
-                           <button 
+                          <div>
+                            <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Performance</p>
+                            <p className="text-3xl font-black text-on-surface">
+                              {hasData ? wam.toFixed(1) : "---"}
+                            </p>
+                          </div>
+                          <button
                             onClick={() => {
                               setSelectedTerm(term.id);
                               setActiveTab("input");
                             }}
                             className="p-3 bg-surface-container-high hover:bg-on-surface hover:text-surface rounded-xl transition-all"
-                           >
-                             <ChevronRight className="w-4 h-4" />
-                           </button>
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
                     );
@@ -566,13 +618,13 @@ export default function CGPACalculator() {
                 </div>
 
                 <div className="mt-8 bg-amber-600 text-white rounded-[2rem] p-8 relative overflow-hidden">
-                   <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                      <div className="space-y-2">
-                        <h3 className="text-2xl font-black tracking-tight">Academic Milestone</h3>
-                        <p className="text-amber-100 font-medium">
-                          {overallWAM >= 40 ? "You are on track to complete the BBA DBE program with honors." : "Complete more terms to see your overall academic standing."}
-                        </p>
-                      </div>
+                  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-black tracking-tight">Academic Milestone</h3>
+                      <p className="text-amber-100 font-medium">
+                        {overallWAM >= 40 ? "You are on track to complete the BBA DBE program with honors." : "Complete more terms to see your overall academic standing."}
+                      </p>
+                    </div>
                       <div className="flex items-center gap-4 bg-white/20 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/20">
                         <div className="text-center pr-6 border-r border-white/20">
                            <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">CGPA (10.0)</p>
@@ -587,8 +639,8 @@ export default function CGPACalculator() {
                            <p className="text-3xl font-black">{overallGrade.grade}</p>
                         </div>
                       </div>
-                   </div>
-                   <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
+                  </div>
+                  <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
                 </div>
               </motion.div>
             )}
@@ -603,8 +655,8 @@ export default function CGPACalculator() {
             <Info className="w-4 h-4" />
           </div>
           <p>
-            This tool uses <strong>Absolute Grading</strong> as per IIMB BBA DBE standards. 
-            A course is passed only if the learner scores ≥ 40% in CLA AND ≥ 40% in Final Exam. 
+            This tool uses <strong>Absolute Grading</strong> as per IIMB BBA DBE standards.
+            A course is passed only if the learner scores ≥ 40% in CLA AND ≥ 40% in Final Exam.
             This calculator assumes you meet both criteria for the marks entered.
           </p>
         </div>
@@ -613,12 +665,13 @@ export default function CGPACalculator() {
             <Award className="w-4 h-4" />
           </div>
           <p>
-            Weighted Average Marks (WAM) = Σ(Marks × Credits) / Σ(Credits). 
-            Term transcripts issued by the institute reflect this weighted average. 
+            Weighted Average Marks (WAM) = Σ(Marks × Credits) / Σ(Credits).
+            Term transcripts issued by the institute reflect this weighted average.
             Rounding follows standard IIMB academic practices.
           </p>
         </div>
       </div>
+    </div>
     </div>
   );
 }
