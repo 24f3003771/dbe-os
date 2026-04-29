@@ -16,7 +16,8 @@ import {
   AlertCircle,
   TrendingUp,
   Award,
-  FileText
+  FileText,
+  ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import jsPDF from "jspdf";
