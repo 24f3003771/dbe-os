@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Linkedin, ArrowLeft, User } from "lucide-react";
-import Lottie from "lottie-react";
-import tomatoAnimation from "@/data/tomato.json";
 
 
 export default function Navbar() {
@@ -28,8 +26,8 @@ export default function Navbar() {
                     )}
 
                     <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group transition-all duration-300 hover:scale-[1.02]">
-                        <div className="relative w-10 h-10">
-                            <Lottie animationData={tomatoAnimation} loop={true} />
+                        <div className="relative w-10 h-10 flex items-center justify-center text-2xl">
+                            <span>🍅</span>
                             <div className="absolute inset-0 bg-red-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
                         <div className="flex flex-col items-start">

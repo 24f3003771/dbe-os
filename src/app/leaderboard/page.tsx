@@ -37,7 +37,7 @@ export default function LeaderboardPage() {
             </header>
 
             {loading ? (
-                <LoadingScreen message="Calculating rankings..." fullScreen={false} />
+                <LoadingScreen message="Calculating rankings..." type="list" fullScreen={false} />
             ) : (
                 <div className="bg-surface-container rounded-[2.5rem] overflow-hidden border border-outline-variant/10 shadow-xl">
                     <div className="overflow-x-auto">

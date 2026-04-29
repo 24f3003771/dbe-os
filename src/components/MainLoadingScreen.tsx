@@ -2,31 +2,24 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Lottie from 'lottie-react';
-import tomatoAnimation from '@/data/tomato.json';
+import Skeleton from './Skeleton';
 
 export default function MainLoadingScreen() {
-  // Initialize to true to avoid flash if not booted
   const [isVisible, setIsVisible] = useState(true);
-  const [phase, setPhase] = useState('bouncing'); // bouncing -> splash -> end
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     setIsHydrated(true);
-    const hasBooted = sessionStorage.getItem('dbe_os_booted_v10');
+    const hasBooted = sessionStorage.getItem('dbe_os_booted_v11');
     if (hasBooted && process.env.NODE_ENV === 'production') {
       setIsVisible(false);
       return;
     }
 
-    // Just keep bouncing for 4 seconds then exit
-    const startExit = setTimeout(() => setIsVisible(false), 4000);
+    const startExit = setTimeout(() => setIsVisible(false), 2500);
+    sessionStorage.setItem('dbe_os_booted_v11', 'true');
 
-    sessionStorage.setItem('dbe_os_booted_v10', 'true');
-
-    return () => {
-      clearTimeout(startExit);
-    };
+    return () => clearTimeout(startExit);
   }, []);
 
   if (!isVisible) return null;
@@ -37,72 +30,72 @@ export default function MainLoadingScreen() {
         <motion.div 
           key="loading-screen"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
-          className="fixed inset-0 z-[10000] bg-white flex flex-col items-center justify-center overflow-hidden"
+          exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
+          className="fixed inset-0 z-[10000] bg-background flex flex-col overflow-hidden"
         >
-          {/* Main Stage */}
-          <div className="relative w-full h-[500px] flex items-center justify-center">
-            
-            <motion.div 
-              key="bouncing-stage"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="flex flex-col items-center gap-12"
-            >
-              <div className="flex flex-col items-center gap-4">
-                <h1 className="text-xl font-black text-stone-200 uppercase tracking-[0.6em] animate-pulse">DBE - OS</h1>
-                <div className="h-0.5 w-12 bg-red-500/20 rounded-full" />
-              </div>
-
-              <div className="flex gap-10">
-                {[0, 1, 2, 3].map((i) => (
-                  <motion.div
-                    key={i}
-                    animate={{ y: [0, -40, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }}
-                    className="w-14 h-14"
-                  >
-                    <Lottie animationData={tomatoAnimation} loop={true} />
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+          {/* Skeleton Header */}
+          <div className="w-full border-b border-white/5 py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Skeleton variant="circular" className="w-10 h-10" />
+              <Skeleton className="w-32 h-6" />
+            </div>
+            <div className="flex gap-4">
+              <Skeleton className="w-24 h-8 rounded-full" />
+              <Skeleton variant="circular" className="w-8 h-8" />
+            </div>
           </div>
 
-          {/* Quote Section - Visible from start */}
+          {/* Skeleton Main Content */}
+          <div className="flex-1 max-w-7xl mx-auto w-full p-8 space-y-12">
+            <div className="space-y-4">
+              <Skeleton className="w-1/4 h-10" />
+              <Skeleton className="w-1/2 h-4" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-surface/30 rounded-3xl p-8 border border-white/5 space-y-6">
+                  <Skeleton variant="circular" className="w-14 h-14" />
+                  <div className="space-y-3">
+                    <Skeleton className="w-3/4 h-6" />
+                    <Skeleton className="w-full h-4" />
+                    <Skeleton className="w-2/3 h-4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex justify-between items-end">
+                <Skeleton className="w-48 h-8" />
+                <Skeleton className="w-24 h-4" />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-surface/30 rounded-3xl h-64 border border-white/5 p-8">
+                  <Skeleton className="w-full h-full rounded-2xl" />
+                </div>
+                <div className="bg-surface/30 rounded-3xl h-64 border border-white/5 p-8">
+                  <Skeleton className="w-full h-full rounded-2xl" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Branding */}
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-2xl border border-white/10">
+              <span className="text-xl">🍅</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">DBE OS Platform</span>
+            </div>
+            <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.4em]">Optimizing Academic Performance</p>
+          </div>
+          
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="absolute bottom-24 flex flex-col items-center gap-6"
-          >
-             <div className="text-center space-y-2">
-                <p className="text-[10px] font-black text-stone-300 uppercase tracking-[0.5em] opacity-80">Platform by BBA DBE Community</p>
-                <h2 className="text-sm md:text-base font-bold text-stone-600 italic">
-                   "Built by the community, for the community !!"
-                </h2>
-             </div>
-             
-             <motion.div 
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex items-center gap-2 px-5 py-2 bg-red-50/80 rounded-2xl border border-red-100 shadow-sm"
-             >
-                <span className="text-lg">🍅</span>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500">Tomato Engine v2.0</span>
-             </motion.div>
-          </motion.div>
-
-          {/* Progress Bar */}
-          <div className="absolute bottom-0 inset-x-0 h-2 bg-stone-50 overflow-hidden">
-             <motion.div 
-               className="h-full bg-gradient-to-r from-red-400 to-red-600"
-               initial={{ width: "0%" }}
-               animate={{ width: "100%" }}
-               transition={{ duration: 6, ease: "linear" }}
-             />
-          </div>
+            className="absolute bottom-0 inset-x-0 h-1 bg-primary/20"
+            initial={{ scaleX: 0, originX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 2.5, ease: "linear" }}
+          />
         </motion.div>
       )}
     </AnimatePresence>

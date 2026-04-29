@@ -98,7 +98,7 @@ export default function MatchForgePage() {
         setSaving(false);
     };
 
-    if (loading) return <LoadingScreen message="Forging your matches..." fullScreen={false} />;
+    if (loading) return <LoadingScreen message="Forging your matches..." type="list" fullScreen={false} />;
 
     if (profile) return <MatchFeed matches={matches} />;
 

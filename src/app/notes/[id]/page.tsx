@@ -71,7 +71,7 @@ export default function NoteDetailPage({ params }: { params: Promise<{ id: strin
     };
 
     if (loading) {
-        return <LoadingScreen message="Opening your note..." />;
+        return <LoadingScreen message="Retrieving your academic notes..." type="card" />;
     }
 
     if (!note) {

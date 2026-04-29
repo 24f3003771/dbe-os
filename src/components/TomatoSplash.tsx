@@ -1,8 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
-import Lottie from 'lottie-react';
-import tomatoAnimation from '@/data/tomato.json';
+import React from 'react';
 
 interface TomatoSplashProps {
   className?: string;
@@ -10,25 +8,12 @@ interface TomatoSplashProps {
 }
 
 export default function TomatoSplash({ className = '', size = 'w-10 h-10' }: TomatoSplashProps) {
-  const lottieRef = useRef<any>(null);
-
-  const handleMouseEnter = () => {
-    if (lottieRef.current) {
-      lottieRef.current.goToAndPlay(0);
-    }
-  };
-
   return (
     <div 
-      className={`relative flex items-center justify-center cursor-pointer ${size} ${className}`}
-      onMouseEnter={handleMouseEnter}
+      className={`relative flex items-center justify-center transition-transform hover:scale-110 active:scale-95 ${size} ${className}`}
     >
-      <Lottie 
-        lottieRef={lottieRef} 
-        animationData={tomatoAnimation} 
-        loop={false} 
-        autoplay={false} 
-      />
+      <span className="text-2xl select-none">🍅</span>
+      <div className="absolute inset-0 bg-red-500/5 blur-lg rounded-full animate-pulse"></div>
     </div>
   );
 }

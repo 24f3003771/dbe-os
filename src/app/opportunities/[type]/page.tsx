@@ -31,7 +31,7 @@ export default function OpportunityListPage({ params }: { params: Promise<{ type
         (o.name.toLowerCase().includes(searchQuery.toLowerCase()) || o.organizer.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-    if (loading) return <LoadingScreen message={`Curating ${type === 'COMPETITION' ? 'Competitions' : 'Internships'}...`} />;
+    if (loading) return <LoadingScreen message={`Curating ${type === 'COMPETITION' ? 'Competitions' : 'Internships'}...`} type="grid" />;
 
     return (
         <div className="max-w-7xl mx-auto py-12 px-6 space-y-12 min-h-screen">

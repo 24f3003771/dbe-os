@@ -165,7 +165,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                     </div>
 
                     {loadingHistory ? (
-                        <LoadingScreen message="Fetching history..." fullScreen={false} />
+                        <LoadingScreen message="Fetching history..." type="list" fullScreen={false} />
                     ) : examHistory.length === 0 ? (
                         <div className="bg-surface-container rounded-[2rem] p-16 text-center border-2 border-dashed border-outline-variant/20">
                             <Target className="w-16 h-16 text-on-surface-variant/20 mx-auto mb-4" />

@@ -1,17 +1,18 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Lottie from 'lottie-react';
-import sandyAnimation from '../../public/sandy_brand.json';
+import Skeleton, { CardSkeleton, ListSkeleton } from './Skeleton';
 
 interface LoadingScreenProps {
   message?: string;
   fullScreen?: boolean;
+  type?: 'default' | 'card' | 'list' | 'grid';
 }
 
 export default function LoadingScreen({ 
-  message = "Loading DBE OS...", 
-  fullScreen = true 
+  message = "Loading...", 
+  fullScreen = true,
+  type = 'default'
 }: LoadingScreenProps) {
   const [mounted, setMounted] = useState(false);
 
@@ -22,31 +23,37 @@ export default function LoadingScreen({
   if (!mounted) return null;
 
   return (
-    <div className={`flex flex-col items-center justify-center bg-surface/80 backdrop-blur-md z-[9999] transition-all duration-500 animate-in fade-in ${
-      fullScreen ? 'fixed inset-0 w-screen h-screen' : 'w-full h-full min-h-[400px]'
+    <div className={`flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm z-[9999] transition-all duration-500 ${
+      fullScreen ? 'fixed inset-0 w-screen h-screen px-6' : 'w-full h-full min-h-[400px] p-6'
     }`}>
-      <div className="w-64 h-64 relative">
-        <Lottie 
-          animationData={sandyAnimation} 
-          loop={true} 
-          className="w-full h-full"
-        />
-        {/* Subtle shadow glow */}
-        <div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl -z-10 animate-pulse"></div>
-      </div>
-      
-      {message && (
-        <div className="mt-8 flex flex-col items-center gap-3">
-          <p className="text-primary font-headline font-bold text-lg tracking-tight animate-pulse text-center">
-            {message}
-          </p>
-          <div className="flex gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/20 animate-bounce [animation-delay:-0.3s]"></span>
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]"></span>
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce"></span>
+      <div className="w-full max-w-4xl mx-auto space-y-8">
+        {type === 'default' && (
+          <div className="flex flex-col items-center gap-6">
+            <Skeleton variant="circular" className="w-24 h-24" />
+            <div className="space-y-3 w-full max-w-xs flex flex-col items-center">
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+            {message && (
+              <p className="text-primary/60 font-medium text-sm tracking-widest uppercase animate-pulse">
+                {message}
+              </p>
+            )}
           </div>
-        </div>
-      )}
+        )}
+
+        {type === 'card' && <CardSkeleton />}
+        
+        {type === 'list' && <ListSkeleton items={5} />}
+
+        {type === 'grid' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
