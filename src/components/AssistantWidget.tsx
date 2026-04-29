@@ -97,13 +97,9 @@ export default function AssistantWidget() {
     return (
         <>
             {/* Floating FAB */}
-            <motion.button
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+            <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-24 md:bottom-8 right-6 md:right-8 z-[100] w-14 h-14 bg-primary text-white rounded-2xl shadow-2xl shadow-primary/20 flex items-center justify-center border-2 border-white/20 backdrop-blur-xl"
+                className="fixed bottom-24 md:bottom-8 right-6 md:right-8 z-[100] w-14 h-14 bg-primary text-white rounded-2xl shadow-2xl shadow-primary/20 flex items-center justify-center border-2 border-white/20 backdrop-blur-xl transition-transform active:scale-95 hover:scale-105"
             >
                 {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
                 {!isOpen && (
@@ -112,15 +108,12 @@ export default function AssistantWidget() {
                         <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500 border-2 border-white"></span>
                     </span>
                 )}
-            </motion.button>
+            </button>
 
             {/* Chat Dialogue Box */}
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 50, scale: 0.9 }}
+                    <div
                         className="fixed bottom-40 md:bottom-28 right-6 md:right-8 z-[100] w-[calc(100vw-48px)] md:w-[400px] h-[550px] bg-white rounded-[2.5rem] shadow-[0_32px_120px_rgba(0,0,0,0.15)] border border-stone-100 flex flex-col overflow-hidden"
                     >
                         {/* Header */}
@@ -196,7 +189,7 @@ export default function AssistantWidget() {
                                 <Zap className="w-2.5 h-2.5 text-secondary" /> Locally processed by NVIDIA 70B
                             </p>
                         </div>
-                    </motion.div>
+                    </div>
                 )}
             </AnimatePresence>
         </>

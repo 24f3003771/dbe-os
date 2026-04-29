@@ -155,13 +155,13 @@ export default function Dashboard() {
   }, [isInitialized, fetchFarmData]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-700 max-w-7xl mx-auto pb-20">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto pb-20">
       
       {/* Left Main Content */}
       <div className="lg:col-span-8 space-y-8">
         {/* Header Status Section */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 bg-surface-container rounded-3xl p-8 flex flex-col justify-between items-start relative overflow-hidden shadow-sm border border-outline-variant/10 hover-lift">
+            <div className="md:col-span-2 bg-surface-container rounded-3xl p-8 flex flex-col justify-between items-start relative overflow-hidden shadow-sm border border-outline-variant/10">
                 <div className="relative z-10 w-full">
                     <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tighter leading-[1.1]">
                         DBE - <span className="text-red-500 tracking-normal">OS.</span>
@@ -188,7 +188,7 @@ export default function Dashboard() {
                 <div className="absolute -right-10 -top-10 w-48 h-48 bg-primary/15 rounded-full blur-3xl pointer-events-none"></div>
             </div>
             
-            <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-sm hover-lift relative overflow-hidden">
+            <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-sm relative overflow-hidden">
                 <p className="text-xs font-bold font-headline text-secondary uppercase tracking-widest mb-2 flex items-center gap-1 z-10"><Zap className="w-4 h-4"/> Activity</p>
                 <p className="text-5xl font-black text-secondary mb-2 leading-none z-10">{streak}</p>
                 <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mt-2 z-10">Day Streak</p>
@@ -199,7 +199,7 @@ export default function Dashboard() {
             {/* Feature Grid */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Notes Section preview */}
-                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift">
+                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6">
                     <div className="flex justify-between items-center mb-2">
                         <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
                             <BookOpen className="w-5 h-5 text-primary" /> Universal Library
@@ -225,7 +225,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Opportunity Hub Section preview */}
-                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 hover-lift flex flex-col justify-between group overflow-hidden relative">
+                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 flex flex-col justify-between group overflow-hidden relative">
                     <div className="space-y-6 relative z-10">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">

@@ -423,7 +423,7 @@ export default function MatchForgePage() {
 
 function MatchFeed({ matches }: { matches: any[] }) {
     return (
-        <div className="max-w-6xl mx-auto space-y-12 pb-32 pt-10 px-4 animate-in fade-in slide-in-from-bottom-6 duration-700">
+        <div className="max-w-6xl mx-auto space-y-12 pb-32 pt-10 px-4">
             <header className="flex flex-col md:flex-row justify-between items-end gap-6 text-center md:text-left">
                 <div className="space-y-2">
                     <div className="inline-flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-1 rounded-full text-xs font-black tracking-widest uppercase">

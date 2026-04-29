@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function OpportunityHubPage() {
     return (
-        <div className="max-w-7xl mx-auto py-12 px-6 space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+        <div className="max-w-7xl mx-auto py-12 px-6 space-y-16">
             {/* Hero Section */}
             <header className="relative p-8 md:p-20 bg-[#1A1A1A] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden text-center space-y-4 md:space-y-6">
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-indigo-500/10 to-transparent opacity-50" />
@@ -34,7 +34,7 @@ export default function OpportunityHubPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 px-2 md:px-4">
                 {/* Competitions Card */}
                 <Link href="/opportunities/competitions" className="group">
-                    <div className="h-full bg-white border border-stone-100 rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between hover:border-indigo-600/30 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-500 transform group-hover:-translate-y-2">
+                    <div className="h-full bg-white border border-stone-100 rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between hover:border-indigo-600/30 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-200 transform">
                         <div className="space-y-4 md:space-y-6">
                             <div className="w-14 h-14 md:w-16 md:h-16 bg-indigo-50 rounded-xl md:rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                 <Trophy className="w-7 h-7 md:w-8 md:h-8" />

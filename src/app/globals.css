@@ -68,12 +68,13 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-headline);
 }
 
+/* Removed hover-lift to speed up UI */
 .hover-lift {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: none !important;
 }
 
 .hover-lift:hover {
-  transform: translateY(-2px);
+  transform: none !important;
 }
 
 ::-webkit-scrollbar {

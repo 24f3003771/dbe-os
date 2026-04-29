@@ -119,7 +119,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     }
 
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto space-y-10 pb-20">
+        <div className="max-w-5xl mx-auto space-y-10 pb-20">
             <Link href="/quiz" className="flex items-center text-sm font-bold text-on-surface-variant hover:text-primary transition-colors w-fit">
                 <ChevronLeft className="w-5 h-5 mr-1" /> Back to Subjects
             </Link>

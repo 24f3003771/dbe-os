@@ -6,7 +6,6 @@ import Link from "next/link";
 import { HelpCircle, Info } from "lucide-react";
 import NavLinks from "@/components/NavLinks";
 import AssistantWidget from "@/components/AssistantWidget";
-import MainLoadingScreen from "@/components/MainLoadingScreen";
 import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
 import OfflineOverlay from "@/components/OfflineOverlay";
 import { createServerClient } from "@supabase/ssr";
@@ -145,7 +144,6 @@ export default async function RootLayout({
           <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 mb-20 md:mb-0">
             {children}
           </main>
-          <MainLoadingScreen />
           <AssistantWidget />
           <OfflineOverlay />
 

@@ -52,11 +52,8 @@ export default function LeaderboardPage() {
                             </thead>
                             <tbody className="divide-y divide-outline-variant/10">
                                 {users.map((user, index) => (
-                                    <motion.tr 
+                                    <tr 
                                         key={user.id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.05 }}
                                         className={`hover:bg-primary/5 transition-colors group ${index < 3 ? 'bg-primary/5' : ''}`}
                                     >
                                         <td className="px-8 py-6 whitespace-nowrap">
@@ -82,7 +79,7 @@ export default function LeaderboardPage() {
                                                 <span className="font-black text-xl text-on-surface">{user.totalTomatoesEarned}</span>
                                             </div>
                                         </td>
-                                    </motion.tr>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>

@@ -37,7 +37,7 @@ export default async function UniversalNotesListPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="max-w-4xl mx-auto py-12 px-6">
             <header className="mb-8 space-y-2">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest">
                     <FileText className="w-3 h-3" /> Universal Library
