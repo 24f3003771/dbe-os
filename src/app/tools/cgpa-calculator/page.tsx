@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { toCanvas } from "html-to-image";
 
 // Data from IIMB BBA DBE Programme Manual
 const TERMS_DATA = [
@@ -286,18 +286,17 @@ export default function CGPACalculator() {
     setIsExporting(true);
     
     try {
-      // Temporarily switch to summary tab for export to capture full view if needed, 
-      // or just capture current view. Users usually want the summary.
-      // But let's stay on current tab and just capture.
-      
       const element = reportRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 2, // Higher quality
-        useCORS: true,
-        allowTaint: true,
+      
+      // Use toCanvas from html-to-image for better reliability
+      const canvas = await toCanvas(element, {
         backgroundColor: "#FFFCF8",
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight,
+        width: element.offsetWidth,
+        height: element.offsetHeight,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left'
+        }
       });
       
       const imgData = canvas.toDataURL("image/png", 1.0);
@@ -315,7 +314,7 @@ export default function CGPACalculator() {
       pdf.save(`DBE_Academic_Report_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (error) {
       console.error("PDF Export failed:", error);
-      alert("Failed to generate PDF. Try switching to the 'Term Summary' tab before exporting for a cleaner look.");
+      alert("Visual PDF generation failed. This can happen on some mobile browsers. Try taking a screenshot or use a desktop browser for the best experience.");
     } finally {
       setIsExporting(false);
     }
