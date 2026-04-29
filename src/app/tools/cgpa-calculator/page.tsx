@@ -285,29 +285,37 @@ export default function CGPACalculator() {
     if (!reportRef.current) return;
     setIsExporting(true);
     
-    // Wait a bit for any animations to settle
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
     try {
-      const canvas = await html2canvas(reportRef.current, {
-        scale: 2,
+      // Temporarily switch to summary tab for export to capture full view if needed, 
+      // or just capture current view. Users usually want the summary.
+      // But let's stay on current tab and just capture.
+      
+      const element = reportRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2, // Higher quality
         useCORS: true,
+        allowTaint: true,
         backgroundColor: "#FFFCF8",
-        logging: false,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
       });
       
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/png", 1.0);
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "px",
-        format: [canvas.width / 2, canvas.height / 2]
+        unit: "mm",
+        format: "a4"
       });
       
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`DBE_Academic_Report_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (error) {
       console.error("PDF Export failed:", error);
-      alert("Failed to generate PDF. Please try again.");
+      alert("Failed to generate PDF. Try switching to the 'Term Summary' tab before exporting for a cleaner look.");
     } finally {
       setIsExporting(false);
     }
@@ -355,25 +363,15 @@ export default function CGPACalculator() {
           <button
             onClick={handleExportPDF}
             disabled={isExporting}
-            className={`flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 hover:scale-105 transition-all ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 hover:scale-105 active:scale-95 transition-all ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <FileText className="w-4 h-4" /> {isExporting ? 'Generating...' : 'Visual PDF'}
           </button>
           <button
-            onClick={downloadGrades}
-            className="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-xl text-xs font-black uppercase tracking-widest text-on-surface border border-outline-variant/10 hover:bg-surface-container-highest transition-all"
-          >
-            <Download className="w-4 h-4" /> Export Data
-          </button>
-          <label className="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-xl text-xs font-black uppercase tracking-widest text-on-surface border border-outline-variant/10 hover:bg-surface-container-highest cursor-pointer transition-all">
-            <Upload className="w-4 h-4" /> Import
-            <input type="file" className="hidden" accept=".json" onChange={handleFileUpload} />
-          </label>
-          <button
             onClick={saveGrades}
-            className="flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-100 hover:scale-105 transition-all"
+            className="flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-100 hover:scale-105 active:scale-95 transition-all"
           >
-            <Save className="w-4 h-4" /> Save
+            <Save className="w-4 h-4" /> Save Progress
           </button>
         </div>
       </div>
