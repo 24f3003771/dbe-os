@@ -1,0 +1,42 @@
+[
+  {
+    "term": 1,
+    "name": "Term 1",
+    "subjects": [
+      { "id": "MF11x", "name": "Marketing Fundamentals" },
+      { "id": "CM11x", "name": "Creativity Mindset for innovation and Imagination" },
+      { "id": "EE11x", "name": "Exploration into Entrepreneurship" },
+      { "id": "FS11x", "name": "Financial Statements and Business Performance" },
+      { "id": "BC11x", "name": "Foundations of Business Communication I" },
+      { "id": "BS11x", "name": "Business Statistics for Entrepreneurs I" },
+      { "id": "EB11x", "name": "Evolution of Business and Market" }
+    ]
+  },
+  {
+    "term": 2,
+    "name": "Term 2",
+    "subjects": [
+      { "id": "SE21x", "name": "Persuasive Communication" },
+      { "id": "ES21x", "name": "Principles of Microeconomics" },
+      { "id": "FA31x", "name": "Management Accounting" },
+      { "id": "AE21x", "name": "Foundations of Business Communication II" },
+      { "id": "ID21x", "name": "Website Development" },
+      { "id": "ID22x", "name": "Indian Knowledge System" },
+      { "id": "DS21x", "name": "Business Statistics for Entrepreneurs II" },
+      { "id": "PJ21x", "name": "Venturing on a Budget: Rs250 Venture" }
+    ]
+  },
+  {
+    "term": 3,
+    "name": "Term 3",
+    "subjects": [
+      { "id": "DT31x", "name": "Design your Thinking" },
+      { "id": "IC31x", "name": "Understanding Indian Culture" },
+      { "id": "SD31x", "name": "Spreadsheets for Business Decisions" },
+      { "id": "SM31x", "name": "Social Media for Marketing" },
+      { "id": "EM31x", "name": "Entrepreneurial Mindset and Methods" },
+      { "id": "ES31x", "name": "Exploring Sustainability in the Indian Context" },
+      { "id": "BS31x", "name": "Business Statistics for Entrepreneurs III" }
+    ]
+  }
+]

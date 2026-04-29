@@ -1,0 +1,599 @@
+{
+  "ID22x": [
+    {
+      "id": "iks-mod-1",
+      "title": "Module 1: Introduction to Indian Knowledge System",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-03-06T00:00:00+05:30"
+    },
+    {
+      "id": "iks-mod-2",
+      "title": "Module 2: The Philosophical System",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-03-13T00:00:00+05:30"
+    },
+    {
+      "id": "iks-mod-3",
+      "title": "Module 3: Linguistics",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-03-20T00:00:00+05:30"
+    },
+    {
+      "id": "iks-mod-4",
+      "title": "Module 4: Wisdom through the Ages and Logic Framework",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-03-27T00:00:00+05:30"
+    },
+    {
+      "id": "iks-mod-5",
+      "title": "Module 5: Number System, Mathematics, and Astronomy",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-04-03T00:00:00+05:30"
+    },
+    {
+      "id": "iks-mod-6",
+      "title": "Module 6: Engineering and Technology",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-04-10T00:00:00+05:30"
+    },
+    {
+      "id": "iks-mod-7",
+      "title": "Module 7: Town Planning and Public Administration",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-04-17T00:00:00+05:30"
+    },
+    {
+      "id": "iks-mod-8",
+      "title": "Module 8: Health, Wellness, and Psychology",
+      "subject": "ID22x",
+      "type": "module",
+      "dueDate": "2026-04-24T00:00:00+05:30"
+    },
+    {
+      "id": "iks-cla-1",
+      "title": "Mid-term 1 (Modules 1-4)",
+      "subject": "ID22x",
+      "type": "exam",
+      "dueDate": "2026-04-12T23:30:00+05:30"
+    },
+    {
+      "id": "iks-cla-2",
+      "title": "Mid-term 2 (Modules 5-8)",
+      "subject": "ID22x",
+      "type": "exam",
+      "dueDate": "2026-05-03T23:30:00+05:30"
+    },
+    {
+      "id": "iks-live-1",
+      "title": "Session 1 - Faculty Live Session",
+      "subject": "ID22x",
+      "type": "live-session",
+      "dueDate": "2026-03-25T18:30:00+05:30"
+    }
+  ],
+  "AE21x": [
+    {
+      "id": "fbc2-mod-1",
+      "title": "Module 1",
+      "subject": "AE21x",
+      "type": "module",
+      "dueDate": "2026-04-24T00:00:00+05:30"
+    },
+    {
+      "id": "fbc2-mod-2",
+      "title": "Module 2",
+      "subject": "AE21x",
+      "type": "module",
+      "dueDate": "2026-04-24T00:00:00+05:30"
+    },
+    {
+      "id": "fbc2-mod-3",
+      "title": "Module 3",
+      "subject": "AE21x",
+      "type": "module",
+      "dueDate": "2026-05-01T00:00:00+05:30"
+    },
+    {
+      "id": "fbc2-mod-4",
+      "title": "Module 4",
+      "subject": "AE21x",
+      "type": "module",
+      "dueDate": "2026-05-01T00:00:00+05:30"
+    },
+    {
+      "id": "fbc2-cla-1",
+      "title": "CLA 1",
+      "subject": "AE21x",
+      "type": "assignment",
+      "dueDate": "2026-05-03T23:30:00+05:30"
+    },
+    {
+      "id": "fbc2-cla-2",
+      "title": "CLA 2",
+      "subject": "AE21x",
+      "type": "assignment",
+      "dueDate": "2026-05-03T23:30:00+05:30"
+    },
+    {
+      "id": "fbc2-cla-3",
+      "title": "CLA 3",
+      "subject": "AE21x",
+      "type": "assignment",
+      "dueDate": "2026-05-10T23:30:00+05:30"
+    },
+    {
+      "id": "fbc2-cla-4",
+      "title": "CLA 4",
+      "subject": "AE21x",
+      "type": "assignment",
+      "dueDate": "2026-05-10T23:30:00+05:30"
+    }
+  ],
+  "FA31x": [
+    {
+      "id": "ma-mod-1",
+      "title": "Module 1: Introduction to Management Accounting",
+      "subject": "FA31x",
+      "type": "module",
+      "dueDate": "2026-04-03T00:00:00+05:30"
+    },
+    {
+      "id": "ma-mod-2",
+      "title": "Module 2: Product Costing and Activity-Based Costing",
+      "subject": "FA31x",
+      "type": "module",
+      "dueDate": "2026-04-10T00:00:00+05:30"
+    },
+    {
+      "id": "ma-mod-3",
+      "title": "Module 3: Cost Analysis for Decision-Making",
+      "subject": "FA31x",
+      "type": "module",
+      "dueDate": "2026-04-17T00:00:00+05:30"
+    },
+    {
+      "id": "ma-mod-4",
+      "title": "Module 4: Budgeting and Variance Analysis",
+      "subject": "FA31x",
+      "type": "module",
+      "dueDate": "2026-04-24T00:00:00+05:30"
+    },
+    {
+      "id": "ma-cla-1",
+      "title": "CLA 1",
+      "subject": "FA31x",
+      "type": "assignment",
+      "dueDate": "2026-04-12T23:30:00+05:30"
+    },
+    {
+      "id": "ma-cla-2",
+      "title": "CLA 2",
+      "subject": "FA31x",
+      "type": "assignment",
+      "dueDate": "2026-04-19T23:30:00+05:30"
+    },
+    {
+      "id": "ma-cla-3",
+      "title": "CLA 3",
+      "subject": "FA31x",
+      "type": "assignment",
+      "dueDate": "2026-04-26T23:30:00+05:30"
+    },
+    {
+      "id": "ma-cla-4",
+      "title": "CLA 4",
+      "subject": "FA31x",
+      "type": "assignment",
+      "dueDate": "2026-05-03T23:30:00+05:30"
+    },
+    {
+      "id": "ma-live-1",
+      "title": "SME Session",
+      "subject": "FA31x",
+      "type": "live-session",
+      "dueDate": "2026-04-25T18:00:00+05:30"
+    }
+  ],
+  "ES21x": [
+    {
+      "id": "pome-mod-1",
+      "title": "Module 1: Forces of Demand and Supply",
+      "subject": "ES21x",
+      "type": "module",
+      "dueDate": "2026-03-27T00:00:00+05:30"
+    },
+    {
+      "id": "pome-mod-2",
+      "title": "Module 2: Equilibrium in a competitive market",
+      "subject": "ES21x",
+      "type": "module",
+      "dueDate": "2026-04-03T00:00:00+05:30"
+    },
+    {
+      "id": "pome-mod-3",
+      "title": "Module 3: Looking inside a Firm",
+      "subject": "ES21x",
+      "type": "module",
+      "dueDate": "2026-04-10T00:00:00+05:30"
+    },
+    {
+      "id": "pome-mod-4",
+      "title": "Module 4: Perfect Competition vs Monopoly",
+      "subject": "ES21x",
+      "type": "module",
+      "dueDate": "2026-04-17T00:00:00+05:30"
+    },
+    {
+      "id": "pome-cla-1",
+      "title": "CLA 1",
+      "subject": "ES21x",
+      "type": "assignment",
+      "dueDate": "2026-04-05T23:30:00+05:30"
+    },
+    {
+      "id": "pome-cla-2",
+      "title": "CLA 2",
+      "subject": "ES21x",
+      "type": "assignment",
+      "dueDate": "2026-04-12T23:30:00+05:30"
+    },
+    {
+      "id": "pome-cla-3",
+      "title": "CLA 3",
+      "subject": "ES21x",
+      "type": "assignment",
+      "dueDate": "2026-04-19T23:30:00+05:30"
+    },
+    {
+      "id": "pome-cla-4",
+      "title": "CLA 4",
+      "subject": "ES21x",
+      "type": "assignment",
+      "dueDate": "2026-04-26T23:30:00+05:30"
+    },
+    {
+      "id": "pome-live-1",
+      "title": "Faculty Session",
+      "subject": "ES21x",
+      "type": "live-session",
+      "dueDate": "2026-04-13T17:30:00+05:30"
+    }
+  ],
+  "DS21x": [
+    {
+      "id": "bse2-mod-1",
+      "title": "Module 1: Distributions related to Normal",
+      "subject": "DS21x",
+      "type": "module",
+      "dueDate": "2026-02-13T00:00:00+05:30"
+    },
+    {
+      "id": "bse2-mod-2",
+      "title": "Module 2: Sampling and Sampling Distributions",
+      "subject": "DS21x",
+      "type": "module",
+      "dueDate": "2026-02-20T00:00:00+05:30"
+    },
+    {
+      "id": "bse2-mod-3",
+      "title": "Module 3: Confidence Intervals and Estimation",
+      "subject": "DS21x",
+      "type": "module",
+      "dueDate": "2026-02-27T00:00:00+05:30"
+    },
+    {
+      "id": "bse2-mod-4",
+      "title": "Module 4: Hypothesis Testing",
+      "subject": "DS21x",
+      "type": "module",
+      "dueDate": "2026-03-06T00:00:00+05:30"
+    },
+    {
+      "id": "bse2-cla-1",
+      "title": "CLA 1",
+      "subject": "DS21x",
+      "type": "assignment",
+      "dueDate": "2026-02-22T23:30:00+05:30"
+    },
+    {
+      "id": "bse2-cla-2",
+      "title": "CLA 2",
+      "subject": "DS21x",
+      "type": "assignment",
+      "dueDate": "2026-03-01T23:30:00+05:30"
+    },
+    {
+      "id": "bse2-cla-3",
+      "title": "CLA 3",
+      "subject": "DS21x",
+      "type": "assignment",
+      "dueDate": "2026-03-08T23:30:00+05:30"
+    },
+    {
+      "id": "bse2-cla-4",
+      "title": "CLA 4",
+      "subject": "DS21x",
+      "type": "assignment",
+      "dueDate": "2026-03-16T23:30:00+05:30"
+    },
+    {
+      "id": "bse2-live-1",
+      "title": "Faculty Session 1",
+      "subject": "DS21x",
+      "type": "live-session",
+      "dueDate": "2026-02-21T15:00:00+05:30"
+    },
+    {
+      "id": "bse2-live-2",
+      "title": "Faculty Session 2",
+      "subject": "DS21x",
+      "type": "live-session",
+      "dueDate": "2026-02-28T17:00:00+05:30"
+    },
+    {
+      "id": "bse2-live-3",
+      "title": "Faculty Session 3",
+      "subject": "DS21x",
+      "type": "live-session",
+      "dueDate": "2026-03-07T17:00:00+05:30"
+    },
+    {
+      "id": "bse2-live-4",
+      "title": "Faculty Session 4",
+      "subject": "DS21x",
+      "type": "live-session",
+      "dueDate": "2026-03-14T17:00:00+05:30"
+    },
+    {
+      "id": "bse2-live-5",
+      "title": "Faculty Session 5",
+      "subject": "DS21x",
+      "type": "live-session",
+      "dueDate": "2026-05-09T16:00:00+05:30"
+    }
+  ],
+  "PJ21x": [
+    {
+      "id": "250v-mod-0-1",
+      "title": "Module 0 & Module 1 (Half)",
+      "subject": "PJ21x",
+      "type": "module",
+      "dueDate": "2026-02-06T00:00:00+05:30"
+    },
+    {
+      "id": "250v-mod-1b",
+      "title": "Module 1 (Remaining Half)",
+      "subject": "PJ21x",
+      "type": "module",
+      "dueDate": "2026-02-27T00:00:00+05:30"
+    },
+    {
+      "id": "250v-mod-2",
+      "title": "Module 2",
+      "subject": "PJ21x",
+      "type": "module",
+      "dueDate": "2026-03-06T00:00:00+05:30"
+    },
+    {
+      "id": "250v-mod-3",
+      "title": "Module 3",
+      "subject": "PJ21x",
+      "type": "module",
+      "dueDate": "2026-03-13T00:00:00+05:30"
+    },
+    {
+      "id": "250v-mod-4",
+      "title": "Module 4",
+      "subject": "PJ21x",
+      "type": "module",
+      "dueDate": "2026-03-20T00:00:00+05:30"
+    },
+    {
+      "id": "250v-asn-1",
+      "title": "Assignment-1",
+      "subject": "PJ21x",
+      "type": "assignment",
+      "dueDate": "2026-03-01T23:30:00+05:30"
+    },
+    {
+      "id": "250v-cla-1",
+      "title": "CLA 1",
+      "subject": "PJ21x",
+      "type": "assignment",
+      "dueDate": "2026-03-08T23:30:00+05:30"
+    },
+    {
+      "id": "250v-cla-2",
+      "title": "CLA 2",
+      "subject": "PJ21x",
+      "type": "assignment",
+      "dueDate": "2026-03-15T23:30:00+05:30"
+    },
+    {
+      "id": "250v-cla-3",
+      "title": "CLA 3",
+      "subject": "PJ21x",
+      "type": "assignment",
+      "dueDate": "2026-03-22T23:30:00+05:30"
+    },
+    {
+      "id": "250v-cla-4",
+      "title": "CLA 4",
+      "subject": "PJ21x",
+      "type": "assignment",
+      "dueDate": "2026-03-29T23:30:00+05:30"
+    },
+    {
+      "id": "250v-asn-2",
+      "title": "Assignment-2",
+      "subject": "PJ21x",
+      "type": "assignment",
+      "dueDate": "2026-04-19T23:30:00+05:30"
+    },
+    {
+      "id": "250v-live-1",
+      "title": "1st Live Session",
+      "subject": "PJ21x",
+      "type": "live-session",
+      "dueDate": "2026-02-18T18:00:00+05:30"
+    }
+  ],
+  "ID21x": [
+    {
+      "id": "web-mod-1",
+      "title": "Module 1",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-02-06T00:00:00+05:30"
+    },
+    {
+      "id": "web-mod-2",
+      "title": "Module 2",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-02-13T00:00:00+05:30"
+    },
+    {
+      "id": "web-mod-3",
+      "title": "Module 3",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-02-20T00:00:00+05:30"
+    },
+    {
+      "id": "web-mod-4",
+      "title": "Module 4",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-02-27T00:00:00+05:30"
+    },
+    {
+      "id": "web-mod-5",
+      "title": "Module 5",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-03-06T00:00:00+05:30"
+    },
+    {
+      "id": "web-mod-6",
+      "title": "Module 6",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-03-13T00:00:00+05:30"
+    },
+    {
+      "id": "web-mod-7",
+      "title": "Module 7",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-03-20T00:00:00+05:30"
+    },
+    {
+      "id": "web-mod-8",
+      "title": "Module 8",
+      "subject": "ID21x",
+      "type": "module",
+      "dueDate": "2026-03-27T00:00:00+05:30"
+    },
+    {
+      "id": "web-midterm",
+      "title": "MidTerm Assignment",
+      "subject": "ID21x",
+      "type": "assignment",
+      "dueDate": "2026-03-22T23:30:00+05:30"
+    },
+    {
+      "id": "web-final",
+      "title": "Final Project Submission",
+      "subject": "ID21x",
+      "type": "assignment",
+      "dueDate": "2026-04-12T23:30:00+05:30"
+    },
+    {
+      "id": "web-live-1",
+      "title": "Session 1",
+      "subject": "ID21x",
+      "type": "live-session",
+      "dueDate": "2026-03-04T17:00:00+05:30"
+    },
+    {
+      "id": "web-live-2",
+      "title": "Session 2",
+      "subject": "ID21x",
+      "type": "live-session",
+      "dueDate": "2026-03-28T17:00:00+05:30"
+    },
+    {
+      "id": "web-live-3",
+      "title": "Session 3",
+      "subject": "ID21x",
+      "type": "live-session",
+      "dueDate": "2026-04-04T17:00:00+05:30"
+    },
+    {
+      "id": "web-live-4",
+      "title": "Session 4",
+      "subject": "ID21x",
+      "type": "live-session",
+      "dueDate": "2026-04-11T17:00:00+05:30"
+    }
+  ],
+  "SE21x": [
+    {
+      "id": "pc-mod-1",
+      "title": "Module 1 & CLA Release",
+      "subject": "SE21x",
+      "type": "module",
+      "dueDate": "2026-02-06T00:00:00+05:30"
+    },
+    {
+      "id": "pc-mod-2",
+      "title": "Module 2 & CLA Release",
+      "subject": "SE21x",
+      "type": "module",
+      "dueDate": "2026-02-13T00:00:00+05:30"
+    },
+    {
+      "id": "pc-mod-3",
+      "title": "Module 3 & CLA Release",
+      "subject": "SE21x",
+      "type": "module",
+      "dueDate": "2026-02-20T00:00:00+05:30"
+    },
+    {
+      "id": "pc-mod-4",
+      "title": "Module 4 & CLA Release",
+      "subject": "SE21x",
+      "type": "module",
+      "dueDate": "2026-02-27T00:00:00+05:30"
+    },
+    {
+      "id": "pc-video-asn",
+      "title": "Video Assignment Submission",
+      "subject": "SE21x",
+      "type": "assignment",
+      "dueDate": "2026-03-08T23:30:00+05:30"
+    },
+    {
+      "id": "pc-live-1",
+      "title": "Faculty Live Session",
+      "subject": "SE21x",
+      "type": "live-session",
+      "dueDate": "2026-02-27T16:00:00+05:30"
+    },
+    {
+      "id": "pc-live-2",
+      "title": "SME Live Session",
+      "subject": "SE21x",
+      "type": "live-session",
+      "dueDate": "2026-03-06T17:00:00+05:30"
+    }
+  ]
+}

@@ -269,7 +269,9 @@ export default function DeadlinesPage() {
                                                                 <span className={`text-[8px] font-black uppercase tracking-widest ${cfg.color}`}>{cfg.label} • {d.type}</span>
                                                              </div>
                                                         </div>
-                                                        <button onClick={() => deleteDeadline(d.id)} className="p-2 text-stone-300 hover:text-error opacity-0 group-hover:opacity-100 transition-all"><Trash2 className="w-4 h-4" /></button>
+                                                        {!d.isOfficial && (
+                                                            <button onClick={() => deleteDeadline(d.id)} className="p-2 text-stone-300 hover:text-error opacity-0 group-hover:opacity-100 transition-all"><Trash2 className="w-4 h-4" /></button>
+                                                        )}
                                                     </div>
                                                     <div className="flex items-center justify-between text-[11px] font-bold text-on-surface-variant opacity-60">
                                                          <span>{new Date(d.dueDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</span>

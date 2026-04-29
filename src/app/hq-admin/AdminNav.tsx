@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, Users, Settings } from "lucide-react";
+import { ShieldAlert, Users, Settings, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -23,6 +23,14 @@ export default function AdminNav() {
             }`}
           >
             <Users className="w-4 h-4" /> Users
+          </Link>
+          <Link 
+            href="/hq-admin/curriculum" 
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all ${
+              pathname.includes('/curriculum') ? 'bg-white text-error shadow-sm' : 'text-white/70 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" /> Curriculum
           </Link>
           <Link 
             href="/hq-admin/settings" 

@@ -163,16 +163,16 @@ export default function InternshipHunterPage() {
     return (
         <div className="min-h-screen bg-stone-50/50 text-slate-900 animate-in fade-in duration-1000 pb-40">
             {/* Global Opportunity Nav */}
-            <nav className="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-3 flex justify-center overflow-x-auto">
-                <div className="flex items-center gap-2 bg-slate-100/50 p-1 rounded-2xl border border-slate-200/50">
+            <nav className="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100 px-4 md:px-6 py-2 md:py-3 flex justify-center overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-1 md:gap-2 bg-slate-100/50 p-1 rounded-xl md:rounded-2xl border border-slate-200/50 min-w-max">
                     {OPPORTUNITY_NAV.map((nav) => (
                         <Link 
                             key={nav.name}
                             href={nav.href}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${nav.active ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
+                            className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all ${nav.active ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
                         >
                             <nav.icon className="w-3 h-3" />
-                            {nav.name}
+                            <span className="whitespace-nowrap">{nav.name}</span>
                         </Link>
                     ))}
                 </div>
@@ -220,21 +220,21 @@ export default function InternshipHunterPage() {
 
             {/* Mode Selection Gatekeeper */}
             {viewMode === "CHOOSE" && (
-                <section className="max-w-7xl mx-auto px-6 -mt-20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section className="max-w-7xl mx-auto px-4 md:px-6 -mt-12 md:-mt-20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                         <button 
                             onClick={() => setViewMode("PORTALS")}
-                            className="group relative bg-white border border-stone-100 rounded-[3rem] p-12 text-left hover:border-primary transition-all shadow-2xl shadow-stone-200/50"
+                            className="group relative bg-white border border-stone-100 rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-left hover:border-primary transition-all shadow-2xl shadow-stone-200/50"
                         >
-                            <div className="space-y-6">
-                                <div className="w-20 h-20 bg-stone-50 rounded-[1.8rem] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                                    <Building2 className="w-10 h-10" />
+                            <div className="space-y-4 md:space-y-6">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-stone-50 rounded-2xl md:rounded-[1.8rem] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                    <Building2 className="w-8 h-8 md:w-10 md:h-10" />
                                 </div>
                                 <div className="space-y-2">
-                                    <h3 className="text-4xl font-black font-headline tracking-tight leading-none italic">Verified Corporate <br/><span className="text-primary">Portals.</span></h3>
-                                    <p className="text-stone-500 font-medium text-lg leading-relaxed">Direct links to official career pages of Tier 1 firms, MAANG, and Elite Consulting.</p>
+                                    <h3 className="text-3xl md:text-4xl font-black font-headline tracking-tight leading-none italic">Verified Corporate <br/><span className="text-primary">Portals.</span></h3>
+                                    <p className="text-stone-500 font-medium text-base md:text-lg leading-relaxed">Direct links to official career pages of Tier 1 firms, MAANG, and Elite Consulting.</p>
                                 </div>
-                                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+                                <div className="flex items-center gap-3 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-primary">
                                     Direct Redirect <ChevronRight className="w-4 h-4" />
                                 </div>
                             </div>
@@ -242,22 +242,22 @@ export default function InternshipHunterPage() {
 
                         <button 
                             onClick={() => handleLiveSearch()}
-                            className="group relative bg-[#1A1A1A] rounded-[3rem] p-12 text-left hover:ring-2 hover:ring-primary/50 transition-all shadow-2xl"
+                            className="group relative bg-[#1A1A1A] rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-left hover:ring-2 hover:ring-primary/50 transition-all shadow-2xl"
                         >
-                            <div className="space-y-6">
-                                <div className="w-20 h-20 bg-white/10 rounded-[1.8rem] flex items-center justify-center text-white group-hover:bg-primary transition-all">
-                                    <Linkedin className="w-10 h-10" />
+                            <div className="space-y-4 md:space-y-6">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-2xl md:rounded-[1.8rem] flex items-center justify-center text-white group-hover:bg-primary transition-all">
+                                    <Linkedin className="w-8 h-8 md:w-10 md:h-10" />
                                 </div>
                                 <div className="space-y-2">
-                                    <h3 className="text-4xl font-black font-headline tracking-tight leading-none italic text-white">Live AI Job <br/><span className="text-primary">Hunter.</span></h3>
-                                    <p className="text-stone-300 font-medium text-lg leading-relaxed">Real-time LinkedIn scraping for internships posted in the <span className="text-primary underline underline-offset-4 decoration-2">last 15 days</span>.</p>
+                                    <h3 className="text-3xl md:text-4xl font-black font-headline tracking-tight leading-none italic text-white">Live AI Job <br/><span className="text-primary">Hunter.</span></h3>
+                                    <p className="text-stone-300 font-medium text-base md:text-lg leading-relaxed">Real-time LinkedIn scraping for internships posted in the <span className="text-primary underline underline-offset-4 decoration-2">last 15 days</span>.</p>
                                 </div>
-                                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover:text-primary">
+                                <div className="flex items-center gap-3 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover:text-primary">
                                     Extract Openings <ChevronRight className="w-4 h-4" />
                                 </div>
                             </div>
-                            <div className="absolute top-8 right-8">
-                                <div className="px-3 py-1 bg-primary text-[8px] font-black uppercase tracking-widest text-white rounded-full animate-pulse">Live Now</div>
+                            <div className="absolute top-6 md:top-8 right-6 md:right-8">
+                                <div className="px-2 md:px-3 py-1 bg-primary text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white rounded-full animate-pulse">Live Now</div>
                             </div>
                         </button>
                     </div>
@@ -320,13 +320,13 @@ export default function InternshipHunterPage() {
                             </div>
                         )}
 
-                        <div className="flex flex-col md:flex-row items-center gap-6 bg-white/80 backdrop-blur-md border border-slate-100 p-6 rounded-[3.5rem] shadow-2xl shadow-slate-200/40 sticky top-24 z-50">
+                        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 bg-white/80 backdrop-blur-md border border-slate-100 p-4 md:p-6 rounded-3xl md:rounded-[3.5rem] shadow-2xl shadow-slate-200/40 sticky top-20 md:top-24 z-50">
                             <div className="relative flex-1 w-full">
-                                <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-300" />
+                                <Search className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-slate-300" />
                                 <input 
                                     type="text"
-                                    placeholder={viewMode === 'PORTALS' ? "Find top firms (Google, BCG, HUL)..." : "Or type your own field (e.g. UX Design, HR)..."}
-                                    className="w-full bg-slate-50 border-none rounded-[2rem] py-5 pl-16 pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-lg placeholder:text-slate-300"
+                                    placeholder={viewMode === 'PORTALS' ? "Find top firms..." : "Type field (e.g. UX Design)..."}
+                                    className="w-full bg-slate-50 border-none rounded-2xl md:rounded-[2rem] py-3 md:py-5 pl-14 md:pl-16 pr-6 md:pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-sm md:text-lg placeholder:text-slate-300"
                                     value={viewMode === 'PORTALS' ? searchQuery : customKeyword}
                                     onChange={(e) => viewMode === 'PORTALS' ? setSearchQuery(e.target.value) : setCustomKeyword(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && (viewMode === 'LIVE' ? handleLiveSearch() : null)}
@@ -335,7 +335,7 @@ export default function InternshipHunterPage() {
                             {viewMode === 'PORTALS' && (
                                 <div className="w-full md:w-auto">
                                     <select 
-                                        className="w-full bg-slate-50 border-none rounded-[2rem] px-10 py-5 font-black text-sm text-slate-600 focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer appearance-none"
+                                        className="w-full bg-slate-50 border-none rounded-xl md:rounded-[2rem] px-6 md:px-10 py-3 md:py-5 font-black text-xs md:text-sm text-slate-600 focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer appearance-none"
                                         value={selectedTier}
                                         onChange={(e) => setSelectedTier(e.target.value)}
                                     >
@@ -349,9 +349,9 @@ export default function InternshipHunterPage() {
                                 <button 
                                     onClick={() => handleLiveSearch()}
                                     disabled={isSearching}
-                                    className="w-full md:w-auto bg-slate-900 text-white px-12 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-emerald-500 transition-all flex items-center gap-3 disabled:opacity-50 justify-center shadow-xl shadow-slate-900/10"
+                                    className="w-full md:w-auto bg-slate-900 text-white px-8 md:px-12 py-3 md:py-5 rounded-2xl md:rounded-[2rem] font-black text-[10px] md:text-sm uppercase tracking-widest hover:bg-emerald-500 transition-all flex items-center gap-3 disabled:opacity-50 justify-center shadow-xl shadow-slate-900/10"
                                 >
-                                    {isSearching ? <Loader2 className="w-5 h-5 animate-spin" /> : <Linkedin className="w-5 h-5" />}
+                                    {isSearching ? <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" /> : <Linkedin className="w-4 h-4 md:w-5 md:h-5" />}
                                     {isSearching ? "Extracting..." : "Live Fetch"}
                                 </button>
                             )}
@@ -435,16 +435,16 @@ export default function InternshipHunterPage() {
 
 function RoadmapItem({ step, label, detail, icon: Icon, color }: any) {
     return (
-        <div className="bg-white border border-stone-100 p-8 rounded-[2rem] space-y-4 hover:shadow-xl transition-all group">
+        <div className="bg-white border border-stone-100 p-6 md:p-8 rounded-[1.8rem] md:rounded-[2rem] space-y-3 md:space-y-4 hover:shadow-xl transition-all group">
             <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-stone-300 uppercase underline decoration-primary/50 underline-offset-8 decoration-2">{step}</span>
-                <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center text-white shadow-lg`}>
-                    <Icon className="w-5 h-5" />
+                <span className="text-[9px] md:text-[10px] font-black text-stone-300 uppercase underline decoration-primary/50 underline-offset-8 decoration-2">{step}</span>
+                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl ${color} flex items-center justify-center text-white shadow-lg`}>
+                    <Icon className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
             </div>
             <div>
-                <h4 className="text-lg font-black font-headline text-stone-900 group-hover:text-primary transition-colors">{label}</h4>
-                <p className="text-[11px] text-stone-500 font-medium leading-relaxed mt-2 italic">{detail}</p>
+                <h4 className="text-base md:text-lg font-black font-headline text-stone-900 group-hover:text-primary transition-colors italic">{label}</h4>
+                <p className="text-[10px] md:text-[11px] text-stone-500 font-medium leading-relaxed mt-1 md:mt-2 italic">{detail}</p>
             </div>
         </div>
     );
@@ -457,13 +457,13 @@ function PortalCard({ company }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-white border border-stone-100 rounded-[2rem] p-8 flex flex-col justify-between hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden">
+            <div className="h-full bg-white border border-stone-100 rounded-[1.8rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden">
                 <div className="space-y-6">
                     <div className="flex justify-between items-start">
-                        <div className="w-14 h-14 bg-stone-50 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-stone-100">
-                            <Building2 className="w-7 h-7" />
+                        <div className="w-12 h-12 md:w-14 md:h-14 bg-stone-50 rounded-xl md:rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-stone-100">
+                            <Building2 className="w-6 h-6 md:w-7 md:h-7" />
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
+                        <span className={`px-2 md:px-3 py-1 rounded-full text-[7px] md:text-[8px] font-black uppercase tracking-widest border ${
                             company.status === 'Active' ? 'bg-green-50 text-green-600 border-green-100' : 
                             company.status === 'Selective' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                             'bg-stone-50 text-stone-500 border-stone-100'
@@ -473,15 +473,15 @@ function PortalCard({ company }: any) {
                     </div>
                     
                     <div>
-                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">{company.industry}</p>
-                        <h3 className="text-2xl font-black font-headline text-stone-900 tracking-tighter italic leading-none">{company.name}</h3>
+                        <p className="text-[9px] md:text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">{company.industry}</p>
+                        <h3 className="text-xl md:text-2xl font-black font-headline text-stone-900 tracking-tighter italic leading-none">{company.name}</h3>
                     </div>
                 </div>
 
-                <div className="mt-12 flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-stone-400">Internship Portal</span>
-                    <div className="w-10 h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform shadow-sm">
-                        <ArrowUpRight className="w-5 h-5 text-primary" />
+                <div className="mt-8 md:mt-12 flex items-center justify-between">
+                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-stone-400">Portal</span>
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform shadow-sm">
+                        <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                     </div>
                 </div>
 
@@ -499,10 +499,10 @@ function LinkedInJobCard({ job }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-white border border-slate-100 rounded-[2.5rem] p-10 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 relative overflow-hidden">
-                <div className="space-y-8">
+            <div className="h-full bg-white border border-slate-100 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 relative overflow-hidden">
+                <div className="space-y-6 md:space-y-8">
                     <div className="flex justify-between items-start">
-                        <div className="w-16 h-16 rounded-[1.4rem] flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-lg border border-slate-100 overflow-hidden relative">
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-[1.4rem] flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-lg border border-slate-100 overflow-hidden relative">
                             {job.companyLogo ? (
                                 <img 
                                     src={job.companyLogo} 
@@ -511,31 +511,31 @@ function LinkedInJobCard({ job }: any) {
                                     onError={(e: any) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                                 />
                             ) : null}
-                            <div className={`w-full h-full items-center justify-center bg-gradient-to-br font-black text-2xl ${
+                            <div className={`w-full h-full items-center justify-center bg-gradient-to-br font-black text-xl md:text-2xl ${
                                 ['from-indigo-500 to-blue-600', 'from-emerald-500 to-teal-600', 'from-rose-500 to-pink-600', 'from-amber-500 to-orange-600', 'from-violet-500 to-purple-600'][job.company?.length % 5]
                             } ${job.companyLogo ? 'hidden' : 'flex'}`}>
                                 {job.company?.charAt(0)}
                             </div>
                         </div>
-                        <div className="flex flex-col items-end gap-1.5">
-                            <span className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                Live Listing
+                        <div className="flex flex-col items-end gap-1 md:gap-1.5">
+                            <span className="px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                Live
                             </span>
-                            <span className="text-[10px] font-bold text-slate-400">{job.postDate}</span>
+                            <span className="text-[9px] md:text-[10px] font-bold text-slate-400">{job.postDate}</span>
                         </div>
                     </div>
                     
-                    <div className="space-y-2">
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em]">{job.location}</p>
-                        <h3 className="text-xl font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-emerald-600 transition-colors line-clamp-2">{job.title}</h3>
-                        <p className="text-slate-500 text-[11px] font-bold">{job.company}</p>
+                    <div className="space-y-1 md:space-y-2">
+                        <p className="text-[9px] md:text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em]">{job.location}</p>
+                        <h3 className="text-lg md:text-xl font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-emerald-600 transition-colors line-clamp-2">{job.title}</h3>
+                        <p className="text-slate-500 text-[10px] md:text-[11px] font-bold">{job.company}</p>
                     </div>
                 </div>
 
-                <div className="mt-12 flex items-center justify-between border-t border-slate-50 pt-8">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">View on LinkedIn</span>
-                    <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-emerald-50 group-hover:text-emerald-600">
-                        <ExternalLink className="w-6 h-6" />
+                <div className="mt-8 md:mt-12 flex items-center justify-between border-t border-slate-50 pt-6 md:pt-8">
+                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">LinkedIn</span>
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-emerald-50 group-hover:text-emerald-600">
+                        <ExternalLink className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
                 </div>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import NavLinks from "@/components/NavLinks";
 import { usePathname } from "next/navigation";
+import TomatoSplash from "@/components/TomatoSplash";
 
 export default function ClientNavbarWrapper({ user }: { user: any }) {
     const pathname = usePathname();
@@ -16,11 +17,7 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
             <header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm print:hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-                <div className="relative w-9 h-9 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-red-500 rounded-full shadow-lg shadow-red-500/20 group-hover:scale-110 transition-transform duration-300" />
-                  <div className="absolute top-0 w-3 h-1.5 bg-[#29664c] rounded-full -translate-y-[20%]" />
-                  <span className="relative z-10 font-black text-white text-xs tracking-tighter">DB</span>
-                </div>
+                <TomatoSplash size="w-10 h-10" />
                 <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-red-500 transition-colors">
                   DBE OS
                 </span>

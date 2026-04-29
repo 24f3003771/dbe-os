@@ -8,6 +8,9 @@ import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
 import { useTodos } from "@/hooks/useTodos";
 import { getAllSubjects } from "@/data/db";
+import Lottie from "lottie-react";
+import TomatoSplash from "@/components/TomatoSplash";
+import tomatoAnimation from "@/data/tomato.json";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -61,9 +64,12 @@ const IPadSidebar = () => {
               initial={{ opacity: 0, y: 0, scale: 0.5 }}
               animate={{ opacity: 1, y: -100, scale: 1.5 }}
               exit={{ opacity: 0, scale: 2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 text-6xl pointer-events-none drop-shadow-2xl"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex items-center gap-2 pointer-events-none drop-shadow-2xl"
             >
-              🍅 +{lastEarned}
+              <div className="w-20 h-20">
+                <Lottie animationData={tomatoAnimation} loop={true} />
+              </div>
+              <span className="text-6xl font-black text-red-500">+{lastEarned}</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -162,13 +168,13 @@ export default function Dashboard() {
             <div className="md:col-span-2 bg-surface-container rounded-3xl p-8 flex flex-col justify-between items-start relative overflow-hidden shadow-sm border border-outline-variant/10 hover-lift">
                 <div className="relative z-10 w-full">
                     <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tighter leading-[1.1]">
-                        IIM Bangalore DBE <span className="text-primary tracking-normal">Scholar OS.</span>
+                        DBE - <span className="text-red-500 tracking-normal">OS.</span>
                     </h1>
-                    <p className="text-on-surface-variant max-w-sm font-medium">Welcome back, {user?.firstName || 'Scholar'}. Keep track of your academic journey.</p>
+                    <p className="text-on-surface-variant max-w-sm font-medium">Platform by BBA DBE community for BBA DBE community !!</p>
                 </div>
                 <div className="mt-8 flex flex-wrap items-center gap-4 z-10 w-full">
                     <div className="flex items-center gap-3 bg-surface-container-highest px-5 py-3 rounded-2xl font-bold text-lg shadow-sm border border-outline-variant/10">
-                        <span className="text-2xl">🍅</span>
+                        <TomatoSplash size="w-8 h-8" />
                         <div className="flex flex-col">
                             <span className="text-on-surface leading-none">{tomatoesBalance}</span>
                             <span className="text-xs text-on-surface-variant font-medium">Balance</span>
