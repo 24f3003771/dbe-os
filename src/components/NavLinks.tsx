@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CalendarClock, BookOpen, Timer, MessageSquare, ShoppingBag, Map, Target, Flame, Rocket, Presentation } from "lucide-react";
+import { LayoutDashboard, CalendarClock, BookOpen, Timer, MessageSquare, ShoppingBag, Map, Target, Flame, Rocket, Presentation, Wrench } from "lucide-react";
 import { getAllSubjects } from "@/data/db";
 
 // Desktop: Dashboard first
@@ -12,6 +12,7 @@ const desktopLinks = [
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
     { href: "/opportunities", label: "Opportunities", icon: Rocket },
+    { href: "/tools", label: "Tools", icon: Wrench },
 ];
 
 // Mobile bottom nav: Dashboard in 3rd position (center)
@@ -20,7 +21,7 @@ const mobileLinks = [
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
-    { href: "/opportunities", label: "Opportunities", icon: Rocket },
+    { href: "/tools", label: "Tools", icon: Wrench },
 ];
 
 interface NavLinksProps {

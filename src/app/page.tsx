@@ -2,7 +2,7 @@
 
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight } from "lucide-react";
+import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight, Wrench } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
@@ -248,6 +248,33 @@ export default function Dashboard() {
                     </Link>
                     {/* Decorative circle */}
                     <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                </div>
+
+                {/* DBE Tools Section preview */}
+                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 flex flex-col justify-between group overflow-hidden relative">
+                    <div className="space-y-6 relative z-10">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
+                                <Wrench className="w-5 h-5 text-amber-600" /> DBE Tools
+                            </h3>
+                            <Link href="/tools" className="text-xs font-bold text-amber-600 hover:underline">View All</Link>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="p-5 bg-amber-50/50 border border-amber-100 rounded-2xl">
+                                <p className="text-xs font-black text-amber-600 uppercase tracking-widest mb-1">New Feature</p>
+                                <h4 className="text-sm font-bold text-[#1A1A1A]">CGPA Calculator</h4>
+                                <p className="text-[10px] font-bold text-stone-400 mt-0.5">Calculate Term-wise WAM & CGPA</p>
+                            </div>
+                            <p className="text-xs font-medium text-on-surface-variant leading-relaxed">Powerful academic utilities built for IIMB BBA DBE students to track performance.</p>
+                        </div>
+                    </div>
+                    <Link href="/tools" className="relative z-10">
+                        <button className="w-full py-4 bg-amber-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-amber-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                            Open Tools <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </Link>
+                    {/* Decorative circle */}
+                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-amber-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
                 </div>
 
             {/* Pitch Decks Advertisement Section */}
