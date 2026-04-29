@@ -381,6 +381,7 @@ export default function CGPACalculator() {
       <div ref={reportRef} className="space-y-12 p-4 md:p-8 rounded-[3rem] bg-[#FFFCF8]">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: Overall CGPA */}
           <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 shadow-sm flex flex-col justify-between overflow-hidden relative">
             <div className="relative z-10">
               <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Overall CGPA (10-Point)</p>
@@ -395,65 +396,62 @@ export default function CGPACalculator() {
             </div>
             <Award className="absolute -right-6 -bottom-6 w-32 h-32 text-amber-500/10 rotate-12" />
           </div>
-          <div className="mt-6 flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 w-fit px-3 py-1 rounded-full relative z-10">
-            <TrendingUp className="w-3 h-3" /> Based on entered marks
-          </div>
-          <Award className="absolute -right-6 -bottom-6 w-32 h-32 text-amber-500/10 rotate-12" />
-        </div>
 
-        <div className={`bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 shadow-sm flex flex-col justify-between overflow-hidden relative transition-colors`}>
-          <div className="relative z-10">
-            <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Letter Grade</p>
-            <div className="flex items-end gap-4">
-              <h2 className={`text-6xl font-black ${overallGrade.color} leading-none`}>{overallGrade.grade}</h2>
-              <p className="text-sm font-bold text-on-surface-variant mb-2 uppercase tracking-wide">
-                {overallWAM >= 90 ? "Outstanding" :
-                  overallWAM >= 80 ? "Excellent" :
-                    overallWAM >= 70 ? "Good" :
-                      overallWAM >= 60 ? "Satisfactory" :
-                        overallWAM >= 40 ? "Pass" : "Arrears"}
-              </p>
+          {/* Card 2: Letter Grade */}
+          <div className={`bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 shadow-sm flex flex-col justify-between overflow-hidden relative transition-colors`}>
+            <div className="relative z-10">
+              <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Letter Grade</p>
+              <div className="flex items-end gap-4">
+                <h2 className={`text-6xl font-black ${overallGrade.color} leading-none`}>{overallGrade.grade}</h2>
+                <p className="text-sm font-bold text-on-surface-variant mb-2 uppercase tracking-wide">
+                  {overallWAM >= 90 ? "Outstanding" :
+                    overallWAM >= 80 ? "Excellent" :
+                      overallWAM >= 70 ? "Good" :
+                        overallWAM >= 60 ? "Satisfactory" :
+                          overallWAM >= 40 ? "Pass" : "Arrears"}
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex items-center gap-2 text-xs font-bold text-on-surface-variant relative z-10">
+              <Info className="w-3 h-3" /> As per absolute grading
+            </div>
+            <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${overallGrade.bg} rounded-full blur-2xl opacity-50`} />
+          </div>
+
+          {/* Card 3: Credits Tracked */}
+          <div className="bg-[#1A1A1A] text-white rounded-3xl p-8 shadow-xl flex flex-col justify-between overflow-hidden relative">
+            <div className="relative z-10">
+              <p className="text-xs font-black text-stone-400 uppercase tracking-widest mb-4">Credits Tracked</p>
+              <div className="flex items-end gap-2">
+                <h2 className="text-6xl font-black text-white leading-none">
+                  {TERMS_DATA.reduce((acc, term) => {
+                    term.subjects.forEach(sub => {
+                      if (grades[term.id]?.[sub.name]) acc += sub.credits;
+                    });
+                    return acc;
+                  }, 0)}
+                </h2>
+                <span className="text-sm font-bold text-stone-400 mb-2">/ 135.0</span>
+              </div>
+            </div>
+            <div className="mt-6 w-full bg-stone-800 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-amber-500 h-full transition-all duration-1000"
+                style={{
+                  width: `${(TERMS_DATA.reduce((acc, term) => {
+                    term.subjects.forEach(sub => {
+                      if (grades[term.id]?.[sub.name]) acc += sub.credits;
+                    });
+                    return acc;
+                  }, 0) / 135) * 100}%`
+                }}
+              />
             </div>
           </div>
-          <div className="mt-6 flex items-center gap-2 text-xs font-bold text-on-surface-variant relative z-10">
-            <Info className="w-3 h-3" /> As per absolute grading
-          </div>
-          <div className={`absolute -right-4 -bottom-4 w-24 h-24 ${overallGrade.bg} rounded-full blur-2xl opacity-50`} />
         </div>
 
-        <div className="bg-[#1A1A1A] text-white rounded-3xl p-8 shadow-xl flex flex-col justify-between overflow-hidden relative">
-          <div className="relative z-10">
-            <p className="text-xs font-black text-stone-400 uppercase tracking-widest mb-4">Credits Tracked</p>
-            <div className="flex items-end gap-2">
-              <h2 className="text-6xl font-black text-white leading-none">
-                {TERMS_DATA.reduce((acc, term) => {
-                  term.subjects.forEach(sub => {
-                    if (grades[term.id]?.[sub.name]) acc += sub.credits;
-                  });
-                  return acc;
-                }, 0)}
-              </h2>
-              <span className="text-sm font-bold text-stone-400 mb-2">/ 135.0</span>
-            </div>
-          </div>
-          <div className="mt-6 w-full bg-stone-800 rounded-full h-2 overflow-hidden">
-            <div
-              className="bg-amber-500 h-full transition-all duration-1000"
-              style={{
-                width: `${(TERMS_DATA.reduce((acc, term) => {
-                  term.subjects.forEach(sub => {
-                    if (grades[term.id]?.[sub.name]) acc += sub.credits;
-                  });
-                  return acc;
-                }, 0) / 135) * 100}%`
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Main Interface */}
-      <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2.5rem] shadow-sm overflow-hidden">
+        {/* Main Interface */}
+        <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2.5rem] shadow-sm overflow-hidden">
         {/* Tabs */}
         <div className="flex border-b border-outline-variant/10">
           <button
