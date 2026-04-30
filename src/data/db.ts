@@ -7,8 +7,7 @@ export interface Question {
     correctAnswer: number;
     explanation: string;
     type?: string;
-    pyq_year?: number | null;
-    pyq_month?: string | null;
+    quiz_set_id?: string | null;
     input_type?: string;
     word_limit?: number | null;
     module_from?: number;
