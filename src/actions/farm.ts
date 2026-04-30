@@ -1,28 +1,45 @@
 "use server";
 
 import { prisma } from "@/lib/db.server";
-const auth = async () => ({ userId: "temp-user-id" });
-const currentUser = async () => ({ id: "temp-user-id" });
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
-// Helper to get or create the authenticated user
+// Ranks based on total tomatoes earned
+export const RANKS = [
+    { name: "Tomato Seedling", min: 0 },
+    { name: "Growing Vine", min: 51 },
+    { name: "Blossoming Scholar", min: 201 },
+    { name: "Ripe Leader", min: 501 },
+    { name: "Harvest Master", min: 1001 },
+    { name: "Golden Tomato Sage", min: 2001 },
+];
+
+export function getRank(total: number) {
+    const rank = [...RANKS].reverse().find(r => total >= r.min);
+    return rank ? rank.name : RANKS[0].name;
+}
+
+// Helper to get or create the authenticated user from Supabase
 async function getAuthUser() {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    
+    if (!authUser) throw new Error("Unauthorized");
 
-    const userRecord = await currentUser();
-    const email = userRecord?.emailAddresses[0]?.emailAddress || "pending@iimb.ac.in";
-    const name = userRecord?.firstName || "Scholar";
+    const email = authUser.email || "scholar@dbeos.in";
+    const name = authUser.user_metadata?.full_name || "Scholar";
 
     return await prisma.user.upsert({
-        where: { id: userId },
+        where: { id: authUser.id },
         update: {},
         create: {
-            id: userId,
+            id: authUser.id,
             email: email,
             name: name,
-            streak: 1,
-            tomatoesBalance: 10,
-            totalTomatoesEarned: 10,
+            streak: 0,
+            tomatoesBalance: 0,
+            totalTomatoesEarned: 0,
         },
     });
 }
@@ -35,7 +52,8 @@ export async function getFarmState() {
             totalTomatoesEarned: user.totalTomatoesEarned,
             tomatoesBalance: user.tomatoesBalance,
             streak: user.streak,
-            plots: [] // Return empty array to avoid breaking UI
+            rank: getRank(user.totalTomatoesEarned),
+            plots: [] 
         };
     } catch (error) {
         console.error("Database connection error in getFarmState:", error);
@@ -43,8 +61,9 @@ export async function getFarmState() {
             totalTomatoesEarned: 0,
             tomatoesBalance: 0,
             streak: 0,
+            rank: "Guest",
             plots: [],
-            error: "Database unreachable"
+            error: "Authentication required"
         };
     }
 }
@@ -53,11 +72,34 @@ export async function updateTomatoes(amount: number) {
     try {
         const user = await getAuthUser();
         
+        // Streak Logic
+        let newStreak = user.streak;
+        const now = new Date();
+        const lastDate = user.lastTomatoDate;
+
+        if (!lastDate) {
+            newStreak = 1;
+        } else {
+            const diffTime = Math.abs(now.getTime() - lastDate.getTime());
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                // Consecutive day!
+                newStreak += 1;
+            } else if (diffDays > 1) {
+                // Missed a day, reset
+                newStreak = 1;
+            }
+            // If diffDays === 0, it's the same day, keep streak as is
+        }
+        
         const updatedUser = await prisma.user.update({
             where: { id: user.id },
             data: {
                 tomatoesBalance: { increment: amount },
-                totalTomatoesEarned: amount > 0 ? { increment: amount } : undefined
+                totalTomatoesEarned: amount > 0 ? { increment: amount } : undefined,
+                streak: newStreak,
+                lastTomatoDate: now
             }
         });
 

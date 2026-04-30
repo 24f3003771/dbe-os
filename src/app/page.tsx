@@ -146,7 +146,7 @@ const IPadSidebar = () => {
 export default function Dashboard() {
   // TODO: Fetch user session from Supabase
   const user = null as any;
-  const { totalTomatoesEarned, tomatoesBalance, streak, fetchFarmData, isInitialized } = useFarmStore();
+  const { totalTomatoesEarned, tomatoesBalance, streak, rank, fetchFarmData, isInitialized } = useFarmStore();
   const subjects = getAllSubjects();
   const notesPreview = subjects.slice(0, 3);
 
@@ -177,10 +177,10 @@ export default function Dashboard() {
                         </div>
                     </div>
                     <Link href="/leaderboard" className="flex items-center gap-3 bg-primary/10 px-5 py-3 rounded-2xl font-bold text-lg border border-primary/20 hover:bg-primary/20 transition-colors">
-                        <Flame className="w-6 h-6 text-primary" />
+                        <Award className="w-6 h-6 text-primary" />
                         <div className="flex flex-col">
-                            <span className="text-primary leading-none">#{totalTomatoesEarned}</span>
-                            <span className="text-xs text-primary/70 font-medium">Rank XP</span>
+                            <span className="text-primary leading-none truncate max-w-[120px]">{rank}</span>
+                            <span className="text-xs text-primary/70 font-medium">{totalTomatoesEarned} Total XP</span>
                         </div>
                     </Link>
                     <div className="flex-1"></div>

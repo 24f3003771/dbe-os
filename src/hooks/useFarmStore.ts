@@ -6,6 +6,7 @@ export interface PointState {
   totalTomatoesEarned: number;
   tomatoesBalance: number;
   streak: number;
+  rank: string;
   
   // Actions
   fetchFarmData: () => Promise<void>;
@@ -17,7 +18,8 @@ export const useFarmStore = create<PointState>()((set, get) => ({
   isInitialized: false,
   totalTomatoesEarned: 0,
   tomatoesBalance: 0,
-  streak: 1,
+  streak: 0,
+  rank: "Tomato Seedling",
   
   fetchFarmData: async () => {
     try {
@@ -27,6 +29,7 @@ export const useFarmStore = create<PointState>()((set, get) => ({
         totalTomatoesEarned: data.totalTomatoesEarned,
         tomatoesBalance: data.tomatoesBalance,
         streak: data.streak,
+        rank: data.rank,
       });
     } catch (e) {
       console.error("Failed to fetch farm state", e);

@@ -17,6 +17,7 @@ model User {
   totalTomatoesEarned   Int      @default(0)
   tomatoesBalance       Int      @default(0)
   streak                Int      @default(0)
+  lastTomatoDate        DateTime?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   
