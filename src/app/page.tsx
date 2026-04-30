@@ -9,6 +9,7 @@ import { Caveat } from "next/font/google";
 import { useTodos } from "@/hooks/useTodos";
 import { getAllSubjects } from "@/data/db";
 import TomatoSplash from "@/components/TomatoSplash";
+import UniversalStats from "@/components/UniversalStats";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -160,41 +161,7 @@ export default function Dashboard() {
       {/* Left Main Content */}
       <div className="lg:col-span-8 space-y-8">
         {/* Header Status Section */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 bg-surface-container rounded-3xl p-8 flex flex-col justify-between items-start relative overflow-hidden shadow-sm border border-outline-variant/10">
-                <div className="relative z-10 w-full">
-                    <h1 className="text-3xl md:text-5xl font-black font-headline text-on-surface mb-2 tracking-tighter leading-[1.1]">
-                        DBE - <span className="text-red-500 tracking-normal">OS.</span>
-                    </h1>
-                    <p className="text-on-surface-variant max-w-sm font-medium">Platform by BBA DBE community for BBA DBE community !!</p>
-                </div>
-                <div className="mt-8 flex flex-wrap items-center gap-4 z-10 w-full">
-                    <div className="flex items-center gap-3 bg-surface-container-highest px-5 py-3 rounded-2xl font-bold text-lg shadow-sm border border-outline-variant/10">
-                        <TomatoSplash size="w-8 h-8" />
-                        <div className="flex flex-col">
-                            <span className="text-on-surface leading-none">{tomatoesBalance}</span>
-                            <span className="text-xs text-on-surface-variant font-medium">Balance</span>
-                        </div>
-                    </div>
-                    <Link href="/leaderboard" className="flex items-center gap-3 bg-primary/10 px-5 py-3 rounded-2xl font-bold text-lg border border-primary/20 hover:bg-primary/20 transition-colors">
-                        <Award className="w-6 h-6 text-primary" />
-                        <div className="flex flex-col">
-                            <span className="text-primary leading-none truncate max-w-[120px]">{rank}</span>
-                            <span className="text-xs text-primary/70 font-medium">{totalTomatoesEarned} Total XP</span>
-                        </div>
-                    </Link>
-                    <div className="flex-1"></div>
-                </div>
-                <div className="absolute -right-10 -top-10 w-48 h-48 bg-primary/15 rounded-full blur-3xl pointer-events-none"></div>
-            </div>
-            
-            <div className="bg-surface-container-lowest border border-outline-variant/15 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-sm relative overflow-hidden">
-                <p className="text-xs font-bold font-headline text-secondary uppercase tracking-widest mb-2 flex items-center gap-1 z-10"><Zap className="w-4 h-4"/> Activity</p>
-                <p className="text-5xl font-black text-secondary mb-2 leading-none z-10">{streak}</p>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mt-2 z-10">Day Streak</p>
-                <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-secondary/10 rounded-full blur-2xl pointer-events-none"></div>
-            </div>
-        </section>
+        <UniversalStats />
 
             {/* Feature Grid */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
