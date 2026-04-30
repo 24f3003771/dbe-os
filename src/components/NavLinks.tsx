@@ -21,6 +21,7 @@ const mobileLinks = [
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
+    { href: "/opportunities", label: "Opportunities", icon: Rocket },
     { href: "/tools", label: "Tools", icon: Wrench },
 ];
 
@@ -116,7 +117,7 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                         key={href}
                         href={href}
                         className={`flex transition-all ${isBottomNav
-                            ? "flex-col items-center gap-1.5 px-2 py-1 min-w-[72px]"
+                            ? "flex-col items-center gap-1.5 px-1 py-1 min-w-[60px] flex-1"
                             : "items-center gap-2 px-4 py-2 rounded-xl group"
                             } ${isActive
                                 ? isBottomNav ? "text-primary" : "bg-surface-container-highest shadow-sm ring-1 ring-outline-variant/20"
@@ -125,10 +126,10 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                     >
                         {isBottomNav ? (
                             <>
-                                <div className={`relative flex items-center justify-center transition-all duration-300 ${isActive ? `w-14 h-9 rounded-2xl ring-1 ${activeBgColors[label]}` : "w-14 h-9"}`}>
-                                    <Icon className={`w-6 h-6 ${iconColors[label]} ${isActive ? "scale-110" : "opacity-70"}`} />
+                                <div className={`relative flex items-center justify-center transition-all duration-300 ${isActive ? `w-12 h-8 rounded-2xl ring-1 ${activeBgColors[label]}` : "w-12 h-8"}`}>
+                                    <Icon className={`w-5 h-5 ${iconColors[label]} ${isActive ? "scale-110" : "opacity-70"}`} />
                                 </div>
-                                <span className={`text-[11px] font-black tracking-tight ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
+                                <span className={`text-[9px] font-black tracking-tight ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
                                     {label}
                                 </span>
                             </>
