@@ -29,11 +29,13 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
                 <div className="md:ml-4 md:pl-4 md:border-l border-outline-variant/20 flex items-center gap-2">
                   <div className="flex flex-col items-end gap-1">
                     {user ? (
-                        <Link href="/profile" className="flex items-center gap-2 group">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-[10px] group-hover:bg-primary group-hover:text-white transition-colors border border-primary/20">
-                            {user.user_metadata?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'MS'}
+                        <Link href="/profile" className="flex items-center gap-3 group pl-4 border-l border-outline-variant/20">
+                          <div className="w-9 h-9 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-black text-[11px] group-hover:bg-on-surface group-hover:text-surface transition-all duration-300 border border-outline-variant/10 shadow-inner">
+                            {user.user_metadata?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'IJ'}
                           </div>
-                          <span className="text-xs font-bold text-on-surface hidden sm:block group-hover:text-primary transition-colors">{user.user_metadata?.full_name || 'Scholar'}</span>
+                          <span className="text-xs font-black text-on-surface hidden sm:block uppercase tracking-wider group-hover:text-primary transition-colors">
+                            {user.user_metadata?.full_name || 'Scholar'}
+                          </span>
                         </Link>
                     ) : (
                       <>

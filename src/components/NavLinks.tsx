@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CalendarClock, BookOpen, Timer, MessageSquare, ShoppingBag, Map, Target, Flame, Rocket, Presentation, Wrench } from "lucide-react";
+import { LayoutDashboard, CalendarClock, BookOpen, Target, Rocket, Wrench } from "lucide-react";
 import { getAllSubjects } from "@/data/db";
 
 // Desktop: Dashboard first
@@ -46,6 +46,24 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
         ],
     };
 
+    const iconColors: Record<string, string> = {
+        "Dashboard": "text-rose-500",
+        "Notes": "text-blue-500",
+        "Quiz": "text-emerald-500",
+        "Tasks": "text-amber-500",
+        "Opportunities": "text-orange-500",
+        "Tools": "text-indigo-500",
+    };
+
+    const activeBgColors: Record<string, string> = {
+        "Dashboard": "bg-rose-50/80 ring-rose-100",
+        "Notes": "bg-blue-50/80 ring-blue-100",
+        "Quiz": "bg-emerald-50/80 ring-emerald-100",
+        "Tasks": "bg-amber-50/80 ring-amber-100",
+        "Opportunities": "bg-orange-50/80 ring-orange-100",
+        "Tools": "bg-indigo-50/80 ring-indigo-100",
+    };
+
     return (
         <>
             {links.map(({ href, label, icon: Icon }) => {
@@ -61,23 +79,28 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                         <div key={href} className="relative group">
                             <Link
                                 href={href}
-                                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive
-                                    ? "bg-primary/10 text-primary font-bold shadow-sm ring-1 ring-primary/20"
-                                    : "text-on-surface-variant hover:text-primary hover:bg-surface-container-highest"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${isActive
+                                    ? `bg-surface-container-highest shadow-sm ring-1 ring-outline-variant/20`
+                                    : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low"
                                     }`}
                             >
-                                <Icon className="w-4 h-4" />
-                                <span className="hidden md:inline">{label}</span>
+                                <Icon className={`w-4 h-4 ${isActive ? iconColors[label] : "text-on-surface-variant group-hover:" + iconColors[label]}`} />
+                                <span className={`text-xs font-black uppercase tracking-widest ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
+                                    {label}
+                                </span>
                             </Link>
 
                             {/* Dropdown Menu */}
-                            <div className="absolute top-full left-0 pt-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out">
-                                <div className="w-64 bg-white border border-outline-variant/20 rounded-2xl shadow-2xl py-2 overflow-hidden">
+                            <div className="absolute top-full left-0 pt-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0">
+                                <div className="w-64 bg-surface border border-outline-variant/20 rounded-2xl shadow-2xl py-3 overflow-hidden backdrop-blur-xl">
+                                    <div className="px-4 pb-2 mb-2 border-b border-outline-variant/10">
+                                        <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em]">{label} Library</p>
+                                    </div>
                                     {dropdownItems.map((item) => (
                                         <Link
                                             key={item.href}
                                             href={item.href}
-                                            className="block px-4 py-2.5 text-xs font-bold text-stone-700 hover:text-primary hover:bg-stone-50 transition-colors uppercase tracking-tight"
+                                            className="block px-4 py-2.5 text-xs font-bold text-on-surface hover:text-primary hover:bg-surface-container-low transition-all uppercase tracking-tight"
                                         >
                                             {item.label}
                                         </Link>
@@ -88,41 +111,34 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                     );
                 }
 
-                const iconColors: Record<string, string> = {
-                    "Notes": "text-blue-500",
-                    "Quiz": "text-emerald-500",
-                    "Dashboard": "text-rose-500",
-                    "Tasks": "text-amber-500",
-                    "Tools": "text-indigo-500",
-                };
-
-                const activeBgColors: Record<string, string> = {
-                    "Notes": "bg-blue-50/80 ring-blue-100",
-                    "Quiz": "bg-emerald-50/80 ring-emerald-100",
-                    "Dashboard": "bg-rose-50/80 ring-rose-100",
-                    "Tasks": "bg-amber-50/80 ring-amber-100",
-                    "Tools": "bg-indigo-50/80 ring-indigo-100",
-                };
-
                 return (
                     <Link
                         key={href}
                         href={href}
-                        className={`flex flex-col items-center transition-all ${isBottomNav
-                            ? "gap-1.5 px-2 py-1 min-w-[72px]"
-                            : "gap-1.5 px-3 py-2 rounded-lg text-sm font-medium"
+                        className={`flex transition-all ${isBottomNav
+                            ? "flex-col items-center gap-1.5 px-2 py-1 min-w-[72px]"
+                            : "items-center gap-2 px-4 py-2 rounded-xl group"
                             } ${isActive
-                                ? isBottomNav ? "text-primary" : "bg-primary/10 text-primary font-bold shadow-sm ring-1 ring-primary/20"
-                                : "text-on-surface-variant hover:text-primary" + (isBottomNav ? "" : " hover:bg-surface-container-highest")
+                                ? isBottomNav ? "text-primary" : "bg-surface-container-highest shadow-sm ring-1 ring-outline-variant/20"
+                                : "text-on-surface-variant hover:text-on-surface" + (isBottomNav ? "" : " hover:bg-surface-container-low")
                             }`}
                     >
-                        <div className={`relative flex items-center justify-center transition-all duration-300 ${isBottomNav && isActive ? `w-14 h-9 rounded-2xl ring-1 ${activeBgColors[label]}` : "w-14 h-9"}`}>
-                            <Icon className={`${isBottomNav ? "w-6 h-6" : "w-4 h-4"} ${isBottomNav ? iconColors[label] : ""} ${isActive && isBottomNav ? "scale-110" : ""}`} />
-                        </div>
-                        {(showLabels || !isBottomNav) && (
-                            <span className={`${isBottomNav ? "text-[11px] font-black tracking-tight" : "hidden md:inline"} ${isActive && isBottomNav ? "text-on-surface" : "text-on-surface-variant"}`}>
-                                {label}
-                            </span>
+                        {isBottomNav ? (
+                            <>
+                                <div className={`relative flex items-center justify-center transition-all duration-300 ${isActive ? `w-14 h-9 rounded-2xl ring-1 ${activeBgColors[label]}` : "w-14 h-9"}`}>
+                                    <Icon className={`w-6 h-6 ${iconColors[label]} ${isActive ? "scale-110" : "opacity-70"}`} />
+                                </div>
+                                <span className={`text-[11px] font-black tracking-tight ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
+                                    {label}
+                                </span>
+                            </>
+                        ) : (
+                            <>
+                                <Icon className={`w-4 h-4 transition-colors ${isActive ? iconColors[label] : "text-on-surface-variant group-hover:" + iconColors[label]}`} />
+                                <span className={`text-xs font-black uppercase tracking-widest ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
+                                    {label}
+                                </span>
+                            </>
                         )}
                     </Link>
                 );
