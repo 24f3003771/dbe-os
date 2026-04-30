@@ -34,11 +34,34 @@ export async function getFarmState() {
     try {
         const user = await getAuthUser();
         
+        // Get user's global rank
+        const leaderboardRank = await prisma.user.count({
+            where: {
+                totalTomatoesEarned: { gt: user.totalTomatoesEarned }
+            }
+        }) + 1;
+
+        // Get median tomatoes of all registered users
+        const allUsers = await prisma.user.findMany({
+            select: { totalTomatoesEarned: true },
+            orderBy: { totalTomatoesEarned: 'asc' }
+        });
+        
+        let medianTomatoes = 0;
+        if (allUsers.length > 0) {
+            const mid = Math.floor(allUsers.length / 2);
+            medianTomatoes = allUsers.length % 2 !== 0 
+                ? allUsers[mid].totalTomatoesEarned 
+                : (allUsers[mid - 1].totalTomatoesEarned + allUsers[mid].totalTomatoesEarned) / 2;
+        }
+
         return {
             totalTomatoesEarned: user.totalTomatoesEarned,
             tomatoesBalance: user.tomatoesBalance,
             streak: user.streak,
             rank: getRank(user.totalTomatoesEarned),
+            leaderboardRank,
+            medianTomatoes,
             plots: [] 
         };
     } catch (error) {
