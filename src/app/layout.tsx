@@ -141,7 +141,7 @@ export default async function RootLayout({
 
           <ClientNavbarWrapper user={user} />
 
-          <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 mb-20 md:mb-0">
+          <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 mb-24 md:mb-0">
             {children}
           </main>
           <AssistantWidget />

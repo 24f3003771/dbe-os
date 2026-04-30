@@ -88,26 +88,41 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                     );
                 }
 
+                const iconColors: Record<string, string> = {
+                    "Notes": "text-blue-500",
+                    "Quiz": "text-emerald-500",
+                    "Dashboard": "text-rose-500",
+                    "Tasks": "text-amber-500",
+                    "Tools": "text-indigo-500",
+                };
+
+                const activeBgColors: Record<string, string> = {
+                    "Notes": "bg-blue-50/80 ring-blue-100",
+                    "Quiz": "bg-emerald-50/80 ring-emerald-100",
+                    "Dashboard": "bg-rose-50/80 ring-rose-100",
+                    "Tasks": "bg-amber-50/80 ring-amber-100",
+                    "Tools": "bg-indigo-50/80 ring-indigo-100",
+                };
+
                 return (
                     <Link
                         key={href}
                         href={href}
-                        className={`flex items-center transition-all ${isBottomNav
-                            ? "flex-col gap-1 px-1 py-1 min-w-[64px]"
+                        className={`flex flex-col items-center transition-all ${isBottomNav
+                            ? "gap-1.5 px-2 py-1 min-w-[72px]"
                             : "gap-1.5 px-3 py-2 rounded-lg text-sm font-medium"
                             } ${isActive
                                 ? isBottomNav ? "text-primary" : "bg-primary/10 text-primary font-bold shadow-sm ring-1 ring-primary/20"
                                 : "text-on-surface-variant hover:text-primary" + (isBottomNav ? "" : " hover:bg-surface-container-highest")
                             }`}
                     >
-                        <Icon className={`${isBottomNav ? "w-6 h-6" : "w-4 h-4"} ${isActive && isBottomNav ? "fill-primary/10" : ""}`} />
+                        <div className={`relative flex items-center justify-center transition-all duration-300 ${isBottomNav && isActive ? `w-14 h-9 rounded-2xl ring-1 ${activeBgColors[label]}` : "w-14 h-9"}`}>
+                            <Icon className={`${isBottomNav ? "w-6 h-6" : "w-4 h-4"} ${isBottomNav ? iconColors[label] : ""} ${isActive && isBottomNav ? "scale-110" : ""}`} />
+                        </div>
                         {(showLabels || !isBottomNav) && (
-                            <span className={`${isBottomNav ? "text-[10px] font-bold uppercase tracking-tight" : "hidden md:inline"}`}>
+                            <span className={`${isBottomNav ? "text-[11px] font-black tracking-tight" : "hidden md:inline"} ${isActive && isBottomNav ? "text-on-surface" : "text-on-surface-variant"}`}>
                                 {label}
                             </span>
-                        )}
-                        {isBottomNav && isActive && (
-                            <div className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full"></div>
                         )}
                     </Link>
                 );

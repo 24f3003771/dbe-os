@@ -50,9 +50,10 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
             </div>
           </header>
 
-          {/* Bottom Navigation for Mobile */}
-          <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface/90 backdrop-blur-xl border-t border-outline-variant/20 px-4 py-2 pb-safe-area-inset-bottom shadow-[0_-4px_12px_rgba(0,0,0,0.05)] print:hidden">
-            <div className="flex items-center justify-around">
+          {/* Bottom Navigation for Mobile - Strict Optimization */}
+          <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface border-t border-outline-variant/10 px-4 pt-3 pb-safe-area-inset-bottom rounded-t-[2.5rem] shadow-[0_-12px_24px_rgba(0,0,0,0.08)] print:hidden">
+            <div className="w-12 h-1.5 bg-on-surface/10 rounded-full mx-auto mb-4" /> {/* Decoration handle */}
+            <div className="flex items-center justify-around pb-2">
               <NavLinks showLabels={true} isBottomNav={true} />
             </div>
           </nav>
