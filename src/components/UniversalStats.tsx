@@ -11,9 +11,9 @@ export default function UniversalStats() {
   const { totalTomatoesEarned, tomatoesBalance, leaderboardRank, medianXP, rank } = useFarmStore();
 
   // Calculate progress to next rank
-  const currentRankIndex = Math.max(0, RANKS.findIndex(r => r.name === rank));
+  const currentRankIndex = RANKS.findIndex(r => r.name === rank);
   const nextRank = RANKS[currentRankIndex + 1];
-  const currentRankMin = RANKS[currentRankIndex]?.min ?? 0;
+  const currentRankMin = RANKS[currentRankIndex].min;
   
   const userProgress = nextRank 
     ? ((totalTomatoesEarned - currentRankMin) / (nextRank.min - currentRankMin)) * 100
