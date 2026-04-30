@@ -2,7 +2,7 @@
 
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight, Wrench } from "lucide-react";
+import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight, Wrench, Award } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
