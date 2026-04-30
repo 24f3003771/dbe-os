@@ -41,8 +41,12 @@ This document serves as the central knowledge base for the **DBE OS** project. I
 - **Terms:** Managed by IDs (1-9). Can be marked as `is_active` and assigned to a specific batch.
 - **Subjects:** Linked to Terms. Defined by a `code` (e.g., ES211) and a `module_count` (strictly 4 or 8). Supports full CRUD (Add, Edit, Delete).
 - **Topics:** Granular labels linked to subjects for better organization of notes and questions.
+- **Quiz Sets (Exam Mode):** Relational groupings of questions (e.g., "Mock 1", "PYQ 2024") that span the entire subject. Unlike practice questions, Exam Sets are **subject-scoped**.
 - **Notes:** One note per module per subject. Supports raw Markdown content, topic assignment, and deletion.
-- **Questions:** Supports MCQ and Text types. Categorized by `type` (`cla`, `midterm`, `pyq`, `practice`). Includes inline editing, bulk import, and AI generation features.
+- **Questions:** Supports MCQ and Text types. Categorized by `type` (`cla`, `midterm`, `practice`, `exam`).
+    - `practice` & `ai` types are **Module-scoped**.
+    - `exam` type is **Subject-scoped** and linked to a specific `Quiz Set`.
+    - **Deduplication:** Questions spanning multiple modules are automatically deduplicated in Exam Mode.
 - **Security:** RLS is configured so that all authenticated users can `SELECT`, but only `SUPER_ADMIN` can `INSERT/UPDATE/DELETE`.
 
 ---
@@ -56,6 +60,7 @@ This document serves as the central knowledge base for the **DBE OS** project. I
 - `src/app/notes/page.tsx`: Public view for study notes (fetches dynamically from Supabase).
 - `src/app/quiz/`: Interactive quiz engine powered by the `questions` table.
 - `supabase/migrations/`: SQL migration files for schema versioning.
+- `QUIZ_MODERATOR_GUIDE.md`: Comprehensive guide for moderators and content creators explaining quiz logic and bulk import.
 
 ---
 

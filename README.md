@@ -19,11 +19,15 @@
 
 ## ✨ Core Pillars
 
-### 📚 Dynamic Curriculum (New)
+### 📚 Dynamic Curriculum (Latest)
 A robust, admin-controlled management system for the entire DBE academic cycle.
 - **Hierarchical Structure:** Managed by Terms -> Subjects -> Modules -> Notes/Quizzes.
-- **HQ Admin Control:** Super Admins can dynamically create/edit/delete subjects, manage markdown-based notes, and build interactive quizzes (with inline editing, AI generation, and bulk imports) without touching the code.
+- **Dynamic Quiz Sets:** Relational "Exam Sets" (Mock Exams, PYQs) that span across all subject modules for a realistic testing experience.
+- **Smart Bulk Import:** An advanced admin tool with real-time JSON validation and "Override Dropdowns" that inject Exam Set and Topic IDs instantly.
+- **Subject-Level Simulator:** A dedicated Exam Mode for full-subject testing, distinct from module-level Practice and AI Concept Builder.
+- **HQ Admin Control:** Super Admins can dynamically manage every aspect of the curriculum via a premium, dark-mode dashboard.
 - **Batch-Specific View:** Students automatically see content relevant to their assigned batch and active term.
+- **Moderator Handbook:** See [**QUIZ_MODERATOR_GUIDE.md**](./QUIZ_MODERATOR_GUIDE.md) for a detailed manual on managing questions and using the smart bulk import tool.
 
 ### 🤝 MatchForge Network
 An advanced networking engine designed to bridge the gap between skill sets and startup ambitions. Connect with perfect learning partners or co-founders within the IIMB community.

@@ -5,18 +5,19 @@ import {
     Plus, Trash2, Loader2, X, Upload, CheckCircle2, AlertCircle,
     Filter, Pencil, Check
 } from "lucide-react";
-import { createQuestion, updateQuestion, deleteQuestion, bulkImportQuestions, getNoteForModule, type Question, type Subject, type Topic } from "@/actions/curriculum";
+import { createQuestion, updateQuestion, deleteQuestion, bulkImportQuestions, createQuizSet, deleteQuizSet, getNoteForModule, type Question, type Subject, type Topic, type QuizSet } from "@/actions/curriculum";
 
-const TYPE_LABELS: Record<string, string> = { cla: "CLA", midterm: "Midterm", pyq: "PYQ", practice: "Practice" };
+const TYPE_LABELS: Record<string, string> = { cla: "CLA", midterm: "Midterm", practice: "Practice", exam: "Exam Set" };
 const TYPE_COLORS: Record<string, string> = {
     cla: "bg-blue-50 text-blue-600 border-blue-200",
     midterm: "bg-purple-50 text-purple-600 border-purple-200",
-    pyq: "bg-amber-50 text-amber-600 border-amber-200",
     practice: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    exam: "bg-rose-50 text-rose-600 border-rose-200",
 };
 
-function QuestionRow({ q, onDelete, onUpdated, topics, subject }: { q: Question; onDelete: () => void; onUpdated: (q: Question) => void; topics: Topic[]; subject: Subject }) {
+function QuestionRow({ q, onDelete, onUpdated, topics, subject, quizSets }: { q: Question; onDelete: () => void; onUpdated: (q: Question) => void; topics: Topic[]; subject: Subject; quizSets: QuizSet[] }) {
     const topic = topics.find((t) => t.id === q.topic_id);
+    const setName = q.type === "exam" ? quizSets.find(s => s.id === q.quiz_set_id)?.name : null;
     const [editing, setEditing] = useState(false);
 
     if (editing) {
@@ -24,6 +25,7 @@ function QuestionRow({ q, onDelete, onUpdated, topics, subject }: { q: Question;
             <EditQuestionForm
                 subject={subject}
                 topics={topics}
+                quizSets={quizSets}
                 initial={q}
                 onSaved={(updated) => { onUpdated(updated); setEditing(false); }}
                 onCancel={() => setEditing(false)}
@@ -45,9 +47,9 @@ function QuestionRow({ q, onDelete, onUpdated, topics, subject }: { q: Question;
                         Mod {q.module_from === q.module_to ? q.module_from : `${q.module_from}–${q.module_to}`}
                     </span>
                     {topic && <span className="text-[10px] font-bold text-stone-400"># {topic.name}</span>}
-                    {q.type === "pyq" && q.pyq_year && (
-                        <span className="text-[10px] font-bold text-amber-600">
-                            {q.pyq_year} {q.pyq_month}
+                    {q.type === "exam" && setName && (
+                        <span className="text-[10px] font-bold text-rose-600">
+                            {setName}
                         </span>
                     )}
                 </div>
@@ -87,8 +89,8 @@ function QuestionRow({ q, onDelete, onUpdated, topics, subject }: { q: Question;
     );
 }
 
-function EditQuestionForm({ subject, topics, initial, onSaved, onCancel }: {
-    subject: Subject; topics: Topic[]; initial: Question; onSaved: (q: Question) => void; onCancel: () => void;
+function EditQuestionForm({ subject, topics, quizSets, initial, onSaved, onCancel }: {
+    subject: Subject; topics: Topic[]; quizSets: QuizSet[]; initial: Question; onSaved: (q: Question) => void; onCancel: () => void;
 }) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
@@ -98,17 +100,16 @@ function EditQuestionForm({ subject, topics, initial, onSaved, onCancel }: {
         module_from: String(initial.module_from),
         module_to: String(initial.module_to),
         topic_id: initial.topic_id ?? "",
+        quiz_set_id: initial.quiz_set_id ?? "",
         question: initial.question,
         options: initial.options ?? ["", "", "", ""],
         correct_index: initial.correct_index ?? 0,
-        explanation: initial.explanation ?? "",
-        pyq_year: initial.pyq_year ? String(initial.pyq_year) : "",
-        pyq_month: initial.pyq_month ?? "",
+        explanation: (initial as any).explanation ?? "",
         word_limit: initial.word_limit ? String(initial.word_limit) : "",
     });
 
     const mods = Array.from({ length: subject.module_count }, (_, i) => i + 1);
-    const isRange = form.type === "midterm" || form.type === "pyq";
+    const isRange = form.type === "midterm" || form.type === "exam";
     const setOption = (i: number, val: string) => { const opts = [...form.options]; opts[i] = val; setForm({ ...form, options: opts }); };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -119,14 +120,13 @@ function EditQuestionForm({ subject, topics, initial, onSaved, onCancel }: {
                     type: form.type, input_type: form.input_type,
                     module_from: parseInt(form.module_from), module_to: parseInt(form.module_to),
                     topic_id: form.topic_id || null,
+                    quiz_set_id: form.type === "exam" ? (form.quiz_set_id || null) : null,
                     question: form.question,
                     options: form.input_type === "mcq" ? form.options : null,
                     correct_index: form.input_type === "mcq" ? form.correct_index : null,
                     explanation: form.explanation || null,
-                    pyq_year: form.type === "pyq" && form.pyq_year ? parseInt(form.pyq_year) : null,
-                    pyq_month: form.type === "pyq" ? form.pyq_month || null : null,
                     word_limit: form.input_type === "text" && form.word_limit ? parseInt(form.word_limit) : null,
-                };
+                } as any;
                 await updateQuestion(initial.id, subject.id, data);
                 onSaved({ ...data, id: initial.id, subject_id: initial.subject_id, created_at: initial.created_at });
             } catch (err: any) { setError(err.message); }
@@ -148,7 +148,7 @@ function EditQuestionForm({ subject, topics, initial, onSaved, onCancel }: {
                     <div>
                         <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Type</label>
                         <select value={form.type} onChange={(e) => { const v = e.target.value as Question["type"]; setForm({ ...form, type: v, module_to: (v === "cla" || v === "practice") ? form.module_from : form.module_to }); }} className={selectCls}>
-                            {["cla", "midterm", "pyq", "practice"].map((t) => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
+                            {["cla", "midterm", "exam", "practice"].map((t) => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
                         </select>
                     </div>
                     <div>
@@ -175,10 +175,13 @@ function EditQuestionForm({ subject, topics, initial, onSaved, onCancel }: {
                 {form.input_type === "text" && (
                     <div><label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Word Limit</label><input type="number" value={form.word_limit} onChange={(e) => setForm({ ...form, word_limit: e.target.value })} placeholder="250" className={inputCls} /></div>
                 )}
-                {form.type === "pyq" && (
-                    <div className="grid grid-cols-2 gap-3">
-                        <div><label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Year</label><input type="number" value={form.pyq_year} onChange={(e) => setForm({ ...form, pyq_year: e.target.value })} placeholder="2025" className={inputCls} /></div>
-                        <div><label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Month</label><input type="text" value={form.pyq_month} onChange={(e) => setForm({ ...form, pyq_month: e.target.value })} placeholder="April" className={inputCls} /></div>
+                {form.type === "exam" && (
+                    <div>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Exam Set*</label>
+                        <select required value={form.quiz_set_id} onChange={(e) => setForm({ ...form, quiz_set_id: e.target.value })} className={selectCls}>
+                            <option value="">Select an exam set...</option>
+                            {quizSets.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        </select>
                     </div>
                 )}
                 {topics.length > 0 && (
@@ -221,8 +224,8 @@ function EditQuestionForm({ subject, topics, initial, onSaved, onCancel }: {
     );
 }
 
-function AddQuestionForm({ subject, topics, onSaved, onCancel }: {
-    subject: Subject; topics: Topic[]; onSaved: (q: Question) => void; onCancel: () => void;
+function AddQuestionForm({ subject, topics, quizSets, onSaved, onCancel }: {
+    subject: Subject; topics: Topic[]; quizSets: QuizSet[]; onSaved: (q: Question) => void; onCancel: () => void;
 }) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
@@ -231,15 +234,15 @@ function AddQuestionForm({ subject, topics, onSaved, onCancel }: {
         input_type: "mcq" as Question["input_type"],
         module_from: "1", module_to: "1",
         topic_id: "", question: "",
+        quiz_set_id: "",
         options: ["", "", "", ""],
         correct_index: 0,
         explanation: "",
-        pyq_year: "", pyq_month: "",
         word_limit: "",
     });
 
     const mods = Array.from({ length: subject.module_count }, (_, i) => i + 1);
-    const isRange = form.type === "midterm" || form.type === "pyq";
+    const isRange = form.type === "midterm" || form.type === "exam";
 
     const setOption = (i: number, val: string) => {
         const opts = [...form.options]; opts[i] = val; setForm({ ...form, options: opts });
@@ -253,14 +256,13 @@ function AddQuestionForm({ subject, topics, onSaved, onCancel }: {
                     type: form.type, input_type: form.input_type,
                     module_from: parseInt(form.module_from), module_to: parseInt(form.module_to),
                     topic_id: form.topic_id || null,
+                    quiz_set_id: form.type === "exam" ? (form.quiz_set_id || null) : null,
                     question: form.question,
                     options: form.input_type === "mcq" ? form.options : null,
                     correct_index: form.input_type === "mcq" ? form.correct_index : null,
                     explanation: form.explanation || null,
-                    pyq_year: form.type === "pyq" && form.pyq_year ? parseInt(form.pyq_year) : null,
-                    pyq_month: form.type === "pyq" ? form.pyq_month || null : null,
                     word_limit: form.input_type === "text" && form.word_limit ? parseInt(form.word_limit) : null,
-                };
+                } as any;
                 await createQuestion(subject.id, data);
                 onSaved({ ...data, id: "", subject_id: subject.id, created_at: "" });
             } catch (err: any) { setError(err.message); }
@@ -283,7 +285,7 @@ function AddQuestionForm({ subject, topics, onSaved, onCancel }: {
                     <div>
                         <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Type</label>
                         <select value={form.type} onChange={(e) => { const v = e.target.value as Question["type"]; const same = v === "cla" || v === "practice"; setForm({ ...form, type: v, module_to: same ? form.module_from : form.module_to }); }} className={selectCls}>
-                            {["cla", "midterm", "pyq", "practice"].map((t) => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
+                            {["cla", "midterm", "exam", "practice"].map((t) => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
                         </select>
                     </div>
                     <div>
@@ -315,11 +317,14 @@ function AddQuestionForm({ subject, topics, onSaved, onCancel }: {
                     </div>
                 )}
 
-                {/* PYQ fields */}
-                {form.type === "pyq" && (
-                    <div className="grid grid-cols-2 gap-3">
-                        <div><label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Year*</label><input required type="number" placeholder="2025" value={form.pyq_year} onChange={(e) => setForm({ ...form, pyq_year: e.target.value })} className={inputCls} /></div>
-                        <div><label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Month</label><input type="text" placeholder="April" value={form.pyq_month} onChange={(e) => setForm({ ...form, pyq_month: e.target.value })} className={inputCls} /></div>
+                {/* Exam Set field */}
+                {form.type === "exam" && (
+                    <div>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Exam Set*</label>
+                        <select required value={form.quiz_set_id} onChange={(e) => setForm({ ...form, quiz_set_id: e.target.value })} className={selectCls}>
+                            <option value="">Select an exam set...</option>
+                            {quizSets.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        </select>
                     </div>
                 )}
 
@@ -533,14 +538,52 @@ ${notes}`;
     );
 }
 
-function BulkImportModal({ subject, topics, onDone, onClose, initialJson = "" }: { subject: Subject; topics: Topic[]; onDone: () => void; onClose: () => void; initialJson?: string }) {
+function BulkImportModal({ subject, topics, quizSets, onDone, onClose, initialJson = "" }: { subject: Subject; topics: Topic[]; quizSets: QuizSet[]; onDone: () => void; onClose: () => void; initialJson?: string }) {
     const [json, setJson] = useState(initialJson);
     const [topicId, setTopicId] = useState("");
+    const [quizSetId, setQuizSetId] = useState("");
     const [isPending, startTransition] = useTransition();
     const [result, setResult] = useState<{ success: boolean; imported: number; errors: string[] } | null>(null);
 
+    // Apply real-time transforms to the JSON textarea
+    const applyOverrides = (rawJson: string, newTopicId: string, newQuizSetId: string) => {
+        try {
+            const parsed = JSON.parse(rawJson);
+            if (!Array.isArray(parsed)) return rawJson;
+            const updated = parsed.map((q: any) => {
+                const out = { ...q };
+                // If exam set selected, force type to exam and inject quiz_set_id
+                if (newQuizSetId) {
+                    out.type = "exam";
+                    out.quiz_set_id = newQuizSetId;
+                } else {
+                    // If cleared, remove quiz_set_id if it was auto-injected
+                    delete out.quiz_set_id;
+                    if (out.type === "exam" && !q.quiz_set_id) out.type = q.type || "practice";
+                }
+                // Apply topic override
+                if (newTopicId) out.topic_id = newTopicId;
+                else delete out.topic_id;
+                return out;
+            });
+            return JSON.stringify(updated, null, 2);
+        } catch {
+            return rawJson; // Invalid JSON — leave untouched
+        }
+    };
+
+    const handleQuizSetChange = (val: string) => {
+        setQuizSetId(val);
+        setJson(prev => applyOverrides(prev, topicId, val));
+    };
+
+    const handleTopicChange = (val: string) => {
+        setTopicId(val);
+        setJson(prev => applyOverrides(prev, val, quizSetId));
+    };
+
     const handle = () => startTransition(async () => {
-        const r = await bulkImportQuestions(subject.id, json, topicId || undefined);
+        const r = await bulkImportQuestions(subject.id, json, topicId || undefined, quizSetId || undefined);
         setResult(r);
         if (r.success) { onDone(); setTimeout(onClose, 1500); }
     });
@@ -559,7 +602,7 @@ function BulkImportModal({ subject, topics, onDone, onClose, initialJson = "" }:
                         <pre className="text-[10px] font-mono text-stone-600 overflow-x-auto overflow-y-auto max-h-48 whitespace-pre-wrap">
 {`[
   {
-    "type": "cla", // Purpose: Defines the exam category. Options: "cla", "midterm", "pyq", "practice" (AI)
+    "type": "cla", // Purpose: Defines the exam category. Options: "cla", "midterm", "exam", "practice" (AI)
     "input_type": "mcq", // Purpose: Determines answer format. "mcq" (Multiple Choice) or "text" (Subjective typing)
     "module_from": 1, // Purpose: The starting module number this question belongs to.
     "module_to": 1, // Purpose: The ending module number. Use if a question spans multiple modules (e.g., 1 to 4).
@@ -567,8 +610,7 @@ function BulkImportModal({ subject, topics, onDone, onClose, initialJson = "" }:
     "options": ["A", "B", "C", "D"], // Purpose: The choices for MCQ. MUST be omitted if input_type is "text".
     "correct_index": 0, // Purpose: The 0-based index of the correct option (0=A, 1=B, 2=C, 3=D). Omit for "text".
     "explanation": "Optional explanation text", // Purpose: Shown after answering to help the student learn.
-    "pyq_year": 2025, // Purpose: The year of the exam. Required ONLY if type is "pyq".
-    "pyq_month": "April", // Purpose: The month of the exam. Optional, only for PYQs.
+    "quiz_set_id": "UUID-string", // Purpose: The dynamic exam set ID. Required ONLY if type is "exam".
     "word_limit": 250, // Purpose: The maximum allowed words for subjective answers. Required if input_type is "text".
     "topic_id": "UUID-string" // Purpose: Optional topic UUID. Must match an existing topic.
   }
@@ -576,12 +618,21 @@ function BulkImportModal({ subject, topics, onDone, onClose, initialJson = "" }:
                         </pre>
                     </div>
                 </div>
-                <div>
-                    <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Override / Default Topic</label>
-                    <select value={topicId} onChange={(e) => setTopicId(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300 mb-3">
-                        <option value="">None</option>
-                        {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                    </select>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Override / Default Topic</label>
+                        <select value={topicId} onChange={(e) => handleTopicChange(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
+                            <option value="">None</option>
+                            {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Override Exam Set <span className="text-rose-500">(forces type:exam)</span></label>
+                        <select value={quizSetId} onChange={(e) => handleQuizSetChange(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
+                            <option value="">None</option>
+                            {quizSets.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        </select>
+                    </div>
                 </div>
                 <textarea value={json} onChange={(e) => { setJson(e.target.value); setResult(null); }} rows={10}
                     placeholder={'[\n  {\n    "type": "cla",\n    "input_type": "mcq",\n    "module_from": 1,\n    "module_to": 1,\n    "question": "...",\n    "options": ["A","B","C","D"],\n    "correct_index": 0\n  }\n]'}
@@ -605,10 +656,11 @@ function BulkImportModal({ subject, topics, onDone, onClose, initialJson = "" }:
     );
 }
 
-export default function QuestionsTab({ subject, initialQuestions, topics }: {
-    subject: Subject; initialQuestions: Question[]; topics: Topic[];
+export default function QuestionsTab({ subject, initialQuestions, topics, initialQuizSets }: {
+    subject: Subject; initialQuestions: Question[]; topics: Topic[]; initialQuizSets: QuizSet[];
 }) {
     const [questions, setQuestions] = useState<Question[]>(initialQuestions);
+    const [quizSets, setQuizSets] = useState<QuizSet[]>(initialQuizSets);
     const [showAdd, setShowAdd] = useState(false);
     const [showBulk, setShowBulk] = useState(false);
     const [showAiImport, setShowAiImport] = useState(false);
@@ -625,6 +677,40 @@ export default function QuestionsTab({ subject, initialQuestions, topics }: {
 
     return (
         <div className="space-y-5">
+            {/* Exam Sets Manager */}
+            <div className="bg-white border border-stone-200 rounded-2xl p-5">
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 className="text-sm font-black text-stone-800 tracking-tight">Exam Sets</h3>
+                        <p className="text-xs font-bold text-stone-400">Manage dynamic tags for Exam Mode (e.g., Mock-1, PYQ Aug 2024)</p>
+                    </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {quizSets.map((s) => (
+                        <div key={s.id} className="flex items-center gap-2 bg-stone-50 border border-stone-200 rounded-lg px-3 py-1.5 group">
+                            <span className="text-xs font-bold text-stone-700">{s.name}</span>
+                            <button onClick={async () => {
+                                if (!confirm("Delete this set? Any questions in this set will lose their set assignment.")) return;
+                                await deleteQuizSet(s.id, subject.id);
+                                setQuizSets(prev => prev.filter(x => x.id !== s.id));
+                            }} className="opacity-0 group-hover:opacity-100 text-stone-400 hover:text-red-500 transition-all">
+                                <X className="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+                    ))}
+                    <button onClick={async () => {
+                        const name = prompt("Enter Exam Set Name (e.g., Mock-1):");
+                        if (!name) return;
+                        try {
+                            const newSet = await createQuizSet(subject.id, name);
+                            setQuizSets(prev => [...prev, newSet]);
+                        } catch (err: any) { alert(err.message); }
+                    }} className="flex items-center gap-1.5 px-3 py-1.5 border border-dashed border-stone-300 text-stone-500 hover:text-stone-700 hover:bg-stone-50 rounded-lg text-xs font-bold transition-all">
+                        <Plus className="w-3.5 h-3.5" /> Add Set
+                    </button>
+                </div>
+            </div>
+
             {/* Toolbar */}
             <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-2">
@@ -632,7 +718,7 @@ export default function QuestionsTab({ subject, initialQuestions, topics }: {
                     <select value={filterType} onChange={(e) => setFilterType(e.target.value)}
                         className="bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-3 py-2 outline-none focus:border-red-300 appearance-none">
                         <option value="">All Types</option>
-                        {["cla", "midterm", "pyq", "practice"].map((t) => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
+                        {["cla", "midterm", "exam", "practice"].map((t) => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
                     </select>
                     <span className="text-xs font-bold text-stone-400">{filtered.length} question{filtered.length !== 1 ? "s" : ""}</span>
                 </div>
@@ -650,7 +736,7 @@ export default function QuestionsTab({ subject, initialQuestions, topics }: {
             </div>
 
             {showAdd && (
-                <AddQuestionForm subject={subject} topics={topics}
+                <AddQuestionForm subject={subject} topics={topics} quizSets={quizSets}
                     onSaved={(q) => { setQuestions((prev) => [q, ...prev]); setShowAdd(false); }}
                     onCancel={() => setShowAdd(false)}
                 />
@@ -663,7 +749,7 @@ export default function QuestionsTab({ subject, initialQuestions, topics }: {
             ) : (
                 <div className="space-y-2">
                     {filtered.map((q) => (
-                        <QuestionRow key={q.id} q={q} topics={topics} subject={subject}
+                        <QuestionRow key={q.id} q={q} topics={topics} subject={subject} quizSets={quizSets}
                             onDelete={() => handleDelete(q.id)}
                             onUpdated={(updated) => setQuestions((prev) => prev.map((x) => x.id === updated.id ? updated : x))}
                         />
@@ -680,7 +766,7 @@ export default function QuestionsTab({ subject, initialQuestions, topics }: {
             )}
 
             {showBulk && (
-                <BulkImportModal subject={subject} topics={topics} onDone={async () => { const { getQuestions } = await import("@/actions/curriculum"); const qs = await getQuestions(subject.id); setQuestions(qs); setShowBulk(false); }} onClose={() => setShowBulk(false)} initialJson={aiJson} />
+                <BulkImportModal subject={subject} topics={topics} quizSets={quizSets} onDone={async () => { const { getQuestions } = await import("@/actions/curriculum"); const qs = await getQuestions(subject.id); setQuestions(qs); setShowBulk(false); }} onClose={() => setShowBulk(false)} initialJson={aiJson} />
             )}
         </div>
     );

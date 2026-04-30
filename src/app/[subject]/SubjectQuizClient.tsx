@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import type { Question } from "@/data/db";
-import { BookOpen, Activity, Play, ChevronLeft, Timer, Target, Clock, TrendingUp, History, X, Trash2, Calendar, Sparkles } from "lucide-react";
+import { BookOpen, Activity, Play, ChevronLeft, Timer, Target, History, Trash2, Calendar, Sparkles } from "lucide-react";
 import Link from "next/link";
 import QuizEngine from "@/components/QuizEngine";
 import { getExamHistory, deleteExamResult } from "@/actions/quiz";
@@ -15,17 +15,24 @@ type SubjectData = {
     title: string;
     strictTimeLimit: number | null;
     modules: Module[];
+    quizSets: { id: string; name: string }[];
 };
 
 export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     const [activeTab, setActiveTab] = useState<"overview" | "quiz" | "history">("overview");
     const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
     const [quizMode, setQuizMode] = useState<"practice" | "exam">("practice");
-    const [quizSubMode, setQuizSubMode] = useState<"practice" | "exam" | "ai">("practice");
+    const [quizSubMode, setQuizSubMode] = useState<"practice" | "ai" | "exam-set">("practice");
+    const [activeQuizSetId, setActiveQuizSetId] = useState<string | null>(null);
+
+    // Module-level mode modal (Practice / AI only)
     const [showModeSelect, setShowModeSelect] = useState(false);
     const [pendingModuleId, setPendingModuleId] = useState<number | null>(null);
     const [examTimer, setExamTimer] = useState<number | undefined>(undefined);
     const [emptyMessageModuleId, setEmptyMessageModuleId] = useState<number | null>(null);
+
+    // Subject-level exam set picker
+    const [showExamSetPicker, setShowExamSetPicker] = useState(false);
 
     const [examHistory, setExamHistory] = useState<any[]>([]);
     const [loadingHistory, setLoadingHistory] = useState(false);
@@ -38,7 +45,6 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         setLoadingHistory(true);
         try {
             const history = await getExamHistory();
-            // Match by UUID subjectId
             setExamHistory(history.filter((h: any) => h.subject === data.subjectId));
         } catch (error) {
             console.error("Failed to load history:", error);
@@ -57,9 +63,10 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         }
     };
 
+    // Module click → only Practice/AI modal
     const handleStartQuiz = (moduleId: number) => {
         const selectedModule = data.modules.find((m) => m.id === moduleId);
-        if (selectedModule && selectedModule.questions.length === 0) {
+        if (selectedModule && selectedModule.questions.filter(q => q.type !== "exam").length === 0) {
             setEmptyMessageModuleId(moduleId);
             setTimeout(() => setEmptyMessageModuleId(null), 3000);
             return;
@@ -68,32 +75,56 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         setShowModeSelect(true);
     };
 
-    const confirmMode = (subMode: "practice" | "exam" | "ai", mode: "practice" | "exam", timer?: number) => {
+    // Practice / AI mode confirmation (module-scoped)
+    const confirmPracticeMode = (subMode: "practice" | "ai") => {
         setQuizSubMode(subMode);
-        setQuizMode(mode);
-        setExamTimer(timer);
+        setQuizMode("practice");
+        setExamTimer(undefined);
+        setActiveQuizSetId(null);
         setActiveModuleId(pendingModuleId);
         setActiveTab("quiz");
         setShowModeSelect(false);
     };
 
+    // Exam set selected (subject-scoped, all modules)
+    const confirmExamSet = (setId: string) => {
+        setQuizSubMode("exam-set");
+        setQuizMode("exam");
+        setExamTimer(data.strictTimeLimit || 60);
+        setActiveQuizSetId(setId);
+        setActiveModuleId(null); // Not module-scoped
+        setActiveTab("quiz");
+        setShowExamSetPicker(false);
+    };
+
+    // All questions from the selected exam set across all modules
+    // Deduplicate by id — a question with module_from:1 module_to:4 appears in 4 modules
+    const allExamSetQuestions = activeQuizSetId
+        ? Array.from(
+            new Map(
+                data.modules
+                    .flatMap((m) => m.questions.filter((q) => q.type === "exam" && q.quiz_set_id === activeQuizSetId))
+                    .map((q) => [q.id, q])
+            ).values()
+          )
+        : [];
+
     const activeModule = data.modules.find((m) => m.id === activeModuleId);
 
-    if (activeTab === "quiz" && activeModule) {
+    // Sets that have at least one question anywhere in the subject
+    const setsWithQuestions = data.quizSets.filter((set) =>
+        data.modules.some((m) => m.questions.some((q) => q.type === "exam" && q.quiz_set_id === set.id))
+    );
+
+    // Quiz view — module practice/ai
+    if (activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule) {
         return (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-[1600px] mx-auto min-h-screen">
                 <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase">
-                                {quizMode === "exam" ? `Exam Mode: ${examTimer}s/Q` : "Practice Mode"}
-                            </span>
-                            {quizMode === "exam" && (
-                                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
-                                    TIMED
-                                </span>
-                            )}
-                        </div>
+                        <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">
+                            {quizSubMode === "ai" ? "AI Concept Builder" : "Practice Mode"}
+                        </span>
                         <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
                     </div>
                 </div>
@@ -103,15 +134,47 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                     questions={
                         quizSubMode === "ai"
                             ? activeModule.questions.filter((q) => q.type === "practice")
-                            : quizSubMode === "exam"
-                                ? activeModule.questions.filter((q) => q.type !== "practice")
-                                : activeModule.questions
+                            : activeModule.questions.filter((q) => q.type !== "exam")
                     }
-                    mode={quizMode}
-                    timerPerQuestion={examTimer}
+                    mode="practice"
+                    timerPerQuestion={undefined}
                     onComplete={() => {
                         setActiveTab("overview");
                         setActiveModuleId(null);
+                    }}
+                />
+            </div>
+        );
+    }
+
+    // Quiz view — exam set (subject-scoped, all modules)
+    if (activeTab === "quiz" && quizSubMode === "exam-set") {
+        const setName = data.quizSets.find((s) => s.id === activeQuizSetId)?.name ?? "Exam";
+        return (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-[1600px] mx-auto min-h-screen">
+                <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase">
+                                Exam Mode · {examTimer}s/Q
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
+                                TIMED
+                            </span>
+                        </div>
+                        <h1 className="text-2xl font-bold text-on-surface tracking-tight">{setName}</h1>
+                        <p className="text-xs text-on-surface-variant font-medium mt-1">{allExamSetQuestions.length} questions · Full subject scope</p>
+                    </div>
+                </div>
+                <QuizEngine
+                    subjectId={data.id}
+                    moduleId={0}
+                    questions={allExamSetQuestions}
+                    mode="exam"
+                    timerPerQuestion={examTimer}
+                    onComplete={() => {
+                        setActiveTab("overview");
+                        setActiveQuizSetId(null);
                     }}
                 />
             </div>
@@ -146,6 +209,18 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             <History className="w-5 h-5 group-hover:rotate-[-20deg] transition-transform" />
                             {activeTab === "history" ? "Back to Modules" : "Performance Review"}
                         </button>
+
+                        {/* Subject-level Exam Mode button — only if sets exist */}
+                        {setsWithQuestions.length > 0 && (
+                            <button
+                                onClick={() => setShowExamSetPicker(true)}
+                                className="flex items-center justify-center gap-2 px-6 py-4 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-all shadow-sm border border-amber-600/30 group hover-lift"
+                            >
+                                <Timer className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                Exam Mode
+                            </button>
+                        )}
+
                         <Link
                             href={`/dbe_notes/${data.subjectId}`}
                             className="flex-shrink-0 flex items-center justify-center gap-2 px-6 py-4 bg-surface-container-lowest text-on-surface font-bold rounded-xl hover:bg-surface-container transition-all shadow-sm border border-outline-variant/20 group hover-lift"
@@ -221,9 +296,10 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                 </section>
             ) : (
                 <section className="space-y-6">
-                    <div className="flex items-center gap-2 mb-8">
+                    <div className="flex items-center gap-2 mb-4">
                         <Activity className="w-5 h-5 text-primary" />
-                        <h2 className="text-2xl font-bold font-headline text-on-surface tracking-tight">Quiz Modules</h2>
+                        <h2 className="text-2xl font-bold font-headline text-on-surface tracking-tight">Practice Modules</h2>
+                        <span className="text-xs font-black text-on-surface-variant/50 uppercase tracking-widest ml-2">· Practice & AI only</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -232,43 +308,46 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 No quiz modules available for this subject.
                             </p>
                         ) : (
-                            data.modules.map((mod) => (
-                                <div
-                                    key={mod.id}
-                                    className="group p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/15 hover:border-primary/50 transition-all hover:bg-surface-container flex flex-col cursor-pointer hover-lift shadow-sm hover:shadow-xl hover:shadow-primary/5"
-                                    onClick={() => handleStartQuiz(mod.id)}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="font-bold text-on-surface group-hover:text-primary transition-colors leading-snug truncate">{mod.title}</h3>
-                                            {emptyMessageModuleId === mod.id ? (
-                                                <p className="text-xs text-amber-500 font-bold tracking-wider mt-1 animate-in fade-in slide-in-from-top-1 duration-300">Wait, question will be available soon</p>
-                                            ) : (
-                                                <p className="text-xs text-on-surface-variant font-mono uppercase tracking-wider mt-1">{mod.questions.length} Questions</p>
-                                            )}
-                                        </div>
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all transform flex-shrink-0 ml-4 shadow-sm border ${mod.questions.length === 0 ? "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant/30" : "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant group-hover:scale-110 group-hover:bg-primary group-hover:border-primary/20 group-hover:text-on-primary"}`}>
-                                            <Play className="w-4 h-4 ml-1" />
+                            data.modules.map((mod) => {
+                                const practiceCount = mod.questions.filter(q => q.type !== "exam").length;
+                                return (
+                                    <div
+                                        key={mod.id}
+                                        className="group p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/15 hover:border-primary/50 transition-all hover:bg-surface-container flex flex-col cursor-pointer hover-lift shadow-sm hover:shadow-xl hover:shadow-primary/5"
+                                        onClick={() => handleStartQuiz(mod.id)}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-bold text-on-surface group-hover:text-primary transition-colors leading-snug truncate">{mod.title}</h3>
+                                                {emptyMessageModuleId === mod.id ? (
+                                                    <p className="text-xs text-amber-500 font-bold tracking-wider mt-1 animate-in fade-in slide-in-from-top-1 duration-300">Wait, questions will be available soon</p>
+                                                ) : (
+                                                    <p className="text-xs text-on-surface-variant font-mono uppercase tracking-wider mt-1">{practiceCount} Questions</p>
+                                                )}
+                                            </div>
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all transform flex-shrink-0 ml-4 shadow-sm border ${practiceCount === 0 ? "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant/30" : "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant group-hover:scale-110 group-hover:bg-primary group-hover:border-primary/20 group-hover:text-on-primary"}`}>
+                                                <Play className="w-4 h-4 ml-1" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))
+                                );
+                            })
                         )}
                     </div>
                 </section>
             )}
 
-            {/* Mode Selection Modal */}
+            {/* Practice / AI Mode Modal (module-scoped) */}
             {showModeSelect && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-surface/70 backdrop-blur-sm" onClick={() => setShowModeSelect(false)} />
                     <div className="relative w-full max-w-md bg-surface-container rounded-[2.5rem] border border-outline-variant/20 shadow-2xl p-8 animate-in zoom-in-95 fade-in duration-300">
-                        <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight">Choose Simulator</h3>
-                        <p className="text-on-surface-variant text-sm font-medium mb-8">Select your preparation mode for this module.</p>
+                        <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight">Choose Mode</h3>
+                        <p className="text-on-surface-variant text-sm font-medium mb-8">Select your practice mode for this module.</p>
 
                         <div className="space-y-4">
                             <button
-                                onClick={() => confirmMode("practice", "practice")}
+                                onClick={() => confirmPracticeMode("practice")}
                                 className="w-full p-6 rounded-2xl border-2 border-outline-variant/10 hover:border-primary/50 bg-surface shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all text-left group"
                             >
                                 <div className="flex justify-between items-center mb-1">
@@ -282,7 +361,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             </button>
 
                             <button
-                                onClick={() => confirmMode("ai", "practice")}
+                                onClick={() => confirmPracticeMode("ai")}
                                 className="w-full p-6 rounded-2xl border-2 border-outline-variant/10 hover:border-purple-500/50 bg-gradient-to-r from-purple-500/5 to-indigo-500/5 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all text-left group"
                             >
                                 <div className="flex justify-between items-center mb-1">
@@ -292,26 +371,60 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                     </div>
                                     <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full">New</span>
                                 </div>
-                                <p className="text-on-surface-variant text-xs font-medium ml-8 leading-relaxed italic">Master concepts with dynamically generated AI questions in a relaxed environment.</p>
-                            </button>
-
-                            <button
-                                onClick={() => confirmMode("exam", "exam", data.strictTimeLimit || 60)}
-                                className="w-full p-6 rounded-2xl border-2 border-outline-variant/10 hover:border-amber-500/50 bg-surface shadow-sm hover:shadow-xl hover:shadow-amber-500/5 transition-all text-left group"
-                            >
-                                <div className="flex justify-between items-center mb-1">
-                                    <div className="flex items-center gap-3">
-                                        <Timer className="w-5 h-5 text-amber-500" />
-                                        <span className="font-black font-headline text-lg text-on-surface">Exam Mode</span>
-                                    </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full">Timed</span>
-                                </div>
-                                <p className="text-on-surface-variant text-xs font-medium ml-8 leading-relaxed italic">Timed exam simulation filtering out practice questions. Full result persistence.</p>
+                                <p className="text-on-surface-variant text-xs font-medium ml-8 leading-relaxed italic">Master concepts with dynamically generated AI questions.</p>
                             </button>
                         </div>
 
                         <button
                             onClick={() => setShowModeSelect(false)}
+                            className="mt-6 w-full py-4 text-on-surface-variant hover:text-on-surface text-sm font-black uppercase tracking-widest transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Subject-level Exam Set Picker */}
+            {showExamSetPicker && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-surface/70 backdrop-blur-sm" onClick={() => setShowExamSetPicker(false)} />
+                    <div className="relative w-full max-w-md bg-surface-container rounded-[2.5rem] border border-outline-variant/20 shadow-2xl p-8 animate-in zoom-in-95 fade-in duration-300">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+                                <Timer className="w-5 h-5 text-amber-500" />
+                            </div>
+                            <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight">Select Exam Set</h3>
+                        </div>
+                        <p className="text-on-surface-variant text-sm font-medium mb-2">Full subject-scope · Timed · {data.strictTimeLimit || 60}s per question</p>
+                        <p className="text-on-surface-variant/60 text-xs font-medium mb-8">Questions span all modules in this set.</p>
+
+                        <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2">
+                            {setsWithQuestions.map((set) => {
+                                // Deduplicate by id — same fix as allExamSetQuestions
+                                const count = new Set(
+                                    data.modules.flatMap((m) =>
+                                        m.questions.filter(q => q.type === "exam" && q.quiz_set_id === set.id).map(q => q.id)
+                                    )
+                                ).size;
+                                return (
+                                    <button
+                                        key={set.id}
+                                        onClick={() => confirmExamSet(set.id)}
+                                        className="w-full p-4 rounded-2xl border-2 border-outline-variant/10 hover:border-amber-500/50 bg-surface shadow-sm hover:shadow-xl hover:shadow-amber-500/5 transition-all text-left flex items-center justify-between group"
+                                    >
+                                        <div>
+                                            <span className="font-black font-headline text-base text-on-surface group-hover:text-amber-600 transition-colors block">{set.name}</span>
+                                            <span className="text-xs text-on-surface-variant font-mono">{count} question{count !== 1 ? "s" : ""}</span>
+                                        </div>
+                                        <ArrowRight className="w-5 h-5 text-on-surface-variant group-hover:text-amber-500 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        <button
+                            onClick={() => setShowExamSetPicker(false)}
                             className="mt-6 w-full py-4 text-on-surface-variant hover:text-on-surface text-sm font-black uppercase tracking-widest transition-colors"
                         >
                             Cancel

@@ -14,8 +14,7 @@ function mapQuestion(q: any): Question {
         correctAnswer: q.correct_index ?? 0,
         explanation: q.explanation ?? "",
         type: q.type,
-        pyq_year: q.pyq_year,
-        pyq_month: q.pyq_month,
+        quiz_set_id: q.quiz_set_id,
         input_type: q.input_type,
         word_limit: q.word_limit,
         module_from: q.module_from,
@@ -61,7 +60,14 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
         .eq("subject_id", subjectId)
         .order("module_from", { ascending: true });
 
+    const { data: quizSetsData } = await supabase
+        .from("quiz_sets")
+        .select("*")
+        .eq("subject_id", subjectId)
+        .order("created_at", { ascending: false });
+
     const questions = rawQuestions ?? [];
+    const quizSets = quizSetsData ?? [];
 
     // Group questions into modules by module_from
     const moduleCount = subject.module_count as number;
@@ -83,6 +89,7 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
         title: subject.name,
         strictTimeLimit: subject.strict_time_limit,
         modules,
+        quizSets,
     };
 
     return <SubjectQuizClient data={data} />;

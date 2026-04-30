@@ -60,19 +60,25 @@ export type Note = {
     updated_at: string;
 };
 
+export type QuizSet = {
+    id: string;
+    subject_id: string;
+    name: string;
+    created_at: string;
+};
+
 export type Question = {
     id: string;
     subject_id: string;
-    type: "cla" | "midterm" | "pyq" | "practice";
+    type: "cla" | "midterm" | "practice" | "exam";
     input_type: "mcq" | "text";
     module_from: number;
     module_to: number;
     topic_id: string | null;
+    quiz_set_id: string | null;
     question: string;
     options: string[] | null;
     correct_index: number | null;
-    pyq_year: number | null;
-    pyq_month: string | null;
     word_limit: number | null;
     created_at: string;
 };
@@ -245,6 +251,38 @@ export async function deleteNote(subjectId: string, moduleNumber: number) {
     revalidatePath(`/hq-admin/curriculum/${subjectId}`);
 }
 
+// ─── QUIZ SETS ───────────────────────────────────────────────────────────────
+
+export async function getQuizSets(subjectId: string): Promise<QuizSet[]> {
+    const supabase = await getSupabase();
+    const { data, error } = await supabase
+        .from("quiz_sets")
+        .select("*")
+        .eq("subject_id", subjectId)
+        .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return data as QuizSet[];
+}
+
+export async function createQuizSet(subjectId: string, name: string): Promise<QuizSet> {
+    const supabase = await getSupabase();
+    const { data, error } = await supabase
+        .from("quiz_sets")
+        .insert([{ subject_id: subjectId, name }])
+        .select()
+        .single();
+    if (error) throw new Error(error.message);
+    revalidatePath(`/hq-admin/curriculum/${subjectId}`);
+    return data as QuizSet;
+}
+
+export async function deleteQuizSet(id: string, subjectId: string) {
+    const supabase = await getSupabase();
+    const { error } = await supabase.from("quiz_sets").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+    revalidatePath(`/hq-admin/curriculum/${subjectId}`);
+}
+
 // ─── QUESTIONS ───────────────────────────────────────────────────────────────
 
 export async function getQuestions(
@@ -320,7 +358,8 @@ export type BulkImportResult = {
 export async function bulkImportQuestions(
     subjectId: string,
     rawJson: string,
-    defaultTopicId?: string
+    defaultTopicId?: string,
+    defaultQuizSetId?: string
 ): Promise<BulkImportResult> {
     const errors: string[] = [];
 
@@ -333,7 +372,7 @@ export async function bulkImportQuestions(
         return { success: false, imported: 0, errors: [`JSON parse error: ${e.message}`] };
     }
 
-    const validTypes = ["cla", "midterm", "pyq", "practice"];
+    const validTypes = ["cla", "midterm", "practice", "exam"];
     const validInputTypes = ["mcq", "text"];
 
     const rows: any[] = [];
@@ -361,23 +400,29 @@ export async function bulkImportQuestions(
                 errors.push(`${label}: word_limit must be a number`);
             }
         }
-        if (q.type === "pyq" && !q.pyq_year)
-            errors.push(`${label}: PYQ requires pyq_year`);
+        
+        if (q.type === "exam" && !q.quiz_set_id && !defaultQuizSetId)
+            errors.push(`Row ${i + 1}: Exam questions must have a quiz_set_id (or select an Exam Set override above)`);
 
         if (errors.length === 0 || !errors.some((e) => e.startsWith(label))) {
+            // If admin selected an Exam Set override, force type → "exam" and apply the set ID
+            const effectiveType = defaultQuizSetId ? "exam" : q.type;
+            const effectiveQuizSetId = defaultQuizSetId
+                ? (q.quiz_set_id || defaultQuizSetId)
+                : (q.type === "exam" ? (q.quiz_set_id || null) : null);
+
             rows.push({
                 subject_id: subjectId,
-                type: q.type,
+                type: effectiveType,
                 input_type: q.input_type,
                 module_from: q.module_from,
                 module_to: q.module_to,
                 topic_id: q.topic_id || defaultTopicId || null,
+                quiz_set_id: effectiveQuizSetId,
                 question: q.question,
                 options: q.input_type === "mcq" ? q.options : null,
                 correct_index: q.input_type === "mcq" ? q.correct_index : null,
-                explanation: q.explanation ?? null,
-                pyq_year: q.pyq_year ?? null,
-                pyq_month: q.pyq_month ?? null,
+                explanation: (q as any).explanation || null,
                 word_limit: q.input_type === "text" ? (q.word_limit ?? null) : null,
             });
         }
