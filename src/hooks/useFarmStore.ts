@@ -1,18 +1,19 @@
 import { create } from 'zustand';
-import { getFarmState, updateTomatoes, spendTomatoesAction } from '@/actions/farm';
+import { getFarmState, recordTomatoEvent, spendTomatoesAction } from '@/actions/farm';
+import type { TomatoEventPayload } from '@/actions/farm';
+import { getRank } from '@/constants/tomato';
 
 export interface PointState {
   isInitialized: boolean;
   totalTomatoesEarned: number;
   tomatoesBalance: number;
-  streak: number;
+  position: number;
   rank: string;
   leaderboardRank: number;
   medianTomatoes: number;
-  
   // Actions
   fetchFarmData: () => Promise<void>;
-  earnTomatoes: (amount: number) => void;
+  earnTomatoes: (payload: TomatoEventPayload) => void;
   spendTomatoes: (amount: number) => Promise<boolean>;
 }
 
@@ -20,11 +21,10 @@ export const useFarmStore = create<PointState>()((set, get) => ({
   isInitialized: false,
   totalTomatoesEarned: 0,
   tomatoesBalance: 0,
-  streak: 0,
+  position: 0,
   rank: "Tomato Seedling",
   leaderboardRank: 0,
   medianTomatoes: 0,
-  
   fetchFarmData: async () => {
     try {
       const data = await getFarmState();
@@ -32,7 +32,7 @@ export const useFarmStore = create<PointState>()((set, get) => ({
         isInitialized: true,
         totalTomatoesEarned: data.totalTomatoesEarned,
         tomatoesBalance: data.tomatoesBalance,
-        streak: data.streak,
+        position: data.position,
         rank: data.rank,
         leaderboardRank: data.leaderboardRank,
         medianTomatoes: data.medianTomatoes,
@@ -42,31 +42,36 @@ export const useFarmStore = create<PointState>()((set, get) => ({
     }
   },
 
-  earnTomatoes: (amount) => {
-    // Optimistic Update
-    set((state) => ({
-      totalTomatoesEarned: state.totalTomatoesEarned + amount,
-      tomatoesBalance: state.tomatoesBalance + amount,
-    }));
+  earnTomatoes: (payload) => {
+    const { totalTomatoesEarned, tomatoesBalance } = get();
+    const amount = payload.tomatoes;
 
-    // Background Sync
-    updateTomatoes(amount).catch(console.error);
+    // Optimistic update — instantly reflects in UI
+    const newTotal = totalTomatoesEarned + amount;
+    set({
+      totalTomatoesEarned: newTotal,
+      tomatoesBalance: tomatoesBalance + amount,
+      rank: getRank(newTotal),
+    });
+
+    // Background sync — logs event + updates DB
+    recordTomatoEvent(payload).catch(console.error);
   },
-  
+
   spendTomatoes: async (amount) => {
     const { tomatoesBalance } = get();
     if (tomatoesBalance >= amount) {
       // Optimistic
       set({ tomatoesBalance: tomatoesBalance - amount });
-      
+
       const success = await spendTomatoesAction(amount);
-      if (!success) { // Revert if server fails
+      if (!success) {
+        // Revert on server failure
         set({ tomatoesBalance: tomatoesBalance });
         return false;
       }
       return true;
     }
     return false;
-  }
+  },
 }));
-

@@ -97,7 +97,11 @@ export function useDeadlines() {
             
             const nextCompleted = !target.completed;
             if (nextCompleted) {
-                earnTomatoes(5); // Award 5 tomatoes for completing a deadline
+                earnTomatoes({
+                    actionType: "deadline_complete",
+                    description: `Completed deadline: ${target.title}`,
+                    tomatoes: 5
+                }); // Award 5 tomatoes for completing a deadline
             }
             
             if (target.isOfficial) {

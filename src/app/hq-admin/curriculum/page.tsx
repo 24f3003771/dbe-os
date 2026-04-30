@@ -57,14 +57,14 @@ function TermCard({ term, subjectCount, onToggle, onAssignBatch }: {
 function AddSubjectModal({ terms, onClose, onSaved }: { terms: Term[]; onClose: () => void; onSaved: () => void }) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
-    const [form, setForm] = useState({ name: "", code: "", term_id: "", module_count: "4", strict_time_limit: "" });
+    const [form, setForm] = useState({ name: "", code: "", term_id: "", module_count: "4", strict_time_limit: "", calculator_enabled: false, negative_marking: false, neg_marking_value: "1/3" });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); setError(null);
         if (!form.name || !form.code || !form.term_id) { setError("Name, code, and term are required."); return; }
         startTransition(async () => {
             try {
-                await createSubject({ name: form.name, code: form.code, term_id: parseInt(form.term_id), module_count: parseInt(form.module_count) as 4 | 8, strict_time_limit: form.strict_time_limit ? parseInt(form.strict_time_limit) : null });
+                await createSubject({ name: form.name, code: form.code, term_id: parseInt(form.term_id), module_count: parseInt(form.module_count) as 4 | 8, strict_time_limit: form.strict_time_limit ? parseInt(form.strict_time_limit) : null, calculator_enabled: form.calculator_enabled, negative_marking: form.negative_marking, neg_marking_value: form.neg_marking_value });
                 onSaved(); onClose();
             } catch (err: any) { setError(err.message); }
         });
@@ -107,8 +107,33 @@ function AddSubjectModal({ terms, onClose, onSaved }: { terms: Term[]; onClose: 
                             </select>
                         </div>
                         <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Strict Time (min)</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Exam Duration (min)</label>
                             <input type="number" value={form.strict_time_limit} onChange={(e) => setForm({ ...form, strict_time_limit: e.target.value })} placeholder="30" min={1} className={inputCls} />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Calculator</label>
+                            <select value={form.calculator_enabled ? "yes" : "no"} onChange={(e) => setForm({ ...form, calculator_enabled: e.target.value === "yes" })} className={inputCls + " appearance-none"}>
+                                <option value="no">Disabled</option>
+                                <option value="yes">Enabled</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Negative Marking</label>
+                            <div className="flex items-center gap-2">
+                                <select value={form.negative_marking ? "yes" : "no"} onChange={(e) => setForm({ ...form, negative_marking: e.target.value === "yes" })} className={inputCls + " appearance-none flex-1"}>
+                                    <option value="no">None</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                                {form.negative_marking && (
+                                    <select value={form.neg_marking_value} onChange={(e) => setForm({ ...form, neg_marking_value: e.target.value as "1/3" | "1/2" | "1/4" })} className={inputCls + " appearance-none w-20"}>
+                                        <option value="1/3">-1/3</option>
+                                        <option value="1/2">-1/2</option>
+                                        <option value="1/4">-1/4</option>
+                                    </select>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <button type="submit" disabled={isPending} className="w-full py-3 bg-red-600 text-white font-black text-sm uppercase tracking-widest rounded-xl hover:bg-red-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
@@ -128,7 +153,10 @@ function EditSubjectModal({ subject, terms, onClose, onSaved }: { subject: Subje
         code: subject.code,
         term_id: String(subject.term_id),
         module_count: String(subject.module_count),
-        strict_time_limit: subject.strict_time_limit ? String(subject.strict_time_limit) : ""
+        strict_time_limit: subject.strict_time_limit ? String(subject.strict_time_limit) : "",
+        calculator_enabled: subject.calculator_enabled ?? false,
+        negative_marking: subject.negative_marking ?? false,
+        neg_marking_value: subject.neg_marking_value ?? "1/3"
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -140,7 +168,10 @@ function EditSubjectModal({ subject, terms, onClose, onSaved }: { subject: Subje
                     code: form.code,
                     term_id: parseInt(form.term_id),
                     module_count: parseInt(form.module_count) as 4 | 8,
-                    strict_time_limit: form.strict_time_limit ? parseInt(form.strict_time_limit) : null
+                    strict_time_limit: form.strict_time_limit ? parseInt(form.strict_time_limit) : null,
+                    calculator_enabled: form.calculator_enabled,
+                    negative_marking: form.negative_marking,
+                    neg_marking_value: form.neg_marking_value as "1/3" | "1/2" | "1/4"
                 });
                 onSaved(); onClose();
             } catch (err: any) { setError(err.message); }
@@ -183,8 +214,33 @@ function EditSubjectModal({ subject, terms, onClose, onSaved }: { subject: Subje
                             </select>
                         </div>
                         <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Strict Time (min)</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Exam Duration (min)</label>
                             <input type="number" value={form.strict_time_limit} onChange={(e) => setForm({ ...form, strict_time_limit: e.target.value })} placeholder="30" min={1} className={inputCls} />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Calculator</label>
+                            <select value={form.calculator_enabled ? "yes" : "no"} onChange={(e) => setForm({ ...form, calculator_enabled: e.target.value === "yes" })} className={inputCls + " appearance-none"}>
+                                <option value="no">Disabled</option>
+                                <option value="yes">Enabled</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 block mb-1">Negative Marking</label>
+                            <div className="flex items-center gap-2">
+                                <select value={form.negative_marking ? "yes" : "no"} onChange={(e) => setForm({ ...form, negative_marking: e.target.value === "yes" })} className={inputCls + " appearance-none flex-1"}>
+                                    <option value="no">None</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                                {form.negative_marking && (
+                                    <select value={form.neg_marking_value} onChange={(e) => setForm({ ...form, neg_marking_value: e.target.value as "1/3" | "1/2" | "1/4" })} className={inputCls + " appearance-none w-20"}>
+                                        <option value="1/3">-1/3</option>
+                                        <option value="1/2">-1/2</option>
+                                        <option value="1/4">-1/4</option>
+                                    </select>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <button type="submit" disabled={isPending} className="w-full py-3 bg-stone-800 text-white font-black text-sm uppercase tracking-widest rounded-xl hover:bg-stone-900 transition-all disabled:opacity-50 flex items-center justify-center gap-2">

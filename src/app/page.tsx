@@ -27,7 +27,11 @@ const IPadSidebar = () => {
     if (task && !task.completed) {
       // Award tomatoes when completing a task
       const amount = Math.random() > 0.5 ? 5 : 2;
-      earnTomatoes(amount);
+      earnTomatoes({
+        actionType: "task_completion",
+        description: `Completed task: ${task.title}`,
+        tomatoes: amount
+      });
       setLastEarned(amount);
       setShowTomatoAnim(true);
       setTimeout(() => setShowTomatoAnim(false), 2000);
@@ -147,7 +151,7 @@ const IPadSidebar = () => {
 export default function Dashboard() {
   // TODO: Fetch user session from Supabase
   const user = null as any;
-  const { totalTomatoesEarned, tomatoesBalance, streak, rank, fetchFarmData, isInitialized } = useFarmStore();
+  const { totalTomatoesEarned, tomatoesBalance, position, rank, fetchFarmData, isInitialized } = useFarmStore();
   const subjects = getAllSubjects();
   const notesPreview = subjects.slice(0, 3);
 
@@ -291,7 +295,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-4 bg-surface-container-low px-6 py-4 rounded-2xl border border-outline-variant/10">
                         <div className="text-center border-r border-outline-variant/20 pr-6">
                             <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1">Your Rank</p>
-                            <p className="text-2xl font-black text-primary leading-none">#{totalTomatoesEarned}</p>
+                            <p className="text-2xl font-black text-primary leading-none">#{position || '-'}</p>
                         </div>
                         <div className="pl-2">
                              <ArrowRight className="w-6 h-6 text-on-surface-variant" />

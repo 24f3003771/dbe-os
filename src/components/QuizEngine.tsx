@@ -2,22 +2,27 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Question } from "@/data/db";
 import { Check, X, ArrowRight, Clock, Flag, Eraser, Eye, LogOut, CheckCircle2, Calculator, Save, RotateCcw, Target, Play, User } from "lucide-react";
 import { useFarmStore } from "@/hooks/useFarmStore";
-import { saveExamResult } from "@/actions/quiz";
+import { saveExamResult, QuestionResponse } from "@/actions/quiz";
+import { evaluateTextAnswer } from "@/actions/ai-evaluate";
 
 interface QuizEngineProps {
-    subjectId: string;
+    subjectId: string;        // subject code e.g. "ES21X"
+    subjectTitle?: string;    // e.g. "Entrepreneurship"
     moduleId: number;
+    moduleTitle?: string;     // e.g. "MOC1 – Financing Basics"
     questions: Question[];
     mode: "practice" | "exam";
-    timerPerQuestion?: number; // 60, 90, 180 or undefined
+    quizSubMode?: "practice" | "ai" | "exam-set"; // for detailed event logging
+    examDurationSeconds?: number;
+    showCalculator?: boolean;
+    negativeMarking?: boolean;
+    negMarkingValue?: string;
     onComplete: () => void;
 }
 
 type QuestionStatus = "not-visited" | "unanswered" | "answered" | "marked" | "answered-marked";
 
-export default function QuizEngine({ subjectId, moduleId, questions, mode, timerPerQuestion, onComplete }: QuizEngineProps) {
-    // TODO: Fetch user session from Supabase
-    const user = null as any;
+export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTitle, quizSubMode, questions, mode, examDurationSeconds, showCalculator = false, negativeMarking = false, negMarkingValue = "1/3", onComplete }: QuizEngineProps) {
     const [showInstructions, setShowInstructions] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<(number | null)[]>(new Array(questions.length).fill(null));
@@ -28,15 +33,22 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
     const [showAnswer, setShowAnswer] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [totalTimeSpent, setTotalTimeSpent] = useState(0);
-    const [questionTimer, setQuestionTimer] = useState(timerPerQuestion || 0);
+    const [examTimer, setExamTimer] = useState(examDurationSeconds || 0);
+
+    // Per-question time tracking
+    const [questionTimes, setQuestionTimes] = useState<number[]>(new Array(questions.length).fill(0));
+    const questionStartTimeRef = useRef<number>(Date.now());
     
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    const questionTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const examTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const startTimeRef = useRef<number>(Date.now());
 
     const { earnTomatoes } = useFarmStore();
     const [earnedTomatoes, setEarnedTomatoes] = useState(0);
+    // Persists the final computed score (AI-graded text + MCQ) for the results screen
+    const [finalDisplayScore, setFinalDisplayScore] = useState<{ raw: number; percentage: number } | null>(null);
     const [isSaving, setIsSaving] = useState(false);
+    const [isEvaluating, setIsEvaluating] = useState(false); // AI grading text answers
 
     const [showCalc, setShowCalc] = useState(false);
     const [calcInput, setCalcInput] = useState("");
@@ -70,85 +82,268 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
         }
     };
 
+    // Per-question AI evaluation cache (fires in background on Next)
+    // Key = question index, Value = Promise resolving to AiEvalResult
+    const aiEvalPromisesRef = useRef<Map<number, Promise<{ percentage: number; feedback: string }>>>(new Map());
+    const aiEvalResultsRef  = useRef<Map<number, { percentage: number; feedback: string }>>(new Map());
+    const [aiEvaluatingSet, setAiEvaluatingSet] = useState<Set<number>>(new Set());
+
+    // Record time spent on the current question before navigating away
+    const recordQuestionTime = useCallback((index: number) => {
+        const spent = Math.round((Date.now() - questionStartTimeRef.current) / 1000);
+        setQuestionTimes(prev => {
+            const next = [...prev];
+            next[index] = (next[index] || 0) + spent;
+            return next;
+        });
+        questionStartTimeRef.current = Date.now();
+    }, []);
+
+    // Trigger AI evaluation in the background when user leaves a text question.
+    // Fires once per question (guarded by aiEvalPromisesRef).
+    const triggerAiEvalIfNeeded = useCallback((index: number) => {
+        if (mode !== "exam") return;
+        const q = questions[index];
+        if (q?.input_type !== "text") return;           // MCQ — skip
+        if (!textAnswers[index]?.trim()) return;        // blank answer — skip
+        if (!q.explanation) return;                     // no model answer — skip
+        if (aiEvalPromisesRef.current.has(index)) return; // already triggered
+
+        // Mark as evaluating in UI
+        setAiEvaluatingSet(prev => new Set([...prev, index]));
+
+        const promise = evaluateTextAnswer({
+            question: q.text,
+            userAnswer: textAnswers[index],
+            modelAnswer: q.explanation,
+        }).then(result => {
+            aiEvalResultsRef.current.set(index, result);
+            setAiEvaluatingSet(prev => { const s = new Set(prev); s.delete(index); return s; });
+            return result;
+        }).catch(err => {
+            console.error(`[AI Eval] Q${index + 1} failed:`, err);
+            const fallback = { percentage: 0, feedback: "AI evaluation failed." };
+            aiEvalResultsRef.current.set(index, fallback);
+            setAiEvaluatingSet(prev => { const s = new Set(prev); s.delete(index); return s; });
+            return fallback;
+        });
+
+        aiEvalPromisesRef.current.set(index, promise);
+    }, [mode, questions, textAnswers]);
+
     const submitAll = useCallback(async () => {
         if (timerRef.current) clearInterval(timerRef.current);
-        if (questionTimerRef.current) clearInterval(questionTimerRef.current);
-        
-        const score = answers.reduce<number>((acc, ans, i) => acc + (ans === questions[i].correctAnswer ? 1 : 0), 0);
+        if (examTimerRef.current) clearInterval(examTimerRef.current);
+
+        // Record time for the last viewed question before submitting
+        const finalTimes = [...questionTimes];
+        const lastSpent = Math.round((Date.now() - questionStartTimeRef.current) / 1000);
+        finalTimes[currentIndex] = (finalTimes[currentIndex] || 0) + lastSpent;
         const elapsed = Math.round((Date.now() - startTimeRef.current) / 1000);
         setTotalTimeSpent(elapsed);
-        
+
+        // ── Step 1: Build initial response objects ─────────────────────────────
+        let responses: QuestionResponse[] = questions.map((q, i) => {
+            const timeTaken = finalTimes[i] || 0;
+            if (q.input_type === "text") {
+                return {
+                    inputType: "text" as const,
+                    questionId: q.id ?? String(i),
+                    questionText: q.text,
+                    writtenAnswer: textAnswers[i]?.trim() || null,
+                    wordLimit: q.word_limit ?? null,
+                    explanation: q.explanation ?? null,
+                    timeTaken,
+                    isCorrect: null as null,
+                    ai_grade: null as number | null,
+                    ai_feedback: null as string | null,
+                };
+            } else {
+                const selectedIdx = answers[i];
+                return {
+                    inputType: "mcq" as const,
+                    questionId: q.id ?? String(i),
+                    questionText: q.text,
+                    options: q.options,
+                    selectedIndex: selectedIdx,
+                    selectedAnswer: selectedIdx !== null ? q.options[selectedIdx] : null,
+                    correctIndex: q.correctAnswer,
+                    correctAnswer: q.options[q.correctAnswer],
+                    isCorrect: selectedIdx === q.correctAnswer,
+                    timeTaken,
+                    explanation: q.explanation ?? null,
+                };
+            }
+        });
+
         if (mode === "exam") {
+            // ── Step 2: Wait for any still-pending AI evaluations ──────────────
+            // (Most will already be done since they fired on each Next click)
+            const pendingIndices = [...aiEvalPromisesRef.current.entries()]
+                .filter(([idx]) => !aiEvalResultsRef.current.has(idx))
+                .map(([, promise]) => promise);
+
+            if (pendingIndices.length > 0) {
+                setIsEvaluating(true);
+                try {
+                    await Promise.all(pendingIndices);
+                } catch (e) {
+                    console.error("[AI Eval] Some evaluations failed on submit:", e);
+                } finally {
+                    setIsEvaluating(false);
+                }
+            }
+
+            // Attach cached AI grades to text responses
+            responses = responses.map((r, i) => {
+                if (r.inputType !== "text") return r;
+                const cached = aiEvalResultsRef.current.get(i);
+                return { ...r, ai_grade: cached?.percentage ?? null, ai_feedback: cached?.feedback ?? null };
+            });
+
+            // ── Step 3: Compute final mixed score ──────────────────────────
+            // MCQ: 1 mark if correct, negative if enabled
+            // Text: ai_grade / 100 marks (e.g. 82% → 0.82 marks), no negative marking
+            let negPenalty = 0;
+            if (negativeMarking) {
+                if (negMarkingValue === "1/2") negPenalty = 1/2;
+                else if (negMarkingValue === "1/4") negPenalty = 1/4;
+                else negPenalty = 1/3;
+            }
+
+            const finalScore = responses.reduce((acc, r) => {
+                if (r.inputType === "mcq") {
+                    if (r.isCorrect) return acc + 1;
+                    if (r.isCorrect === false && negativeMarking && r.selectedAnswer !== null) return acc - negPenalty;
+                    return acc;
+                }
+                if (r.inputType === "text") return acc + Math.max(0, (r.ai_grade ?? 0) / 100);
+                return acc;
+            }, 0);
+
+            // ── Step 4: Tomato Calculation ────────────────────────────────
+            // Total = round(2 × totalQuestions + finalScore × 5)
+            const tomatoes = Math.round(2 * questions.length + finalScore * 5);
+
+            // ── Step 5: Save to DB ────────────────────────────────────
             setIsSaving(true);
             try {
-                const mistakes = questions.map((q, i) => ({
-                    questionId: i,
-                    questionText: q.text,
-                    selectedAnswer: answers[i] !== null ? q.options[answers[i]!] : "Unanswered",
-                    correctAnswer: q.options[q.correctAnswer],
-                    isCorrect: answers[i] === q.correctAnswer,
-                    explanation: q.explanation
-                })).filter(m => !m.isCorrect);
-
                 await saveExamResult({
                     subject: subjectId,
-                    score,
+                    score: Math.round(finalScore * 100) / 100, // 2 decimal places
                     totalQuestions: questions.length,
-                    timerPerQuestion: timerPerQuestion || 0,
-                    mistakes: JSON.stringify(mistakes)
+                    timerPerQuestion: 0, // Legacy field, kept for backwards compatibility
+                    totalTimeTaken: elapsed,
+                    responses,
+                    tomatoesEarned: tomatoes,
                 });
             } catch (error) {
                 console.error("Failed to save exam result:", error);
             } finally {
                 setIsSaving(false);
             }
-        }
-        
-        try {
-            let tomatoes = mode === "exam" ? score * 5 : Math.ceil(score * 1);
-            if (tomatoes > 0) {
-                earnTomatoes(tomatoes);
-                setEarnedTomatoes(tomatoes);
+
+            // Persist the computed score so the results screen can display it correctly
+            setFinalDisplayScore({
+                raw: finalScore,
+                percentage: Math.round((finalScore / questions.length) * 100),
+            });
+
+            // ── Step 6: Award Tomatoes + Log Event ───────────────────
+            try {
+                if (tomatoes > 0) {
+                    const desc = `Attempted ${subjectId} Exam Set · ${questions.length} questions`;
+                    earnTomatoes({
+                        actionType: "exam",
+                        description: desc,
+                        tomatoes,
+                        metadata: {
+                            subjectCode: subjectId,
+                            subjectTitle: subjectTitle,
+                            score: Math.round(finalScore * 100) / 100,
+                            totalQuestions: questions.length,
+                            examDurationSeconds: examDurationSeconds || 0,
+                        },
+                    });
+                    setEarnedTomatoes(tomatoes);
+                }
+            } catch(e) {
+                console.error("Farm store sync error:", e);
             }
-        } catch(e) {
-             console.error("Farm store sync error:", e);
+        } else {
+            // Practice mode — 1 tomato per question attempted
+            const practiceTomatoes = questions.length;
+            try {
+                if (practiceTomatoes > 0) {
+                    const isAi = quizSubMode === "ai";
+                    const modeName = isAi ? "AI Concept Builder" : "Practice";
+                    const desc = moduleTitle
+                        ? `Attempted ${moduleTitle} ${modeName} · ${subjectId}`
+                        : `Attempted ${modeName} · ${subjectId}`;
+
+                    earnTomatoes({
+                        actionType: isAi ? "ai_builder" : "practice",
+                        description: desc,
+                        tomatoes: practiceTomatoes,
+                        metadata: { 
+                            subjectCode: subjectId,
+                            subjectTitle: subjectTitle,
+                            moduleTitle: moduleTitle,
+                            totalQuestions: questions.length 
+                        },
+                    });
+                    setEarnedTomatoes(practiceTomatoes);
+                }
+            } catch(e) {
+                console.error("Farm store sync error:", e);
+            }
         }
 
         setSubmitted(true);
         setShowCalc(false);
-    }, [answers, questions, mode, subjectId, timerPerQuestion, earnTomatoes]);
+    }, [answers, textAnswers, questions, questionTimes, currentIndex, mode, subjectId, examDurationSeconds, negativeMarking, negMarkingValue, earnTomatoes]);
 
     const submitAndNext = useCallback(() => {
+        recordQuestionTime(currentIndex);      // save time on current Q
+        triggerAiEvalIfNeeded(currentIndex);   // fire AI eval in background if text Q
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(prev => prev + 1);
-            if (timerPerQuestion) setQuestionTimer(timerPerQuestion);
         } else {
             submitAll();
         }
-    }, [currentIndex, questions.length, timerPerQuestion, submitAll]);
+    }, [currentIndex, questions.length, recordQuestionTime, triggerAiEvalIfNeeded, submitAll]);
 
-    // Question Timer Effect
+    // Use a ref for submitAndNext to avoid dependency loops in the timer effect
+    const submitAndNextRef = useRef(submitAndNext);
     useEffect(() => {
-        if (showInstructions || submitted || !timerPerQuestion) return;
+        submitAndNextRef.current = submitAndNext;
+    }, [submitAndNext]);
 
-        if (questionTimer === 0) {
-            submitAndNext();
-            return;
-        }
+    // Total Exam Countdown Timer Effect
+    useEffect(() => {
+        if (showInstructions || submitted || mode !== "exam" || !examDurationSeconds) return;
 
-        questionTimerRef.current = setInterval(() => {
-            setQuestionTimer(prev => prev - 1);
+        examTimerRef.current = setInterval(() => {
+            setExamTimer(prev => {
+                if (prev <= 1) {
+                    // Time's up for the whole exam!
+                    setTimeout(() => submitAll(), 0);
+                    return 0;
+                }
+                return prev - 1;
+            });
         }, 1000);
 
         return () => {
-            if (questionTimerRef.current) clearInterval(questionTimerRef.current);
+            if (examTimerRef.current) clearInterval(examTimerRef.current);
         };
-    }, [questionTimer, showInstructions, submitted, timerPerQuestion, submitAndNext]);
+    }, [showInstructions, submitted, mode, examDurationSeconds, submitAll]);
 
     // Total Duration Timer
     useEffect(() => {
         if (showInstructions || submitted) return;
         startTimeRef.current = Date.now();
+        questionStartTimeRef.current = Date.now(); // start per-question timer for Q1
         timerRef.current = setInterval(() => {
             setTotalTimeSpent(Math.floor((Date.now() - startTimeRef.current) / 1000));
         }, 1000);
@@ -225,7 +420,6 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
         });
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(currentIndex + 1);
-            if (timerPerQuestion) setQuestionTimer(timerPerQuestion);
         }
     };
 
@@ -320,17 +514,21 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
     };
 
     if (submitted) {
-        const score = answers.reduce<number>((acc, ans, i) => acc + (ans === questions[i].correctAnswer ? 1 : 0), 0);
-        const percentage = Math.round((score / questions.length) * 100);
+        // Use AI-graded finalScore for exam mode; fall back to MCQ-only count for practice
+        const score = finalDisplayScore?.raw ?? answers.reduce<number>((acc, ans, i) => acc + (ans === questions[i]?.correctAnswer ? 1 : 0), 0);
+        const percentage = finalDisplayScore?.percentage ?? Math.round((score / questions.length) * 100);
         const mistakes = questions.map((q, i) => ({
             id: i + 1,
             text: q.text,
-            your: answers[i] !== null ? q.options[answers[i]!] : "No Answer",
+            isText: q.input_type === "text",
+            your: q.input_type === "text"
+                ? (textAnswers[i]?.trim() || "No Answer")
+                : (answers[i] !== null ? q.options[answers[i]!] : "No Answer"),
             yourIdx: answers[i],
-            correct: q.options[q.correctAnswer],
+            correct: q.input_type === "text" ? (q.explanation ?? "See model answer") : q.options[q.correctAnswer],
             correctIdx: q.correctAnswer,
-            explanation: q.explanation,
-            isCorrect: answers[i] === q.correctAnswer
+            explanation: q.input_type === "text" ? null : q.explanation,
+            isCorrect: q.input_type === "text" ? null : answers[i] === q.correctAnswer,
         }));
 
         return (
@@ -406,23 +604,32 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                                 </div>
                             ) : (
                                 mistakes.map((m) => (
-                                    <div key={m.id} className={`p-6 rounded-[2rem] border-2 relative overflow-hidden bg-surface-container shadow-sm ${m.isCorrect ? "border-green-500/10" : "border-error/10"}`}>
+                                    <div key={m.id} className={`p-6 rounded-[2rem] border-2 relative overflow-hidden bg-surface-container shadow-sm ${m.isCorrect === true ? "border-green-500/10" : m.isCorrect === false ? "border-error/10" : "border-primary/10"}`}>
                                         <div className="flex items-start gap-4 mb-4">
-                                            <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm ${m.isCorrect ? "bg-green-500 text-white" : "bg-error text-white"}`}>
+                                            <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm ${m.isCorrect === true ? "bg-green-500 text-white" : m.isCorrect === false ? "bg-error text-white" : "bg-primary/20 text-primary"}`}>
                                                 {m.id}
                                             </span>
                                             <p className="text-base font-bold text-on-surface leading-snug tracking-tight pt-1">{m.text}</p>
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-3 mb-4">
-                                            {!m.isCorrect && (
+                                            {/* MCQ: show selected wrong answer */}
+                                            {m.isCorrect === false && (
                                                 <div className="p-4 rounded-xl bg-error/5 border border-error/10 text-error">
                                                     <p className="text-[7px] font-black uppercase tracking-widest opacity-60 mb-1">Your Incorrect Response</p>
                                                     <p className="text-xs font-bold italic">{m.your}</p>
                                                 </div>
                                             )}
-                                            <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/20 text-green-700">
-                                                <p className="text-[7px] font-black uppercase tracking-widest text-green-600/60 mb-1">Correct Solution</p>
+                                            {/* Text: show written answer */}
+                                            {m.isText && (
+                                                <div className="p-4 rounded-xl bg-surface-container-highest/60 border border-outline-variant/20">
+                                                    <p className="text-[7px] font-black uppercase tracking-widest opacity-60 mb-1">Your Written Answer</p>
+                                                    <p className="text-xs font-medium italic text-on-surface-variant">{m.your}</p>
+                                                </div>
+                                            )}
+                                            {/* MCQ: show correct option | Text: show model answer */}
+                                            <div className={`p-4 rounded-xl ${m.isText ? "bg-primary/5 border border-primary/10 text-primary" : "bg-green-500/5 border border-green-500/20 text-green-700"}`}>
+                                                <p className={`text-[7px] font-black uppercase tracking-widest mb-1 ${m.isText ? "text-primary/60" : "text-green-600/60"}`}>{m.isText ? "Model Answer" : "Correct Solution"}</p>
                                                 <p className="text-xs font-black">{m.correct}</p>
                                             </div>
                                         </div>
@@ -466,15 +673,16 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                         <span className="font-black text-[11px] text-on-surface tabular-nums">{formatTime(totalTimeSpent)}</span>
                     </div>
 
-                    {timerPerQuestion && (
-                        <div className={`flex items-center gap-1 border-l border-outline-variant/20 pl-3 ${questionTimer <= 10 ? "animate-pulse text-error" : "text-on-surface-variant"}`}>
+                    {mode === "exam" && examDurationSeconds && (
+                        <div className={`flex items-center gap-1 border-l border-outline-variant/20 pl-3 ${examTimer <= 60 ? "animate-pulse text-error" : "text-on-surface-variant"}`}>
                             <span className="text-[9px] font-black uppercase tracking-wider">Left</span>
-                            <span className="font-black text-[11px] tabular-nums">{questionTimer}s</span>
+                            <span className="font-black text-[11px] tabular-nums">{formatTime(examTimer)}</span>
                         </div>
                     )}
 
                     {/* Calculator */}
-                    <div className="relative">
+                    {showCalculator && (
+                        <div className="relative">
                         <button
                             onClick={() => setShowCalc(!showCalc)}
                             className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${showCalc ? "bg-primary text-on-primary" : "bg-surface-container-highest text-on-surface-variant hover:text-on-surface"}`}
@@ -515,7 +723,8 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                                 </div>
                             </div>
                         )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -530,10 +739,10 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                                 <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${
                                     question.type === "cla" ? "bg-blue-50 text-blue-600 border-blue-200" :
                                     question.type === "midterm" ? "bg-purple-50 text-purple-600 border-purple-200" :
-                                    question.type === "pyq" ? "bg-amber-50 text-amber-600 border-amber-200" :
+                                    question.type === "exam" ? "bg-rose-50 text-rose-600 border-rose-200" :
                                     "bg-emerald-50 text-emerald-600 border-emerald-200"
                                 }`}>
-                                    {question.type === "cla" ? "CLA" : question.type === "midterm" ? "Midterm" : question.type === "pyq" ? "PYQ" : "Practice"}
+                                    {question.type === "cla" ? "CLA" : question.type === "midterm" ? "Midterm" : question.type === "exam" ? "Exam Set" : "Practice"}
                                 </span>
                             )}
                             {question.input_type && (
@@ -546,11 +755,7 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                                     Mod {question.module_from === question.module_to ? question.module_from : `${question.module_from}–${question.module_to}`}
                                 </span>
                             )}
-                            {question.type === "pyq" && question.pyq_year && (
-                                <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">
-                                    {question.pyq_year}{question.pyq_month ? ` · ${question.pyq_month}` : ""}
-                                </span>
-                            )}
+                            {/* Legacy pyq_year/pyq_month display removed — use Exam Set badge instead */}
                             {question.input_type === "text" && question.word_limit && (
                                 <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">
                                     {question.word_limit} words
@@ -606,7 +811,7 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                                             {showAnswer && question.explanation && (
                                                 <div className="mt-3 p-4 rounded-xl bg-primary/5 border border-primary/10">
                                                     <p className="text-[8px] font-black uppercase tracking-widest text-primary mb-1.5">Model Answer / Explanation</p>
-                                                    <p className="text-xs font-medium text-on-surface-variant leading-relaxed italic">{question.explanation}</p>
+                                                    <p className="text-[12px] font-medium text-on-surface-variant leading-relaxed italic">{question.explanation}</p>
                                                 </div>
                                             )}
                                         </div>
@@ -668,6 +873,12 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                         <div className="flex items-center justify-between">
                             <p className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">{subjectId} · Module {moduleId}</p>
                             <div className="flex items-center gap-3">
+                                {/* Background AI eval indicator */}
+                                {aiEvaluatingSet.size > 0 && (
+                                    <span className="text-[8px] font-black text-amber-500 animate-pulse flex items-center gap-0.5">
+                                        🤖 Grading Q{[...aiEvaluatingSet].map(i => i + 1).join(",")}...
+                                    </span>
+                                )}
                                 <div className="flex items-center gap-1">
                                     <div className="w-2 h-2 rounded-full bg-[#27ae60]" />
                                     <span className="text-[9px] font-black text-on-surface-variant">{counts.answered}</span>
@@ -695,7 +906,11 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
                                 return (
                                     <button
                                         key={i}
-                                        onClick={() => { setCurrentIndex(i); if (timerPerQuestion) setQuestionTimer(timerPerQuestion); }}
+                                        onClick={() => {
+                                            recordQuestionTime(currentIndex);    // save time
+                                            triggerAiEvalIfNeeded(currentIndex); // fire AI eval in background
+                                            setCurrentIndex(i);
+                                        }}
                                         className={`aspect-square rounded-md text-[9px] font-black flex items-center justify-center transition-all ${style} ${isCurrent ? "ring-2 ring-primary ring-offset-1 ring-offset-surface scale-110 z-10" : "hover:opacity-90"}`}
                                     >
                                         {i + 1}
@@ -706,8 +921,8 @@ export default function QuizEngine({ subjectId, moduleId, questions, mode, timer
 
                         <div className="flex gap-2 pt-1">
                             <button onClick={onComplete} className="flex-1 py-2 rounded-xl bg-error/10 text-error font-black text-[9px] uppercase tracking-wide hover:bg-error/20 transition-all">Abort</button>
-                            <button onClick={() => submitAll()} disabled={isSaving} className="flex-[2] py-2 rounded-xl bg-green-600 text-white font-black text-[9px] uppercase tracking-wide flex items-center justify-center gap-1.5 hover:bg-green-700 transition-all">
-                                {isSaving ? "Saving..." : "Submit All"} <Save className="w-3 h-3" />
+                            <button onClick={() => submitAll()} disabled={isSaving || isEvaluating} className="flex-[2] py-2 rounded-xl bg-green-600 text-white font-black text-[9px] uppercase tracking-wide flex items-center justify-center gap-1.5 hover:bg-green-700 transition-all disabled:opacity-70 disabled:cursor-not-allowed">
+                                {isEvaluating ? "🤖 AI Evaluating..." : isSaving ? "Saving..." : "Submit All"} <Save className="w-3 h-3" />
                             </button>
                         </div>
                     </div>

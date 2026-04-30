@@ -13,7 +13,10 @@ type SubjectData = {
     id: string;          // subject code e.g. "ES21X"
     subjectId: string;   // supabase UUID
     title: string;
-    strictTimeLimit: number | null;
+    strictTimeLimit: number | null; // Total minutes
+    calculatorEnabled: boolean;
+    negativeMarking: boolean;
+    negMarkingValue: string;
     modules: Module[];
     quizSets: { id: string; name: string }[];
 };
@@ -90,7 +93,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     const confirmExamSet = (setId: string) => {
         setQuizSubMode("exam-set");
         setQuizMode("exam");
-        setExamTimer(data.strictTimeLimit || 60);
+        setExamTimer(data.strictTimeLimit ? data.strictTimeLimit * 60 : 60 * 30); // minutes to seconds
         setActiveQuizSetId(setId);
         setActiveModuleId(null); // Not module-scoped
         setActiveTab("quiz");
@@ -130,14 +133,19 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                 </div>
                 <QuizEngine
                     subjectId={data.id}
+                    subjectTitle={data.title}
                     moduleId={activeModule.id}
+                    moduleTitle={activeModule.title}
+                    quizSubMode={quizSubMode}
                     questions={
                         quizSubMode === "ai"
                             ? activeModule.questions.filter((q) => q.type === "practice")
                             : activeModule.questions.filter((q) => q.type !== "exam")
                     }
                     mode="practice"
-                    timerPerQuestion={undefined}
+                    showCalculator={data.calculatorEnabled}
+                    negativeMarking={false} // Practice mode doesn't have negative marking
+                    examDurationSeconds={undefined}
                     onComplete={() => {
                         setActiveTab("overview");
                         setActiveModuleId(null);
@@ -156,10 +164,10 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase">
-                                Exam Mode · {examTimer}s/Q
+                                Exam Mode
                             </span>
                             <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
-                                TIMED
+                                {data.strictTimeLimit}m TIMED
                             </span>
                         </div>
                         <h1 className="text-2xl font-bold text-on-surface tracking-tight">{setName}</h1>
@@ -168,10 +176,15 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                 </div>
                 <QuizEngine
                     subjectId={data.id}
+                    subjectTitle={data.title}
                     moduleId={0}
+                    quizSubMode="exam-set"
                     questions={allExamSetQuestions}
                     mode="exam"
-                    timerPerQuestion={examTimer}
+                    showCalculator={data.calculatorEnabled}
+                    negativeMarking={data.negativeMarking}
+                    negMarkingValue={data.negMarkingValue}
+                    examDurationSeconds={examTimer}
                     onComplete={() => {
                         setActiveTab("overview");
                         setActiveQuizSetId(null);
@@ -251,7 +264,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                         <div className="grid grid-cols-1 gap-4">
                             {examHistory.map((record) => {
                                 const mistakes = JSON.parse(record.mistakes || "[]");
-                                const percentage = Math.round((record.score / record.totalQuestions) * 100);
+                                const percentage = Math.round((record.score / record.total_questions) * 100);
                                 return (
                                     <div key={record.id} className="bg-surface-container rounded-3xl p-6 border border-outline-variant/10 shadow-sm hover:shadow-md transition-all">
                                         <div className="flex flex-col md:flex-row justify-between gap-6">
@@ -263,22 +276,26 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                                     <div>
                                                         <p className="text-sm font-black text-on-surface font-headline uppercase tracking-tight">Simulator Run</p>
                                                         <p className="text-xs text-on-surface-variant flex items-center gap-1 font-bold">
-                                                            <Calendar className="w-3 h-3" /> {new Date(record.createdAt).toLocaleDateString()} at {new Date(record.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                                            <Calendar className="w-3 h-3" /> {new Date(record.created_at).toLocaleDateString()} at {new Date(record.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-wrap gap-4">
                                                     <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
                                                         <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Score</p>
-                                                        <p className="text-lg font-black text-on-surface">{record.score} / {record.totalQuestions}</p>
+                                                        <p className="text-lg font-black text-on-surface">{record.score} / {record.total_questions}</p>
                                                     </div>
                                                     <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
                                                         <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Timer</p>
-                                                        <p className="text-lg font-black text-on-surface">{record.timerPerQuestion}s/Q</p>
+                                                        <p className="text-lg font-black text-on-surface">{record.timer_per_question}s/Q</p>
                                                     </div>
                                                     <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
                                                         <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Mistakes</p>
                                                         <p className="text-lg font-black text-error">{mistakes.length}</p>
+                                                    </div>
+                                                    <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
+                                                        <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">🍅 Earned</p>
+                                                        <p className="text-lg font-black text-secondary">{record.tomatoes_earned ?? 0}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -396,7 +413,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             </div>
                             <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight">Select Exam Set</h3>
                         </div>
-                        <p className="text-on-surface-variant text-sm font-medium mb-2">Full subject-scope · Timed · {data.strictTimeLimit || 60}s per question</p>
+                        <p className="text-on-surface-variant text-sm font-medium mb-2">Full subject-scope · Timed · {data.strictTimeLimit || 30} minutes total</p>
                         <p className="text-on-surface-variant/60 text-xs font-medium mb-8">Questions span all modules in this set.</p>
 
                         <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2">

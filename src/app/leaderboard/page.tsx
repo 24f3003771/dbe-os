@@ -6,8 +6,16 @@ import { motion } from "framer-motion";
 import { Flame, Trophy, Medal, Star } from "lucide-react";
 import LoadingScreen from "@/components/LoadingScreen";
 
+interface LeaderboardUser {
+    id: string;
+    display_name: string | null;
+    avatar_url: string | null;
+    total_tomatoes_earned: number;
+    position: number;
+}
+
 export default function LeaderboardPage() {
-    const [users, setUsers] = useState<any[]>([]);
+    const [users, setUsers] = useState<LeaderboardUser[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -46,7 +54,6 @@ export default function LeaderboardPage() {
                                 <tr className="bg-surface-container-highest/50">
                                     <th className="px-8 py-6 text-sm font-black uppercase tracking-widest text-on-surface-variant">Rank</th>
                                     <th className="px-8 py-6 text-sm font-black uppercase tracking-widest text-on-surface-variant">Scholar</th>
-                                    <th className="px-8 py-6 text-sm font-black uppercase tracking-widest text-on-surface-variant">Streak</th>
                                     <th className="px-8 py-6 text-sm font-black uppercase tracking-widest text-on-surface-variant text-right">Total Tomatoes</th>
                                 </tr>
                             </thead>
@@ -54,29 +61,27 @@ export default function LeaderboardPage() {
                                 {users.map((user, index) => (
                                     <tr 
                                         key={user.id}
-                                        className={`hover:bg-primary/5 transition-colors group ${index < 3 ? 'bg-primary/5' : ''}`}
+                                        className={`hover:bg-primary/5 transition-colors group ${user.position <= 3 ? 'bg-primary/5' : ''}`}
                                     >
                                         <td className="px-8 py-6 whitespace-nowrap">
-                                            {getRankIcon(user.rank)}
+                                            {getRankIcon(user.position || index + 1)}
                                         </td>
                                         <td className="px-8 py-6 whitespace-nowrap">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary shadow-sm">
-                                                    {user.name.charAt(0)}
+                                                <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary shadow-sm border border-outline-variant/10 overflow-hidden">
+                                                    {user.avatar_url ? (
+                                                        <img src={user.avatar_url} alt={user.display_name || 'User'} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        (user.display_name || 'S').charAt(0).toUpperCase()
+                                                    )}
                                                 </div>
-                                                <span className="font-bold text-lg text-on-surface group-hover:text-primary transition-colors">{user.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6 whitespace-nowrap">
-                                            <div className="flex items-center gap-2 text-secondary font-bold">
-                                                <Star className="w-4 h-4 fill-secondary" />
-                                                <span>{user.streak} days</span>
+                                                <span className="font-bold text-lg text-on-surface group-hover:text-primary transition-colors">{user.display_name || 'Unknown Scholar'}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6 whitespace-nowrap text-right">
                                             <div className="flex items-center justify-end gap-2 px-4 py-2 bg-white rounded-xl border border-outline-variant/10 shadow-sm inline-flex">
                                                 <span className="text-2xl">🍅</span>
-                                                <span className="font-black text-xl text-on-surface">{user.totalTomatoesEarned}</span>
+                                                <span className="font-black text-xl text-on-surface">{user.total_tomatoes_earned}</span>
                                             </div>
                                         </td>
                                     </tr>

@@ -39,7 +39,7 @@ This document serves as the central knowledge base for the **DBE OS** project. I
 
 ### Dynamic Curriculum System
 - **Terms:** Managed by IDs (1-9). Can be marked as `is_active` and assigned to a specific batch.
-- **Subjects:** Linked to Terms. Defined by a `code` (e.g., ES211) and a `module_count` (strictly 4 or 8). Supports full CRUD (Add, Edit, Delete).
+- **Subjects:** Linked to Terms. Defined by a `code` (e.g., ES211) and a `module_count` (strictly 4 or 8). Each subject can be uniquely configured with a total **Exam Duration** timer, **Calculator access**, and **Negative Marking** rules (`-1/3`, `-1/2`, `-1/4`) for Exam Mode. Supports full CRUD operations via the Admin UI.
 - **Topics:** Granular labels linked to subjects for better organization of notes and questions.
 - **Quiz Sets (Exam Mode):** Relational groupings of questions (e.g., "Mock 1", "PYQ 2024") that span the entire subject. Unlike practice questions, Exam Sets are **subject-scoped**.
 - **Notes:** One note per module per subject. Supports raw Markdown content, topic assignment, and deletion.

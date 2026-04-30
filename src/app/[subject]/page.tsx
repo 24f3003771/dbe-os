@@ -35,7 +35,7 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
     // Fetch subject
     const { data: subject } = await supabase
         .from("subjects")
-        .select("id, name, code, module_count, strict_time_limit")
+        .select("id, name, code, module_count, strict_time_limit, calculator_enabled, negative_marking, neg_marking_value")
         .eq("id", subjectId)
         .single();
 
@@ -88,6 +88,9 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
         subjectId: subject.id,
         title: subject.name,
         strictTimeLimit: subject.strict_time_limit,
+        calculatorEnabled: subject.calculator_enabled ?? false,
+        negativeMarking: subject.negative_marking ?? false,
+        negMarkingValue: subject.neg_marking_value ?? "1/3",
         modules,
         quizSets,
     };

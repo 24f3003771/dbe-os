@@ -1,25 +1,8 @@
 "use server";
 
-
-
-const prisma: any = {};
+import { getLeaderboard } from "./farm";
 
 export async function getLeaderboardData() {
-    const users = await prisma.user.findMany({
-        orderBy: {
-            totalTomatoesEarned: 'desc'
-        },
-        take: 10,
-        select: {
-            id: true,
-            name: true,
-            totalTomatoesEarned: true,
-            streak: true,
-        }
-    });
-
-    return users.map((u, index) => ({
-        ...u,
-        rank: index + 1
-    }));
+    const data = await getLeaderboard();
+    return data;
 }

@@ -39,7 +39,10 @@ export type Subject = {
     name: string;
     code: string;
     module_count: 4 | 8;
-    strict_time_limit: number | null;
+    strict_time_limit: number | null; // Represents total exam duration in minutes
+    calculator_enabled: boolean;
+    negative_marking: boolean;
+    neg_marking_value: "1/3" | "1/2" | "1/4";
     created_at: string;
 };
 
@@ -135,6 +138,9 @@ export async function createSubject(data: {
     code: string;
     module_count: 4 | 8;
     strict_time_limit?: number | null;
+    calculator_enabled?: boolean;
+    negative_marking?: boolean;
+    neg_marking_value?: string;
 }) {
     const supabase = await getSupabase();
     const { error } = await supabase.from("subjects").insert(data);
@@ -144,7 +150,7 @@ export async function createSubject(data: {
 
 export async function updateSubject(
     id: string,
-    data: Partial<Pick<Subject, "name" | "code" | "module_count" | "strict_time_limit" | "term_id">>
+    data: Partial<Pick<Subject, "name" | "code" | "module_count" | "strict_time_limit" | "term_id" | "calculator_enabled" | "negative_marking" | "neg_marking_value">>
 ) {
     const supabase = await getSupabase();
     const { error } = await supabase

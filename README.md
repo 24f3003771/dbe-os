@@ -25,6 +25,7 @@ A robust, admin-controlled management system for the entire DBE academic cycle.
 - **Dynamic Quiz Sets:** Relational "Exam Sets" (Mock Exams, PYQs) that span across all subject modules for a realistic testing experience.
 - **Smart Bulk Import:** An advanced admin tool with real-time JSON validation and "Override Dropdowns" that inject Exam Set and Topic IDs instantly.
 - **Subject-Level Simulator:** A dedicated Exam Mode for full-subject testing, distinct from module-level Practice and AI Concept Builder.
+- **Customizable Exam Environment:** Subjects can be configured with strict total-duration timers, built-in scientific calculators, and variable negative marking rules (`-1/3`, `-1/2`, `-1/4`) for MCQs.
 - **HQ Admin Control:** Super Admins can dynamically manage every aspect of the curriculum via a premium, dark-mode dashboard.
 - **Batch-Specific View:** Students automatically see content relevant to their assigned batch and active term.
 - **Moderator Handbook:** See [**QUIZ_MODERATOR_GUIDE.md**](./QUIZ_MODERATOR_GUIDE.md) for a detailed manual on managing questions and using the smart bulk import tool.
