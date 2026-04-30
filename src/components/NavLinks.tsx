@@ -15,11 +15,11 @@ const desktopLinks = [
     { href: "/tools", label: "Tools", icon: Wrench },
 ];
 
-// Mobile bottom nav: Dashboard in 3rd position (center)
+// Mobile bottom nav
 const mobileLinks = [
+    { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/notes", label: "Notes", icon: BookOpen },
     { href: "/quiz", label: "Quiz", icon: Target },
-    { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
     { href: "/opportunities", label: "Opportunities", icon: Rocket },
     { href: "/tools", label: "Tools", icon: Wrench },
