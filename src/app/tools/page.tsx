@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info } from "lucide-react";
+import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info, Briefcase } from "lucide-react";
 import Link from "next/link";
 
 const tools = [
@@ -26,6 +26,17 @@ const tools = [
     lightColor: "bg-blue-50",
     textColor: "text-blue-600",
     status: "Coming Soon"
+  },
+  {
+    id: "resume-builder",
+    title: "AI Resume Forge",
+    description: "Build, enhance, and tailor ATS-friendly resumes using AI. Optimized for IIMB students and top-tier recruiters.",
+    icon: Briefcase,
+    href: "/tools/resume-builder",
+    color: "bg-indigo-600",
+    lightColor: "bg-indigo-50",
+    textColor: "text-indigo-600",
+    status: "Active"
   }
 ];
 
