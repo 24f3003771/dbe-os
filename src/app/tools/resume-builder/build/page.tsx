@@ -21,65 +21,83 @@ export default function BuildPage() {
     }
   }, [resume, resetResume]);
 
-  const downloadPDF = async () => {
+  const downloadPDF = () => {
+    // 1. Create a hidden iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
+
+    // 2. Get the resume content
     const element = document.getElementById("resume-export-target");
     if (!element) {
-      alert("Export engine not ready. Please try again in a moment.");
+      alert("Export engine not ready. Please try again.");
       return;
     }
-    
+
     setIsExporting(true);
 
-    try {
-      // 1. Ensure all fonts are ready
-      await document.fonts.ready;
-      
-      // 2. Small delay to ensure hidden element is fully painted
-      await new Promise(resolve => setTimeout(resolve, 500));
+    // 3. Clone content into iframe
+    const iframeDoc = iframe.contentWindow?.document;
+    if (!iframeDoc) return;
 
-      // 3. Capture with stable settings
-      const canvas = await html2canvas(element, {
-        scale: 1.5, // Balanced for quality and stability
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        width: 794, // 210mm at 96 DPI
-        height: 1123, // 297mm at 96 DPI
-        windowWidth: 794,
-        windowHeight: 1123,
-        onclone: (clonedDoc) => {
-          const el = clonedDoc.getElementById("resume-export-target");
-          if (el) {
-            el.style.opacity = "1";
-            el.style.visibility = "visible";
-          }
-        }
-      });
-      
-      // 4. Prepare PDF
-      const imgData = canvas.toDataURL("image/jpeg", 0.95); // Use JPEG for better compression/stability
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      });
+    // Add necessary styles for printing
+    const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+      .map(style => style.outerHTML)
+      .join('\n');
 
-      pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
-      pdf.save(`${resume?.basics.name || 'resume'}_dbeos.pdf`);
-    } catch (error) {
-      console.error("Export failed:", error);
-      alert("Export failed. If on mobile, please try using a desktop browser or Chrome for the best results.");
-    } finally {
-      setIsExporting(false);
-    }
+    iframeDoc.write(`
+      <html>
+        <head>
+          <title>${resume?.basics.name || 'Resume'}</title>
+          ${styles}
+          <style>
+            @page { size: A4; margin: 0; }
+            body { margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
+            #resume-export-target { width: 210mm !important; min-height: 297mm !important; box-shadow: none !important; }
+          </style>
+        </head>
+        <body>
+          <div id="print-content">
+            ${element.innerHTML}
+          </div>
+          <script>
+            window.onload = () => {
+              window.print();
+              window.onafterprint = () => {
+                window.parent.postMessage('print-done', '*');
+              };
+              // Fallback for browsers that don't support onafterprint properly
+              setTimeout(() => {
+                window.parent.postMessage('print-done', '*');
+              }, 1000);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    iframeDoc.close();
+
+    // 4. Cleanup
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === 'print-done') {
+        setIsExporting(false);
+        document.body.removeChild(iframe);
+        window.removeEventListener('message', handleMessage);
+      }
+    };
+    window.addEventListener('message', handleMessage);
   };
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
       {/* Hidden Export Target (Strict A4) */}
-      <div className="fixed top-0 left-0 w-1 h-1 overflow-hidden pointer-events-none z-[-100] opacity-0.01">
-        <div id="resume-export-target" className="w-[794px] min-h-[1123px] bg-white">
+      <div className="fixed top-0 left-0 w-1 h-1 overflow-hidden pointer-events-none z-[-100] opacity-0">
+        <div id="resume-export-target" className="w-[210mm] min-h-[297mm] bg-white">
           <ResumePreview />
         </div>
       </div>
