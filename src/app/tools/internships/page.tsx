@@ -153,9 +153,9 @@ export default function InternshipHunterPage() {
     }, [searchQuery, selectedSector, selectedTier]);
 
     const OPPORTUNITY_NAV = [
-        { name: "Hub", href: "/opportunities", icon: Globe },
-        { name: "Internships", href: "/opportunities/internships", icon: Briefcase, active: true },
-        { name: "Competitions", href: "/opportunities/competitions", icon: Trophy },
+        { name: "Hub", href: "/tools", icon: Globe },
+        { name: "Internships", href: "/tools/internships", icon: Briefcase, active: true },
+        { name: "Competitions", href: "/tools/competitions", icon: Trophy },
         { name: "Winners Bank", href: "/tools/winning-repository", icon: Star },
         { name: "Pitch Decks", href: "/tools/pitch-decks", icon: Sparkles },
     ];
@@ -585,3 +585,4 @@ function EmptyState({ onReset }: any) {
         </div>
     );
 }
+

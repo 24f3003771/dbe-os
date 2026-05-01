@@ -1,10 +1,32 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info, Briefcase, Star, Trophy, BookOpen } from "lucide-react";
+import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info, Briefcase, Star, Trophy, BookOpen, Rocket } from "lucide-react";
 import Link from "next/link";
 
 const tools = [
+  {
+    id: "competitions",
+    title: "Competitions",
+    description: "B-school cases, brand challenges, and hackathons with winning roadmaps and reverse-engineered strategies.",
+    icon: Trophy,
+    href: "/tools/competitions",
+    color: "bg-orange-500",
+    lightColor: "bg-orange-50",
+    textColor: "text-orange-600",
+    status: "Active"
+  },
+  {
+    id: "internships",
+    title: "Internship Hunter",
+    description: "The ultimate discovery engine for Tier 1 internships, recurring program cycles, and MNC opportunities.",
+    icon: Rocket,
+    href: "/tools/internships",
+    color: "bg-indigo-600",
+    lightColor: "bg-indigo-50",
+    textColor: "text-indigo-600",
+    status: "Active"
+  },
   {
     id: "cgpa-calculator",
     title: "CGPA Calculator",
@@ -165,3 +187,4 @@ export default function ToolsPage() {
     </div>
   );
 }
+

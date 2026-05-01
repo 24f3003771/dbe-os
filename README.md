@@ -30,18 +30,14 @@ A robust, admin-controlled management system for the entire DBE academic cycle.
 - **Batch-Specific View:** Students automatically see content relevant to their assigned batch and active term.
 - **Moderator Handbook:** See [**QUIZ_MODERATOR_GUIDE.md**](./QUIZ_MODERATOR_GUIDE.md) for a detailed manual on managing questions and using the smart bulk import tool.
 
-### 🛠️ Academic Tools
-A centralized suite of utilities to empower student success.
-- **CGPA Calculator:** Accurate WAM/CGPA tracking based on the official manual.
+### 🛠️ Academic Tools (The Student Command Center)
+A centralized suite of utilities to empower student success, preparation, and discovery.
+- **CGPA Calculator:** Accurate WAM/CGPA tracking based on the official IIMB manual.
 - **AI Resume Forge:** A comprehensive AI-powered command center for resume building, enhancement (NVIDIA GLM-5.1), and JD matching.
+- **Discovery Engine:** Real-time aggregator of high-impact B-school challenges, MNC internships, and recurring program cycles.
 - **Pro Pitch Decks:** Exclusive library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.).
 - **Winners Bank:** A repository of successful case submissions and roadmaps from top-tier competitions.
 - **Career Guides:** Official playbooks for preparing for BCG, Google, HUL, and other Tier 1 firms.
-
-### 🚀 Opportunity Hub
-An advanced networking and discovery engine designed to bridge the gap between skill sets and startup ambitions.
-- **Competitions:** A curated aggregator of high-impact B-school challenges and case competitions.
-- **Internship Hunter:** Real-time discovery of top-tier internships and recurring program cycles.
 - **MatchForge Network:** Connect with perfect learning partners or co-founders within the IIMB community.
 
 ### 🍅 Tomato Economy

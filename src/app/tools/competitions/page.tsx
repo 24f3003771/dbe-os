@@ -69,9 +69,9 @@ export default function CompetitionsHunterPage() {
     const [customKeyword, setCustomKeyword] = useState("");
 
     const OPPORTUNITY_NAV = [
-        { name: "Hub", href: "/opportunities", icon: Globe },
-        { name: "Internships", href: "/opportunities/internships", icon: Briefcase },
-        { name: "Competitions", href: "/opportunities/competitions", icon: Trophy, active: true },
+        { name: "Hub", href: "/tools", icon: Globe },
+        { name: "Internships", href: "/tools/internships", icon: Briefcase },
+        { name: "Competitions", href: "/tools/competitions", icon: Trophy, active: true },
         { name: "Winners Bank", href: "/tools/winning-repository", icon: Star },
         { name: "Pitch Decks", href: "/tools/pitch-decks", icon: Sparkles },
     ];
@@ -435,3 +435,4 @@ function EmptyState({ onReset }: any) {
         </div>
     );
 }
+

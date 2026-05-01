@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getWinningRepository } from "@/actions/opportunities";
+import { getWinningRepository } from "@/actions/tools";
 import { Star, ChevronLeft, Search, Download, ExternalLink, Trophy } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -28,7 +28,7 @@ export default function WinningRepositoryPage() {
     return (
         <div className="max-w-7xl mx-auto py-12 px-6 space-y-12 pb-32 min-h-screen">
              {/* Nav */}
-             <Link href="/opportunities" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group">
+             <Link href="/tools" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group">
                 <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Opportunity Hub
             </Link>
 
@@ -88,7 +88,7 @@ export default function WinningRepositoryPage() {
                             <button className="flex-1 px-8 py-4 bg-[#1A1A1A] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:bg-black transition-all">
                                 <Download className="w-4 h-4 text-amber-500" /> Download PDF
                             </button>
-                            <Link href={`/opportunities/detail/${sub.opportunityId}`} className="flex-1 px-8 py-4 bg-white border border-stone-100 rounded-2xl font-black text-xs uppercase tracking-widest text-[#1A1A1A] flex items-center justify-center gap-3 hover:border-stone-400 transition-all">
+                            <Link href={`/tools/detail/${sub.opportunityId}`} className="flex-1 px-8 py-4 bg-white border border-stone-100 rounded-2xl font-black text-xs uppercase tracking-widest text-[#1A1A1A] flex items-center justify-center gap-3 hover:border-stone-400 transition-all">
                                 Opportunity View <ExternalLink className="w-4 h-4" />
                             </Link>
                         </div>
@@ -105,3 +105,4 @@ export default function WinningRepositoryPage() {
         </div>
     );
 }
+

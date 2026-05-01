@@ -200,7 +200,7 @@ export default function Dashboard() {
                     <div className="space-y-6 relative z-10">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
-                                <Rocket className="w-5 h-5 text-indigo-600" /> Opportunity Hub
+                                <Rocket className="w-5 h-5 text-indigo-600" /> Discovery Engine
                             </h3>
                         </div>
                         <div className="space-y-4">
@@ -212,9 +212,9 @@ export default function Dashboard() {
                             <p className="text-xs font-medium text-on-surface-variant leading-relaxed">Access 150+ curated B-school competitions and MNC internships with winning roadmaps.</p>
                         </div>
                     </div>
-                    <Link href="/opportunities" className="relative z-10">
+                    <Link href="/tools" className="relative z-10">
                         <button className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
-                            Enter Hub <ArrowRight className="w-4 h-4" />
+                            Enter Tools <ArrowRight className="w-4 h-4" />
                         </button>
                     </Link>
                     {/* Decorative circle */}

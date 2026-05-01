@@ -11,7 +11,6 @@ const desktopLinks = [
     { href: "/notes", label: "Notes", icon: BookOpen },
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
-    { href: "/opportunities", label: "Opportunities", icon: Rocket },
     { href: "/tools", label: "Tools", icon: Wrench },
 ];
 
@@ -21,7 +20,6 @@ const mobileLinks = [
     { href: "/notes", label: "Notes", icon: BookOpen },
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
-    { href: "/opportunities", label: "Opportunities", icon: Rocket },
     { href: "/tools", label: "Tools", icon: Wrench },
 ];
 
@@ -39,10 +37,12 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
     const dropdownData: Record<string, { label: string; href: string }[]> = {
         Notes: subjects.map(s => ({ label: s.title, href: `/dbe_notes/${s.id}` })),
         Quiz: subjects.map(s => ({ label: s.title, href: `/${s.id}` })),
-        Opportunities: [
-            { label: "Competitions", href: "/opportunities/competitions" },
-            { label: "Internships", href: "/opportunities/internships" },
-            { label: "Pitch Decks", href: "/tools/pitch-decks" },
+        Tools: [
+            { label: "Competitions", href: "/tools/competitions" },
+            { label: "Internships", href: "/tools/internships" },
+            { label: "AI Resume Forge", href: "/tools/resume-builder" },
+            { label: "Pro Pitch Decks", href: "/tools/pitch-decks" },
+            { label: "Winners Bank", href: "/tools/winning-repository" },
             { label: "Career Guides", href: "/tools/career-guides" },
         ],
     };
@@ -52,7 +52,6 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
         "Notes": "text-blue-500",
         "Quiz": "text-emerald-500",
         "Tasks": "text-amber-500",
-        "Opportunities": "text-orange-500",
         "Tools": "text-indigo-500",
     };
 
@@ -61,7 +60,6 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
         "Notes": "bg-blue-50/80 ring-blue-100",
         "Quiz": "bg-emerald-50/80 ring-emerald-100",
         "Tasks": "bg-amber-50/80 ring-amber-100",
-        "Opportunities": "bg-orange-50/80 ring-orange-100",
         "Tools": "bg-indigo-50/80 ring-indigo-100",
     };
 

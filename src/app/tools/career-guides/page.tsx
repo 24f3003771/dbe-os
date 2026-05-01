@@ -52,7 +52,7 @@ export default function CareerGuidesPage() {
 
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 p-8">
-      <Link href="/opportunities" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group mb-2 w-fit">
+      <Link href="/tools" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group mb-2 w-fit">
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Opportunity Hub
       </Link>
       
@@ -332,3 +332,4 @@ function InfoItem({ label, value, icon: Icon }: { label: string, value: string, 
     </div>
   );
 }
+
