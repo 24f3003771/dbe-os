@@ -1,5 +1,14 @@
 import { Resume } from "@/types/resume";
 
+// Polyfill for DOMMatrix which is required by pdf-parse's internal pdf.js dependency in Node environment
+if (typeof global !== 'undefined' && !(global as any).DOMMatrix) {
+  (global as any).DOMMatrix = class DOMMatrix {
+    constructor() {}
+    static fromFloat32Array() { return new DOMMatrix(); }
+    static fromFloat64Array() { return new DOMMatrix(); }
+  };
+}
+
 const apiKey = process.env.NVIDIA_API_KEY;
 const API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 
