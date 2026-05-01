@@ -156,8 +156,8 @@ export default function InternshipHunterPage() {
         { name: "Hub", href: "/opportunities", icon: Globe },
         { name: "Internships", href: "/opportunities/internships", icon: Briefcase, active: true },
         { name: "Competitions", href: "/opportunities/competitions", icon: Trophy },
-        { name: "Winners Bank", href: "/opportunities/winning-repository", icon: Star },
-        { name: "Pitch Decks", href: "/opportunities/pitch-decks", icon: Sparkles },
+        { name: "Winners Bank", href: "/tools/winning-repository", icon: Star },
+        { name: "Pitch Decks", href: "/tools/pitch-decks", icon: Sparkles },
     ];
 
     return (

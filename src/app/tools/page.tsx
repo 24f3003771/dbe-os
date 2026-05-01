@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info, Briefcase } from "lucide-react";
+import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info, Briefcase, Star, Trophy, BookOpen } from "lucide-react";
 import Link from "next/link";
 
 const tools = [
@@ -17,17 +17,6 @@ const tools = [
     status: "Active"
   },
   {
-    id: "transcript-generator",
-    title: "Transcript Preview",
-    description: "Generate a mock transcript of your grades to visualize your academic journey and performance trends.",
-    icon: FileText,
-    href: "#",
-    color: "bg-blue-500",
-    lightColor: "bg-blue-50",
-    textColor: "text-blue-600",
-    status: "Coming Soon"
-  },
-  {
     id: "resume-builder",
     title: "AI Resume Forge",
     description: "Build, enhance, and tailor ATS-friendly resumes using AI. Optimized for IIMB students and top-tier recruiters.",
@@ -37,6 +26,50 @@ const tools = [
     lightColor: "bg-indigo-50",
     textColor: "text-indigo-600",
     status: "Active"
+  },
+  {
+    id: "winners-bank",
+    title: "Winners Bank",
+    description: "Access winning roadmaps and case submissions from top B-school competitions and internships.",
+    icon: Star,
+    href: "/tools/winning-repository",
+    color: "bg-indigo-500",
+    lightColor: "bg-indigo-50",
+    textColor: "text-indigo-600",
+    status: "Active"
+  },
+  {
+    id: "pitch-decks",
+    title: "Pro Pitch Decks",
+    description: "Exclusive access to award-winning pitch decks from global organizations and consulting firms.",
+    icon: Trophy,
+    href: "/tools/pitch-decks",
+    color: "bg-emerald-500",
+    lightColor: "bg-emerald-50",
+    textColor: "text-emerald-600",
+    status: "Active"
+  },
+  {
+    id: "career-guides",
+    title: "Career Guides",
+    description: "Official playbooks and preparation guides for BCG, Google, HUL, and other Tier 1 companies.",
+    icon: BookOpen,
+    href: "/tools/career-guides",
+    color: "bg-amber-500",
+    lightColor: "bg-amber-50",
+    textColor: "text-amber-600",
+    status: "Active"
+  },
+  {
+    id: "transcript-generator",
+    title: "Transcript Preview",
+    description: "Generate a mock transcript of your grades to visualize your academic journey and performance trends.",
+    icon: FileText,
+    href: "#",
+    color: "bg-blue-500",
+    lightColor: "bg-blue-50",
+    textColor: "text-blue-600",
+    status: "Coming Soon"
   }
 ];
 

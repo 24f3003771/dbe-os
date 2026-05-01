@@ -30,21 +30,19 @@ A robust, admin-controlled management system for the entire DBE academic cycle.
 - **Batch-Specific View:** Students automatically see content relevant to their assigned batch and active term.
 - **Moderator Handbook:** See [**QUIZ_MODERATOR_GUIDE.md**](./QUIZ_MODERATOR_GUIDE.md) for a detailed manual on managing questions and using the smart bulk import tool.
 
-### 🤝 MatchForge Network
-An advanced networking engine designed to bridge the gap between skill sets and startup ambitions. Connect with perfect learning partners or co-founders within the IIMB community.
+### 🛠️ Academic Tools
+A centralized suite of utilities to empower student success.
+- **CGPA Calculator:** Accurate WAM/CGPA tracking based on the official manual.
+- **AI Resume Forge:** A comprehensive AI-powered command center for resume building, enhancement (NVIDIA GLM-5.1), and JD matching.
+- **Pro Pitch Decks:** Exclusive library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.).
+- **Winners Bank:** A repository of successful case submissions and roadmaps from top-tier competitions.
+- **Career Guides:** Official playbooks for preparing for BCG, Google, HUL, and other Tier 1 firms.
 
 ### 🚀 Opportunity Hub
-A curated aggregator of high-impact B-school competitions, MNC internships, and case challenges. Includes winning roadmaps and preparation guides to give DBE students a competitive edge.
-
-### 🏆 Pro Pitch Decks
-Exclusive access to a library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.). Reverse-engineer success by studying the best in the business.
-
-### 📄 AI Resume Forge (New)
-A comprehensive, AI-powered resume command center for DBE students.
-- **ATS Enhancer:** Upload an existing PDF to fix layout issues and optimize bullet points with AI.
-- **JD Matcher:** Tailor your resume to specific job descriptions with keyword diffing and match scoring.
-- **Modern Builder:** A real-time, wizard-based editor with premium A4 previews and selectable-text PDF export.
-- **Powered by AI:** Uses NVIDIA GLM-5.1 for action-oriented bullet point generation and NLP analysis.
+An advanced networking and discovery engine designed to bridge the gap between skill sets and startup ambitions.
+- **Competitions:** A curated aggregator of high-impact B-school challenges and case competitions.
+- **Internship Hunter:** Real-time discovery of top-tier internships and recurring program cycles.
+- **MatchForge Network:** Connect with perfect learning partners or co-founders within the IIMB community.
 
 ### 🍅 Tomato Economy
 A gamified productivity system that rewards community contribution and academic consistency. Earn "Tomatoes" to climb the leaderboard and unlock community recognition.

@@ -69,55 +69,29 @@ export default function OpportunityHubPage() {
                 </Link>
             </div>
 
-            {/* Preparation Sections */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 px-2 md:px-4 pb-20">
-                <Link href="/opportunities/winning-repository" className="bg-[#EEF2FF] p-6 md:p-8 rounded-[1.8rem] md:rounded-[2rem] border border-indigo-100/50 hover:shadow-xl transition-all group">
-                    <div className="flex flex-col gap-4 md:gap-6">
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <Star className="w-5 h-5 md:w-6 md:h-6 text-indigo-600" />
-                        </div>
-                        <div className="space-y-0.5 md:space-y-1">
-                            <h3 className="font-black text-indigo-900 text-base md:text-lg">Winners Bank</h3>
-                            <p className="text-indigo-600/70 text-[9px] md:text-sm font-bold uppercase tracking-widest leading-tight">Student Submissions</p>
-                        </div>
-                    </div>
-                </Link>
-
-                <Link href="/opportunities/pitch-decks" className="bg-[#F0FDF4] p-6 md:p-8 rounded-[1.8rem] md:rounded-[2rem] border border-emerald-100/50 hover:shadow-xl transition-all group">
-                    <div className="flex flex-col gap-4 md:gap-6">
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <Trophy className="w-5 h-5 md:w-6 md:h-6 text-emerald-600" />
-                        </div>
-                        <div className="space-y-0.5 md:space-y-1">
-                            <h3 className="font-black text-emerald-900 text-base md:text-lg">Pitch Decks</h3>
-                            <p className="text-emerald-600/70 text-[9px] md:text-sm font-bold uppercase tracking-widest leading-tight">Pro Case Decks</p>
-                        </div>
-                    </div>
-                </Link>
-
-                <div className="bg-[#FDF2F8] p-6 md:p-8 rounded-[1.8rem] md:rounded-[2rem] border border-pink-100/50 hover:shadow-xl transition-all cursor-not-allowed opacity-80">
-                    <div className="flex flex-col gap-4 md:gap-6">
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <Target className="w-5 h-5 md:w-6 md:h-6 text-pink-600" />
-                        </div>
-                        <div className="space-y-0.5 md:space-y-1">
-                            <h3 className="font-black text-pink-900 text-base md:text-lg">Interview Guides</h3>
-                            <p className="text-pink-600/70 text-[9px] md:text-sm font-bold uppercase tracking-widest leading-tight">BCG, Google, HUL</p>
-                        </div>
-                    </div>
+            {/* Preparation Sections (Disabled/Moved to Tools) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 pb-20">
+                <div className="bg-surface-container-low p-8 rounded-[2rem] border border-outline-variant/10">
+                    <h3 className="text-xl font-black text-on-surface mb-2">Dominance Prep</h3>
+                    <p className="text-on-surface-variant font-medium text-sm leading-relaxed mb-6">
+                        Access all preparation tools, winning roadmaps, and pro pitch decks in the Academic Tools section.
+                    </p>
+                    <Link href="/tools" className="inline-flex items-center gap-2 text-indigo-600 font-black text-xs uppercase tracking-widest hover:gap-3 transition-all">
+                        Go to Tools <ChevronRight className="w-4 h-4" />
+                    </Link>
                 </div>
-
-                <Link href="/opportunities/career-guides" className="bg-[#FEFCE8] p-6 md:p-8 rounded-[1.8rem] md:rounded-[2rem] border border-yellow-100/50 hover:shadow-xl transition-all group">
-                    <div className="flex flex-col gap-4 md:gap-6">
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-yellow-600" />
-                        </div>
-                        <div className="space-y-0.5 md:space-y-1">
-                            <h3 className="font-black text-yellow-900 text-base md:text-lg">Career Guides</h3>
-                            <p className="text-yellow-600/70 text-[9px] md:text-sm font-bold uppercase tracking-widest leading-tight">Official Playbooks</p>
-                        </div>
+                <div className="bg-pink-500/5 p-8 rounded-[2rem] border border-pink-500/10">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Target className="w-5 h-5 text-pink-600" />
+                        <h3 className="text-xl font-black text-pink-900">Interview Engine</h3>
                     </div>
-                </Link>
+                    <p className="text-pink-800/60 font-medium text-sm leading-relaxed mb-6">
+                        Custom preparation guides for BCG, Google, and HUL are currently in development.
+                    </p>
+                    <span className="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                        Under Maintenance
+                    </span>
+                </div>
             </div>
         </div>
     );

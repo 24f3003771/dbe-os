@@ -48,7 +48,7 @@ export default async function UniversalNotesListPage() {
                 </p>
             </header>
 
-            <Link href="/opportunities/pitch-decks" className="block mb-10 group">
+            <Link href="/tools/pitch-decks" className="block mb-10 group">
                 <div className="bg-[#1A1A1A] p-6 rounded-[2rem] text-white flex items-center justify-between overflow-hidden relative border border-white/5 shadow-xl hover:shadow-emerald-500/10 transition-all">
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 text-emerald-400 font-black text-[10px] tracking-widest uppercase mb-1">

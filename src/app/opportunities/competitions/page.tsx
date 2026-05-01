@@ -72,8 +72,8 @@ export default function CompetitionsHunterPage() {
         { name: "Hub", href: "/opportunities", icon: Globe },
         { name: "Internships", href: "/opportunities/internships", icon: Briefcase },
         { name: "Competitions", href: "/opportunities/competitions", icon: Trophy, active: true },
-        { name: "Winners Bank", href: "/opportunities/winning-repository", icon: Star },
-        { name: "Pitch Decks", href: "/opportunities/pitch-decks", icon: Sparkles },
+        { name: "Winners Bank", href: "/tools/winning-repository", icon: Star },
+        { name: "Pitch Decks", href: "/tools/pitch-decks", icon: Sparkles },
     ];
 
     const handleLiveSearch = async (queryOverride?: string, sectorOverride?: string) => {

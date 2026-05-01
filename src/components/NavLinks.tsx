@@ -42,8 +42,8 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
         Opportunities: [
             { label: "Competitions", href: "/opportunities/competitions" },
             { label: "Internships", href: "/opportunities/internships" },
-            { label: "Pitch Decks", href: "/opportunities/pitch-decks" },
-            { label: "Career Guides", href: "/opportunities/career-guides" },
+            { label: "Pitch Decks", href: "/tools/pitch-decks" },
+            { label: "Career Guides", href: "/tools/career-guides" },
         ],
     };
 

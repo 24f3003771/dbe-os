@@ -249,7 +249,7 @@ export default function Dashboard() {
                 </div>
 
             {/* Pitch Decks Advertisement Section */}
-            <Link href="/opportunities/pitch-decks" className="md:col-span-2 group">
+            <Link href="/tools/pitch-decks" className="md:col-span-2 group">
                 <div className="bg-[#1A1A1A] text-white rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/5">
                     <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
                         <div className="flex-1 space-y-4">
