@@ -31,43 +31,45 @@ export default function BuildPage() {
     setIsExporting(true);
 
     try {
-      // 1. Ensure all fonts are loaded
+      // 1. Ensure all fonts are ready
       await document.fonts.ready;
       
-      // 2. Small delay to ensure hidden element is fully rendered with data
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // 2. Small delay to ensure hidden element is fully painted
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // 3. Capture with stable settings
       const canvas = await html2canvas(element, {
-        scale: 2, 
+        scale: 1.5, // Balanced for quality and stability
         useCORS: true,
         allowTaint: true,
-        logging: true, // Enable logging for debugging if user reports again
+        logging: false,
         backgroundColor: "#ffffff",
-        // Force the capture dimensions to match A4 ratio
-        width: element.scrollWidth,
-        height: element.scrollHeight,
+        width: 794, // 210mm at 96 DPI
+        height: 1123, // 297mm at 96 DPI
+        windowWidth: 794,
+        windowHeight: 1123,
+        onclone: (clonedDoc) => {
+          const el = clonedDoc.getElementById("resume-export-target");
+          if (el) {
+            el.style.opacity = "1";
+            el.style.visibility = "visible";
+          }
+        }
       });
       
       // 4. Prepare PDF
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      
-      if (!imgData || imgData === "data:,") {
-        throw new Error("Canvas generation produced empty image");
-      }
-
+      const imgData = canvas.toDataURL("image/jpeg", 0.95); // Use JPEG for better compression/stability
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
-        compress: true
       });
 
-      pdf.addImage(imgData, "PNG", 0, 0, 210, 297, undefined, 'FAST');
+      pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
       pdf.save(`${resume?.basics.name || 'resume'}_dbeos.pdf`);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Export failed. If you have many sections, try reducing text length or using Chrome on Desktop.");
+      alert("Export failed. If on mobile, please try using a desktop browser or Chrome for the best results.");
     } finally {
       setIsExporting(false);
     }
@@ -76,8 +78,8 @@ export default function BuildPage() {
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
       {/* Hidden Export Target (Strict A4) */}
-      <div className="fixed -left-[5000px] top-0 pointer-events-none opacity-0">
-        <div id="resume-export-target" className="w-[210mm] min-h-[297mm]">
+      <div className="fixed top-0 left-0 w-1 h-1 overflow-hidden pointer-events-none z-[-100] opacity-0.01">
+        <div id="resume-export-target" className="w-[794px] min-h-[1123px] bg-white">
           <ResumePreview />
         </div>
       </div>
