@@ -24,7 +24,7 @@ export default function ResumePreview() {
   return (
     <div 
       id="resume-a4-target"
-      className="bg-white text-black w-[210mm] min-h-[297mm] p-[15mm] font-['Arial',sans-serif] leading-[1.2] selection:bg-indigo-100 flex flex-col box-border shadow-2xl"
+      className="bg-white text-black w-[210mm] min-h-[297mm] p-[15mm] font-['Arial',sans-serif] leading-[1.2] selection:bg-indigo-100 flex flex-col box-border resume-body"
     >
       {/* Header */}
       <header className="text-center mb-4">

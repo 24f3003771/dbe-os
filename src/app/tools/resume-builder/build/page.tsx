@@ -31,19 +31,31 @@ export default function BuildPage() {
     setIsExporting(true);
 
     try {
-      // 1. Capture with reliable settings
+      // 1. Ensure all fonts are loaded
+      await document.fonts.ready;
+      
+      // 2. Small delay to ensure hidden element is fully rendered with data
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // 3. Capture with stable settings
       const canvas = await html2canvas(element, {
         scale: 2, 
         useCORS: true,
         allowTaint: true,
-        logging: false,
+        logging: true, // Enable logging for debugging if user reports again
         backgroundColor: "#ffffff",
-        width: 794, // 210mm at 96 DPI
-        height: 1123, // 297mm at 96 DPI
+        // Force the capture dimensions to match A4 ratio
+        width: element.scrollWidth,
+        height: element.scrollHeight,
       });
       
-      // 2. Prepare PDF
+      // 4. Prepare PDF
       const imgData = canvas.toDataURL("image/png", 1.0);
+      
+      if (!imgData || imgData === "data:,") {
+        throw new Error("Canvas generation produced empty image");
+      }
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -55,7 +67,7 @@ export default function BuildPage() {
       pdf.save(`${resume?.basics.name || 'resume'}_dbeos.pdf`);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Export failed. Please ensure all sections are filled correctly.");
+      alert("Export failed. If you have many sections, try reducing text length or using Chrome on Desktop.");
     } finally {
       setIsExporting(false);
     }
@@ -121,7 +133,7 @@ export default function BuildPage() {
                </div>
                
                <div className="flex justify-center bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 shadow-inner overflow-hidden">
-                  <div className="origin-top scale-[0.4] xl:scale-[0.5] 2xl:scale-[0.55] transform-gpu">
+                  <div className="origin-top scale-[0.4] xl:scale-[0.5] 2xl:scale-[0.55] transform-gpu shadow-2xl">
                      <ResumePreview />
                   </div>
                </div>
