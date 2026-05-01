@@ -38,9 +38,10 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
         Notes: subjects.map(s => ({ label: s.title, href: `/dbe_notes/${s.id}` })),
         Quiz: subjects.map(s => ({ label: s.title, href: `/${s.id}` })),
         Tools: [
-            { label: "Competitions", href: "/tools/competitions" },
-            { label: "Internships", href: "/tools/internships" },
+            { label: "CGPA Calculator", href: "/tools/cgpa-calculator" },
             { label: "AI Resume Forge", href: "/tools/resume-builder" },
+            { label: "Internships", href: "/tools/internships" },
+            { label: "Competitions", href: "/tools/competitions" },
             { label: "Pro Pitch Decks", href: "/tools/pitch-decks" },
             { label: "Winners Bank", href: "/tools/winning-repository" },
             { label: "Career Guides", href: "/tools/career-guides" },

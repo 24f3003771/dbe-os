@@ -6,28 +6,6 @@ import Link from "next/link";
 
 const tools = [
   {
-    id: "competitions",
-    title: "Competitions",
-    description: "B-school cases, brand challenges, and hackathons with winning roadmaps and reverse-engineered strategies.",
-    icon: Trophy,
-    href: "/tools/competitions",
-    color: "bg-orange-500",
-    lightColor: "bg-orange-50",
-    textColor: "text-orange-600",
-    status: "Active"
-  },
-  {
-    id: "internships",
-    title: "Internship Hunter",
-    description: "The ultimate discovery engine for Tier 1 internships, recurring program cycles, and MNC opportunities.",
-    icon: Rocket,
-    href: "/tools/internships",
-    color: "bg-indigo-600",
-    lightColor: "bg-indigo-50",
-    textColor: "text-indigo-600",
-    status: "Active"
-  },
-  {
     id: "cgpa-calculator",
     title: "CGPA Calculator",
     description: "Calculate your Term-wise Weighted Average Marks (WAM) and Cumulative Grade Point Average (CGPA) based on IIMB BBA DBE manual.",
@@ -50,25 +28,47 @@ const tools = [
     status: "Active"
   },
   {
-    id: "winners-bank",
-    title: "Winners Bank",
-    description: "Access winning roadmaps and case submissions from top B-school competitions and internships.",
-    icon: Star,
-    href: "/tools/winning-repository",
-    color: "bg-indigo-500",
-    lightColor: "bg-indigo-50",
-    textColor: "text-indigo-600",
+    id: "internships",
+    title: "Internship Hunter",
+    description: "The ultimate discovery engine for Tier 1 internships, recurring program cycles, and MNC opportunities.",
+    icon: Rocket,
+    href: "/tools/internships",
+    color: "bg-emerald-600",
+    lightColor: "bg-emerald-50",
+    textColor: "text-emerald-600",
+    status: "Active"
+  },
+  {
+    id: "competitions",
+    title: "Competitions",
+    description: "B-school cases, brand challenges, and hackathons with winning roadmaps and reverse-engineered strategies.",
+    icon: Trophy,
+    href: "/tools/competitions",
+    color: "bg-orange-500",
+    lightColor: "bg-orange-50",
+    textColor: "text-orange-600",
     status: "Active"
   },
   {
     id: "pitch-decks",
     title: "Pro Pitch Decks",
     description: "Exclusive access to award-winning pitch decks from global organizations and consulting firms.",
-    icon: Trophy,
+    icon: FileText,
     href: "/tools/pitch-decks",
-    color: "bg-emerald-500",
-    lightColor: "bg-emerald-50",
-    textColor: "text-emerald-600",
+    color: "bg-blue-500",
+    lightColor: "bg-blue-50",
+    textColor: "text-blue-600",
+    status: "Active"
+  },
+  {
+    id: "winners-bank",
+    title: "Winners Bank",
+    description: "Access winning roadmaps and case submissions from top B-school competitions and internships.",
+    icon: Star,
+    href: "/tools/winning-repository",
+    color: "bg-violet-500",
+    lightColor: "bg-violet-50",
+    textColor: "text-violet-600",
     status: "Active"
   },
   {
@@ -77,9 +77,9 @@ const tools = [
     description: "Official playbooks and preparation guides for BCG, Google, HUL, and other Tier 1 companies.",
     icon: BookOpen,
     href: "/tools/career-guides",
-    color: "bg-amber-500",
-    lightColor: "bg-amber-50",
-    textColor: "text-amber-600",
+    color: "bg-rose-500",
+    lightColor: "bg-rose-50",
+    textColor: "text-rose-600",
     status: "Active"
   },
   {
@@ -88,9 +88,9 @@ const tools = [
     description: "Generate a mock transcript of your grades to visualize your academic journey and performance trends.",
     icon: FileText,
     href: "#",
-    color: "bg-blue-500",
-    lightColor: "bg-blue-50",
-    textColor: "text-blue-600",
+    color: "bg-stone-500",
+    lightColor: "bg-stone-50",
+    textColor: "text-stone-600",
     status: "Coming Soon"
   }
 ];
