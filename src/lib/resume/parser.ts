@@ -1,4 +1,4 @@
-import pdf from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 import { Resume } from "@/types/resume";
 
 const apiKey = process.env.NVIDIA_API_KEY;
@@ -8,8 +8,10 @@ const API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
  * Extracts raw text from a PDF buffer.
  */
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  const data = await pdf(buffer);
-  return data.text;
+  const parser = new PDFParse({ data: buffer });
+  const result = await parser.getText();
+  await parser.destroy();
+  return result.text;
 }
 
 /**
