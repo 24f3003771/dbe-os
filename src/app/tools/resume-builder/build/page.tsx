@@ -26,35 +26,42 @@ export default function BuildPage() {
     setIsExporting(true);
 
     try {
-      // Ensure the export element is visible during capture
+      // 1. Prepare element for high-quality capture
       const element = exportRef.current;
       element.style.display = "block";
+      element.style.visibility = "visible";
       
+      // 2. Capture with high scale to avoid blurriness
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 3, // High DPI capture
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
-        windowWidth: 794, // A4 width at 96 DPI
+        allowTaint: true,
+        imageTimeout: 15000,
+        width: 793.7, // Precise A4 width in px at 96 DPI
+        height: 1122.5, // Precise A4 height in px at 96 DPI
       });
       
       element.style.display = "none";
       
-      const imgData = canvas.toDataURL("image/png");
+      // 3. Generate PDF
+      const imgData = canvas.toDataURL("image/jpeg", 1.0); // Use JPEG at max quality
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
+        compress: true,
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
       pdf.save(`${resume?.basics.name || 'resume'}_dbeos.pdf`);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Failed to export PDF. Please try again.");
+      alert("Failed to export PDF. Please ensure all data is valid and try again.");
     } finally {
       setIsExporting(false);
     }
@@ -62,15 +69,19 @@ export default function BuildPage() {
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
-      {/* Hidden Export Container */}
+      {/* Hidden Export Container - Force absolute dimensions and no transforms */}
       <div 
         ref={exportRef} 
         style={{ 
           position: 'fixed', 
-          left: '-9999px', 
-          top: 0, 
-          width: '210mm', 
-          display: 'none' 
+          left: '-5000px', 
+          top: '0px', 
+          width: '210mm',
+          height: '297mm',
+          display: 'none',
+          padding: 0,
+          margin: 0,
+          zIndex: -1
         }}
       >
         <ResumePreview />
@@ -126,8 +137,8 @@ export default function BuildPage() {
                   </div>
                </div>
                
-               <div className="flex justify-center bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 shadow-inner">
-                  <div className="w-[210mm] min-h-[297mm] origin-top scale-[0.45] xl:scale-[0.55] 2xl:scale-[0.6] transform-gpu shadow-2xl">
+               <div className="flex justify-center bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 shadow-inner overflow-hidden">
+                  <div className="origin-top scale-[0.4] xl:scale-[0.5] 2xl:scale-[0.55] transform-gpu transition-transform">
                      <ResumePreview />
                   </div>
                </div>
