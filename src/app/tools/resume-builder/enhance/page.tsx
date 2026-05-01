@@ -35,8 +35,15 @@ export default function EnhancePage() {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to parse resume.");
+        let errorMessage = "Failed to parse resume.";
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+        } else {
+          errorMessage = `Server Error (${response.status}): The server encountered an issue. Please try again or check your API key configuration.`;
+        }
+        throw new Error(errorMessage);
       }
 
       const structuredData = await response.json();

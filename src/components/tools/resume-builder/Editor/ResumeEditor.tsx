@@ -1,13 +1,13 @@
 "use client";
 
 import { useResumeStore } from "@/hooks/use-resume-store";
-import { Plus, Trash2, Sparkles, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Plus, Trash2, Sparkles, ChevronDown, ChevronUp, Loader2, GraduationCap, Briefcase, Trophy, Users, Wrench } from "lucide-react";
 import { useState } from "react";
 
 export default function ResumeEditor() {
   const { resume, updateResume } = useResumeStore();
   const [activeSection, setActiveSection] = useState<string>("basics");
-  const [isEnhancing, setIsEnhancing] = useState<Record<number, boolean>>({});
+  const [isEnhancing, setIsEnhancing] = useState<Record<string, boolean>>({});
 
   if (!resume) return null;
 
@@ -18,73 +18,81 @@ export default function ResumeEditor() {
     });
   };
 
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    updateResume({
-      basics: {
-        ...resume.basics,
-        location: { ...resume.basics.location, [name]: value }
-      }
-    });
+  const addItem = (section: keyof any, newItem: any) => {
+    const currentItems = (resume as any)[section] || [];
+    updateResume({ [section]: [...currentItems, newItem] });
   };
 
-  const addWork = () => {
-    const newWork = [
-      ...resume.work,
-      { name: "", position: "", url: "", startDate: "", endDate: "", summary: "", highlights: [] }
-    ];
-    updateResume({ work: newWork });
+  const removeItem = (section: keyof any, index: number) => {
+    const currentItems = (resume as any)[section] || [];
+    updateResume({ [section]: currentItems.filter((_: any, i: number) => i !== index) });
   };
 
-  const updateWork = (index: number, field: string, value: any) => {
-    const newWork = [...resume.work];
-    newWork[index] = { ...newWork[index], [field]: value };
-    updateResume({ work: newWork });
+  const updateItem = (section: keyof any, index: number, field: string, value: any) => {
+    const currentItems = [...((resume as any)[section] || [])];
+    currentItems[index] = { ...currentItems[index], [field]: value };
+    updateResume({ [section]: currentItems });
   };
 
-  const enhanceWorkBullets = async (index: number) => {
-    const work = resume.work[index];
-    if (!work.highlights.length) return;
-
-    setIsEnhancing({ ...isEnhancing, [index]: true });
+  const enhanceBullets = async (section: string, index: number) => {
+    const items = (resume as any)[section];
+    const item = items[index];
+    const bullets = item.highlights || [item.summary];
+    
+    const key = `${section}-${index}`;
+    setIsEnhancing({ ...isEnhancing, [key]: true });
+    
     try {
       const response = await fetch("/api/resume/enhance-bullets", {
         method: "POST",
-        body: JSON.stringify({ highlights: work.highlights }),
+        body: JSON.stringify({ highlights: bullets }),
       });
       const data = await response.json();
       if (data.enhanced) {
-        updateWork(index, "highlights", data.enhanced);
+        if (item.highlights) {
+          updateItem(section as any, index, "highlights", data.enhanced);
+        } else {
+          updateItem(section as any, index, "summary", data.enhanced.join(" "));
+        }
       }
     } catch (error) {
       console.error("Enhance error:", error);
     } finally {
-      setIsEnhancing({ ...isEnhancing, [index]: false });
+      setIsEnhancing({ ...isEnhancing, [key]: false });
     }
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Basics Section */}
-      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden">
-        <button 
-          onClick={() => setActiveSection(activeSection === 'basics' ? '' : 'basics')}
-          className="w-full p-6 flex items-center justify-between hover:bg-surface-container-low transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-black font-headline text-on-surface">Personal Information</h2>
-          </div>
-          {activeSection === 'basics' ? <ChevronUp className="w-5 h-5 text-on-surface-variant" /> : <ChevronDown className="w-5 h-5 text-on-surface-variant" />}
-        </button>
+  const SectionHeader = ({ id, title, icon: Icon, count }: { id: string, title: string, icon: any, count?: number }) => (
+    <button 
+      onClick={() => setActiveSection(activeSection === id ? '' : id)}
+      className="w-full p-6 flex items-center justify-between hover:bg-surface-container-low transition-colors border-b border-outline-variant/5"
+    >
+      <div className="flex items-center gap-3">
+        <div className={`p-2 rounded-xl ${activeSection === id ? 'bg-indigo-600 text-white' : 'bg-surface-container text-on-surface-variant'}`}>
+          <Icon className="w-5 h-5" />
+        </div>
+        <h2 className="text-lg font-black font-headline text-on-surface">{title}</h2>
+        {count !== undefined && (
+          <span className="bg-surface-container px-2 py-0.5 rounded-md text-[10px] font-black text-on-surface-variant uppercase">{count}</span>
+        )}
+      </div>
+      {activeSection === id ? <ChevronUp className="w-5 h-5 text-on-surface-variant" /> : <ChevronDown className="w-5 h-5 text-on-surface-variant" />}
+    </button>
+  );
 
+  return (
+    <div className="space-y-4 pb-20">
+      {/* Basics Section */}
+      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
+        <SectionHeader id="basics" title="Personal Information" icon={Users} />
         {activeSection === 'basics' && (
-          <div className="p-8 pt-0 grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="p-8 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Full Name</label>
               <input name="name" value={resume.basics.name} onChange={handleBasicsChange} className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm font-medium" />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Job Title</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Professional Title</label>
               <input name="label" value={resume.basics.label} onChange={handleBasicsChange} className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm font-medium" />
             </div>
             <div className="space-y-2">
@@ -96,84 +104,142 @@ export default function ResumeEditor() {
               <input name="phone" value={resume.basics.phone} onChange={handleBasicsChange} className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm font-medium" />
             </div>
             <div className="md:col-span-2 space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Summary</label>
-              <textarea name="summary" value={resume.basics.summary} onChange={handleBasicsChange} className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm font-medium h-32 resize-none" />
+              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">LinkedIn / Portfolio URL</label>
+              <input name="url" value={resume.basics.url} onChange={handleBasicsChange} className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm font-medium" />
             </div>
           </div>
         )}
       </section>
 
-      {/* Experience Section */}
-      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden">
-        <button 
-          onClick={() => setActiveSection(activeSection === 'work' ? '' : 'work')}
-          className="w-full p-6 flex items-center justify-between hover:bg-surface-container-low transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-black font-headline text-on-surface">Experience</h2>
-            <span className="bg-surface-container px-2 py-0.5 rounded-md text-[10px] font-black text-on-surface-variant uppercase">{resume.work.length} Roles</span>
-          </div>
-          {activeSection === 'work' ? <ChevronUp className="w-5 h-5 text-on-surface-variant" /> : <ChevronDown className="w-5 h-5 text-on-surface-variant" />}
-        </button>
-
-        {activeSection === 'work' && (
-          <div className="p-8 pt-0 space-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
-            {resume.work.map((work, idx) => (
-              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-6 relative border border-outline-variant/5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Company</label>
-                    <input value={work.name} onChange={(e) => updateWork(idx, "name", e.target.value)} className="w-full bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Position</label>
-                    <input value={work.position} onChange={(e) => updateWork(idx, "position", e.target.value)} className="w-full bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm" />
-                  </div>
+      {/* Education Section */}
+      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
+        <SectionHeader id="education" title="Education" icon={GraduationCap} count={resume.education.length} />
+        {activeSection === 'education' && (
+          <div className="p-8 pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            {resume.education.map((edu, idx) => (
+              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-4 relative border border-outline-variant/5 group">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input placeholder="Institute (e.g. IIM Bangalore)" value={edu.institution} onChange={(e) => updateItem("education", idx, "institution", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-bold" />
+                  <input placeholder="Degree (e.g. BBA Digital Business)" value={edu.area} onChange={(e) => updateItem("education", idx, "area", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
+                  <input placeholder="Year / Range (e.g. 2025-28)" value={edu.endDate} onChange={(e) => updateItem("education", idx, "endDate", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
+                  <input placeholder="Details/Focus" value={edu.details} onChange={(e) => updateItem("education", idx, "details", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
                 </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Highlights (Bullet Points)</label>
-                    <button 
-                      onClick={() => enhanceWorkBullets(idx)}
-                      disabled={isEnhancing[idx]}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
-                    >
-                      {isEnhancing[idx] ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                      AI Enhance
-                    </button>
-                  </div>
-                  <textarea 
-                    value={work.highlights.join('\n')} 
-                    onChange={(e) => updateWork(idx, "highlights", e.target.value.split('\n'))}
-                    placeholder="Enter one highlight per line..."
-                    className="w-full bg-surface-container-lowest p-4 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm min-h-[120px] resize-none" 
-                  />
-                </div>
-
-                <button 
-                  onClick={() => updateResume({ work: resume.work.filter((_, i) => i !== idx) })}
-                  className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center hover:bg-error hover:text-white transition-all shadow-sm"
-                >
+                <button onClick={() => removeItem("education", idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}
+            <button onClick={() => addItem("education", { institution: "", area: "", endDate: "", details: "" })} className="w-full py-3 border-2 border-dashed border-outline-variant/20 rounded-2xl text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-indigo-500/50 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
+              <Plus className="w-4 h-4" /> Add Education
+            </button>
+          </div>
+        )}
+      </section>
 
-            <button 
-              onClick={addWork}
-              className="w-full py-4 border-2 border-dashed border-outline-variant/20 rounded-2xl text-on-surface-variant font-black text-xs uppercase tracking-widest hover:border-indigo-500/50 hover:text-indigo-600 transition-all flex items-center justify-center gap-2"
-            >
+      {/* Experience Section */}
+      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
+        <SectionHeader id="work" title="Professional Experience" icon={Briefcase} count={resume.work.length} />
+        {activeSection === 'work' && (
+          <div className="p-8 pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            {resume.work.map((work, idx) => (
+              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-4 relative border border-outline-variant/5 group">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input placeholder="Position (e.g. Operations Intern)" value={work.position} onChange={(e) => updateItem("work", idx, "position", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-bold" />
+                  <input placeholder="Company (e.g. Feeding Trends)" value={work.name} onChange={(e) => updateItem("work", idx, "name", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
+                  <input placeholder="Date Range (e.g. Dec 2025 - Jan 2026)" value={work.startDate} onChange={(e) => updateItem("work", idx, "startDate", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Highlights</label>
+                    <button onClick={() => enhanceBullets("work", idx)} disabled={isEnhancing[`work-${idx}`]} className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                      {isEnhancing[`work-${idx}`] ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                      AI Fix
+                    </button>
+                  </div>
+                  <textarea value={work.highlights.join('\n')} onChange={(e) => updateItem("work", idx, "highlights", e.target.value.split('\n'))} placeholder="One bullet per line..." className="w-full bg-surface-container-lowest p-4 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm min-h-[100px] resize-none" />
+                </div>
+                <button onClick={() => removeItem("work", idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            <button onClick={() => addItem("work", { position: "", name: "", startDate: "", highlights: [] })} className="w-full py-3 border-2 border-dashed border-outline-variant/20 rounded-2xl text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-indigo-500/50 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
               <Plus className="w-4 h-4" /> Add Experience
             </button>
           </div>
         )}
       </section>
 
-      {/* Add more sections (Education, Skills, etc.) similarly */}
-      <div className="text-center py-4">
-         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Education, Skills & Projects coming soon</p>
-      </div>
+      {/* Achievements Section */}
+      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
+        <SectionHeader id="awards" title="Key Achievements & Awards" icon={Trophy} count={resume.awards?.length} />
+        {activeSection === 'awards' && (
+          <div className="p-8 pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            {resume.awards?.map((award, idx) => (
+              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-2 relative border border-outline-variant/5 group">
+                <div className="flex items-center gap-2">
+                  <input placeholder="Achievement description..." value={award.summary} onChange={(e) => updateItem("awards", idx, "summary", e.target.value)} className="flex-1 bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium" />
+                  <button onClick={() => enhanceBullets("awards", idx)} disabled={isEnhancing[`awards-${idx}`]} className="p-2 bg-emerald-500/10 text-emerald-600 rounded-xl">
+                    {isEnhancing[`awards-${idx}`] ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  </button>
+                </div>
+                <button onClick={() => removeItem("awards", idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            <button onClick={() => addItem("awards", { summary: "" })} className="w-full py-3 border-2 border-dashed border-outline-variant/20 rounded-2xl text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-indigo-500/50 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
+              <Plus className="w-4 h-4" /> Add Achievement
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* POR Section */}
+      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
+        <SectionHeader id="volunteer" title="Positions of Responsibility" icon={Users} count={resume.volunteer?.length} />
+        {activeSection === 'volunteer' && (
+          <div className="p-8 pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            {resume.volunteer?.map((por, idx) => (
+              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-4 relative border border-outline-variant/5 group">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input placeholder="Position (e.g. Sponsorship Coordinator)" value={por.position} onChange={(e) => updateItem("volunteer", idx, "position", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-bold" />
+                  <input placeholder="Organization (e.g. Paradox)" value={por.organization} onChange={(e) => updateItem("volunteer", idx, "organization", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
+                  <input placeholder="Year (e.g. 2025)" value={por.startDate} onChange={(e) => updateItem("volunteer", idx, "startDate", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
+                </div>
+                <textarea value={por.highlights.join('\n')} onChange={(e) => updateItem("volunteer", idx, "highlights", e.target.value.split('\n'))} placeholder="One bullet per line..." className="w-full bg-surface-container-lowest p-4 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm min-h-[80px] resize-none" />
+                <button onClick={() => removeItem("volunteer", idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            <button onClick={() => addItem("volunteer", { position: "", organization: "", startDate: "", highlights: [] })} className="w-full py-3 border-2 border-dashed border-outline-variant/20 rounded-2xl text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-indigo-500/50 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
+              <Plus className="w-4 h-4" /> Add POR
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* Skills Section */}
+      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
+        <SectionHeader id="skills" title="Skills & Tools" icon={Wrench} count={resume.skills.length} />
+        {activeSection === 'skills' && (
+          <div className="p-8 pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            {resume.skills.map((skill, idx) => (
+              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-3 relative border border-outline-variant/5 group">
+                <input placeholder="Category (e.g. Data Analytics)" value={skill.name} onChange={(e) => updateItem("skills", idx, "name", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-bold w-full" />
+                <textarea placeholder="Skills (e.g. Python, SQL, Excel)" value={skill.keywords.join(', ')} onChange={(e) => updateItem("skills", idx, "keywords", e.target.value.split(',').map(s => s.trim()))} className="w-full bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm min-h-[60px] resize-none" />
+                <button onClick={() => removeItem("skills", idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            <button onClick={() => addItem("skills", { name: "", keywords: [] })} className="w-full py-3 border-2 border-dashed border-outline-variant/20 rounded-2xl text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-indigo-500/50 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
+              <Plus className="w-4 h-4" /> Add Skill Category
+            </button>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

@@ -38,6 +38,7 @@ export interface Resume {
     endDate: string;
     score: string;
     courses: string[];
+    details?: string; // New field for "Details/Focus" in the reference design
   }>;
   skills: Array<{
     name: string;
@@ -51,6 +52,21 @@ export interface Resume {
     keywords?: string[];
     url: string;
   }>;
+  awards: Array<{
+    title: string;
+    date: string;
+    awarder: string;
+    summary: string;
+  }>;
+  volunteer: Array<{
+    organization: string;
+    position: string;
+    url: string;
+    startDate: string;
+    endDate: string;
+    summary: string;
+    highlights: string[];
+  }>; // Mapping "Positions of Responsibility" here
   languages: Array<{
     language: string;
     fluency: string;
