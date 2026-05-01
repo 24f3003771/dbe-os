@@ -39,6 +39,13 @@ A curated aggregator of high-impact B-school competitions, MNC internships, and 
 ### 🏆 Pro Pitch Decks
 Exclusive access to a library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.). Reverse-engineer success by studying the best in the business.
 
+### 📄 AI Resume Forge (New)
+A comprehensive, AI-powered resume command center for DBE students.
+- **ATS Enhancer:** Upload an existing PDF to fix layout issues and optimize bullet points with AI.
+- **JD Matcher:** Tailor your resume to specific job descriptions with keyword diffing and match scoring.
+- **Modern Builder:** A real-time, wizard-based editor with premium A4 previews and selectable-text PDF export.
+- **Powered by AI:** Uses NVIDIA GLM-5.1 for action-oriented bullet point generation and NLP analysis.
+
 ### 🍅 Tomato Economy
 A gamified productivity system that rewards community contribution and academic consistency. Earn "Tomatoes" to climb the leaderboard and unlock community recognition.
 
@@ -116,9 +123,9 @@ A gamified productivity system that rewards community contribution and academic 
 ---
 
 ## 🛣 Roadmap
+- [x] AI-powered Resume Forge (Enhancer + Matcher + Builder)
 - [ ] Mobile App (PWA) extension
 - [ ] Real-time peer-to-peer chat for MatchForge
-- [ ] AI-powered resume analyzer for Internship Hunter
 - [ ] Automated deadline sync with Google Calendar
 
 ---

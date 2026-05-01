@@ -1,0 +1,100 @@
+/**
+ * AI Service for Resume Enhancement and Job Matching
+ * Uses NVIDIA GLM-5.1 for fast and accurate processing.
+ */
+
+const apiKey = process.env.NVIDIA_API_KEY;
+const API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
+
+async function fetchAi(prompt: string) {
+  if (!apiKey) {
+    throw new Error("NVIDIA_API_KEY is not set.");
+  }
+
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "z-ai/glm-5.1",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.1,
+      max_tokens: 1024,
+      extra_body: {
+        chat_template_kwargs: {
+          enable_thinking: false,
+          clear_thinking: true
+        }
+      }
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`AI API Error: ${err}`);
+  }
+
+  const json = await response.json();
+  return json.choices?.[0]?.message?.content?.trim();
+}
+
+/**
+ * Rewrites a list of bullet points to be more action-oriented and metric-driven.
+ */
+export async function enhanceBulletPoints(highlights: string[]): Promise<string[]> {
+  const prompt = `You are an expert resume writer. Rewrite the following resume bullet points to be high-impact, action-oriented, and metric-driven (if possible).
+Keep the original meaning but make them sound more professional and ATS-friendly.
+
+Bullet Points:
+${highlights.map((h, i) => `${i + 1}. ${h}`).join("\n")}
+
+Respond ONLY with a JSON array of strings:
+["Improved version 1", "Improved version 2", ...]`;
+
+  const result = await fetchAi(prompt);
+  try {
+    const jsonMatch = result.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error("No JSON array found");
+    return JSON.parse(jsonMatch[0]);
+  } catch (e) {
+    console.error("AI Parse Error (Enhance):", result);
+    return highlights; // Fallback to original
+  }
+}
+
+/**
+ * Compares a resume against a job description and provides a match score + missing keywords.
+ */
+export async function matchWithJobDescription(resumeText: string, jobDescription: string) {
+  const prompt = `You are an ATS (Applicant Tracking System) expert. Compare the following Resume against the Job Description.
+  
+JOB DESCRIPTION:
+"${jobDescription}"
+
+RESUME:
+"${resumeText}"
+
+Analyze:
+1. Match Score (0-100)
+2. Missing Keywords/Skills
+3. Tailoring Suggestions (3 bullet points)
+
+Respond ONLY with a valid JSON object:
+{
+  "score": 85,
+  "missingKeywords": ["React Native", "PostgreSQL", "System Design"],
+  "suggestions": ["Add a metric to your project about user growth", "Highlight experience with cloud-native architectures", "Mention specific tools used in the data pipeline"]
+}`;
+
+  const result = await fetchAi(prompt);
+  try {
+    const jsonMatch = result.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON object found");
+    return JSON.parse(jsonMatch[0]);
+  } catch (e) {
+    console.error("AI Parse Error (Match):", result);
+    return { score: 0, missingKeywords: [], suggestions: ["AI analysis failed. Please try again."] };
+  }
+}

@@ -7,7 +7,7 @@ import { getRank } from "@/constants/tomato";
 
 // ─── Supabase clients ──────────────────────────────────────────────────────────
 
-async function getUserSupabase() {
+export async function getUserSupabase() {
     const cookieStore = await cookies();
     return createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -34,7 +34,7 @@ function getServiceSupabase() {
     return createServiceClient(url, key);
 }
 
-async function getAuthUser() {
+export async function getAuthUser() {
     const supabase = await getUserSupabase();
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error || !user) throw new Error("Unauthorized");

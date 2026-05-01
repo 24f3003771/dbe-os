@@ -49,6 +49,15 @@ This document serves as the central knowledge base for the **DBE OS** project. I
     - **Deduplication:** Questions spanning multiple modules are automatically deduplicated in Exam Mode.
 - **Security:** RLS is configured so that all authenticated users can `SELECT`, but only `SUPER_ADMIN` can `INSERT/UPDATE/DELETE`.
 
+### 📄 AI Resume Forge System
+- **Unified Schema:** Resumes are managed using a standardized JSON Resume schema (`src/types/resume.ts`).
+- **AI Integration:** Uses NVIDIA GLM-5.1 via `src/lib/ai/resume-ai.ts` for:
+    - **Bullet Enhancement:** Converting passive descriptions to action-oriented metrics.
+    - **JD Matching:** Extracting keywords from job descriptions and calculating compatibility scores.
+    - **PDF Parsing:** Structuring raw PDF text into the unified JSON schema.
+- **Client State:** Managed via Zustand (`src/hooks/use-resume-store.ts`) for real-time synchronization between the editor and preview.
+- **Export Engine:** Uses `html2canvas` and `jspdf` for high-quality, text-selectable PDF generation.
+
 ---
 
 ## 3. Key Files & Directories

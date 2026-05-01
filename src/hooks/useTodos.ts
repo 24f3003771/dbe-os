@@ -60,18 +60,24 @@ export function useTodos(date: Date) {
     );
 
     const toggleTask = useCallback(
-        (id: string) => {
-            setTasks((prev) => {
-                const next = prev.map((t) =>
-                    t.id === id ? { ...t, completed: !t.completed } : t
-                );
-                return next;
-            });
-            
-            // Send to server
+        async (id: string) => {
             const task = tasks.find(t => t.id === id);
-            if (task) {
-                toggleTodoAction(id, !task.completed).catch(console.error);
+            if (!task) return;
+
+            // 1. No undo rule (client side)
+            if (task.completed) return;
+
+            // 2. We don't do an optimistic update for toggling anymore 
+            // because the server might reject it due to the 2-minute snooze.
+            try {
+                const result = await toggleTodoAction(id, true);
+                if (result.success) {
+                    setTasks((prev) => prev.map((t) => t.id === id ? { ...t, completed: true } : t));
+                } else {
+                    alert(result.message);
+                }
+            } catch (error: any) {
+                alert(error.message || "Failed to complete task");
             }
         },
         [tasks]
