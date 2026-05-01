@@ -11,33 +11,46 @@ async function fetchAi(prompt: string) {
     throw new Error("NVIDIA_API_KEY is not set.");
   }
 
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: "z-ai/glm-5.1",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.1,
-      max_tokens: 1024,
-      extra_body: {
-        chat_template_kwargs: {
-          enable_thinking: false,
-          clear_thinking: true
-        }
-      }
-    }),
-  });
+  console.log("[AI Request] Sending prompt to NVIDIA NIM...");
+  
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`AI API Error: ${err}`);
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: "z-ai/glm-5.1",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.1,
+        max_tokens: 1024,
+      }),
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error("[AI Error] Response not OK:", err);
+      throw new Error(`AI API Error: ${err}`);
+    }
+
+    const json = await response.json();
+    const content = json.choices?.[0]?.message?.content?.trim();
+    console.log("[AI Response] Received content successfully.");
+    return content;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error("AI request timed out. The model took too long to respond.");
+    }
+    throw error;
   }
-
-  const json = await response.json();
-  return json.choices?.[0]?.message?.content?.trim();
 }
 
 /**

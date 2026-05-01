@@ -40,13 +40,18 @@ export default function ResumeEditor() {
     const bullets = item.highlights || [item.summary];
     
     const key = `${section}-${index}`;
-    setIsEnhancing({ ...isEnhancing, [key]: true });
+    setIsEnhancing(prev => ({ ...prev, [key]: true }));
     
     try {
       const response = await fetch("/api/resume/enhance-bullets", {
         method: "POST",
         body: JSON.stringify({ highlights: bullets }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.enhanced) {
         if (item.highlights) {
@@ -54,11 +59,14 @@ export default function ResumeEditor() {
         } else {
           updateItem(section as any, index, "summary", data.enhanced.join(" "));
         }
+      } else {
+        throw new Error("No enhanced content returned");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Enhance error:", error);
+      alert(`AI Fix failed: ${error.message || "Unknown error"}. Please check your connection.`);
     } finally {
-      setIsEnhancing({ ...isEnhancing, [key]: false });
+      setIsEnhancing(prev => ({ ...prev, [key]: false }));
     }
   };
 
