@@ -11,6 +11,8 @@ export interface PointState {
   rank: string;
   leaderboardRank: number;
   medianTomatoes: number;
+  communityTotal: number;
+  streak: number;
   // Actions
   fetchFarmData: () => Promise<void>;
   earnTomatoes: (payload: TomatoEventPayload) => void;
@@ -25,6 +27,8 @@ export const useFarmStore = create<PointState>()((set, get) => ({
   rank: "Tomato Seedling",
   leaderboardRank: 0,
   medianTomatoes: 0,
+  communityTotal: 0,
+  streak: 0,
   fetchFarmData: async () => {
     try {
       const data = await getFarmState();
@@ -36,6 +40,8 @@ export const useFarmStore = create<PointState>()((set, get) => ({
         rank: data.rank,
         leaderboardRank: data.leaderboardRank,
         medianTomatoes: data.medianTomatoes,
+        communityTotal: data.communityTotal,
+        streak: data.streak,
       });
     } catch (e) {
       console.error("Failed to fetch farm state", e);

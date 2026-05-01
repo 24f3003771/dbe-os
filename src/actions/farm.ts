@@ -25,12 +25,13 @@ async function getUserSupabase() {
     );
 }
 
-// Service role client — bypasses RLS for atomic upserts
+// Service role client — used for system-level operations if available
 function getServiceSupabase() {
-    return createServiceClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!url || !key) return null;
+    return createServiceClient(url, key);
 }
 
 async function getAuthUser() {
@@ -56,28 +57,46 @@ export async function getFarmState() {
         const user = await getAuthUser();
         const supabase = await getUserSupabase();
 
+        // 1. Get profile data
         const { data: profile } = await supabase
             .from("user_profiles")
             .select("total_tomatoes_earned, tomatoes_balance")
             .eq("id", user.id)
-            .single();
+            .maybeSingle();
 
-        // Fetch numerical position from leaderboard view
+        // 2. Fetch numerical position from leaderboard view
         const { data: rankData } = await supabase
             .from("leaderboard")
             .select("position")
             .eq("id", user.id)
             .maybeSingle();
 
+        // 3. Calculate Community Total
+        const { data: communityData } = await supabase
+            .from("user_profiles")
+            .select("total_tomatoes_earned");
+        
+        const communityTotal = communityData?.reduce((acc, curr) => acc + Number(curr.total_tomatoes_earned), 0) ?? 0;
+
+        // 4. Calculate Community Median (Approximate)
+        let medianTomatoes = 0;
+        if (communityData && communityData.length > 0) {
+            const sorted = [...communityData].sort((a, b) => Number(a.total_tomatoes_earned) - Number(b.total_tomatoes_earned));
+            const mid = Math.floor(sorted.length / 2);
+            medianTomatoes = Number(sorted[mid].total_tomatoes_earned);
+        }
+
         const totalEarned = profile?.total_tomatoes_earned ?? 0;
 
         return {
-            totalTomatoesEarned: totalEarned,
-            tomatoesBalance: profile?.tomatoes_balance ?? 0,
+            totalTomatoesEarned: Number(totalEarned),
+            tomatoesBalance: Number(profile?.tomatoes_balance ?? 0),
             position: rankData?.position ?? 0,
             leaderboardRank: rankData?.position ?? 0,
-            medianTomatoes: 0, // Placeholder, requires Supabase equivalent view
-            rank: getRank(totalEarned),
+            medianTomatoes: medianTomatoes,
+            communityTotal: communityTotal,
+            streak: 0, // Fallback as streak column is not in user_profiles yet
+            rank: getRank(Number(totalEarned)),
             plots: [],
         };
     } catch (error) {
@@ -85,56 +104,75 @@ export async function getFarmState() {
         return {
             totalTomatoesEarned: 0,
             tomatoesBalance: 0,
+            leaderboardRank: 0,
+            medianTomatoes: 0,
+            communityTotal: 0,
             streak: 0,
-            rank: "Tomato Seedling",
+            rank: "Scholar",
             plots: [],
         };
     }
 }
 
 // ─── Record Tomato Event ───────────────────────────────────────────────────────
-// This is the SINGLE source of truth for all tomato earning.
-// 1. Inserts a tomato_events row (full audit log)
-// 2. Upserts user_profiles (increments running totals + updates streak)
 
 export async function recordTomatoEvent(payload: TomatoEventPayload) {
     try {
         const user = await getAuthUser();
-        const db = getServiceSupabase(); // service role for atomic upserts
-
+        const supabase = await getUserSupabase();
+        
         const displayName = user.user_metadata?.full_name
             || user.email?.split("@")[0]
             || "Scholar";
         const avatarUrl = user.user_metadata?.avatar_url ?? null;
 
-        const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-
-        // ── 1. Get current profile ──────────────────
-        const { data: existingProfile } = await db
+        // 1. Get current stats
+        const { data: profile } = await supabase
             .from("user_profiles")
             .select("tomatoes_balance, total_tomatoes_earned")
             .eq("id", user.id)
-            .single();
+            .maybeSingle();
 
-        // ── 2. Upsert user_profiles ───────────────────────────────────────────
-        const currentBalance = existingProfile?.tomatoes_balance ?? 0;
-        const currentEarned  = existingProfile?.total_tomatoes_earned ?? 0;
+        const currentBalance = Number(profile?.tomatoes_balance ?? 0);
+        const currentEarned  = Number(profile?.total_tomatoes_earned ?? 0);
 
-        const { error: profileError } = await db
-            .from("user_profiles")
-            .upsert({
-                id: user.id,
-                display_name: displayName,
-                avatar_url: avatarUrl,
-                total_tomatoes_earned: currentEarned + payload.tomatoes,
-                tomatoes_balance: currentBalance + payload.tomatoes,
-                updated_at: new Date().toISOString(),
-            }, { onConflict: "id" });
+        // 2. Update Profile (using explicit check for better RLS reliability)
+        if (profile) {
+            const { error: updateError } = await supabase
+                .from("user_profiles")
+                .update({
+                    display_name: displayName,
+                    avatar_url: avatarUrl,
+                    total_tomatoes_earned: currentEarned + payload.tomatoes,
+                    tomatoes_balance: currentBalance + payload.tomatoes,
+                    updated_at: new Date().toISOString(),
+                })
+                .eq("id", user.id);
+            
+            if (updateError) {
+                console.error("Profile update error:", updateError);
+                throw updateError;
+            }
+        } else {
+            const { error: insertError } = await supabase
+                .from("user_profiles")
+                .insert({
+                    id: user.id,
+                    display_name: displayName,
+                    avatar_url: avatarUrl,
+                    total_tomatoes_earned: payload.tomatoes,
+                    tomatoes_balance: payload.tomatoes,
+                    updated_at: new Date().toISOString(),
+                });
+            
+            if (insertError) {
+                console.error("Profile insert error:", insertError);
+                throw insertError;
+            }
+        }
 
-        if (profileError) console.error("Profile upsert error:", profileError);
-
-        // ── 3. Insert tomato event (audit log) ────────────────────────────────
-        const { error: eventError } = await db
+        // 3. Log Event
+        const { error: eventError } = await supabase
             .from("tomato_events")
             .insert({
                 user_id: user.id,
@@ -144,12 +182,14 @@ export async function recordTomatoEvent(payload: TomatoEventPayload) {
                 metadata: payload.metadata ?? null,
             });
 
-        if (eventError) console.error("Tomato event insert error:", eventError);
+        if (eventError) {
+            console.error("Event logging failed:", eventError);
+        }
 
         return { success: true };
     } catch (e) {
         console.error("recordTomatoEvent error:", e);
-        return { success: false };
+        return { success: false, error: e };
     }
 }
 
@@ -182,7 +222,7 @@ export async function getLeaderboard() {
         const supabase = await getUserSupabase();
 
         const { data, error } = await supabase
-            .from("leaderboard")  // the view we created in the migration
+            .from("leaderboard")
             .select("id, display_name, avatar_url, total_tomatoes_earned, position");
 
         if (error) throw error;
@@ -198,19 +238,19 @@ export async function getLeaderboard() {
 export async function spendTomatoesAction(amount: number) {
     try {
         const user = await getAuthUser();
-        const db = getServiceSupabase();
+        const supabase = await getUserSupabase();
 
-        const { data: profile } = await db
+        const { data: profile } = await supabase
             .from("user_profiles")
             .select("tomatoes_balance")
             .eq("id", user.id)
             .single();
 
-        if (!profile || profile.tomatoes_balance < amount) return false;
+        if (!profile || Number(profile.tomatoes_balance) < amount) return false;
 
-        const { error } = await db
+        const { error } = await supabase
             .from("user_profiles")
-            .update({ tomatoes_balance: profile.tomatoes_balance - amount })
+            .update({ tomatoes_balance: Number(profile.tomatoes_balance) - amount })
             .eq("id", user.id);
 
         if (error) throw error;
