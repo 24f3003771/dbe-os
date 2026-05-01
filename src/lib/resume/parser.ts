@@ -18,7 +18,9 @@ const API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   const pdf = require("pdf-parse");
   try {
-    const data = await pdf(buffer);
+    // Handle both default export (common in ESM-to-CJS) and direct export
+    const parsePdf = typeof pdf === 'function' ? pdf : (pdf.default || pdf);
+    const data = await parsePdf(buffer);
     return data.text;
   } catch (error: any) {
     console.error("PDF Parsing Error:", error);
