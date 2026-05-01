@@ -16,15 +16,14 @@ const API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
  * Extracts raw text from a PDF buffer.
  */
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  const pdf = require("pdf-parse");
   try {
-    // Handle both default export (common in ESM-to-CJS) and direct export
-    const parsePdf = typeof pdf === 'function' ? pdf : (pdf.default || pdf);
-    const data = await parsePdf(buffer);
+    // Directly require the lib file to avoid module wrapping issues in Turbopack
+    const pdf = require("pdf-parse/lib/pdf-parse.js");
+    const data = await pdf(buffer);
     return data.text;
   } catch (error: any) {
     console.error("PDF Parsing Error:", error);
-    throw new Error(`PDF Extraction failed: ${error.message || "Unknown error"}. Ensure the file is not password protected.`);
+    throw new Error(`PDF Extraction failed: ${error.message || "Unknown error"}.`);
   }
 }
 
