@@ -12,7 +12,7 @@ import jsPDF from "jspdf";
 
 export default function BuildPage() {
   const { resume, resetResume } = useResumeStore();
-  const previewRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
@@ -22,16 +22,23 @@ export default function BuildPage() {
   }, [resume, resetResume]);
 
   const downloadPDF = async () => {
-    if (!previewRef.current) return;
+    if (!exportRef.current) return;
     setIsExporting(true);
 
     try {
-      const element = previewRef.current;
+      // Ensure the export element is visible during capture
+      const element = exportRef.current;
+      element.style.display = "block";
+      
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         logging: false,
+        backgroundColor: "#ffffff",
+        windowWidth: 794, // A4 width at 96 DPI
       });
+      
+      element.style.display = "none";
       
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
@@ -40,14 +47,14 @@ export default function BuildPage() {
         format: "a4",
       });
 
-      const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${resume?.basics.name || 'resume'}_dbeos.pdf`);
     } catch (error) {
       console.error("Export failed:", error);
+      alert("Failed to export PDF. Please try again.");
     } finally {
       setIsExporting(false);
     }
@@ -55,6 +62,20 @@ export default function BuildPage() {
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
+      {/* Hidden Export Container */}
+      <div 
+        ref={exportRef} 
+        style={{ 
+          position: 'fixed', 
+          left: '-9999px', 
+          top: 0, 
+          width: '210mm', 
+          display: 'none' 
+        }}
+      >
+        <ResumePreview />
+      </div>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
         <div className="space-y-4">
@@ -106,10 +127,7 @@ export default function BuildPage() {
                </div>
                
                <div className="flex justify-center bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 shadow-inner">
-                  <div 
-                    ref={previewRef}
-                    className="w-[210mm] min-h-[297mm] origin-top scale-[0.45] xl:scale-[0.55] 2xl:scale-[0.6] transform-gpu"
-                  >
+                  <div className="w-[210mm] min-h-[297mm] origin-top scale-[0.45] xl:scale-[0.55] 2xl:scale-[0.6] transform-gpu shadow-2xl">
                      <ResumePreview />
                   </div>
                </div>
