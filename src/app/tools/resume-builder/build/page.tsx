@@ -12,7 +12,7 @@ import jsPDF from "jspdf";
 
 export default function BuildPage() {
   const { resume, resetResume } = useResumeStore();
-  const exportRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
@@ -22,46 +22,40 @@ export default function BuildPage() {
   }, [resume, resetResume]);
 
   const downloadPDF = async () => {
-    if (!exportRef.current) return;
+    // We target the live preview but handle the scaling manually
+    const element = document.getElementById("resume-a4-target");
+    if (!element) return;
+    
     setIsExporting(true);
 
     try {
-      // 1. Prepare element for high-quality capture
-      const element = exportRef.current;
-      element.style.display = "block";
-      element.style.visibility = "visible";
-      
-      // 2. Capture with high scale to avoid blurriness
+      // 1. Capture with ultra-high quality
       const canvas = await html2canvas(element, {
-        scale: 3, // High DPI capture
+        scale: 3, // Very high DPI
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
-        allowTaint: true,
-        imageTimeout: 15000,
-        width: 793.7, // Precise A4 width in px at 96 DPI
-        height: 1122.5, // Precise A4 height in px at 96 DPI
+        scrollX: 0,
+        scrollY: -window.scrollY, // Fix for scrolled pages
+        windowWidth: 1000, // Fixed width for consistent layout
       });
       
-      element.style.display = "none";
-      
-      // 3. Generate PDF
-      const imgData = canvas.toDataURL("image/jpeg", 1.0); // Use JPEG at max quality
+      // 2. Prepare PDF
+      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
-        compress: true,
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${resume?.basics.name || 'resume'}_dbeos.pdf`);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Failed to export PDF. Please ensure all data is valid and try again.");
+      alert("Export failed. Please try using Chrome or Edge for the best experience.");
     } finally {
       setIsExporting(false);
     }
@@ -69,24 +63,6 @@ export default function BuildPage() {
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
-      {/* Hidden Export Container - Force absolute dimensions and no transforms */}
-      <div 
-        ref={exportRef} 
-        style={{ 
-          position: 'fixed', 
-          left: '-5000px', 
-          top: '0px', 
-          width: '210mm',
-          height: '297mm',
-          display: 'none',
-          padding: 0,
-          margin: 0,
-          zIndex: -1
-        }}
-      >
-        <ResumePreview />
-      </div>
-
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
         <div className="space-y-4">
@@ -138,7 +114,7 @@ export default function BuildPage() {
                </div>
                
                <div className="flex justify-center bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 shadow-inner overflow-hidden">
-                  <div className="origin-top scale-[0.4] xl:scale-[0.5] 2xl:scale-[0.55] transform-gpu transition-transform">
+                  <div className="origin-top scale-[0.4] xl:scale-[0.5] 2xl:scale-[0.55] transform-gpu">
                      <ResumePreview />
                   </div>
                </div>
