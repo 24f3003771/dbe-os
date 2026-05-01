@@ -1,4 +1,3 @@
-import { PDFParse } from "pdf-parse";
 import { Resume } from "@/types/resume";
 
 const apiKey = process.env.NVIDIA_API_KEY;
@@ -8,11 +7,10 @@ const API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
  * Extracts raw text from a PDF buffer.
  */
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  const pdf = require("pdf-parse");
   try {
-    const parser = new PDFParse({ data: buffer });
-    const result = await parser.getText();
-    await parser.destroy();
-    return result.text;
+    const data = await pdf(buffer);
+    return data.text;
   } catch (error) {
     console.error("PDF Parsing Error:", error);
     throw new Error("Failed to extract text from PDF. Ensure the file is not corrupted.");
@@ -53,6 +51,9 @@ RULES:
 - If information is missing, leave the field as an empty string or empty array.
 - Standardize dates to YYYY-MM-DD or Month YYYY where possible.`;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout for parsing
+
   try {
     const response = await fetch(API_URL, {
       method: "POST",
@@ -60,13 +61,16 @@ RULES:
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`,
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: "z-ai/glm-5.1",
         messages: [{ role: "user", content: prompt }],
         temperature: 0, 
-        max_tokens: 3000, // Increased for longer resumes
+        max_tokens: 3000,
       }),
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const err = await response.text();
@@ -82,7 +86,6 @@ RULES:
     try {
       return JSON.parse(cleanedResult);
     } catch (e) {
-      // Fallback: try regex if simple parsing fails
       const jsonMatch = cleanedResult.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
@@ -90,7 +93,11 @@ RULES:
       throw new Error("AI returned invalid JSON.");
     }
   } catch (error: any) {
+    clearTimeout(timeoutId);
     console.error("AI Parse Error:", error);
+    if (error.name === 'AbortError') {
+      throw new Error("AI parsing timed out. The resume might be too long or the service is slow.");
+    }
     throw new Error(error.message || "Failed to structure resume data.");
   }
 }
