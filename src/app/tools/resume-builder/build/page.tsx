@@ -22,40 +22,40 @@ export default function BuildPage() {
   }, [resume, resetResume]);
 
   const downloadPDF = async () => {
-    // We target the live preview but handle the scaling manually
-    const element = document.getElementById("resume-a4-target");
-    if (!element) return;
+    const element = document.getElementById("resume-export-target");
+    if (!element) {
+      alert("Export engine not ready. Please try again in a moment.");
+      return;
+    }
     
     setIsExporting(true);
 
     try {
-      // 1. Capture with ultra-high quality
+      // 1. Capture with reliable settings
       const canvas = await html2canvas(element, {
-        scale: 3, // Very high DPI
+        scale: 2, 
         useCORS: true,
+        allowTaint: true,
         logging: false,
         backgroundColor: "#ffffff",
-        scrollX: 0,
-        scrollY: -window.scrollY, // Fix for scrolled pages
-        windowWidth: 1000, // Fixed width for consistent layout
+        width: 794, // 210mm at 96 DPI
+        height: 1123, // 297mm at 96 DPI
       });
       
       // 2. Prepare PDF
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/png", 1.0);
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
+        compress: true
       });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, "PNG", 0, 0, 210, 297, undefined, 'FAST');
       pdf.save(`${resume?.basics.name || 'resume'}_dbeos.pdf`);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Export failed. Please try using Chrome or Edge for the best experience.");
+      alert("Export failed. Please ensure all sections are filled correctly.");
     } finally {
       setIsExporting(false);
     }
@@ -63,6 +63,13 @@ export default function BuildPage() {
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
+      {/* Hidden Export Target (Strict A4) */}
+      <div className="fixed -left-[5000px] top-0 pointer-events-none opacity-0">
+        <div id="resume-export-target" className="w-[210mm] min-h-[297mm]">
+          <ResumePreview />
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
         <div className="space-y-4">
