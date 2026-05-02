@@ -11,6 +11,7 @@ import { getListings, getProfile, getMatches } from "@/actions/matchforge";
 import { MatchListing, MatchProfile } from "@/types/matchforge";
 
 export default function MatchForgeClient() {
+  const [isMounted, setIsMounted] = useState(false);
   const [view, setView] = useState<'feed' | 'peers'>('feed');
   const [listings, setListings] = useState<MatchListing[]>([]);
   const [matches, setMatches] = useState<(MatchProfile & { matchScore?: number })[]>([]);
@@ -23,6 +24,7 @@ export default function MatchForgeClient() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    setIsMounted(true);
     async function init() {
       setIsLoading(true);
       try {
@@ -48,6 +50,15 @@ export default function MatchForgeClient() {
     init();
   }, [selectedType, selectedSkills, selectedRoles]);
 
+  if (!isMounted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Initializing Matrix...</p>
+      </div>
+    );
+  }
+
   const filteredListings = listings.filter(l => 
     l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     l.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -55,7 +66,7 @@ export default function MatchForgeClient() {
 
   const filteredMatches = matches.filter(m => {
     const matchesSearch = (m.roles?.some(r => r.toLowerCase().includes(searchQuery.toLowerCase())) || false) ||
-                         m.bio.toLowerCase().includes(searchQuery.toLowerCase());
+                         (m.bio?.toLowerCase().includes(searchQuery.toLowerCase()) || false);
     const matchesTerm = selectedTerm ? m.current_term === selectedTerm : true;
     const matchesRoles = selectedRoles.length > 0 ? (m.roles?.some(r => selectedRoles.includes(r)) || false) : true;
     
