@@ -141,9 +141,9 @@ export default function BuildPage() {
             <ResumeEditor />
          </div>
 
-         {/* Preview Sidebar */}
-         <div className="lg:col-span-6 hidden lg:block h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar p-1">
-            <div className="sticky top-0 space-y-6">
+         {/* Preview Section */}
+         <div className="lg:col-span-6 space-y-6 lg:h-[calc(100vh-250px)] lg:overflow-y-auto custom-scrollbar p-1">
+            <div className="lg:sticky lg:top-0 space-y-6">
                <div className="flex items-center justify-between px-4 mb-4">
                   <h3 className="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant">Live Preview (A4)</h3>
                   <div className="flex items-center gap-1.5">
@@ -152,8 +152,8 @@ export default function BuildPage() {
                   </div>
                </div>
                
-               <div className="flex justify-center bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 shadow-inner overflow-hidden">
-                  <div className="origin-top scale-[0.4] xl:scale-[0.5] 2xl:scale-[0.55] transform-gpu shadow-2xl">
+               <div className="flex justify-center bg-surface-container rounded-[2.5rem] p-4 md:p-8 border border-outline-variant/10 shadow-inner overflow-hidden">
+                  <div className="origin-top scale-[0.35] sm:scale-[0.4] xl:scale-[0.5] 2xl:scale-[0.55] transform-gpu shadow-2xl">
                      <ResumePreview />
                   </div>
                </div>
