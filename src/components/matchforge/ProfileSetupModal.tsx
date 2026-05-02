@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UserCircle, Linkedin, Phone, Save, Loader2, Rocket } from "lucide-react";
+import { UserCircle, Linkedin, Phone, Save, Loader2, Rocket, ArrowRight, Edit3, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { updateProfile } from "@/actions/matchforge";
 import { MatchProfile } from "@/types/matchforge";
@@ -13,17 +13,20 @@ const COMMON_SKILLS = [
   'Data Analytics', 'Public Speaking', 'UI/UX Design'
 ];
 
+type OnboardingStep = 'LANDING' | 'INTENT' | 'REVIEW';
+
 export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boolean, initialData?: MatchProfile | null }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [onboardingMode, setOnboardingMode] = useState(!initialData?.is_complete);
+  const [step, setStep] = useState<OnboardingStep>(initialData?.is_complete ? 'REVIEW' : 'LANDING');
   const [activeTab, setActiveTab] = useState<'basic' | 'professional' | 'academic'>('basic');
+  
   const [formData, setFormData] = useState({
     roles: initialData?.roles || [] as string[],
     bio: initialData?.bio || '',
     skills: initialData?.skills || [] as string[],
     education: initialData?.education || [] as any[],
     experience: initialData?.experience || [] as any[],
-    location: initialData?.location || '',
+    location: initialData?.location || 'IIM Bangalore',
     grad_year: initialData?.grad_year || 2026,
     current_term: initialData?.current_term || 1,
     linkedin_url: initialData?.linkedin_url || '',
@@ -49,27 +52,27 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
   const handleFetchLinkedIn = async () => {
     if (!formData.linkedin_url) return alert("Please enter your LinkedIn URL first");
     setIsSubmitting(true);
-    // Simulate LinkedIn Fetch with AI logic
+    // Simulate LinkedIn Fetch
     setTimeout(() => {
       setFormData(prev => ({
         ...prev,
-        bio: prev.bio || "Student at IIM Bangalore specializing in Business Analytics and Digital Business. Passionate about product strategy and market operations.",
-        experience: [{ company: "IIMB", role: "Student Researcher", duration: "2024 - Present" }],
+        bio: prev.bio || "BBA Student at IIM Bangalore specializing in Digital Business. Interested in product strategy and startups.",
+        experience: [{ company: "IIMB", role: "Student", duration: "2024 - 2026" }],
         education: [{ school: "IIM Bangalore", degree: "BBA DBE", year: "2026" }],
-        skills: [...new Set([...prev.skills, 'Strategy', 'Analytics', 'Product Management'])]
+        skills: [...new Set([...prev.skills, 'Strategy', 'Analytics', 'Digital Business'])]
       }));
       setIsSubmitting(false);
-      setOnboardingMode(false);
-      alert("Profile data fetched and simulated from LinkedIn!");
+      setStep('INTENT');
     }, 1500);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.roles.length === 0 || !formData.bio || formData.skills.length === 0) {
-      alert("Please fill in roles, bio, and skills");
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (formData.roles.length === 0) {
+      alert("Please select at least one role you are interested in.");
       return;
     }
+    
     setIsSubmitting(true);
     try {
       await updateProfile(formData);
@@ -92,96 +95,90 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="relative w-full max-w-2xl bg-surface-container-lowest rounded-[3rem] shadow-2xl border border-outline-variant/10 overflow-hidden"
       >
+        {/* Header */}
         <div className="p-8 md:p-10 border-b border-outline-variant/5 bg-indigo-600 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-md">
-                <UserCircle className="w-8 h-8 text-white" />
+                <Sparkles className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-black font-headline tracking-tight">MatchForge Identity</h2>
-                <p className="text-indigo-100 text-sm font-medium">Build your professional presence</p>
+                <h2 className="text-2xl font-black font-headline tracking-tight">MatchForge Onboarding</h2>
+                <p className="text-indigo-100 text-sm font-medium">Step into the professional matrix</p>
               </div>
             </div>
-            {!onboardingMode && (
-              <button 
-                type="button"
-                onClick={handleFetchLinkedIn}
-                className="px-4 py-2 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-colors shadow-lg"
-              >
-                Fetch LinkedIn
-              </button>
-            )}
           </div>
-
-          {!onboardingMode && (
-            <div className="flex items-center gap-1 mt-8 bg-black/10 p-1 rounded-2xl w-fit">
-              {(['basic', 'professional', 'academic'] as const).map(tab => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-indigo-600' : 'text-white/60 hover:text-white'}`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
-        {onboardingMode ? (
-          <div className="p-10 space-y-8 text-center">
-            <div className="space-y-4 max-w-sm mx-auto">
-              <h3 className="text-xl font-black font-headline text-on-surface">Auto-Build Your Profile</h3>
-              <p className="text-sm text-on-surface-variant font-medium leading-relaxed">
-                Enter your LinkedIn URL and we'll handle the heavy lifting. We'll fetch your education, experience, and bio automatically.
-              </p>
-            </div>
-
-            <div className="space-y-4 text-left">
-              <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">LinkedIn Profile URL</label>
-              <div className="relative">
-                <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
-                <input
-                  placeholder="https://linkedin.com/in/yourname"
-                  className="w-full bg-surface-container p-6 pl-14 rounded-[2rem] border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium transition-all"
-                  value={formData.linkedin_url}
-                  onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={handleFetchLinkedIn}
-                disabled={isSubmitting}
-                className="w-full bg-indigo-600 text-white py-5 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl"
+        <div className="p-8 md:p-10">
+          <AnimatePresence mode="wait">
+            {step === 'LANDING' && (
+              <motion.div 
+                key="landing"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8 text-center"
               >
-                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Fetch My Details"}
-              </button>
-              <button
-                onClick={() => setOnboardingMode(false)}
-                className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-indigo-600 transition-colors py-2"
+                <div className="space-y-4 max-w-sm mx-auto">
+                  <h3 className="text-xl font-black font-headline text-on-surface">Connect LinkedIn</h3>
+                  <p className="text-sm text-on-surface-variant font-medium leading-relaxed">
+                    We'll fetch your education and experience so you don't have to type it manually.
+                  </p>
+                </div>
+
+                <div className="space-y-4 text-left">
+                  <div className="relative">
+                    <Linkedin className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
+                    <input
+                      placeholder="Your LinkedIn Profile URL"
+                      className="w-full bg-surface-container p-6 pl-16 rounded-[2rem] border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium transition-all"
+                      value={formData.linkedin_url}
+                      onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={handleFetchLinkedIn}
+                    disabled={isSubmitting}
+                    className="w-full bg-indigo-600 text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl"
+                  >
+                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Fetch Details <ArrowRight className="w-4 h-4" /></>}
+                  </button>
+                  <button
+                    onClick={() => setStep('INTENT')}
+                    className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-indigo-600 transition-colors py-2"
+                  >
+                    I'll do it manually
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 'INTENT' && (
+              <motion.div 
+                key="intent"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
               >
-                Or setup manually
-              </button>
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
-          {activeTab === 'basic' && (
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
-              <div className="space-y-4">
-                <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Select Roles (Multi-select)</label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="space-y-2 text-center">
+                  <h3 className="text-xl font-black font-headline text-on-surface">What's your primary role?</h3>
+                  <p className="text-sm text-on-surface-variant font-medium">Select one or more areas of expertise.</p>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {ROLES.map(role => (
                     <button
                       key={role}
                       type="button"
                       onClick={() => toggleRole(role)}
-                      className={`px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border ${
+                      className={`px-4 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border ${
                         formData.roles.includes(role)
-                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100' 
+                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' 
                         : 'bg-surface-container border-transparent text-on-surface-variant hover:border-outline-variant'
                       }`}
                     >
@@ -189,126 +186,128 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
                     </button>
                   ))}
                 </div>
-              </div>
 
-              <div className="space-y-4">
-                <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Professional Headline & Bio</label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Craft a compelling story... What are you building? What do you bring to the table?"
-                  className="w-full bg-surface-container p-6 rounded-[2.5rem] border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm font-medium leading-relaxed shadow-inner"
-                  value={formData.bio}
-                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                />
-              </div>
-            </motion.div>
-          )}
+                <div className="flex flex-col gap-4 pt-4">
+                  <button
+                    onClick={() => handleSubmit()}
+                    disabled={isSubmitting}
+                    className="w-full bg-on-surface text-surface-container-lowest py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl"
+                  >
+                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Enter the Matrix <Rocket className="w-5 h-5" /></>}
+                  </button>
+                  <button
+                    onClick={() => setStep('REVIEW')}
+                    className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-indigo-600 transition-colors"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    Review & Add more details
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
-          {activeTab === 'professional' && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
-              <div className="space-y-4">
-                <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Top Skills</label>
-                <div className="flex flex-wrap gap-2">
-                  {COMMON_SKILLS.map(skill => (
+            {step === 'REVIEW' && (
+              <motion.div 
+                key="review"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+              >
+                <div className="flex items-center gap-1 bg-surface-container-low p-1 rounded-2xl w-fit mx-auto mb-4">
+                  {(['basic', 'professional', 'academic'] as const).map(tab => (
                     <button
-                      key={skill}
-                      type="button"
-                      onClick={() => toggleSkill(skill)}
-                      className={`px-4 py-2 rounded-xl text-[10px] font-bold transition-all border ${
-                        formData.skills.includes(skill)
-                        ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
-                        : 'bg-surface-container border-transparent text-on-surface-variant hover:border-outline-variant'
-                      }`}
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-indigo-600 text-white' : 'text-on-surface-variant hover:text-on-surface'}`}
                     >
-                      {skill}
+                      {tab}
                     </button>
                   ))}
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">LinkedIn URL</label>
-                  <div className="relative">
-                    <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-                    <input
-                      required
-                      placeholder="linkedin.com/in/..."
-                      className="w-full bg-surface-container p-4 pl-12 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium"
-                      value={formData.linkedin_url}
-                      onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">WhatsApp</label>
-                  <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-                    <input
-                      placeholder="+91..."
-                      className="w-full bg-surface-container p-4 pl-12 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium"
-                      value={formData.whatsapp_number}
-                      onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
+                <div className="max-h-[40vh] overflow-y-auto custom-scrollbar pr-2 space-y-8">
+                  {activeTab === 'basic' && (
+                    <div className="space-y-6">
+                      <div className="space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Bio & Headline</label>
+                        <textarea
+                          rows={3}
+                          className="w-full bg-surface-container p-5 rounded-3xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium leading-relaxed"
+                          value={formData.bio}
+                          onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">WhatsApp</label>
+                        <input
+                          placeholder="+91..."
+                          className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium"
+                          value={formData.whatsapp_number}
+                          onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  )}
 
-          {activeTab === 'academic' && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Location</label>
-                  <input
-                    placeholder="City/State"
-                    className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Grad Year</label>
-                  <input
-                    type="number"
-                    className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium"
-                    value={formData.grad_year}
-                    onChange={(e) => setFormData({ ...formData, grad_year: parseInt(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Term</label>
-                  <select
-                    className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium"
-                    value={formData.current_term}
-                    onChange={(e) => setFormData({ ...formData, current_term: parseInt(e.target.value) })}
-                  >
-                    {[1,2,3,4,5,6,7,8].map(t => <option key={t} value={t}>Term {t}</option>)}
-                  </select>
-                </div>
-              </div>
-            </motion.div>
-          )}
+                  {activeTab === 'professional' && (
+                    <div className="space-y-6">
+                      <div className="space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Top Skills</label>
+                        <div className="flex flex-wrap gap-2">
+                          {COMMON_SKILLS.map(skill => (
+                            <button
+                              key={skill}
+                              type="button"
+                              onClick={() => toggleSkill(skill)}
+                              className={`px-3 py-1.5 rounded-lg text-[9px] font-bold transition-all border ${
+                                formData.skills.includes(skill)
+                                ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                                : 'bg-surface-container border-transparent text-on-surface-variant'
+                              }`}
+                            >
+                              {skill}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-          <div className="pt-4">
-            <button
-              disabled={isSubmitting}
-              className="w-full bg-on-surface text-surface-container-lowest py-5 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl"
-            >
-              {isSubmitting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <Rocket className="w-5 h-5" />
-                  Save MatchForge Profile
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-        )}
+                  {activeTab === 'academic' && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Term</label>
+                        <select
+                          className="w-full bg-surface-container p-4 rounded-2xl border border-transparent text-sm font-medium"
+                          value={formData.current_term}
+                          onChange={(e) => setFormData({ ...formData, current_term: parseInt(e.target.value) })}
+                        >
+                          {[1,2,3,4,5,6,7,8].map(t => <option key={t} value={t}>Term {t}</option>)}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Location</label>
+                        <input
+                          className="w-full bg-surface-container p-4 rounded-2xl border border-transparent text-sm font-medium"
+                          value={formData.location}
+                          onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => handleSubmit()}
+                  disabled={isSubmitting}
+                  className="w-full bg-indigo-600 text-white py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-xl"
+                >
+                  {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Profile Details"}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </motion.div>
     </div>
   );
