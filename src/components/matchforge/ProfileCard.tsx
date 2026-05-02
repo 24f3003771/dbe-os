@@ -23,7 +23,7 @@ export default function ProfileCard({ profile }: { profile: MatchProfile & { mat
         <div className="space-y-4 mb-6">
           <div className="space-y-2">
             <div className="flex flex-wrap gap-1.5">
-              {profile.roles.map((role, i) => (
+              {profile.roles?.map((role, i) => (
                 <span key={i} className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
                   {role}
                 </span>
@@ -51,13 +51,13 @@ export default function ProfileCard({ profile }: { profile: MatchProfile & { mat
 
         <div className="space-y-4 mt-auto pt-6 border-t border-outline-variant/5">
           <div className="flex flex-wrap gap-1.5">
-            {profile.skills.slice(0, 4).map((skill, i) => (
+            {profile.skills?.slice(0, 4).map((skill, i) => (
               <span key={i} className="text-[9px] font-bold uppercase tracking-wider bg-surface-container px-2 py-1 rounded-lg text-on-surface-variant">
                 {skill}
               </span>
             ))}
-            {profile.skills.length > 4 && (
-              <span className="text-[9px] font-bold text-on-surface-variant px-1">+{profile.skills.length - 4} more</span>
+            {(profile.skills?.length || 0) > 4 && (
+              <span className="text-[9px] font-bold text-on-surface-variant px-1">+{(profile.skills?.length || 0) - 4} more</span>
             )}
           </div>
 

@@ -55,7 +55,7 @@ export default function ListingCard({ listing }: { listing: MatchListing }) {
       </p>
 
       <div className="flex flex-wrap gap-2 mt-auto">
-        {listing.required_skills.map((skill, i) => (
+        {listing.required_skills?.map((skill, i) => (
           <span 
             key={i} 
             className="text-[9px] font-bold uppercase tracking-wider bg-surface-container px-2.5 py-1 rounded-lg text-on-surface-variant border border-outline-variant/5"

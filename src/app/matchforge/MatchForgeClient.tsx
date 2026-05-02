@@ -54,10 +54,10 @@ export default function MatchForgeClient() {
   );
 
   const filteredMatches = matches.filter(m => {
-    const matchesSearch = m.roles.some(r => r.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    const matchesSearch = (m.roles?.some(r => r.toLowerCase().includes(searchQuery.toLowerCase())) || false) ||
                          m.bio.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTerm = selectedTerm ? m.current_term === selectedTerm : true;
-    const matchesRoles = selectedRoles.length > 0 ? m.roles.some(r => selectedRoles.includes(r)) : true;
+    const matchesRoles = selectedRoles.length > 0 ? (m.roles?.some(r => selectedRoles.includes(r)) || false) : true;
     
     return matchesSearch && matchesTerm && matchesRoles;
   });
