@@ -7,6 +7,8 @@ import CreateListingModal from "@/components/matchforge/CreateListingModal";
 import ListingCard from "@/components/matchforge/ListingCard";
 import { getListings, MatchListing } from "@/actions/matchforge";
 
+export const dynamic = 'force-dynamic';
+
 export default function MatchForgePage() {
   const [listings, setListings] = useState<MatchListing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,12 +19,17 @@ export default function MatchForgePage() {
   useEffect(() => {
     async function loadListings() {
       setIsLoading(true);
-      const data = await getListings({ 
-        type: selectedType, 
-        skills: selectedSkills 
-      });
-      setListings(data);
-      setIsLoading(false);
+      try {
+        const data = await getListings({ 
+          type: selectedType, 
+          skills: selectedSkills 
+        });
+        setListings(data);
+      } catch (err: any) {
+        console.error("MatchForge Error:", err);
+      } finally {
+        setIsLoading(false);
+      }
     }
     loadListings();
   }, [selectedType, selectedSkills]);

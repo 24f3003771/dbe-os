@@ -51,7 +51,8 @@ export async function getListings(filters: { type?: string; skills?: string[] } 
   const { data, error } = await query;
 
   if (error) {
-    console.error("Error fetching listings:", error);
+    console.error("[MatchForge] Database Query Error:", error.message, error.details);
+    // Return empty array instead of crashing
     return [];
   }
 
