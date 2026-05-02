@@ -9,13 +9,16 @@ async function createClient() {
   return createSupabaseClient(cookieStore);
 }
 
-export type ListingType = 'Case Competition' | 'Hackathon' | 'Co-founder' | 'Learning Partner';
-
 export interface MatchProfile {
   id: string;
-  role: string;
+  roles: string[];
   bio: string;
   skills: string[];
+  education: any[];
+  experience: any[];
+  location?: string;
+  grad_year?: number;
+  current_term?: number;
   linkedin_url?: string;
   whatsapp_number?: string;
   is_complete: boolean;
@@ -44,7 +47,7 @@ export async function getProfile() {
     .eq('id', user.id)
     .single();
 
-  if (error && error.code !== 'PGRST116') { // PGRST116 is 'no rows'
+  if (error && error.code !== 'PGRST116') {
     console.error("Error fetching profile:", error);
     return null;
   }
@@ -76,16 +79,14 @@ export async function getMatches() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
-  // 1. Get current user's skills
   const { data: myProfile } = await supabase
     .from('match_profiles')
-    .select('skills')
+    .select('skills, roles')
     .eq('id', user.id)
     .single();
 
   if (!myProfile || !myProfile.skills || myProfile.skills.length === 0) return [];
 
-  // 2. Get all other profiles
   const { data: others, error } = await supabase
     .from('match_profiles')
     .select('*')
@@ -94,20 +95,24 @@ export async function getMatches() {
 
   if (error) return [];
 
-  // 3. Calculate match score
   const matches = others.map(profile => {
+    // Skill match
     const sharedSkills = profile.skills.filter((s: string) => myProfile.skills.includes(s));
-    const score = (sharedSkills.length / Math.max(myProfile.skills.length, profile.skills.length)) * 100;
-    return { ...profile, matchScore: Math.round(score) };
+    const skillScore = (sharedSkills.length / Math.max(myProfile.skills.length, profile.skills.length)) * 100;
+    
+    // Role match (complementary or same)
+    const sharedRoles = profile.roles.filter((r: string) => myProfile.roles.includes(r));
+    const roleScore = sharedRoles.length > 0 ? 20 : 0;
+
+    return { ...profile, matchScore: Math.round(Math.min(100, skillScore + roleScore)) };
   });
 
-  // 4. Return top matches (> 30%)
   return matches
     .filter(m => m.matchScore > 10)
     .sort((a, b) => b.matchScore - a.matchScore);
 }
 
-export async function getListings(filters: { type?: string; skills?: string[] } = {}) {
+export async function getListings(filters: { type?: string; skills?: string[]; roles?: string[] } = {}) {
   const supabase = await createClient();
   
   let query = supabase
@@ -129,11 +134,20 @@ export async function getListings(filters: { type?: string; skills?: string[] } 
   const { data, error } = await query;
 
   if (error) {
-    console.error("[MatchForge] Database Query Error:", error.message, error.details);
+    console.error("[MatchForge] Database Query Error:", error.message);
     return [];
   }
 
-  return data as MatchListing[];
+  let results = data as MatchListing[];
+  
+  // Filter by roles if provided (client-side since it's a nested filter)
+  if (filters.roles && filters.roles.length > 0) {
+    results = results.filter(l => 
+      l.profiles?.roles.some(r => filters.roles?.includes(r))
+    );
+  }
+
+  return results;
 }
 
 export async function createListing(formData: {

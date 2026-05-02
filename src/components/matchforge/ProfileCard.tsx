@@ -21,18 +21,28 @@ export default function ProfileCard({ profile }: { profile: MatchProfile & { mat
 
       <div className="flex flex-col h-full">
         <div className="space-y-4 mb-6">
-          <div className="space-y-1">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">
-              {profile.role}
-            </span>
-            <h3 className="text-xl font-black font-headline text-on-surface pt-2">Anonymous Peer</h3>
-            <p className="text-xs text-on-surface-variant font-medium">BBA DBE Student</p>
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-1.5">
+              {profile.roles.map((role, i) => (
+                <span key={i} className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                  {role}
+                </span>
+              ))}
+            </div>
+            <h3 className="text-xl font-black font-headline text-on-surface pt-1">Anonymous Peer</h3>
+            <div className="flex items-center gap-2 text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">
+              <span>Term {profile.current_term}</span>
+              {profile.location && (
+                <>
+                  <span className="w-1 h-1 bg-outline-variant rounded-full" />
+                  <div className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    {profile.location}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-          
-          <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-3 italic">
-            "{profile.bio}"
-          </p>
-        </div>
 
         <div className="space-y-4 mt-auto pt-6 border-t border-outline-variant/5">
           <div className="flex flex-wrap gap-1.5">

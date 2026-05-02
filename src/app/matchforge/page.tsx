@@ -19,6 +19,8 @@ export default function MatchForgePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedType, setSelectedType] = useState("All");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedTerm, setSelectedTerm] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -27,7 +29,11 @@ export default function MatchForgePage() {
       try {
         const [myProfile, activeListings, topMatches] = await Promise.all([
           getProfile(),
-          getListings({ type: selectedType, skills: selectedSkills }),
+          getListings({ 
+            type: selectedType, 
+            skills: selectedSkills,
+            roles: selectedRoles
+          }),
           getMatches()
         ]);
         
@@ -41,17 +47,21 @@ export default function MatchForgePage() {
       }
     }
     init();
-  }, [selectedType, selectedSkills]);
+  }, [selectedType, selectedSkills, selectedRoles]);
 
   const filteredListings = listings.filter(l => 
     l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     l.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredMatches = matches.filter(m => 
-    m.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    m.bio.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredMatches = matches.filter(m => {
+    const matchesSearch = m.roles.some(r => r.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                         m.bio.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTerm = selectedTerm ? m.current_term === selectedTerm : true;
+    const matchesRoles = selectedRoles.length > 0 ? m.roles.some(r => selectedRoles.includes(r)) : true;
+    
+    return matchesSearch && matchesTerm && matchesRoles;
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -98,6 +108,10 @@ export default function MatchForgePage() {
             setSelectedType={setSelectedType}
             selectedSkills={selectedSkills}
             setSelectedSkills={setSelectedSkills}
+            selectedRoles={selectedRoles}
+            setSelectedRoles={setSelectedRoles}
+            selectedTerm={selectedTerm}
+            setSelectedTerm={setSelectedTerm}
           />
         </aside>
 
