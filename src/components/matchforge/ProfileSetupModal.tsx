@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { UserCircle, Linkedin, Phone, Save, Loader2, Rocket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { updateProfile, MatchProfile } from "@/actions/matchforge";
+import { updateProfile } from "@/actions/matchforge";
+import { MatchProfile } from "@/types/matchforge";
 
 const ROLES = ['Finance', 'Marketing', 'Operations', 'Product', 'Strategy', 'Design', 'Data', 'UI/UX'];
 const COMMON_SKILLS = [

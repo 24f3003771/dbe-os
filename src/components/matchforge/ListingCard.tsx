@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Share2, Briefcase, Users, Zap, GraduationCap, Trophy } from "lucide-react";
-import { MatchListing } from "@/actions/matchforge";
+import { MatchListing } from "@/types/matchforge";
 
 const typeIcons = {
   'Case Competition': Trophy,

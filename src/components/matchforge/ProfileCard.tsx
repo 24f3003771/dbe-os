@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Linkedin, Phone, MapPin, Sparkles } from "lucide-react";
-import { MatchProfile } from "@/actions/matchforge";
+import { MatchProfile } from "@/types/matchforge";
 
 export default function ProfileCard({ profile }: { profile: MatchProfile & { matchScore?: number } }) {
   return (

@@ -3,39 +3,11 @@
 import { createClient as createSupabaseClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-
-export type ListingType = 'Case Competition' | 'Hackathon' | 'Co-founder' | 'Learning Partner';
+import { MatchProfile, MatchListing, ListingType } from "@/types/matchforge";
 
 async function createClient() {
   const cookieStore = await cookies();
   return createSupabaseClient(cookieStore);
-}
-
-export interface MatchProfile {
-  id: string;
-  roles: string[];
-  bio: string;
-  skills: string[];
-  education: any[];
-  experience: any[];
-  location?: string;
-  grad_year?: number;
-  current_term?: number;
-  linkedin_url?: string;
-  whatsapp_number?: string;
-  is_complete: boolean;
-}
-
-export interface MatchListing {
-  id: string;
-  user_id: string;
-  type: ListingType;
-  title: string;
-  description: string;
-  required_skills: string[];
-  status: 'Open' | 'Closed';
-  created_at: string;
-  profiles?: MatchProfile;
 }
 
 export async function getProfile() {
