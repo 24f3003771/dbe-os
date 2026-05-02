@@ -34,6 +34,42 @@ export async function getProfile() {
   }
 }
 
+export async function updateProfile(formData: Partial<MatchProfile>) {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Unauthorized");
+
+    const updateData = {
+      id: user.id,
+      roles: formData.roles,
+      bio: formData.bio,
+      skills: formData.skills,
+      education: formData.education,
+      experience: formData.experience,
+      location: formData.location,
+      grad_year: formData.grad_year,
+      current_term: formData.current_term,
+      linkedin_url: formData.linkedin_url,
+      whatsapp_number: formData.whatsapp_number,
+      is_complete: true,
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from('match_profiles')
+      .upsert(updateData);
+
+    if (error) throw new Error(error.message);
+    
+    revalidatePath('/matchforge');
+    return { success: true };
+  } catch (err: any) {
+    console.error("updateProfile failed:", err);
+    throw new Error(err.message || "Failed to update profile");
+  }
+}
+
 export async function getMatches() {
   try {
     const supabase = await createClient();
