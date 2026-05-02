@@ -11,121 +11,117 @@ async function createClient() {
 }
 
 export async function getProfile() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
 
-  const { data, error } = await supabase
-    .from('match_profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+    const { data, error } = await supabase
+      .from('match_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
 
-  if (error && error.code !== 'PGRST116') {
-    console.error("Error fetching profile:", error);
+    if (error && error.code !== 'PGRST116') {
+      console.error("Error fetching profile:", error);
+      return null;
+    }
+
+    return data as MatchProfile;
+  } catch (err) {
+    console.error("getProfile failed:", err);
     return null;
   }
-
-  return data as MatchProfile;
-}
-
-export async function updateProfile(formData: Partial<MatchProfile>) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
-
-  const { data, error } = await supabase
-    .from('match_profiles')
-    .upsert({
-      id: user.id,
-      ...formData,
-      is_complete: true,
-      updated_at: new Date().toISOString()
-    });
-
-  if (error) throw new Error(error.message);
-  revalidatePath('/matchforge');
-  return data;
 }
 
 export async function getMatches() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return [];
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
 
-  const { data: myProfile } = await supabase
-    .from('match_profiles')
-    .select('skills, roles')
-    .eq('id', user.id)
-    .single();
+    const { data: myProfile } = await supabase
+      .from('match_profiles')
+      .select('skills, roles')
+      .eq('id', user.id)
+      .single();
 
-  if (!myProfile || !myProfile.skills || myProfile.skills.length === 0) return [];
+    if (!myProfile || !myProfile.skills || myProfile.skills.length === 0) return [];
 
-  const { data: others, error } = await supabase
-    .from('match_profiles')
-    .select('*')
-    .neq('id', user.id)
-    .eq('is_complete', true);
+    const { data: others, error } = await supabase
+      .from('match_profiles')
+      .select('*')
+      .neq('id', user.id)
+      .eq('is_complete', true);
 
-  if (error) return [];
+    if (error) return [];
 
-  const matches = (others || []).map(profile => {
-    // Skill match
-    const profileSkills = profile.skills || [];
-    const mySkills = myProfile.skills || [];
-    const sharedSkills = profileSkills.filter((s: string) => mySkills.includes(s));
-    const skillScore = (sharedSkills.length / Math.max(mySkills.length, profileSkills.length || 1)) * 100;
-    
-    // Role match (complementary or same)
-    const profileRoles = profile.roles || [];
-    const myRoles = myProfile.roles || [];
-    const sharedRoles = profileRoles.filter((r: string) => myRoles.includes(r));
-    const roleScore = sharedRoles.length > 0 ? 20 : 0;
+    const matches = (others || []).map(profile => {
+      // Skill match
+      const profileSkills = profile.skills || [];
+      const mySkills = myProfile.skills || [];
+      const sharedSkills = profileSkills.filter((s: string) => mySkills.includes(s));
+      const skillScore = (sharedSkills.length / Math.max(mySkills.length, profileSkills.length || 1)) * 100;
+      
+      // Role match (complementary or same)
+      const profileRoles = profile.roles || [];
+      const myRoles = myProfile.roles || [];
+      const sharedRoles = profileRoles.filter((r: string) => myRoles.includes(r));
+      const roleScore = sharedRoles.length > 0 ? 20 : 0;
 
-    return { ...profile, matchScore: Math.round(Math.min(100, skillScore + roleScore)) };
-  });
+      return { ...profile, matchScore: Math.round(Math.min(100, skillScore + roleScore)) };
+    });
 
-  return matches
-    .filter(m => (m.matchScore || 0) > 10)
-    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+    return matches
+      .filter(m => (m.matchScore || 0) > 10)
+      .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+  } catch (err) {
+    console.error("getMatches failed:", err);
+    return [];
+  }
 }
 
 export async function getListings(filters: { type?: string; skills?: string[]; roles?: string[] } = {}) {
-  const supabase = await createClient();
-  
-  let query = supabase
-    .from('match_listings')
-    .select(`
-      *,
-      profiles:match_profiles!match_listings_user_id_fkey(*)
-    `)
-    .order('created_at', { ascending: false });
+  try {
+    const supabase = await createClient();
+    
+    let query = supabase
+      .from('match_listings')
+      .select(`
+        *,
+        profiles:match_profiles!match_listings_user_id_fkey(*)
+      `)
+      .order('created_at', { ascending: false });
 
-  if (filters.type && filters.type !== 'All') {
-    query = query.eq('type', filters.type);
-  }
+    if (filters.type && filters.type !== 'All') {
+      query = query.eq('type', filters.type);
+    }
 
-  if (filters.skills && filters.skills.length > 0) {
-    query = query.contains('required_skills', filters.skills);
-  }
+    if (filters.skills && filters.skills.length > 0) {
+      query = query.contains('required_skills', filters.skills);
+    }
 
-  const { data, error } = await query;
+    const { data, error } = await query;
 
-  if (error) {
-    console.error("[MatchForge] Database Query Error:", error.message);
+    if (error) {
+      console.error("[MatchForge] Database Query Error:", error.message);
+      return [];
+    }
+
+    let results = data as MatchListing[];
+    
+    // Filter by roles if provided (client-side since it's a nested filter)
+    if (filters.roles && filters.roles.length > 0) {
+      results = results.filter(l => 
+        l.profiles?.roles?.some(r => filters.roles?.includes(r))
+      );
+    }
+
+    return results;
+  } catch (err) {
+    console.error("getListings failed:", err);
     return [];
   }
-
-  let results = data as MatchListing[];
-  
-  // Filter by roles if provided (client-side since it's a nested filter)
-  if (filters.roles && filters.roles.length > 0) {
-    results = results.filter(l => 
-      l.profiles?.roles?.some(r => filters.roles?.includes(r))
-    );
-  }
-
-  return results;
 }
 
 export async function createListing(formData: {
@@ -134,32 +130,36 @@ export async function createListing(formData: {
   type: ListingType;
   required_skills: string[];
 }) {
-  const supabase = await createClient();
-  
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    throw new Error("You must be logged in to create a listing");
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error("You must be logged in to create a listing");
+    }
+
+    const { data, error } = await supabase
+      .from('match_listings')
+      .insert([
+        {
+          user_id: user.id,
+          title: formData.title,
+          description: formData.description,
+          type: formData.type,
+          required_skills: formData.required_skills,
+          status: 'Open'
+        }
+      ]);
+
+    if (error) {
+      console.error("Error creating listing:", error);
+      throw new Error(error.message);
+    }
+
+    revalidatePath('/matchforge');
+    return { success: true, data };
+  } catch (err: any) {
+    console.error("createListing failed:", err);
+    throw new Error(err.message || "Failed to create listing");
   }
-
-  const { data, error } = await supabase
-    .from('match_listings')
-    .insert([
-      {
-        user_id: user.id,
-        title: formData.title,
-        description: formData.description,
-        type: formData.type,
-        required_skills: formData.required_skills,
-        status: 'Open'
-      }
-    ]);
-
-  if (error) {
-    console.error("Error creating listing:", error);
-    throw new Error(error.message);
-  }
-
-  revalidatePath('/matchforge');
-  return data;
 }
