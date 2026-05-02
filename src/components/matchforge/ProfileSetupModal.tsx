@@ -15,6 +15,7 @@ const COMMON_SKILLS = [
 
 export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boolean, initialData?: MatchProfile | null }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [onboardingMode, setOnboardingMode] = useState(!initialData?.is_complete);
   const [activeTab, setActiveTab] = useState<'basic' | 'professional' | 'academic'>('basic');
   const [formData, setFormData] = useState({
     roles: initialData?.roles || [] as string[],
@@ -54,9 +55,11 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
         ...prev,
         bio: prev.bio || "Student at IIM Bangalore specializing in Business Analytics and Digital Business. Passionate about product strategy and market operations.",
         experience: [{ company: "IIMB", role: "Student Researcher", duration: "2024 - Present" }],
-        education: [{ school: "IIM Bangalore", degree: "BBA DBE", year: "2026" }]
+        education: [{ school: "IIM Bangalore", degree: "BBA DBE", year: "2026" }],
+        skills: [...new Set([...prev.skills, 'Strategy', 'Analytics', 'Product Management'])]
       }));
       setIsSubmitting(false);
+      setOnboardingMode(false);
       alert("Profile data fetched and simulated from LinkedIn!");
     }, 1500);
   };
@@ -100,29 +103,72 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
                 <p className="text-indigo-100 text-sm font-medium">Build your professional presence</p>
               </div>
             </div>
-            <button 
-              type="button"
-              onClick={handleFetchLinkedIn}
-              className="px-4 py-2 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-colors shadow-lg"
-            >
-              Fetch LinkedIn
-            </button>
+            {!onboardingMode && (
+              <button 
+                type="button"
+                onClick={handleFetchLinkedIn}
+                className="px-4 py-2 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-colors shadow-lg"
+              >
+                Fetch LinkedIn
+              </button>
+            )}
           </div>
 
-          <div className="flex items-center gap-1 mt-8 bg-black/10 p-1 rounded-2xl w-fit">
-            {(['basic', 'professional', 'academic'] as const).map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-indigo-600' : 'text-white/60 hover:text-white'}`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+          {!onboardingMode && (
+            <div className="flex items-center gap-1 mt-8 bg-black/10 p-1 rounded-2xl w-fit">
+              {(['basic', 'professional', 'academic'] as const).map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-indigo-600' : 'text-white/60 hover:text-white'}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+        {onboardingMode ? (
+          <div className="p-10 space-y-8 text-center">
+            <div className="space-y-4 max-w-sm mx-auto">
+              <h3 className="text-xl font-black font-headline text-on-surface">Auto-Build Your Profile</h3>
+              <p className="text-sm text-on-surface-variant font-medium leading-relaxed">
+                Enter your LinkedIn URL and we'll handle the heavy lifting. We'll fetch your education, experience, and bio automatically.
+              </p>
+            </div>
+
+            <div className="space-y-4 text-left">
+              <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">LinkedIn Profile URL</label>
+              <div className="relative">
+                <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
+                <input
+                  placeholder="https://linkedin.com/in/yourname"
+                  className="w-full bg-surface-container p-6 pl-14 rounded-[2rem] border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium transition-all"
+                  value={formData.linkedin_url}
+                  onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleFetchLinkedIn}
+                disabled={isSubmitting}
+                className="w-full bg-indigo-600 text-white py-5 rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl"
+              >
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Fetch My Details"}
+              </button>
+              <button
+                onClick={() => setOnboardingMode(false)}
+                className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-indigo-600 transition-colors py-2"
+              >
+                Or setup manually
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
           {activeTab === 'basic' && (
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
               <div className="space-y-4">
