@@ -1,10 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info, Briefcase, Star, Trophy, BookOpen, Rocket } from "lucide-react";
+import { Wrench, Calculator, FileText, ArrowRight, ChevronRight, Info, Briefcase, Star, Trophy, BookOpen, Rocket, Users } from "lucide-react";
 import Link from "next/link";
 
 const tools = [
+  {
+    id: "matchforge",
+    title: "MatchForge",
+    description: "Find co-founders, case competition teammates, and learning partners within the DBE community.",
+    icon: Users,
+    href: "/matchforge",
+    color: "bg-indigo-600",
+    lightColor: "bg-indigo-50",
+    textColor: "text-indigo-600",
+    status: "Active"
+  },
   {
     id: "cgpa-calculator",
     title: "CGPA Calculator",
