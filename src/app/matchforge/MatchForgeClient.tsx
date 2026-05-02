@@ -75,7 +75,7 @@ export default function MatchForgeClient() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
-      <ProfileSetupModal isOpen={!isLoading && (!profile || !profile.is_complete)} initialData={profile} />
+      <ProfileSetupModal isOpen={!isLoading && (!profile || profile?.is_complete === false)} initialData={profile} />
 
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-4">
