@@ -4,6 +4,11 @@ import { Filter, X } from "lucide-react";
 
 const ROLES = ['Finance', 'Marketing', 'Operations', 'Product', 'Strategy', 'Design', 'Data', 'UI/UX'];
 const TERMS = [1, 2, 3, 4, 5, 6, 7, 8];
+const COMMON_SKILLS = [
+  'Financial Modeling', 'Market Research', 'Pitch Deck Design', 
+  'Operations', 'Marketing Strategy', 'Product Management', 
+  'Data Analytics', 'Public Speaking', 'UI/UX Design'
+];
 
 interface FilterSidebarProps {
   selectedType: string;
