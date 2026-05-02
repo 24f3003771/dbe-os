@@ -1,37 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Users, Search, Loader2 } from "lucide-react";
-import FilterSidebar from "@/components/matchforge/FilterSidebar";
-import CreateListingModal from "@/components/matchforge/CreateListingModal";
-import ListingCard from "@/components/matchforge/ListingCard";
-import { getListings, MatchListing } from "@/actions/matchforge";
-
 export const dynamic = 'force-dynamic';
 
+import { useState, useEffect } from "react";
+import { Users, Search, Loader2, Sparkles, Filter, Grid, UserPlus } from "lucide-react";
+import FilterSidebar from "@/components/matchforge/FilterSidebar";
+import CreateListingModal from "@/components/matchforge/CreateListingModal";
+import ProfileSetupModal from "@/components/matchforge/ProfileSetupModal";
+import ListingCard from "@/components/matchforge/ListingCard";
+import ProfileCard from "@/components/matchforge/ProfileCard";
+import { getListings, getProfile, getMatches, MatchListing, MatchProfile } from "@/actions/matchforge";
+
 export default function MatchForgePage() {
+  const [view, setView] = useState<'feed' | 'peers'>('feed');
   const [listings, setListings] = useState<MatchListing[]>([]);
+  const [matches, setMatches] = useState<(MatchProfile & { matchScore?: number })[]>([]);
+  const [profile, setProfile] = useState<MatchProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedType, setSelectedType] = useState("All");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    async function loadListings() {
+    async function init() {
       setIsLoading(true);
       try {
-        const data = await getListings({ 
-          type: selectedType, 
-          skills: selectedSkills 
-        });
-        setListings(data);
+        const [myProfile, activeListings, topMatches] = await Promise.all([
+          getProfile(),
+          getListings({ type: selectedType, skills: selectedSkills }),
+          getMatches()
+        ]);
+        
+        setProfile(myProfile);
+        setListings(activeListings);
+        setMatches(topMatches);
       } catch (err: any) {
         console.error("MatchForge Error:", err);
       } finally {
         setIsLoading(false);
       }
     }
-    loadListings();
+    init();
   }, [selectedType, selectedSkills]);
 
   const filteredListings = listings.filter(l => 
@@ -39,8 +48,15 @@ export default function MatchForgePage() {
     l.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const filteredMatches = matches.filter(m => 
+    m.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    m.bio.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
+      <ProfileSetupModal isOpen={!isLoading && (!profile || !profile.is_complete)} initialData={profile} />
+
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-4">
           <div className="flex items-center gap-4">
@@ -53,7 +69,25 @@ export default function MatchForgePage() {
             </div>
           </div>
         </div>
-        <CreateListingModal />
+        <div className="flex items-center gap-3">
+          <div className="bg-surface-container-low p-1.5 rounded-2xl flex items-center gap-1">
+            <button 
+              onClick={() => setView('feed')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === 'feed' ? 'bg-white text-on-surface shadow-sm' : 'text-on-surface-variant hover:text-on-surface'}`}
+            >
+              <Grid className="w-3.5 h-3.5" />
+              Listing Feed
+            </button>
+            <button 
+              onClick={() => setView('peers')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === 'peers' ? 'bg-white text-on-surface shadow-sm' : 'text-on-surface-variant hover:text-on-surface'}`}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              Peer Discovery
+            </button>
+          </div>
+          <CreateListingModal />
+        </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -73,7 +107,7 @@ export default function MatchForgePage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
             <input 
               type="text"
-              placeholder="Search listings by title or description..."
+              placeholder={`Search ${view === 'feed' ? 'listings' : 'peers'} by skills, bio, or title...`}
               className="w-full bg-surface-container-low p-5 pl-12 rounded-3xl border border-outline-variant/10 focus:border-indigo-500/30 focus:outline-none transition-all font-medium text-on-surface"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -85,23 +119,68 @@ export default function MatchForgePage() {
               <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
               <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Scanning the Matrix...</p>
             </div>
-          ) : filteredListings.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredListings.map(listing => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
           ) : (
-            <div className="text-center py-20 bg-surface-container-lowest border border-dashed border-outline-variant/20 rounded-[3rem]">
-              <div className="w-16 h-16 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-on-surface-variant" />
-              </div>
-              <h3 className="text-xl font-black text-on-surface mb-2">No matches found</h3>
-              <p className="text-on-surface-variant text-sm">Try adjusting your filters or be the first to post a request!</p>
+            <div className="space-y-10">
+              {view === 'peers' && matches.length > 0 && searchQuery === "" && (
+                <section className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-5 h-5 text-indigo-600" />
+                    <h2 className="text-lg font-black font-headline text-on-surface">Recommended for You</h2>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {matches.slice(0, 4).map(match => (
+                      <ProfileCard key={match.id} profile={match} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              <section className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-black font-headline text-on-surface">
+                    {view === 'feed' ? 'All Active Requests' : 'Explore All Peers'}
+                  </h2>
+                  <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+                    {view === 'feed' ? filteredListings.length : filteredMatches.length} results
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {view === 'feed' ? (
+                    filteredListings.length > 0 ? (
+                      filteredListings.map(listing => (
+                        <ListingCard key={listing.id} listing={listing} />
+                      ))
+                    ) : (
+                      <EmptyState />
+                    )
+                  ) : (
+                    filteredMatches.length > 0 ? (
+                      filteredMatches.map(match => (
+                        <ProfileCard key={match.id} profile={match} />
+                      ))
+                    ) : (
+                      <EmptyState />
+                    )
+                  )}
+                </div>
+              </section>
             </div>
           )}
         </main>
       </div>
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="col-span-2 text-center py-20 bg-surface-container-lowest border border-dashed border-outline-variant/20 rounded-[3rem]">
+      <div className="w-16 h-16 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-4">
+        <Search className="w-8 h-8 text-on-surface-variant" />
+      </div>
+      <h3 className="text-xl font-black text-on-surface mb-2">No matches found</h3>
+      <p className="text-on-surface-variant text-sm">Try adjusting your filters or search terms.</p>
     </div>
   );
 }

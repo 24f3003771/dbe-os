@@ -11,6 +11,16 @@ async function createClient() {
 
 export type ListingType = 'Case Competition' | 'Hackathon' | 'Co-founder' | 'Learning Partner';
 
+export interface MatchProfile {
+  id: string;
+  role: string;
+  bio: string;
+  skills: string[];
+  linkedin_url?: string;
+  whatsapp_number?: string;
+  is_complete: boolean;
+}
+
 export interface MatchListing {
   id: string;
   user_id: string;
@@ -20,10 +30,81 @@ export interface MatchListing {
   required_skills: string[];
   status: 'Open' | 'Closed';
   created_at: string;
-  profiles?: {
-    role: string;
-    bio: string;
-  };
+  profiles?: MatchProfile;
+}
+
+export async function getProfile() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from('match_profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') { // PGRST116 is 'no rows'
+    console.error("Error fetching profile:", error);
+    return null;
+  }
+
+  return data as MatchProfile;
+}
+
+export async function updateProfile(formData: Partial<MatchProfile>) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const { data, error } = await supabase
+    .from('match_profiles')
+    .upsert({
+      id: user.id,
+      ...formData,
+      is_complete: true,
+      updated_at: new Date().toISOString()
+    });
+
+  if (error) throw new Error(error.message);
+  revalidatePath('/matchforge');
+  return data;
+}
+
+export async function getMatches() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  // 1. Get current user's skills
+  const { data: myProfile } = await supabase
+    .from('match_profiles')
+    .select('skills')
+    .eq('id', user.id)
+    .single();
+
+  if (!myProfile || !myProfile.skills || myProfile.skills.length === 0) return [];
+
+  // 2. Get all other profiles
+  const { data: others, error } = await supabase
+    .from('match_profiles')
+    .select('*')
+    .neq('id', user.id)
+    .eq('is_complete', true);
+
+  if (error) return [];
+
+  // 3. Calculate match score
+  const matches = others.map(profile => {
+    const sharedSkills = profile.skills.filter((s: string) => myProfile.skills.includes(s));
+    const score = (sharedSkills.length / Math.max(myProfile.skills.length, profile.skills.length)) * 100;
+    return { ...profile, matchScore: Math.round(score) };
+  });
+
+  // 4. Return top matches (> 30%)
+  return matches
+    .filter(m => m.matchScore > 10)
+    .sort((a, b) => b.matchScore - a.matchScore);
 }
 
 export async function getListings(filters: { type?: string; skills?: string[] } = {}) {
@@ -33,10 +114,7 @@ export async function getListings(filters: { type?: string; skills?: string[] } 
     .from('match_listings')
     .select(`
       *,
-      profiles:user_id (
-        role,
-        bio
-      )
+      profiles:user_id (*)
     `)
     .order('created_at', { ascending: false });
 
@@ -52,7 +130,6 @@ export async function getListings(filters: { type?: string; skills?: string[] } 
 
   if (error) {
     console.error("[MatchForge] Database Query Error:", error.message, error.details);
-    // Return empty array instead of crashing
     return [];
   }
 
