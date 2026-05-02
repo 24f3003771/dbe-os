@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = 'force-dynamic';
-
 import { useState, useEffect } from "react";
 import { Users, Search, Loader2, Sparkles, Filter, Grid, UserPlus } from "lucide-react";
 import FilterSidebar from "@/components/matchforge/FilterSidebar";

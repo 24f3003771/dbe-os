@@ -4,6 +4,8 @@ import { createClient as createSupabaseClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
+export type ListingType = 'Case Competition' | 'Hackathon' | 'Co-founder' | 'Learning Partner';
+
 async function createClient() {
   const cookieStore = await cookies();
   return createSupabaseClient(cookieStore);
