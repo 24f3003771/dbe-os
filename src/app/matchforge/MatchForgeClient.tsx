@@ -10,13 +10,19 @@ import ProfileCard from "@/components/matchforge/ProfileCard";
 import { getListings, getProfile, getMatches } from "@/actions/matchforge";
 import { MatchListing, MatchProfile } from "@/types/matchforge";
 
-export default function MatchForgeClient() {
+interface MatchForgeClientProps {
+  initialProfile: MatchProfile | null;
+  initialListings: MatchListing[];
+  initialMatches: (MatchProfile & { matchScore?: number })[];
+}
+
+export default function MatchForgeClient({ initialProfile, initialListings, initialMatches }: MatchForgeClientProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [view, setView] = useState<'feed' | 'peers'>('feed');
-  const [listings, setListings] = useState<MatchListing[]>([]);
-  const [matches, setMatches] = useState<(MatchProfile & { matchScore?: number })[]>([]);
-  const [profile, setProfile] = useState<MatchProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [listings, setListings] = useState<MatchListing[]>(initialListings);
+  const [matches, setMatches] = useState<(MatchProfile & { matchScore?: number })[]>(initialMatches);
+  const [profile, setProfile] = useState<MatchProfile | null>(initialProfile);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedType, setSelectedType] = useState("All");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
@@ -25,11 +31,15 @@ export default function MatchForgeClient() {
 
   useEffect(() => {
     setIsMounted(true);
-    async function init() {
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    
+    async function updateData() {
       setIsLoading(true);
       try {
-        const [myProfile, activeListings, topMatches] = await Promise.all([
-          getProfile(),
+        const [newListings, newMatches] = await Promise.all([
           getListings({ 
             type: selectedType, 
             skills: selectedSkills,
@@ -38,23 +48,22 @@ export default function MatchForgeClient() {
           getMatches()
         ]);
         
-        setProfile(myProfile);
-        setListings(activeListings);
-        setMatches(topMatches);
+        setListings(newListings);
+        setMatches(newMatches);
       } catch (err: any) {
-        console.error("MatchForge Error:", err);
+        console.error("MatchForge Update Error:", err);
       } finally {
         setIsLoading(false);
       }
     }
-    init();
-  }, [selectedType, selectedSkills, selectedRoles]);
+    updateData();
+  }, [selectedType, selectedSkills, selectedRoles, isMounted]);
 
   if (!isMounted) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Initializing Matrix...</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant">Syncing Matrix...</p>
       </div>
     );
   }
@@ -66,7 +75,7 @@ export default function MatchForgeClient() {
 
   const filteredMatches = matches.filter(m => {
     const matchesSearch = (m.roles?.some(r => r.toLowerCase().includes(searchQuery.toLowerCase())) || false) ||
-                         (m.bio?.toLowerCase().includes(searchQuery.toLowerCase()) || false);
+                         (m.bio?.toLowerCase()?.includes(searchQuery.toLowerCase()) || false);
     const matchesTerm = selectedTerm ? m.current_term === selectedTerm : true;
     const matchesRoles = selectedRoles.length > 0 ? (m.roles?.some(r => selectedRoles.includes(r)) || false) : true;
     
@@ -111,7 +120,6 @@ export default function MatchForgeClient() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Sidebar */}
         <aside className="lg:col-span-3">
           <FilterSidebar 
             selectedType={selectedType}
@@ -125,7 +133,6 @@ export default function MatchForgeClient() {
           />
         </aside>
 
-        {/* Main Feed */}
         <main className="lg:col-span-9 space-y-8">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
