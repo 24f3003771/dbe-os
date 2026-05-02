@@ -69,21 +69,25 @@ export async function getMatches() {
 
   if (error) return [];
 
-  const matches = others.map(profile => {
+  const matches = (others || []).map(profile => {
     // Skill match
-    const sharedSkills = profile.skills.filter((s: string) => myProfile.skills.includes(s));
-    const skillScore = (sharedSkills.length / Math.max(myProfile.skills.length, profile.skills.length)) * 100;
+    const profileSkills = profile.skills || [];
+    const mySkills = myProfile.skills || [];
+    const sharedSkills = profileSkills.filter((s: string) => mySkills.includes(s));
+    const skillScore = (sharedSkills.length / Math.max(mySkills.length, profileSkills.length || 1)) * 100;
     
     // Role match (complementary or same)
-    const sharedRoles = profile.roles.filter((r: string) => myProfile.roles.includes(r));
+    const profileRoles = profile.roles || [];
+    const myRoles = myProfile.roles || [];
+    const sharedRoles = profileRoles.filter((r: string) => myRoles.includes(r));
     const roleScore = sharedRoles.length > 0 ? 20 : 0;
 
     return { ...profile, matchScore: Math.round(Math.min(100, skillScore + roleScore)) };
   });
 
   return matches
-    .filter(m => m.matchScore > 10)
-    .sort((a, b) => b.matchScore - a.matchScore);
+    .filter(m => (m.matchScore || 0) > 10)
+    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
 }
 
 export async function getListings(filters: { type?: string; skills?: string[]; roles?: string[] } = {}) {
@@ -93,7 +97,7 @@ export async function getListings(filters: { type?: string; skills?: string[]; r
     .from('match_listings')
     .select(`
       *,
-      profiles:user_id (*)
+      profiles:match_profiles!match_listings_user_id_fkey(*)
     `)
     .order('created_at', { ascending: false });
 
@@ -117,7 +121,7 @@ export async function getListings(filters: { type?: string; skills?: string[]; r
   // Filter by roles if provided (client-side since it's a nested filter)
   if (filters.roles && filters.roles.length > 0) {
     results = results.filter(l => 
-      l.profiles?.roles.some(r => filters.roles?.includes(r))
+      l.profiles?.roles?.some(r => filters.roles?.includes(r))
     );
   }
 
