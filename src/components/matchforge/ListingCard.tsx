@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Share2, Briefcase, Users, Zap, GraduationCap } from "lucide-react";
+import { Share2, Briefcase, Users, Zap, GraduationCap, Trophy } from "lucide-react";
 import { MatchListing } from "@/actions/matchforge";
 
 const typeIcons = {
@@ -10,8 +10,6 @@ const typeIcons = {
   'Co-founder': Users,
   'Learning Partner': GraduationCap
 };
-
-import { Trophy } from "lucide-react";
 
 export default function ListingCard({ listing }: { listing: MatchListing }) {
   const Icon = typeIcons[listing.type] || Briefcase;

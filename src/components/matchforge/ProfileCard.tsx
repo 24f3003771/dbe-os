@@ -43,6 +43,11 @@ export default function ProfileCard({ profile }: { profile: MatchProfile & { mat
               )}
             </div>
           </div>
+          
+          <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-3 italic">
+            "{profile.bio}"
+          </p>
+        </div>
 
         <div className="space-y-4 mt-auto pt-6 border-t border-outline-variant/5">
           <div className="flex flex-wrap gap-1.5">
