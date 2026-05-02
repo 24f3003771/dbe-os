@@ -308,6 +308,7 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
             </button>
           </div>
         </form>
+        )}
       </motion.div>
     </div>
   );

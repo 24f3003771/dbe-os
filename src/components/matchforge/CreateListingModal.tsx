@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { X, Plus, Sparkles, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { createListing, ListingType } from "@/actions/matchforge";
+import { createListing } from "@/actions/matchforge";
+import { ListingType } from "@/types/matchforge";
 
 const CATEGORIES = ['Case Competition', 'Hackathon', 'Co-founder', 'Learning Partner'];
 
