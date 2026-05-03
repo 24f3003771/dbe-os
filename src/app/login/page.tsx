@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, KeyRound, ArrowLeft, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
@@ -20,10 +20,7 @@ function LoginPageContent() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
-    const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-    );
+    const supabase = createClient();
 
     useEffect(() => {
         const errorParam = searchParams.get("error");

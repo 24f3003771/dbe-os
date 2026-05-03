@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, User as UserIcon, ArrowRight, Loader2, ArrowLeft, MapPin, Building, Phone, GraduationCap, Compass, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
@@ -44,10 +44,7 @@ export default function RegisterPage() {
     }, [pincode]);
 
     const router = useRouter();
-    const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-    );
+    const supabase = createClient();
 
     const handleNextStep = async (e: React.FormEvent) => {
         e.preventDefault();

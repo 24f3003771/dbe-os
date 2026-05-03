@@ -17,8 +17,8 @@ const API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
  */
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   try {
-    // Directly require the lib file to avoid module wrapping issues in Turbopack
-    const pdf = require("pdf-parse/lib/pdf-parse.js");
+    // Use a standard require for pdf-parse
+    const pdf = require("pdf-parse");
     const data = await pdf(buffer);
     return data.text;
   } catch (error: any) {

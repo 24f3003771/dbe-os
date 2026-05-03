@@ -1,5 +1,5 @@
-import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import SubjectQuizClient from "./SubjectQuizClient";
 import type { Question } from "@/data/db";
 import { ChevronLeft } from "lucide-react";
@@ -26,11 +26,7 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
     const { subject: subjectId } = await params;
 
     const cookieStore = await cookies();
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!,
-        { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-    );
+    const supabase = createClient(cookieStore);
 
     // Fetch subject
     const { data: subject } = await supabase

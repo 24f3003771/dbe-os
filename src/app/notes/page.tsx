@@ -1,15 +1,11 @@
-import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import { FileText, ChevronRight, Star } from "lucide-react";
 import Link from "next/link";
 
 export default async function UniversalNotesListPage() {
     const cookieStore = await cookies();
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!,
-        { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-    );
+    const supabase = createClient(cookieStore);
 
     // Get current user and their batch
     const { data: { user } } = await supabase.auth.getUser();

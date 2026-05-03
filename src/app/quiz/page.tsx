@@ -1,14 +1,10 @@
-import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import QuizDashboard from "./QuizDashboard";
 
 export default async function GlobalQuizPage() {
     const cookieStore = await cookies();
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!,
-        { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-    );
+    const supabase = createClient(cookieStore);
 
     const { data: { user } } = await supabase.auth.getUser();
     const batch = user?.user_metadata?.batch as string | undefined;

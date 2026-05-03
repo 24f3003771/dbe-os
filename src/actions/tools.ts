@@ -1,8 +1,6 @@
 "use server";
 
-
-
-const prisma: any = {};
+import { prisma } from "@/lib/db.server";
 
 export async function getOpportunities(filters: { type?: string, domain?: string, difficulty?: string } = {}) {
     const where: any = {};

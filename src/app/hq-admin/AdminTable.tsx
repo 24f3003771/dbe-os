@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@/utils/supabase/client";
 import { Loader2, UserX, UserCheck, Shield, Star, User, Trash2, Search, Users as UsersIcon, Activity, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -28,10 +28,7 @@ export default function AdminTable({ initialUsers }: { initialUsers: UserData[] 
     const [confirmDelete, setConfirmDelete] = useState<UserData | null>(null);
     const usersPerPage = 10;
 
-    const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-    );
+    const supabase = createClient();
 
     const toggleUserStatus = async (userId: string, currentType: number) => {
         setLoadingId(userId + "-status");

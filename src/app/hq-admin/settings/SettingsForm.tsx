@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@/utils/supabase/client";
 import { Loader2, ShieldCheck, Mail, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -9,10 +9,7 @@ export default function SettingsForm({ initialRestrictEmails }: { initialRestric
     const [restrictEmails, setRestrictEmails] = useState(initialRestrictEmails);
     const [isLoading, setIsLoading] = useState(false);
 
-    const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-    );
+    const supabase = createClient();
 
     const toggleRestriction = async () => {
         setIsLoading(true);

@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!;
 
 export const updateSession = async (request: NextRequest) => {
   try {
@@ -42,7 +42,7 @@ export const updateSession = async (request: NextRequest) => {
     // refreshing the auth token
     const { data: { user } } = await supabase.auth.getUser()
 
-    const protectedRoutes = ["/", "/dashboard", "/notes", "/opportunities", "/leaderboard", "/matchforge", "/dbe_notes", "/profile", "/hq-admin"];
+    const protectedRoutes = ["/", "/dashboard", "/notes", "/leaderboard", "/matchforge", "/dbe_notes", "/profile", "/hq-admin"];
     const authRoutes = ["/login", "/register"];
     const isProtectedRoute = protectedRoutes.some(route => 
       route === '/' ? request.nextUrl.pathname === '/' : request.nextUrl.pathname.startsWith(route)

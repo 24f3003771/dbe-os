@@ -23,6 +23,8 @@ const initialResume: Resume = {
   education: [],
   skills: [],
   projects: [],
+  awards: [],
+  volunteer: [],
   languages: [],
   interests: [],
   meta: {

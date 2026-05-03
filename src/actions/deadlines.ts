@@ -1,34 +1,40 @@
 "use server";
 
+import { prisma } from "@/lib/db.server";
+import { createClient as createSupabaseClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
-const auth = async () => ({ userId: "temp-user-id" });
+async function getAuth() {
+    const cookieStore = await cookies();
+    const supabase = createSupabaseClient(cookieStore);
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+}
 
-const prisma: any = {};
-
-async function ensureUser(userId: string) {
+async function ensureUser(userId: string, email: string, name: string) {
     return await prisma.user.upsert({
         where: { id: userId },
         update: {},
         create: {
             id: userId,
-            email: "pending@iimb.ac.in",
-            name: "Student",
+            email: email,
+            name: name,
         },
     });
 }
 
 export async function getDeadlinesAction() {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const user = await getAuth();
+    if (!user) throw new Error("Unauthorized");
 
-    await ensureUser(userId);
+    await ensureUser(user.id, user.email || "pending@iimb.ac.in", user.user_metadata?.full_name || "Student");
 
     const deadlines = await prisma.deadline.findMany({
-        where: { userId },
+        where: { userId: user.id },
         orderBy: { dueDate: 'asc' }
     });
     
-    return deadlines.map(d => ({
+    return deadlines.map((d: any) => ({
         id: d.id,
         title: d.title,
         subject: d.subject,
@@ -46,14 +52,14 @@ export async function addDeadlineAction(data: {
     priority: string;
     dueDate: string;
 }) {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const user = await getAuth();
+    if (!user) throw new Error("Unauthorized");
 
-    await ensureUser(userId);
+    await ensureUser(user.id, user.email || "pending@iimb.ac.in", user.user_metadata?.full_name || "Student");
 
     const newDeadline = await prisma.deadline.create({
         data: {
-            userId,
+            userId: user.id,
             title: data.title,
             subject: data.subject,
             type: data.type,
@@ -70,20 +76,20 @@ export async function addDeadlineAction(data: {
 }
 
 export async function toggleDeadlineAction(id: string, completed: boolean) {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const user = await getAuth();
+    if (!user) throw new Error("Unauthorized");
 
     await prisma.deadline.update({
-        where: { id, userId },
+        where: { id, userId: user.id },
         data: { completed }
     });
 }
 
 export async function deleteDeadlineAction(id: string) {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const user = await getAuth();
+    if (!user) throw new Error("Unauthorized");
 
     await prisma.deadline.delete({
-        where: { id, userId }
+        where: { id, userId: user.id }
     });
 }
