@@ -4,6 +4,7 @@ import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight, Wrench, Award } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
 import { useTodos } from "@/hooks/useTodos";
@@ -325,20 +326,33 @@ export default function Dashboard() {
 
         {/* SEO Content Section for Google Ranking */}
         <section className="mt-16 border-t border-outline-variant/10 pt-12 pb-8">
-            <h2 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Academic Directory & Guide</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-on-surface-variant/70 text-sm font-medium leading-relaxed">
+            <h2 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Indian Institute of Management Bangalore BBA Platform</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-on-surface-variant/70 text-sm font-medium leading-relaxed">
                 <div>
-                    <h3 className="text-on-surface font-bold mb-2">IIM Bangalore DBE Resources</h3>
+                    <h3 className="text-on-surface font-bold mb-2">IIM Bangalore BBA DBE Resources</h3>
+                    <p className="mb-2">
+                        Welcome to the ultimate <strong>IIM Bangalore BBA student platform</strong>. If you are exploring the <strong>Indian Institute of Management Bangalore BBA</strong> or the <strong>IIM Bangalore Digital Business Entrepreneurship</strong> program, you're in the right place. 
+                    </p>
                     <p>
-                        The DBE OS is the premier student-built platform for the <strong>IIM Bangalore Digital Business & Entrepreneurship (DBE)</strong> program. 
-                        We provide a comprehensive <strong>IIM Bangalore DBE guide</strong>, curated notes, and practice materials for UG and BBA students.
+                        Our <strong>IIMB DBE community</strong> provides access to comprehensive <strong>IIM Bangalore DBE notes</strong>, tools, and the <strong>best online BBA programs in India</strong> preparation resources. Discover <strong>how to get into IIM Bangalore BBA</strong> and prepare effectively.
                     </p>
                 </div>
                 <div>
-                    <h3 className="text-on-surface font-bold mb-2">UG & BBA DBE Support</h3>
+                    <h3 className="text-on-surface font-bold mb-2">Admissions & Eligibility 2026</h3>
+                    <p className="mb-2">
+                        Stay updated on the <strong>IIM Bangalore BBA DBE admission process 2026</strong>. We cover everything from <strong>IIM Bangalore BBA eligibility criteria for 12th students</strong>, <strong>IIM Bangalore BBA entrance exam details</strong>, to the <strong>IIM Bangalore BBA application form last date</strong>.
+                    </p>
                     <p>
-                        Searching for <strong>IIM Bangalore UG</strong> or <strong>IIM Bangalore BBA DBE</strong> materials? 
-                        Our platform aggregates winning pitch decks, case studies, and academic deadlines specifically for the IIM B community.
+                        Wondering about <strong>IIM Bangalore BBA fees</strong>, <strong>IIMB DBE course syllabus</strong>, or <strong>is IIM Bangalore BBA worth it</strong>? Check our guides and <strong>IIM Bangalore BBA online course review</strong> to make informed decisions.
+                    </p>
+                </div>
+                <div className="md:col-span-2 lg:col-span-1">
+                    <h3 className="text-on-surface font-bold mb-2">Why Choose IIMB DBE?</h3>
+                    <p className="mb-2">
+                        Understand the <strong>benefits of IIM Bangalore online degree</strong> and see how it compares: <strong>IIM Bangalore DBE vs regular BBA</strong>, <strong>IIM Bangalore BBA vs Indian Institute of Management Indore IPM</strong>, and <strong>IIM Bangalore BBA vs DU BBA</strong>.
+                    </p>
+                    <p>
+                        Join the <strong>IIM Bangalore DBE student network</strong> and explore <strong>IIM Bangalore courses for students after 12th</strong>. Your <strong>IIM Bangalore BBA preparation platform</strong> is here to guide you through <strong>what is digital business and entrepreneurship</strong>.
                     </p>
                 </div>
             </div>
@@ -349,8 +363,8 @@ export default function Dashboard() {
             <p className="text-xs font-medium italic">Built with passion by the IIM Bangalore community.</p>
             <Link href="/about" className="group flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/5 hover:text-primary transition-all border border-outline-variant/5">
                 Meet the Founders <div className="flex -space-x-2 ml-1">
-                    <img src="https://github.com/Ishaan-jha-dev.png" className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Ishaan"/>
-                    <img src="/madhwendra_profile.png" className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Madhwendra"/>
+                    <Image src="https://github.com/Ishaan-jha-dev.png" width={20} height={20} className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Ishaan"/>
+                    <Image src="/madhwendra_profile.png" width={20} height={20} className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Madhwendra"/>
                 </div>
             </Link>
         </footer>
