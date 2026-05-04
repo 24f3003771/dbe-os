@@ -130,6 +130,33 @@ export default async function RootLayout({
     <html lang="en" className={`${plusJakartaSans.variable} ${beVietnamPro.variable}`}>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "EducationalOrganization",
+              "name": "DBE OS",
+              "alternateName": "IIM Bangalore BBA DBE Student Platform",
+              "url": "https://dbeos.in",
+              "description": "DBE OS is the ultimate student preparation platform and academic operating system for the IIM Bangalore BBA DBE (Digital Business and Entrepreneurship) program. Built by students, for students. It is the best preparation platform for BBA DBE, providing notes, guides, community networking, and tools.",
+              "founder": [
+                {
+                  "@type": "Person",
+                  "name": "Ishaan Jha",
+                  "jobTitle": "Co-founder of DBE OS",
+                  "sameAs": "https://github.com/Ishaan-jha-dev"
+                },
+                {
+                  "@type": "Person",
+                  "name": "Madhwendra",
+                  "jobTitle": "Co-founder of DBE OS"
+                }
+              ],
+              "knowsAbout": ["IIM Bangalore", "BBA DBE", "Digital Business and Entrepreneurship", "Undergraduate Program"]
+            })
+          }}
+        />
       </head>
       <body className="bg-surface text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body">
 

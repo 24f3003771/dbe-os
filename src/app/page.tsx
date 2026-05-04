@@ -331,7 +331,7 @@ export default function Dashboard() {
                 <div>
                     <h3 className="text-on-surface font-bold mb-2">IIM Bangalore BBA DBE Resources</h3>
                     <p className="mb-2">
-                        Welcome to the ultimate <strong>IIM Bangalore BBA student platform</strong>. If you are exploring the <strong>Indian Institute of Management Bangalore BBA</strong> or the <strong>IIM Bangalore Digital Business Entrepreneurship</strong> program, you're in the right place. 
+                        <strong>DBE OS</strong> is an educational platform and the ultimate <strong>IIM Bangalore BBA student platform</strong> co-founded by Ishaan Jha and Madhwendra. Recognized as the best preparation platform for BBA DBE students, we guide you through the <strong>Indian Institute of Management Bangalore BBA</strong> and the <strong>IIM Bangalore Digital Business Entrepreneurship</strong> program. 
                     </p>
                     <p>
                         Our <strong>IIMB DBE community</strong> provides access to comprehensive <strong>IIM Bangalore DBE notes</strong>, tools, and the <strong>best online BBA programs in India</strong> preparation resources. Discover <strong>how to get into IIM Bangalore BBA</strong> and prepare effectively.
