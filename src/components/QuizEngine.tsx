@@ -4,12 +4,14 @@ import { Check, X, ArrowRight, Clock, Flag, Eraser, Eye, LogOut, CheckCircle2, C
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { saveExamResult, QuestionResponse } from "@/actions/quiz";
 import { evaluateTextAnswer } from "@/actions/ai-evaluate";
+import { createClient } from "@/utils/supabase/client";
 
 interface QuizEngineProps {
     subjectId: string;        // subject code e.g. "ES21X"
     subjectTitle?: string;    // e.g. "Entrepreneurship"
     moduleId: number;
     moduleTitle?: string;     // e.g. "MOC1 – Financing Basics"
+    quizSetId?: string;       // for linking exam results to a specific set
     questions: Question[];
     mode: "practice" | "exam";
     quizSubMode?: "practice" | "ai" | "exam-set"; // for detailed event logging
@@ -22,7 +24,7 @@ interface QuizEngineProps {
 
 type QuestionStatus = "not-visited" | "unanswered" | "answered" | "marked" | "answered-marked";
 
-export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTitle, quizSubMode, questions, mode, examDurationSeconds, showCalculator = false, negativeMarking = false, negMarkingValue = "1/3", onComplete }: QuizEngineProps) {
+export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTitle, quizSetId, quizSubMode, questions, mode, examDurationSeconds, showCalculator = false, negativeMarking = false, negMarkingValue = "1/3", onComplete }: QuizEngineProps) {
     const [showInstructions, setShowInstructions] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<(number | null)[]>(new Array(questions.length).fill(null));
@@ -34,6 +36,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
     const [submitted, setSubmitted] = useState(false);
     const [totalTimeSpent, setTotalTimeSpent] = useState(0);
     const [examTimer, setExamTimer] = useState(examDurationSeconds || 0);
+    const [currentQuestionTimer, setCurrentQuestionTimer] = useState(0);
 
     // Per-question time tracking
     const [questionTimes, setQuestionTimes] = useState<number[]>(new Array(questions.length).fill(0));
@@ -49,6 +52,24 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
     const [finalDisplayScore, setFinalDisplayScore] = useState<{ raw: number; percentage: number } | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [isEvaluating, setIsEvaluating] = useState(false); // AI grading text answers
+
+    const [finalTiming, setFinalTiming] = useState<number[] | null>(null);
+
+    const [userData, setUserData] = useState<{ name: string; email: string } | null>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                setUserData({
+                    name: user.user_metadata?.full_name || user.user_metadata?.name || "Scholar",
+                    email: user.email || "student@iimb.ac.in"
+                });
+            }
+        };
+        fetchUser();
+    }, []);
 
     const [showCalc, setShowCalc] = useState(false);
     const [calcInput, setCalcInput] = useState("");
@@ -90,13 +111,15 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
 
     // Record time spent on the current question before navigating away
     const recordQuestionTime = useCallback((index: number) => {
-        const spent = Math.round((Date.now() - questionStartTimeRef.current) / 1000);
+        const now = Date.now();
+        const spent = Math.max(1, Math.round((now - questionStartTimeRef.current) / 1000));
         setQuestionTimes(prev => {
             const next = [...prev];
             next[index] = (next[index] || 0) + spent;
             return next;
         });
-        questionStartTimeRef.current = Date.now();
+        questionStartTimeRef.current = now;
+        setCurrentQuestionTimer(0);
     }, []);
 
     // Trigger AI evaluation in the background when user leaves a text question.
@@ -136,8 +159,9 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
         if (examTimerRef.current) clearInterval(examTimerRef.current);
 
         // Record time for the last viewed question before submitting
+        const now = Date.now();
         const finalTimes = [...questionTimes];
-        const lastSpent = Math.round((Date.now() - questionStartTimeRef.current) / 1000);
+        const lastSpent = Math.max(1, Math.round((now - questionStartTimeRef.current) / 1000));
         finalTimes[currentIndex] = (finalTimes[currentIndex] || 0) + lastSpent;
         const elapsed = Math.round((Date.now() - startTimeRef.current) / 1000);
         setTotalTimeSpent(elapsed);
@@ -221,9 +245,16 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                 return acc;
             }, 0);
 
-            // ── Step 4: Tomato Calculation ────────────────────────────────
-            // Total = round(2 × totalQuestions + finalScore × 5)
+            const totalTimeFromQuestions = finalTimes.reduce((a, b) => a + b, 0);
             const tomatoes = Math.round(2 * questions.length + finalScore * 5);
+            const avgTimePerQ = questions.length > 0 ? Math.round(totalTimeFromQuestions / questions.length) : 0;
+            
+            // Legacy mistakes array for the dashboard count
+            const legacyMistakes = responses.filter(r => {
+                if (r.inputType === "mcq") return !r.isCorrect;
+                if (r.inputType === "text") return (r.ai_grade ?? 100) < 100;
+                return false;
+            });
 
             // ── Step 5: Save to DB ────────────────────────────────────
             setIsSaving(true);
@@ -232,10 +263,12 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     subject: subjectId,
                     score: Math.round(finalScore * 100) / 100, // 2 decimal places
                     totalQuestions: questions.length,
-                    timerPerQuestion: 0, // Legacy field, kept for backwards compatibility
+                    timerPerQuestion: avgTimePerQ, 
                     totalTimeTaken: elapsed,
                     responses,
+                    mistakes: JSON.stringify(legacyMistakes),
                     tomatoesEarned: tomatoes,
+                    quizSetId: quizSetId,
                 });
             } catch (error) {
                 console.error("Failed to save exam result:", error);
@@ -299,17 +332,18 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
             }
         }
 
+        setFinalTiming(finalTimes);
         setSubmitted(true);
         setShowCalc(false);
-    }, [answers, textAnswers, questions, questionTimes, currentIndex, mode, subjectId, examDurationSeconds, negativeMarking, negMarkingValue, earnTomatoes]);
+    }, [answers, textAnswers, questions, questionTimes, currentIndex, mode, subjectId, examDurationSeconds, negativeMarking, negMarkingValue, earnTomatoes, quizSetId, subjectTitle, moduleTitle, quizSubMode]);
 
     const submitAndNext = useCallback(() => {
-        recordQuestionTime(currentIndex);      // save time on current Q
         triggerAiEvalIfNeeded(currentIndex);   // fire AI eval in background if text Q
         if (currentIndex < questions.length - 1) {
+            recordQuestionTime(currentIndex);  // ONLY save if moving to next Q
             setCurrentIndex(prev => prev + 1);
         } else {
-            submitAll();
+            submitAll(); // submitAll handles the time recording for the final question
         }
     }, [currentIndex, questions.length, recordQuestionTime, triggerAiEvalIfNeeded, submitAll]);
 
@@ -345,7 +379,9 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
         startTimeRef.current = Date.now();
         questionStartTimeRef.current = Date.now(); // start per-question timer for Q1
         timerRef.current = setInterval(() => {
-            setTotalTimeSpent(Math.floor((Date.now() - startTimeRef.current) / 1000));
+            const now = Date.now();
+            setTotalTimeSpent(Math.floor((now - startTimeRef.current) / 1000));
+            setCurrentQuestionTimer(Math.floor((now - questionStartTimeRef.current) / 1000));
         }, 1000);
         
         setStatuses((prev) => {
@@ -482,8 +518,8 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                            </div>
                            <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full border-4 border-surface shadow-sm" />
                         </div>
-                        <p className="font-black font-headline text-on-surface text-xl text-center mb-1 leading-none">Scholar</p>
-                        <p className="text-xs text-on-surface-variant text-center mb-8 font-bold opacity-60">student@iimb.ac.in</p>
+                        <p className="font-black font-headline text-on-surface text-xl text-center mb-1 leading-none">{userData?.name || "Scholar"}</p>
+                        <p className="text-xs text-on-surface-variant text-center mb-8 font-bold opacity-60">{userData?.email || "student@iimb.ac.in"}</p>
                         
                         <div className="w-full space-y-4 bg-surface-container-low p-5 rounded-2xl border border-outline-variant/10">
                             <div className="flex justify-between items-center text-[10px] font-black text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/10 pb-2">
@@ -529,6 +565,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
             correctIdx: q.correctAnswer,
             explanation: q.input_type === "text" ? null : q.explanation,
             isCorrect: q.input_type === "text" ? null : answers[i] === q.correctAnswer,
+            timeTaken: finalTiming ? finalTiming[i] : (questionTimes[i] || 0),
         }));
 
         return (
@@ -543,7 +580,13 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/20">
                                 <Check className="w-8 h-8 text-white" strokeWidth={4} />
                             </div>
-                            <h2 className="text-3xl font-black font-headline text-on-surface mb-2 tracking-tighter italic">Exam Concluded.</h2>
+                            <div className="mb-2">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">{subjectTitle || subjectId}</span>
+                                <h2 className="text-3xl font-black font-headline text-on-surface tracking-tighter italic leading-none mt-1">
+                                    {quizSubMode === "exam-set" ? "Exam Mode" : quizSubMode === "ai" ? "AI Concept Builder" : "Practice Mode"}
+                                </h2>
+                                {moduleTitle && <p className="text-[10px] font-bold text-on-surface-variant mt-1 uppercase tracking-tight">{moduleTitle}</p>}
+                            </div>
                             
                             <div className="flex items-center justify-center gap-3 mb-6">
                                 <div className="flex items-center gap-1.5 px-3 py-1 bg-primary/5 rounded-full border border-primary/10 text-[10px] font-black">
@@ -577,10 +620,12 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                             </div>
 
                             <div className="flex gap-3">
-                                <button onClick={() => window.location.reload()} className="flex-1 py-3 bg-surface border-2 border-outline-variant/20 font-black rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
-                                    <RotateCcw className="w-4 h-4 text-primary" /> Retake
-                                </button>
-                                <button onClick={onComplete} className="flex-[2] py-3 bg-primary text-on-primary font-black text-sm rounded-xl shadow-lg shadow-primary/10 uppercase tracking-widest">
+                                {mode !== "exam" && (
+                                    <button onClick={() => window.location.reload()} className="flex-1 py-3 bg-surface border-2 border-outline-variant/20 font-black rounded-xl text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
+                                        <RotateCcw className="w-4 h-4 text-primary" /> Retake
+                                    </button>
+                                )}
+                                <button onClick={onComplete} className={`${mode === "exam" ? "w-full" : "flex-[2]"} py-3 bg-primary text-on-primary font-black text-sm rounded-xl shadow-lg shadow-primary/10 uppercase tracking-widest`}>
                                     Close
                                 </button>
                             </div>
@@ -605,12 +650,18 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                             ) : (
                                 mistakes.map((m) => (
                                     <div key={m.id} className={`p-6 rounded-[2rem] border-2 relative overflow-hidden bg-surface-container shadow-sm ${m.isCorrect === true ? "border-green-500/10" : m.isCorrect === false ? "border-error/10" : "border-primary/10"}`}>
-                                        <div className="flex items-start gap-4 mb-4">
-                                            <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm ${m.isCorrect === true ? "bg-green-500 text-white" : m.isCorrect === false ? "bg-error text-white" : "bg-primary/20 text-primary"}`}>
-                                                {m.id}
-                                            </span>
-                                            <p className="text-base font-bold text-on-surface leading-snug tracking-tight pt-1">{m.text}</p>
-                                        </div>
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div className="flex items-start gap-4">
+                                                    <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm ${m.isCorrect === true ? "bg-green-500 text-white" : m.isCorrect === false ? "bg-error text-white" : "bg-primary/20 text-primary"}`}>
+                                                        {m.id}
+                                                    </span>
+                                                    <p className="text-base font-bold text-on-surface leading-snug tracking-tight pt-1">{m.text}</p>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-surface rounded-xl border border-outline-variant/10 shadow-sm flex-shrink-0">
+                                                    <Clock className="w-3 h-3 text-on-surface-variant/50" />
+                                                    <span className="text-[10px] font-black tabular-nums">{m.timeTaken}s</span>
+                                                </div>
+                                            </div>
 
                                         <div className="grid grid-cols-1 gap-3 mb-4">
                                             {/* MCQ: show selected wrong answer */}
@@ -670,7 +721,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     {/* Total elapsed */}
                     <div className="flex items-center gap-1">
                         <Clock className="w-3 h-3 text-primary/60" />
-                        <span className="font-black text-[11px] text-on-surface tabular-nums">{formatTime(totalTimeSpent)}</span>
+                        <span className="font-black text-[11px] text-on-surface tabular-nums">{formatTime(currentQuestionTimer + (questionTimes[currentIndex] || 0))}</span>
                     </div>
 
                     {mode === "exam" && examDurationSeconds && (

@@ -55,6 +55,7 @@ export async function saveExamResult(data: {
     totalTimeTaken: number;
     responses: QuestionResponse[];
     tomatoesEarned?: number;
+    quizSetId?: string;
 }) {
     try {
         const supabase = await getSupabase();
@@ -71,6 +72,7 @@ export async function saveExamResult(data: {
                 total_time_taken: data.totalTimeTaken,
                 responses: data.responses,
                 tomatoes_earned: data.tomatoesEarned ?? 0,
+                quiz_set_id: data.quizSetId ?? null,
             })
             .select()
             .single();

@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import type { Question } from "@/data/db";
-import { BookOpen, Activity, Play, ChevronLeft, Timer, Target, History, Trash2, Calendar, Sparkles } from "lucide-react";
+import { BookOpen, Activity, Play, ChevronLeft, Timer, Target, History, Trash2, Calendar, Sparkles, Eye } from "lucide-react";
 import Link from "next/link";
 import QuizEngine from "@/components/QuizEngine";
+import ExamAnalysisView from "@/components/ExamAnalysisView";
 import { getExamHistory, deleteExamResult } from "@/actions/quiz";
 import LoadingScreen from "@/components/LoadingScreen";
 
@@ -33,6 +34,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     const [pendingModuleId, setPendingModuleId] = useState<number | null>(null);
     const [examTimer, setExamTimer] = useState<number | undefined>(undefined);
     const [emptyMessageModuleId, setEmptyMessageModuleId] = useState<number | null>(null);
+    const [resultToAnalyze, setResultToAnalyze] = useState<any | null>(null);
 
     // Subject-level exam set picker
     const [showExamSetPicker, setShowExamSetPicker] = useState(false);
@@ -41,14 +43,14 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     const [loadingHistory, setLoadingHistory] = useState(false);
 
     useEffect(() => {
-        if (activeTab === "history") loadHistory();
-    }, [activeTab]);
+        loadHistory();
+    }, []);
 
     const loadHistory = async () => {
         setLoadingHistory(true);
         try {
             const history = await getExamHistory();
-            setExamHistory(history.filter((h: any) => h.subject === data.subjectId));
+            setExamHistory(history.filter((h: any) => h.subject === data.id));
         } catch (error) {
             console.error("Failed to load history:", error);
         } finally {
@@ -119,83 +121,98 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         data.modules.some((m) => m.questions.some((q) => q.type === "exam" && q.quiz_set_id === set.id))
     );
 
-    // Quiz view — module practice/ai
-    if (activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule) {
-        return (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-[1600px] mx-auto min-h-screen">
-                <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">
-                            {quizSubMode === "ai" ? "AI Concept Builder" : "Practice Mode"}
-                        </span>
-                        <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
-                    </div>
-                </div>
-                <QuizEngine
-                    subjectId={data.id}
-                    subjectTitle={data.title}
-                    moduleId={activeModule.id}
-                    moduleTitle={activeModule.title}
-                    quizSubMode={quizSubMode}
-                    questions={
-                        quizSubMode === "ai"
-                            ? activeModule.questions.filter((q) => q.type === "practice")
-                            : activeModule.questions.filter((q) => q.type !== "exam")
-                    }
-                    mode="practice"
-                    showCalculator={data.calculatorEnabled}
-                    negativeMarking={false} // Practice mode doesn't have negative marking
-                    examDurationSeconds={undefined}
-                    onComplete={() => {
-                        setActiveTab("overview");
-                        setActiveModuleId(null);
-                    }}
-                />
-            </div>
-        );
-    }
-
-    // Quiz view — exam set (subject-scoped, all modules)
-    if (activeTab === "quiz" && quizSubMode === "exam-set") {
-        const setName = data.quizSets.find((s) => s.id === activeQuizSetId)?.name ?? "Exam";
-        return (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-[1600px] mx-auto min-h-screen">
-                <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase">
-                                Exam Mode
-                            </span>
-                            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
-                                {data.strictTimeLimit}m TIMED
-                            </span>
-                        </div>
-                        <h1 className="text-2xl font-bold text-on-surface tracking-tight">{setName}</h1>
-                        <p className="text-xs text-on-surface-variant font-medium mt-1">{allExamSetQuestions.length} questions · Full subject scope</p>
-                    </div>
-                </div>
-                <QuizEngine
-                    subjectId={data.id}
-                    subjectTitle={data.title}
-                    moduleId={0}
-                    quizSubMode="exam-set"
-                    questions={allExamSetQuestions}
-                    mode="exam"
-                    showCalculator={data.calculatorEnabled}
-                    negativeMarking={data.negativeMarking}
-                    negMarkingValue={data.negMarkingValue}
-                    examDurationSeconds={examTimer}
-                    onComplete={() => {
-                        setActiveTab("overview");
-                        setActiveQuizSetId(null);
-                    }}
-                />
-            </div>
-        );
-    }
-
     return (
         <div className="max-w-5xl mx-auto space-y-10 pb-20">
+            {/* Exam Analysis Modal */}
+            {resultToAnalyze && (
+                <div className="fixed inset-0 z-[300] bg-surface overflow-y-auto">
+                    <ExamAnalysisView 
+                        record={resultToAnalyze} 
+                        subjectTitle={data.title}
+                        quizSets={data.quizSets}
+                        onClose={() => setResultToAnalyze(null)} 
+                    />
+                </div>
+            )}
+
+            {/* Quiz view — module practice/ai */}
+            {activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule && (
+                <div className="fixed inset-0 z-[200] bg-surface flex flex-col p-4 animate-in fade-in duration-300">
+                    <div className="max-w-[1600px] mx-auto w-full flex flex-col h-full">
+                        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">
+                                    {quizSubMode === "ai" ? "AI Concept Builder" : "Practice Mode"}
+                                </span>
+                                <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
+                            </div>
+                        </div>
+                        <QuizEngine
+                            subjectId={data.id}
+                            subjectTitle={data.title}
+                            moduleId={activeModule.id}
+                            moduleTitle={activeModule.title}
+                            quizSubMode={quizSubMode}
+                            questions={
+                                quizSubMode === "ai"
+                                    ? activeModule.questions.filter((q) => q.type === "practice")
+                                    : activeModule.questions.filter((q) => q.type !== "exam")
+                            }
+                            mode="practice"
+                            showCalculator={data.calculatorEnabled}
+                            negativeMarking={false}
+                            examDurationSeconds={undefined}
+                            onComplete={() => {
+                                setActiveTab("overview");
+                                setActiveModuleId(null);
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Quiz view — exam set (subject-scoped, all modules) */}
+            {activeTab === "quiz" && quizSubMode === "exam-set" && activeQuizSetId && (
+                <div className="fixed inset-0 z-[200] bg-surface flex flex-col p-4 animate-in fade-in duration-300">
+                    <div className="max-w-[1600px] mx-auto w-full flex flex-col h-full">
+                        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase">
+                                        Exam Mode
+                                    </span>
+                                    <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
+                                        {data.strictTimeLimit}m TIMED
+                                    </span>
+                                </div>
+                                <h1 className="text-2xl font-bold text-on-surface tracking-tight">
+                                    {data.quizSets.find((s) => s.id === activeQuizSetId)?.name ?? "Exam"}
+                                </h1>
+                                <p className="text-xs text-on-surface-variant font-medium mt-1">{allExamSetQuestions.length} questions · Full subject scope</p>
+                            </div>
+                        </div>
+                        <QuizEngine
+                            subjectId={data.id}
+                            subjectTitle={data.title}
+                            moduleId={0}
+                            quizSetId={activeQuizSetId || undefined}
+                            quizSubMode="exam-set"
+                            questions={allExamSetQuestions}
+                            mode="exam"
+                            showCalculator={data.calculatorEnabled}
+                            negativeMarking={data.negativeMarking}
+                            negMarkingValue={data.negMarkingValue}
+                            examDurationSeconds={examTimer}
+                            onComplete={() => {
+                                loadHistory(); // Refresh locks immediately
+                                setActiveTab("overview");
+                                setActiveQuizSetId(null);
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
+
             <Link href="/quiz" className="flex items-center text-sm font-bold text-on-surface-variant hover:text-primary transition-colors w-fit">
                 <ChevronLeft className="w-5 h-5 mr-1" /> Back to Subjects
             </Link>
@@ -262,52 +279,94 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 gap-4">
-                            {examHistory.map((record) => {
-                                const mistakes = JSON.parse(record.mistakes || "[]");
-                                const percentage = Math.round((record.score / record.total_questions) * 100);
-                                return (
-                                    <div key={record.id} className="bg-surface-container rounded-3xl p-6 border border-outline-variant/10 shadow-sm hover:shadow-md transition-all">
-                                        <div className="flex flex-col md:flex-row justify-between gap-6">
-                                            <div className="space-y-4 flex-1">
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white ${percentage >= 70 ? "bg-green-500" : percentage >= 40 ? "bg-amber-500" : "bg-error"}`}>
-                                                        {percentage}%
+                                {examHistory.map((record) => {
+                                    if (!record) return null;
+                                    let mistakesCount = 0;
+                                    try {
+                                        // Extremely defensive parsing
+                                        let rawMistakes = record.mistakes;
+                                        if (typeof rawMistakes === 'string' && rawMistakes.trim()) {
+                                            try { rawMistakes = JSON.parse(rawMistakes); } catch { rawMistakes = null; }
+                                        }
+                                        
+                                        if (Array.isArray(rawMistakes)) {
+                                            mistakesCount = rawMistakes.length;
+                                        } else {
+                                            let rawRes = record.responses;
+                                            if (typeof rawRes === 'string' && rawRes.trim()) {
+                                                try { rawRes = JSON.parse(rawRes); } catch { rawRes = null; }
+                                            }
+                                            if (Array.isArray(rawRes)) {
+                                                mistakesCount = rawRes.filter((r: any) => {
+                                                    if (r.inputType === "mcq") return !r.isCorrect;
+                                                    if (r.inputType === "text") return (r.ai_grade ?? 100) < 100;
+                                                    return false;
+                                                }).length;
+                                            }
+                                        }
+                                    } catch (e) {
+                                        mistakesCount = 0;
+                                    }
+                                    
+                                    const score = Number(record.score) || 0;
+                                    const totalQ = Number(record.total_questions) || 0;
+                                    const percentage = totalQ > 0 ? Math.round((score / totalQ) * 100) : 0;
+                                    const setName = data.quizSets?.find(s => s.id === record.quiz_set_id)?.name || "Simulator Run";
+                                    
+                                    return (
+                                        <div 
+                                            key={record.id} 
+                                            onClick={() => setResultToAnalyze(record)}
+                                            className="bg-surface-container rounded-3xl p-6 border border-outline-variant/10 shadow-sm hover:shadow-md transition-all cursor-pointer group/card"
+                                        >
+                                            <div className="flex flex-col md:flex-row justify-between gap-6">
+                                                <div className="space-y-4 flex-1">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white ${percentage >= 70 ? "bg-green-500" : percentage >= 40 ? "bg-amber-500" : "bg-error"}`}>
+                                                            {percentage}%
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-black text-on-surface font-headline uppercase tracking-tight group-hover/card:text-primary transition-colors">{setName}</p>
+                                                            <p className="text-xs text-on-surface-variant flex items-center gap-1 font-bold">
+                                                                <Calendar className="w-3 h-3" /> {record.created_at ? new Date(record.created_at).toLocaleDateString() : 'Unknown Date'}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p className="text-sm font-black text-on-surface font-headline uppercase tracking-tight">Simulator Run</p>
-                                                        <p className="text-xs text-on-surface-variant flex items-center gap-1 font-bold">
-                                                            <Calendar className="w-3 h-3" /> {new Date(record.created_at).toLocaleDateString()} at {new Date(record.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                                        </p>
+                                                    <div className="flex flex-wrap gap-4">
+                                                        <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
+                                                            <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Score</p>
+                                                            <p className="text-lg font-black text-on-surface">{score} / {totalQ}</p>
+                                                        </div>
+                                                        <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
+                                                            <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Timer</p>
+                                                            <p className="text-lg font-black text-on-surface">{record.timer_per_question || 0}s/Q</p>
+                                                        </div>
+                                                        <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
+                                                            <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Mistakes</p>
+                                                            <p className="text-lg font-black text-error">{mistakesCount}</p>
+                                                        </div>
+                                                        <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
+                                                            <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">🍅 Earned</p>
+                                                            <p className="text-lg font-black text-secondary">{record.tomatoes_earned ?? 0}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="flex flex-wrap gap-4">
-                                                    <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
-                                                        <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Score</p>
-                                                        <p className="text-lg font-black text-on-surface">{record.score} / {record.total_questions}</p>
-                                                    </div>
-                                                    <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
-                                                        <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Timer</p>
-                                                        <p className="text-lg font-black text-on-surface">{record.timer_per_question}s/Q</p>
-                                                    </div>
-                                                    <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
-                                                        <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">Mistakes</p>
-                                                        <p className="text-lg font-black text-error">{mistakes.length}</p>
-                                                    </div>
-                                                    <div className="bg-surface p-3 rounded-xl border border-outline-variant/10 min-w-[100px]">
-                                                        <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-1">🍅 Earned</p>
-                                                        <p className="text-lg font-black text-secondary">{record.tomatoes_earned ?? 0}</p>
-                                                    </div>
+                                                <div className="flex flex-row md:flex-col justify-end">
+                                                    <button 
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setResultToAnalyze(record);
+                                                        }}
+                                                        className="p-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all border border-primary/20 flex items-center justify-center group-hover/card:scale-110 shadow-sm"
+                                                        title="Analyse Performance"
+                                                    >
+                                                        <Eye className="w-6 h-6" />
+                                                    </button>
                                                 </div>
-                                            </div>
-                                            <div className="flex flex-row md:flex-col justify-end gap-2">
-                                                <button onClick={() => handleDeleteRecord(record.id)} className="p-3 rounded-xl text-on-surface-variant hover:text-error hover:bg-error/10 transition-all border border-outline-variant/10">
-                                                    <Trash2 className="w-5 h-5" />
-                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
                         </div>
                     )}
                 </section>
@@ -424,6 +483,32 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                         m.questions.filter(q => q.type === "exam" && q.quiz_set_id === set.id).map(q => q.id)
                                     )
                                 ).size;
+                                
+                                const attemptedResult = examHistory.find(h => h.quiz_set_id === set.id);
+
+                                if (attemptedResult) {
+                                    return (
+                                        <div
+                                            key={set.id}
+                                            className="w-full p-4 rounded-2xl border-2 border-outline-variant/10 bg-surface/50 shadow-sm flex items-center justify-between"
+                                        >
+                                            <div>
+                                                <span className="font-black font-headline text-base text-on-surface/50 block line-through">{set.name}</span>
+                                                <span className="text-xs text-on-surface-variant/50 font-mono">Attempted</span>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    setResultToAnalyze(attemptedResult);
+                                                    setShowExamSetPicker(false);
+                                                }}
+                                                className="px-4 py-2 bg-primary/10 text-primary hover:bg-primary/20 transition-all rounded-xl font-bold text-xs flex items-center gap-2"
+                                            >
+                                                <History className="w-4 h-4" /> Analyze
+                                            </button>
+                                        </div>
+                                    );
+                                }
+
                                 return (
                                     <button
                                         key={set.id}
