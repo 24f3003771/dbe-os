@@ -156,7 +156,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             questions={
                                 quizSubMode === "ai"
                                     ? activeModule.questions.filter((q) => q.type === "practice")
-                                    : activeModule.questions.filter((q) => q.type !== "exam")
+                                    : activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice")
                             }
                             mode="practice"
                             showCalculator={data.calculatorEnabled}
