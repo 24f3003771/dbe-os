@@ -206,8 +206,7 @@ export default function InternshipHunterPage() {
 
 
 
-            {viewMode !== "CHOOSE" && (
-                <section className="max-w-7xl mx-auto px-6 space-y-10">
+            <section className="max-w-7xl mx-auto px-6 space-y-10">
                     {/* Simplified Switcher Bar */}
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8 pt-10">
                         <div className="flex bg-slate-100 p-1.5 rounded-[2rem] w-fit border border-slate-200">
@@ -324,8 +323,7 @@ export default function InternshipHunterPage() {
                             filteredPortals.map(company => <PortalCard key={company.id} company={company} />)
                         )}
                     </div>
-                </section>
-            )}
+            </section>
 
 
 
