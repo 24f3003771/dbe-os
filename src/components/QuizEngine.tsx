@@ -264,9 +264,8 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     score: Math.round(finalScore * 100) / 100, // 2 decimal places
                     totalQuestions: questions.length,
                     timerPerQuestion: avgTimePerQ, 
-                    totalTimeTaken: elapsed,
+                    totalTimeTaken: totalTimeFromQuestions,
                     responses,
-                    mistakes: JSON.stringify(legacyMistakes),
                     tomatoesEarned: tomatoes,
                     quizSetId: quizSetId,
                 });
