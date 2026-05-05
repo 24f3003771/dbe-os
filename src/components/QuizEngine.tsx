@@ -197,66 +197,63 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     explanation: q.explanation ?? null,
                 };
             }
-            }
         });
 
         // ── Step 2: Wait for any still-pending AI evaluations ──────────────
-            // (Most will already be done since they fired on each Next click)
-            const pendingIndices = [...aiEvalPromisesRef.current.entries()]
-                .filter(([idx]) => !aiEvalResultsRef.current.has(idx))
-                .map(([, promise]) => promise);
+        const pendingIndices = [...aiEvalPromisesRef.current.entries()]
+            .filter(([idx]) => !aiEvalResultsRef.current.has(idx))
+            .map(([, promise]) => promise);
 
-            if (pendingIndices.length > 0) {
-                setIsEvaluating(true);
-                try {
-                    await Promise.all(pendingIndices);
-                } catch (e) {
-                    console.error("[AI Eval] Some evaluations failed on submit:", e);
-                } finally {
-                    setIsEvaluating(false);
-                }
+        if (pendingIndices.length > 0) {
+            setIsEvaluating(true);
+            try {
+                await Promise.all(pendingIndices);
+            } catch (e) {
+                console.error("[AI Eval] Some evaluations failed on submit:", e);
+            } finally {
+                setIsEvaluating(false);
             }
+        }
 
-            // Attach cached AI grades to text responses
-            responses = responses.map((r, i) => {
-                if (r.inputType !== "text") return r;
-                const cached = aiEvalResultsRef.current.get(i);
-                return { ...r, ai_grade: cached?.percentage ?? null, ai_feedback: cached?.feedback ?? null };
-            });
+        // Attach cached AI grades to text responses
+        responses = responses.map((r, i) => {
+            if (r.inputType !== "text") return r;
+            const cached = aiEvalResultsRef.current.get(i);
+            return { ...r, ai_grade: cached?.percentage ?? null, ai_feedback: cached?.feedback ?? null };
+        });
 
-            // ── Step 3: Compute final mixed score ──────────────────────────
-            // MCQ: 1 mark if correct, negative if enabled
-            // Text: ai_grade / 100 marks (e.g. 82% → 0.82 marks), no negative marking
-            let negPenalty = 0;
-            if (negativeMarking) {
-                if (negMarkingValue === "1/2") negPenalty = 1/2;
-                else if (negMarkingValue === "1/4") negPenalty = 1/4;
-                else negPenalty = 1/3;
-            }
-            
-            const totalTimeFromQuestions = finalTimes.reduce((a, b) => a + b, 0);
-            const avgTimePerQ = questions.length > 0 ? Math.round(totalTimeFromQuestions / questions.length) : 0;
+        // ── Step 3: Compute final mixed score ──────────────────────────
+        let negPenalty = 0;
+        if (negativeMarking) {
+            if (negMarkingValue === "1/2") negPenalty = 1/2;
+            else if (negMarkingValue === "1/4") negPenalty = 1/4;
+            else negPenalty = 1/3;
+        }
 
-            const finalScore = responses.reduce((acc, r) => {
-                if (r.inputType === "mcq") {
-                    if (r.isCorrect) return acc + 1;
-                    if (r.isCorrect === false && negativeMarking && r.selectedAnswer !== null) return acc - negPenalty;
-                    return acc;
-                }
-                if (r.inputType === "text") return acc + Math.max(0, (r.ai_grade ?? 0) / 100);
+        const finalScore = responses.reduce((acc, r) => {
+            if (r.inputType === "mcq") {
+                if (r.isCorrect) return acc + 1;
+                if (r.isCorrect === false && negativeMarking && r.selectedAnswer !== null) return acc - negPenalty;
                 return acc;
-            }, 0);
+            }
+            if (r.inputType === "text") return acc + Math.max(0, (r.ai_grade ?? 0) / 100);
+            return acc;
+        }, 0);
 
-            if (mode === "exam") {
-                const tomatoes = Math.round(2 * questions.length + finalScore * 5);
-                // ── Step 5: Save to DB ────────────────────────────────────
+        const totalTimeFromQuestions = finalTimes.reduce((a, b) => a + b, 0);
+        const avgTimePerQ = questions.length > 0 ? Math.round(totalTimeFromQuestions / questions.length) : 0;
+
+        if (mode === "exam") {
+            const tomatoes = Math.round(2 * questions.length + finalScore * 5);
+            
+            // ── Step 5: Save to DB ────────────────────────────────────
             setIsSaving(true);
             try {
                 await saveExamResult({
                     subject: subjectId,
-                    score: Math.round(finalScore * 100) / 100, // 2 decimal places
+                    score: Math.round(finalScore * 100) / 100,
                     totalQuestions: questions.length,
-                    timerPerQuestion: avgTimePerQ, 
+                    timerPerQuestion: avgTimePerQ,
                     totalTimeTaken: totalTimeFromQuestions,
                     responses,
                     tomatoesEarned: tomatoes,
@@ -268,32 +265,19 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                 setIsSaving(false);
             }
 
-            // Persist the computed score so the results screen can display it correctly
-            setFinalDisplayScore({
-                raw: finalScore,
-                percentage: Math.round((finalScore / questions.length) * 100),
-            });
-
-            // ── Step 6: Award Tomatoes + Log Event ───────────────────
+            // ── Step 6: Award Tomatoes ────────────────────────────────
             try {
                 if (tomatoes > 0) {
-                    const desc = `Attempted ${subjectId} Exam Set · ${questions.length} questions`;
                     earnTomatoes({
                         actionType: "exam",
-                        description: desc,
+                        description: `Attempted ${subjectId} Exam Mode`,
                         tomatoes,
-                        metadata: {
-                            subjectCode: subjectId,
-                            subjectTitle: subjectTitle,
-                            score: Math.round(finalScore * 100) / 100,
-                            totalQuestions: questions.length,
-                            examDurationSeconds: examDurationSeconds || 0,
-                        },
+                        metadata: { score: finalScore, totalQuestions: questions.length },
                     });
                     setEarnedTomatoes(tomatoes);
                 }
-            } catch(e) {
-                console.error("Farm store sync error:", e);
+            } catch (e) {
+                console.error("Tomato award error:", e);
             }
         } else {
             // Practice/AI mode — (1 * questions.length) + (finalScore * 2)
@@ -301,33 +285,32 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
             try {
                 if (practiceTomatoes > 0) {
                     const isAi = quizSubMode === "ai";
-                    const modeName = isAi ? "AI Concept Builder" : "Practice";
-                    const desc = moduleTitle
-                        ? `Attempted ${moduleTitle} ${modeName} · ${subjectId}`
-                        : `Attempted ${modeName} · ${subjectId}`;
-
                     earnTomatoes({
                         actionType: isAi ? "ai_builder" : "practice",
-                        description: desc,
+                        description: `Attempted ${isAi ? "AI Concept Builder" : "Practice Mode"} · ${subjectId}`,
                         tomatoes: practiceTomatoes,
-                        metadata: { 
-                            subjectCode: subjectId,
-                            subjectTitle: subjectTitle,
-                            moduleTitle: moduleTitle,
-                            totalQuestions: questions.length 
-                        },
+                        metadata: { score: finalScore, totalQuestions: questions.length },
                     });
                     setEarnedTomatoes(practiceTomatoes);
                 }
-            } catch(e) {
-                console.error("Farm store sync error:", e);
+            } catch (e) {
+                console.error("Tomato award error:", e);
             }
         }
 
         setFinalTiming(finalTimes);
+        setFinalDisplayScore({
+            raw: finalScore,
+            percentage: Math.round((finalScore / questions.length) * 100),
+        });
         setSubmitted(true);
         setShowCalc(false);
-    }, [answers, textAnswers, questions, questionTimes, currentIndex, mode, subjectId, examDurationSeconds, negativeMarking, negMarkingValue, earnTomatoes, quizSetId, subjectTitle, moduleTitle, quizSubMode]);
+    }, [
+        currentIndex, questionTimes, questions, answers, textAnswers, 
+        mode, quizSubMode, subjectId, subjectTitle, moduleTitle, 
+        negativeMarking, negMarkingValue, quizSetId, examDurationSeconds,
+        earnTomatoes, setSubmitted, setTotalTimeSpent, setEarnedTomatoes, setFinalTiming, setShowCalc
+    ]);
 
     const submitAndNext = useCallback(() => {
         triggerAiEvalIfNeeded(currentIndex);   // fire AI eval in background if text Q
