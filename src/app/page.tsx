@@ -170,83 +170,79 @@ export default function Dashboard() {
 
             {/* Feature Grid */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Notes Section preview */}
-                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6">
-                    <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
-                            <BookOpen className="w-5 h-5 text-primary" /> Universal Library
+                {/* Notes Section */}
+                <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 border border-outline-variant/15 shadow-sm flex flex-col group">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-xl font-black font-headline text-on-surface tracking-tight uppercase flex items-center gap-2">
+                            <BookOpen className="w-5 h-5 text-primary" /> Notes
                         </h3>
-                        <Link href="/notes" className="text-xs font-bold text-primary hover:underline">View All</Link>
                     </div>
-                    <div className="space-y-4">
-                        {notesPreview.map((note: any) => (
-                            <Link key={note.id} href={`/dbe_notes/${note.id}`} className="flex items-center gap-4 bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container transition-colors group">
-                                <div className="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center shadow-sm shrink-0">
-                                    <BookOpen className="w-5 h-5" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-sm font-bold font-headline text-on-surface group-hover:text-primary transition-colors truncate uppercase tracking-tight">{note.title}</p>
-                                    <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mt-0.5">{note.id}</p>
+                    <div className="flex-1 space-y-3 mb-6">
+                        {notesPreview.map((note: any, idx: number) => (
+                            <Link key={note.id} href={`/dbe_notes/${note.id}`} className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-primary/30 transition-all group/item shadow-sm">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                                            {idx + 1}
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-primary transition-colors truncate">{note.title}</p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-primary transition-colors group-hover/item:translate-x-1" />
                                 </div>
                             </Link>
                         ))}
                     </div>
-                    <Link href="/notes" className="block pt-2">
-                        <button className="w-full py-3 bg-indigo-600/5 hover:bg-indigo-600/10 rounded-xl text-xs font-black uppercase tracking-widest text-indigo-600 transition-all border border-indigo-600/10">Browse Universal Library</button>
+                    <Link href="/notes" className="block mt-auto">
+                        <button className="w-full py-3.5 bg-primary/5 hover:bg-primary/10 rounded-xl text-xs font-black uppercase tracking-widest text-primary transition-all border border-primary/10">View All</button>
                     </Link>
                 </div>
 
-                {/* Opportunity Hub Section preview */}
-                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 flex flex-col justify-between group overflow-hidden relative">
-                    <div className="space-y-6 relative z-10">
-                        <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
-                                <Rocket className="w-5 h-5 text-indigo-600" /> Discovery Engine
+                {/* Quiz & Practice Section */}
+                <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 border border-outline-variant/15 shadow-sm flex flex-col group relative overflow-hidden">
+                    <div className="relative z-10 flex flex-col h-full">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-black font-headline text-on-surface tracking-tight uppercase flex items-center gap-2">
+                                <Rocket className="w-5 h-5 text-indigo-600" /> Quiz & Practice
                             </h3>
                         </div>
-                        <div className="space-y-4">
-                            <div className="p-5 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
-                                <p className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-1">Featured Today</p>
-                                <h4 className="text-sm font-bold text-[#1A1A1A]">HUL L.I.M.E. 16</h4>
-                                <p className="text-[10px] font-bold text-stone-400 mt-0.5">Marketing Case • 12 Days Left</p>
-                            </div>
-                            <p className="text-xs font-medium text-on-surface-variant leading-relaxed">Access 150+ curated B-school competitions and MNC internships with winning roadmaps.</p>
-                        </div>
-                    </div>
-                    <Link href="/tools" className="relative z-10">
-                        <button className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
-                            Enter Tools <ArrowRight className="w-4 h-4" />
-                        </button>
-                    </Link>
-                    {/* Decorative circle */}
-                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                </div>
+                        <div className="flex-1 space-y-3 mb-6 flex flex-col justify-center">
+                            <Link href="/quiz" className="block bg-indigo-50/50 border border-indigo-100 p-5 rounded-2xl hover:bg-indigo-50 hover:border-indigo-300 transition-all group/item shadow-sm relative overflow-hidden">
+                                <div className="relative z-10 flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                                            <Wrench className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className="text-base font-bold font-headline text-indigo-900 group-hover/item:text-indigo-700 transition-colors">Concept Builder</p>
+                                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5">Topic-wise practice</p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="w-5 h-5 text-indigo-400 group-hover/item:text-indigo-600 transition-colors group-hover/item:translate-x-1" />
+                                </div>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-200/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover/item:bg-indigo-300/30 transition-colors" />
+                            </Link>
 
-                {/* DBE Tools Section preview */}
-                <div className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/15 shadow-sm space-y-6 flex flex-col justify-between group overflow-hidden relative">
-                    <div className="space-y-6 relative z-10">
-                        <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
-                                <Wrench className="w-5 h-5 text-amber-600" /> DBE Tools
-                            </h3>
-                            <Link href="/tools" className="text-xs font-bold text-amber-600 hover:underline">View All</Link>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="p-5 bg-amber-50/50 border border-amber-100 rounded-2xl">
-                                <p className="text-xs font-black text-amber-600 uppercase tracking-widest mb-1">New Feature</p>
-                                <h4 className="text-sm font-bold text-[#1A1A1A]">CGPA Calculator</h4>
-                                <p className="text-[10px] font-bold text-stone-400 mt-0.5">Calculate Term-wise WAM & CGPA</p>
-                            </div>
-                            <p className="text-xs font-medium text-on-surface-variant leading-relaxed">Powerful academic utilities built for IIMB BBA DBE students to track performance.</p>
+                            <Link href="/quiz/pyq" className="block bg-amber-50/50 border border-amber-100 p-5 rounded-2xl hover:bg-amber-50 hover:border-amber-300 transition-all group/item shadow-sm relative overflow-hidden">
+                                <div className="relative z-10 flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                                            <Trophy className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className="text-base font-bold font-headline text-amber-900 group-hover/item:text-amber-700 transition-colors">PYQ & Mock</p>
+                                            <p className="text-[10px] font-bold text-amber-400 uppercase tracking-widest mt-0.5">Exam simulation</p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="w-5 h-5 text-amber-400 group-hover/item:text-amber-600 transition-colors group-hover/item:translate-x-1" />
+                                </div>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-200/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover/item:bg-amber-300/30 transition-colors" />
+                            </Link>
                         </div>
                     </div>
-                    <Link href="/tools" className="relative z-10">
-                        <button className="w-full py-4 bg-amber-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-amber-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
-                            Open Tools <ArrowRight className="w-4 h-4" />
-                        </button>
-                    </Link>
                     {/* Decorative circle */}
-                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-amber-100 rounded-full opacity-50 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-50 rounded-full opacity-50 blur-3xl pointer-events-none" />
                 </div>
 
             {/* Pitch Decks Advertisement Section */}
