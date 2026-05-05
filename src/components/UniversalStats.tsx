@@ -7,7 +7,7 @@ import Link from "next/link";
 import TomatoSplash from "./TomatoSplash";
 
 export default function UniversalStats() {
-  const { totalTomatoesEarned, leaderboardRank, communityTotal, streak } = useFarmStore();
+  const { totalTomatoesEarned, leaderboardRank, communityTotal } = useFarmStore();
 
   const getMilestone = (val: number, base: number) => {
     let milestone = base;
@@ -29,40 +29,52 @@ export default function UniversalStats() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-red-500/5 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/4"></div>
 
-        <div className="relative z-10 space-y-8">
+        <div className="relative z-10 space-y-10">
           {/* Header Row */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex items-center gap-4">
               <div className="p-1 bg-white rounded-2xl border border-primary/20 shadow-lg">
-                <img src="/icon.png" alt="Mascot" className="w-12 h-12 rounded-xl object-contain" />
+                <img src="/icon.png" alt="Mascot" className="w-14 h-14 rounded-xl object-contain mix-blend-multiply" />
               </div>
               <div>
-                <h1 className="text-3xl font-black font-headline text-on-surface tracking-tighter leading-none flex items-center gap-2">
+                <h1 className="text-3xl md:text-4xl font-black font-headline text-on-surface tracking-tighter leading-none flex items-center gap-2">
                   DBE OS <span className="text-primary-variant">Academic Hub</span>
                 </h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant opacity-60 mt-1">
+                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-on-surface-variant opacity-60 mt-1">
                   Global Tomato Ranking System
                 </p>
               </div>
             </div>
             
-            <Link href="/leaderboard" className="flex items-center gap-2 bg-on-surface text-surface px-5 py-2.5 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg group/btn">
-              <span className="font-black text-[10px] uppercase tracking-widest">Global Standings</span>
-              <ChevronRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
-            </Link>
+            <div className="flex flex-col items-end gap-1">
+               <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-black text-on-surface/40 uppercase tracking-[0.2em]">Global Rank</span>
+                  <span className="text-4xl md:text-5xl font-black text-on-surface tracking-tighter">#{leaderboardRank || '--'}</span>
+               </div>
+               <Link href="/leaderboard" className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-variant flex items-center gap-1 transition-colors">
+                  View Full Leaderboard <ChevronRight className="w-3 h-3" />
+               </Link>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left side: Bars (7/12) */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="space-y-3">
-                <div className="flex justify-between items-end">
-                  <span className="text-[10px] font-black text-on-surface uppercase tracking-tight flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                    Academic Growth
-                  </span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left side: Your Impact */}
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                   <div className="flex items-center gap-3">
+                      <span className="text-3xl">🍅</span>
+                      <div>
+                        <p className="text-[10px] font-black text-on-surface/40 uppercase tracking-widest leading-none mb-1">Your Total</p>
+                        <p className="text-3xl font-black text-on-surface leading-none">{totalTomatoesEarned.toLocaleString()}</p>
+                      </div>
+                   </div>
+                   <div className="text-right">
+                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Academic Growth</p>
+                      <p className="text-xs font-bold text-on-surface-variant">{Math.round(academicProgress)}% to next milestone</p>
+                   </div>
                 </div>
-                <div className="h-3 w-full bg-black/10 rounded-full overflow-hidden border border-white/5">
+                <div className="h-4 w-full bg-black/10 rounded-full overflow-hidden border border-white/5 shadow-inner">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(academicProgress, 100)}%` }}
@@ -72,14 +84,23 @@ export default function UniversalStats() {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex justify-between items-end">
-                  <span className="text-[10px] font-black text-on-surface uppercase tracking-tight flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    Community Growth
-                  </span>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                   <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center p-2">
+                        <img src="/logo.png" alt="Mascot" className="w-full h-full object-contain mix-blend-multiply" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-on-surface/40 uppercase tracking-widest leading-none mb-1">Community Total</p>
+                        <p className="text-3xl font-black text-on-surface leading-none">{communityTotal.toLocaleString()}</p>
+                      </div>
+                   </div>
+                   <div className="text-right">
+                      <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Global Impact</p>
+                      <p className="text-xs font-bold text-on-surface-variant">{Math.round(communityProgress)}% of target reached</p>
+                   </div>
                 </div>
-                <div className="h-3 w-full bg-black/10 rounded-full overflow-hidden border border-white/5">
+                <div className="h-4 w-full bg-black/10 rounded-full overflow-hidden border border-white/5 shadow-inner">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(communityProgress, 100)}%` }}
@@ -88,44 +109,21 @@ export default function UniversalStats() {
                   />
                 </div>
               </div>
-
-              <div className="flex flex-col md:flex-row items-center gap-6 pt-4 bg-white/5 p-6 rounded-3xl border border-white/5 backdrop-blur-sm">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-3xl flex items-center justify-center p-3">
-                    <img src="/logo.png" alt="Mascot" className="w-full h-full object-contain mix-blend-multiply" />
-                  </div>
-                  <div className="flex-1 text-center md:text-left">
-                    <h2 className="text-2xl md:text-3xl font-black font-headline text-on-surface tracking-tighter mb-0.5">
-                      {communityTotal.toLocaleString()}
-                    </h2>
-                    <p className="text-[11px] text-on-surface-variant font-medium">
-                      collected by the <span className="font-bold text-on-surface">DBE OS community</span>
-                    </p>
-                  </div>
-              </div>
             </div>
 
-            {/* Right side: Stats cards (5/12) */}
-            <div className="lg:col-span-5 flex flex-col gap-4">
-               <div className="bg-white rounded-3xl p-6 shadow-sm border border-outline-variant/10 flex items-center gap-6 group hover:scale-[1.02] transition-all">
-                  <div className="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-3xl group-hover:bg-orange-500 group-hover:text-white transition-all">🔥</div>
-                  <div>
-                    <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1 opacity-50">Days Strong</p>
-                    <p className="text-3xl font-black text-on-surface leading-none">{streak}</p>
+            {/* Right side: Visual Summary / Space utilization */}
+            <div className="hidden lg:flex items-center justify-center border-l border-white/10 pl-12">
+               <div className="relative group">
+                  <div className="absolute inset-0 bg-primary/20 blur-[100px] group-hover:bg-primary/30 transition-all rounded-full" />
+                  <div className="relative bg-white/5 backdrop-blur-2xl p-12 rounded-[3rem] border border-white/10 flex flex-col items-center text-center space-y-6 shadow-2xl">
+                     <img src="/logo.png" alt="Mascot" className="w-32 h-32 object-contain mix-blend-multiply drop-shadow-2xl" />
+                     <div>
+                        <p className="text-[11px] font-black text-on-surface/30 uppercase tracking-[0.4em] mb-2">Academic Status</p>
+                        <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight uppercase italic">
+                           {totalTomatoesEarned > 1000 ? "Tomato Legend" : totalTomatoesEarned > 500 ? "Elite Scholar" : "Scholar in Training"}
+                        </h2>
+                     </div>
                   </div>
-               </div>
-               <div className="bg-white rounded-3xl p-6 shadow-sm border border-outline-variant/10 flex items-center gap-6 group hover:scale-[1.02] transition-all">
-                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-3xl group-hover:bg-primary group-hover:text-white transition-all">🍅</div>
-                  <div>
-                    <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1 opacity-50">Collected</p>
-                    <p className="text-3xl font-black text-on-surface leading-none">{totalTomatoesEarned.toLocaleString()}</p>
-                  </div>
-               </div>
-               <div className="bg-black/5 rounded-3xl p-6 border border-white/5 flex items-center justify-between group">
-                  <div>
-                    <p className="text-[10px] font-black text-on-surface/40 uppercase tracking-widest mb-1">Global Rank</p>
-                    <p className="text-2xl font-black text-on-surface leading-none">#{leaderboardRank || '--'}</p>
-                  </div>
-                  <Trophy className="w-8 h-8 text-on-surface/20 group-hover:text-primary transition-colors" />
                </div>
             </div>
           </div>
