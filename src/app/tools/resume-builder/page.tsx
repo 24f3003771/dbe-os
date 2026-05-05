@@ -20,6 +20,7 @@ const paths = [
 
 export default function ResumeBuilderLanding() {
   return (
+    <div className="min-h-screen bg-stone-50/50">
             {/* Minimal Header */}
             <header className="py-12 px-6 border-b border-slate-100 bg-white">
                 <div className="max-w-7xl mx-auto space-y-4">
@@ -93,6 +94,7 @@ export default function ResumeBuilderLanding() {
                     <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] -mr-48 -mt-48" />
                 </section>
             </main>
+    </div>
   );
 }
 
