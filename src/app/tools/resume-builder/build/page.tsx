@@ -11,7 +11,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 export default function BuildPage() {
-  const { resume, resetResume } = useResumeStore();
+  const { resume, resetResume, template, setTemplate } = useResumeStore();
   const previewRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
 
@@ -117,8 +117,8 @@ export default function BuildPage() {
               <PlusCircle className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-4xl font-black font-headline text-on-surface tracking-tight">Modern Builder</h1>
-              <p className="text-on-surface-variant font-medium">Create a high-impact, ATS-friendly resume from scratch.</p>
+              <h1 className="text-4xl font-black font-headline text-on-surface tracking-tight">Resume Builder</h1>
+              <p className="text-on-surface-variant font-medium">Create a high-impact, ATS-friendly resume tailored to your target job.</p>
             </div>
           </div>
         </div>
@@ -144,11 +144,19 @@ export default function BuildPage() {
          {/* Preview Section */}
          <div className="lg:col-span-6 space-y-6 lg:h-[calc(100vh-250px)] lg:overflow-y-auto custom-scrollbar p-1">
             <div className="lg:sticky lg:top-0 space-y-6">
-               <div className="flex items-center justify-between px-4 mb-4">
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant">Live Preview (A4)</h3>
-                  <div className="flex items-center gap-1.5">
-                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                     <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Auto-Sync</span>
+               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 mb-4 gap-4">
+                  <div className="flex items-center gap-4">
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant">Live Preview (A4)</h3>
+                    <div className="flex items-center gap-1.5">
+                       <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                       <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Auto-Sync</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 bg-surface-container rounded-lg p-1 border border-outline-variant/10">
+                    <button onClick={() => setTemplate("template1")} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${template === 'template1' ? 'bg-white shadow text-indigo-600' : 'text-on-surface-variant hover:text-on-surface'}`}>Standard</button>
+                    <button onClick={() => setTemplate("template2")} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${template === 'template2' ? 'bg-white shadow text-indigo-600' : 'text-on-surface-variant hover:text-on-surface'}`}>Modern</button>
+                    <button onClick={() => setTemplate("template3")} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${template === 'template3' ? 'bg-white shadow text-indigo-600' : 'text-on-surface-variant hover:text-on-surface'}`}>Executive</button>
                   </div>
                </div>
                

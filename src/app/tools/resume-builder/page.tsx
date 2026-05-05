@@ -6,37 +6,15 @@ import Link from "next/link";
 
 const paths = [
   {
-    id: "enhance",
-    title: "AI ATS Enhancer",
-    description: "Upload your existing resume. We'll scan it for ATS compatibility and use AI to rewrite weak bullet points into high-impact action statements.",
-    icon: ShieldCheck,
-    href: "/tools/resume-builder/enhance",
-    color: "bg-emerald-500",
-    lightColor: "bg-emerald-50",
-    textColor: "text-emerald-600",
-    tag: "Fix Existing"
-  },
-  {
-    id: "tailor",
-    title: "JD Keyword Tailor",
-    description: "Paste a job description and your resume. Our AI will identify missing keywords and help you tailor your experience to match the role perfectly.",
-    icon: Target,
-    href: "/tools/resume-builder/tailor",
-    color: "bg-blue-500",
-    lightColor: "bg-blue-50",
-    textColor: "text-blue-600",
-    tag: "Match Job"
-  },
-  {
     id: "build",
-    title: "Modern Builder",
-    description: "Start from scratch with a professional, ATS-optimized template. Get real-time AI suggestions for every section as you type.",
+    title: "Resume Builder",
+    description: "Start from scratch or tailor an existing resume with a professional, ATS-optimized template. Get real-time AI suggestions to match any job description.",
     icon: PlusCircle,
     href: "/tools/resume-builder/build",
     color: "bg-amber-500",
     lightColor: "bg-amber-50",
     textColor: "text-amber-600",
-    tag: "From Scratch"
+    tag: "Build & Tailor"
   }
 ];
 
@@ -56,7 +34,7 @@ export default function ResumeBuilderLanding() {
                 <Briefcase className="w-6 h-6" />
               </div>
               <h1 className="text-4xl md:text-5xl font-black font-headline text-on-surface tracking-tight">
-                AI Resume Forge
+                Resume Builder
               </h1>
             </div>
             <p className="text-on-surface-variant font-medium text-lg max-w-2xl">
@@ -90,7 +68,7 @@ export default function ResumeBuilderLanding() {
       </div>
 
       {/* Path Selection Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+      <div className="grid grid-cols-1 max-w-2xl mx-auto relative z-10">
         {paths.map((path, index) => (
           <motion.div
             key={path.id}
