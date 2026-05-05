@@ -191,15 +191,24 @@ export default function ResumeEditor() {
                   <input placeholder="Company (e.g. Feeding Trends)" value={work.name} onChange={(e) => updateItem("work", idx, "name", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
                   <input placeholder="Date Range (e.g. Dec 2025 - Jan 2026)" value={work.startDate} onChange={(e) => updateItem("work", idx, "startDate", e.target.value)} className="bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm" />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Highlights</label>
-                    <button onClick={() => enhanceBullets("work", idx)} disabled={isEnhancing[`work-${idx}`]} className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[9px] font-black uppercase tracking-widest">
-                      {isEnhancing[`work-${idx}`] ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Bullet Points (Action Items)</label>
+                    <button 
+                      onClick={() => enhanceBullets("work", idx)} 
+                      disabled={isEnhancing[`work-${idx}`]} 
+                      className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all disabled:opacity-50"
+                    >
+                      {isEnhancing[`work-${idx}`] ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                       AI Fix
                     </button>
                   </div>
-                  <textarea value={work.highlights.join('\n')} onChange={(e) => updateItem("work", idx, "highlights", e.target.value.split('\n'))} placeholder="One bullet per line..." className="w-full bg-surface-container-lowest p-4 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm min-h-[100px] resize-none" />
+                  <textarea 
+                    value={work.highlights.join('\n')} 
+                    onChange={(e) => updateItem("work", idx, "highlights", e.target.value.split('\n'))} 
+                    placeholder="• Developed a new feature...\n• Increased user engagement by 20%..." 
+                    className="w-full bg-surface-container-lowest p-5 rounded-[1.5rem] border border-outline-variant/10 focus:border-indigo-500/30 focus:outline-none text-sm min-h-[120px] resize-none font-medium leading-relaxed" 
+                  />
                 </div>
                 <button onClick={() => removeItem("work", idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <Trash2 className="w-4 h-4" />
@@ -219,12 +228,24 @@ export default function ResumeEditor() {
         {activeSection === 'awards' && (
           <div className="p-8 pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             {resume.awards?.map((award, idx) => (
-              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-2 relative border border-outline-variant/5 group">
-                <div className="flex items-center gap-2">
-                  <input placeholder="Achievement description..." value={award.summary} onChange={(e) => updateItem("awards", idx, "summary", e.target.value)} className="flex-1 bg-surface-container-lowest p-3 rounded-xl border border-transparent focus:border-indigo-500/30 focus:outline-none text-sm font-medium" />
-                  <button onClick={() => enhanceBullets("awards", idx)} disabled={isEnhancing[`awards-${idx}`]} className="p-2 bg-emerald-500/10 text-emerald-600 rounded-xl">
-                    {isEnhancing[`awards-${idx}`] ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  </button>
+              <div key={idx} className="p-6 bg-surface-container-low rounded-3xl space-y-4 relative border border-outline-variant/5 group">
+                <div className="flex flex-col gap-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Achievement Detail</label>
+                  <div className="flex items-center gap-3">
+                    <input 
+                      placeholder="e.g. Won 1st place in National Case Study Competition..." 
+                      value={award.summary} 
+                      onChange={(e) => updateItem("awards", idx, "summary", e.target.value)} 
+                      className="flex-1 bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10 focus:border-indigo-500/30 focus:outline-none text-sm font-medium" 
+                    />
+                    <button 
+                      onClick={() => enhanceBullets("awards", idx)} 
+                      disabled={isEnhancing[`awards-${idx}`]} 
+                      className="p-3 bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all disabled:opacity-50"
+                    >
+                      {isEnhancing[`awards-${idx}`] ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
                 <button onClick={() => removeItem("awards", idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-error/10 text-error rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <Trash2 className="w-4 h-4" />

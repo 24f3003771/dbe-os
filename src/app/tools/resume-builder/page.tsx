@@ -20,165 +20,79 @@ const paths = [
 
 export default function ResumeBuilderLanding() {
   return (
-    <div className="max-w-6xl mx-auto py-12 px-4 space-y-12">
-      {/* Header Section */}
-      <div className="relative">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8"
-        >
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-                <Briefcase className="w-6 h-6" />
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black font-headline text-on-surface tracking-tight">
-                Resume Builder
-              </h1>
-            </div>
-            <p className="text-on-surface-variant font-medium text-lg max-w-2xl">
-              The ultimate career command center for DBE students. Build, tailor, and optimize resumes that get you past the ATS and into the interview.
-            </p>
-          </div>
+            {/* Minimal Header */}
+            <header className="py-12 px-6 border-b border-slate-100 bg-white">
+                <div className="max-w-7xl mx-auto space-y-4">
+                    <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border border-indigo-100">
+                        <Sparkles className="w-3 h-3" /> AI Engine Active
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div className="space-y-2">
+                            <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tighter text-slate-900 italic leading-none">
+                                Resume <span className="text-indigo-600 text-stroke-sm">Builder.</span>
+                            </h1>
+                            <p className="text-slate-500 text-lg md:text-xl font-medium italic leading-relaxed max-w-2xl">
+                                Build ATS-optimized resumes with real-time AI tailoring. Zero hallucinations, just high-impact professional profiles.
+                            </p>
+                        </div>
+                        <Link 
+                            href="/tools/resume-builder/build"
+                            className="bg-slate-900 text-white px-10 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl shadow-slate-200 flex items-center gap-3"
+                        >
+                            Launch AI Forge <ChevronRight className="w-5 h-5" />
+                        </Link>
+                    </div>
+                </div>
+            </header>
 
-          <div className="hidden lg:flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-2xl text-indigo-600 animate-pulse">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-xs font-black uppercase tracking-widest">AI Engine Active</span>
-          </div>
-        </motion.div>
-
-        {/* Info Banner */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="bg-surface-container-low border border-outline-variant/10 p-5 rounded-3xl flex items-start gap-4 shadow-sm"
-        >
-          <div className="p-2.5 bg-indigo-500/10 rounded-2xl text-indigo-600">
-            <Info className="w-5 h-5" />
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-bold text-on-surface leading-none">Why ATS-Friendly Matters?</p>
-            <p className="text-xs text-on-surface-variant leading-relaxed">
-              75% of resumes are rejected by Applicant Tracking Systems before a human even sees them. Our builder uses clean, parsed structures (JSON Resume Standard) that ensure 100% readability by any recruiter software.
-            </p>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Path Selection Grid */}
-      <div className="grid grid-cols-1 max-w-2xl mx-auto relative z-10">
-        {paths.map((path, index) => (
-          <motion.div
-            key={path.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + (index * 0.1) }}
-          >
-            <Link 
-              href={path.href}
-              className="group block h-full bg-surface-container-lowest border border-outline-variant/20 rounded-[2.5rem] p-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:border-indigo-500/30 transition-all duration-500 relative overflow-hidden flex flex-col"
-            >
-              <div className="relative z-10 flex-1 space-y-6">
-                <div className="flex justify-between items-center">
-                  <div className={`w-16 h-16 ${path.lightColor} rounded-3xl flex items-center justify-center ${path.textColor} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-sm border border-black/5`}>
-                    <path.icon className="w-8 h-8" />
-                  </div>
-                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${path.lightColor} ${path.textColor} border border-black/5`}>
-                    {path.tag}
-                  </span>
+            <main className="max-w-7xl mx-auto px-6 py-16 space-y-16">
+                {/* Feature Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
+                        <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
+                            <Zap className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-black italic">Smart Bullets</h3>
+                        <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                            AI-powered enhancement that converts passive sentences into action-oriented, metric-driven achievements.
+                        </p>
+                    </div>
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
+                        <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                            <Target className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-black italic">JD Matching</h3>
+                        <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                            Tailor your entire resume to a specific job description to ensure you rank at the top of recruiter search results.
+                        </p>
+                    </div>
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
+                        <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
+                            <FileText className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-black italic">ATS Ready</h3>
+                        <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                            JSON-standard structures that are guaranteed to be readable by every major Applicant Tracking System.
+                        </p>
+                    </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight group-hover:text-indigo-600 transition-colors">
-                    {path.title}
-                  </h2>
-                  <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
-                    {path.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative z-10 mt-8 pt-6 border-t border-outline-variant/5">
-                <div className={`flex items-center gap-2 text-sm font-black uppercase tracking-widest ${path.textColor} group-hover:gap-4 transition-all duration-300`}>
-                  Get Started <ChevronRight className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Decorative Glow */}
-              <div className={`absolute -bottom-16 -right-16 w-48 h-48 ${path.lightColor} rounded-full opacity-40 blur-[80px] group-hover:scale-150 transition-transform duration-700`} />
-            </Link>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Feature Highlight Section */}
-      <motion.section 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12 bg-surface-container p-8 md:p-12 rounded-[3rem] border border-outline-variant/10 overflow-hidden relative"
-      >
-        <div className="space-y-8 relative z-10">
-          <div>
-            <span className="text-indigo-600 text-xs font-black uppercase tracking-[0.2em] mb-4 block">Powered by Gemini & OpenAI</span>
-            <h2 className="text-3xl md:text-4xl font-black font-headline text-on-surface leading-[1.1]">
-              Smart Bullet Points.<br/>Zero Hallucinations.
-            </h2>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="flex gap-4">
-              <div className="w-10 h-10 bg-indigo-100 rounded-xl flex-shrink-0 flex items-center justify-center text-indigo-600">
-                <Zap className="w-5 h-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="font-bold text-on-surface">Action-Oriented Language</p>
-                <p className="text-sm text-on-surface-variant">We transform "I did social media" into "Increased organic engagement by 40% through data-driven content strategy."</p>
-              </div>
-            </div>
-            
-            <div className="flex gap-4">
-              <div className="w-10 h-10 bg-indigo-100 rounded-xl flex-shrink-0 flex items-center justify-center text-indigo-600">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="font-bold text-on-surface">Universal PDF Export</p>
-                <p className="text-sm text-on-surface-variant">Export clean, selectable-text PDFs that maintain their formatting across all application portals.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hidden lg:flex items-center justify-center relative">
-          <div className="w-full aspect-square max-w-[400px] bg-gradient-to-br from-indigo-500/10 to-amber-500/10 rounded-[3rem] border border-white/20 backdrop-blur-3xl flex items-center justify-center p-8 relative">
-             <div className="w-full bg-white rounded-2xl shadow-2xl p-6 space-y-4 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
-                <div className="h-4 w-1/3 bg-stone-100 rounded-full" />
-                <div className="h-4 w-1/2 bg-stone-100 rounded-full" />
-                <div className="space-y-2 pt-4">
-                   <div className="h-2 w-full bg-indigo-50 rounded-full" />
-                   <div className="h-2 w-full bg-indigo-50 rounded-full" />
-                   <div className="h-2 w-4/5 bg-indigo-50 rounded-full" />
-                </div>
-                <div className="flex gap-2 pt-4">
-                   <div className="h-8 w-20 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                      <div className="h-2 w-12 bg-emerald-500/20 rounded-full" />
-                   </div>
-                   <div className="h-8 w-24 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                      <div className="h-2 w-16 bg-blue-500/20 rounded-full" />
-                   </div>
-                </div>
-             </div>
-             {/* Sparkles */}
-             <Sparkles className="absolute top-4 right-4 text-amber-500 w-8 h-8 animate-bounce" />
-          </div>
-        </div>
-
-        {/* Decorative Circles */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] -mr-48 -mt-48" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-500/5 rounded-full blur-[100px] -ml-48 -mb-48" />
-      </motion.section>
-    </div>
+                {/* Why ATS Banner */}
+                <section className="bg-slate-900 rounded-[3rem] p-10 md:p-16 text-white overflow-hidden relative">
+                    <div className="relative z-10 max-w-3xl space-y-6">
+                        <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-indigo-300 font-black text-[10px] tracking-widest uppercase border border-white/10">
+                            <Info className="w-3.5 h-3.5" /> Industry Insight
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-black font-headline tracking-tighter leading-none italic">
+                            75% of resumes are <span className="text-indigo-400">never seen</span> by a human.
+                        </h2>
+                        <p className="text-slate-400 text-lg font-medium italic leading-relaxed">
+                            Applicant Tracking Systems (ATS) reject profiles that aren't structured correctly. Our builder ensures 100% compatibility so you actually land the interview.
+                        </p>
+                    </div>
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] -mr-48 -mt-48" />
+                </section>
+            </main>
   );
 }
 

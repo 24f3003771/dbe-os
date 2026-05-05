@@ -25,7 +25,7 @@ async function fetchAi(prompt: string) {
       },
       signal: controller.signal,
       body: JSON.stringify({
-        model: "z-ai/glm-5.1",
+        model: "meta/llama-3.1-70b-instruct",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.1,
         max_tokens: 1024,
