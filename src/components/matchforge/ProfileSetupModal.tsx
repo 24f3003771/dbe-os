@@ -13,7 +13,7 @@ const COMMON_SKILLS = [
   'Data Analytics', 'Public Speaking', 'UI/UX Design'
 ];
 
-type OnboardingStep = 'LANDING' | 'PREVIEW' | 'INTENT' | 'REVIEW';
+type OnboardingStep = 'LANDING' | 'PREVIEW' | 'INTENT' | 'REVIEW' | 'MANUAL_JSON';
 
 export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boolean, initialData?: MatchProfile | null }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,12 +70,30 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
         }));
         setStep('PREVIEW');
       } else {
-        alert("Could not fetch detailed profile. Please check the URL or setup manually.");
+        alert("Could not fetch detailed profile. Please check the URL or use the manual entry option.");
       }
     } catch (error) {
       console.error("Scrape Error:", error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleManualJson = (jsonStr: string) => {
+    try {
+      const data = JSON.parse(jsonStr);
+      setFormData(prev => ({
+        ...prev,
+        full_name: data.name || data.full_name || prev.full_name,
+        headline: data.headline || prev.headline,
+        bio: data.bio || data.about || prev.bio,
+        skills: data.skills || prev.skills,
+        experience: data.experience || prev.experience,
+        education: data.education || prev.education,
+      }));
+      setStep('PREVIEW');
+    } catch (e) {
+      alert("Invalid JSON format. Please paste a valid profile object.");
     }
   };
 
@@ -160,16 +178,57 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
                   >
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Fetch Detailed Profile <ArrowRight className="w-4 h-4" /></>}
                   </button>
-                  <button
-                    onClick={() => setStep('INTENT')}
-                    className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-indigo-600 transition-colors py-2"
-                  >
-                    Setup manually instead
-                  </button>
+                  <div className="flex items-center justify-center gap-4">
+                    <button
+                      onClick={() => setStep('INTENT')}
+                      className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-indigo-600 transition-colors py-2"
+                    >
+                      Setup manually
+                    </button>
+                    <span className="w-1 h-1 bg-outline-variant rounded-full" />
+                    <button
+                      onClick={() => setStep('MANUAL_JSON')}
+                      className="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:opacity-80 transition-opacity py-2"
+                    >
+                      Use JSON Import
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             )}
 
+            {step === 'MANUAL_JSON' && (
+              <motion.div 
+                key="manual_json"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="space-y-2 text-center">
+                  <h3 className="text-xl font-black font-headline text-on-surface">Import Profile JSON</h3>
+                  <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Paste the JSON output from your scraper repo here</p>
+                </div>
+                <textarea
+                  rows={8}
+                  placeholder='{ "name": "...", "headline": "...", "experience": [...] }'
+                  className="w-full bg-surface-container p-6 rounded-[2rem] border border-transparent focus:border-indigo-500/30 focus:outline-none text-[10px] font-mono leading-relaxed"
+                  onChange={(e) => {
+                    try {
+                      if (e.target.value.trim().startsWith('{')) {
+                        handleManualJson(e.target.value);
+                      }
+                    } catch(err) {}
+                  }}
+                />
+                <button
+                  onClick={() => setStep('LANDING')}
+                  className="w-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-indigo-600 transition-colors"
+                >
+                  Back to Auto-Sync
+                </button>
+              </motion.div>
+            )}
             {step === 'PREVIEW' && (
               <motion.div 
                 key="preview"
