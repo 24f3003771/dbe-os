@@ -1,12 +1,12 @@
 "use client";
 
 import { useResumeStore } from "@/hooks/use-resume-store";
-import { Plus, Trash2, Sparkles, ChevronDown, ChevronUp, Loader2, GraduationCap, Briefcase, Trophy, Users, Wrench } from "lucide-react";
+import { Plus, Trash2, Sparkles, ChevronDown, ChevronUp, Loader2, GraduationCap, Briefcase, Trophy, Users, Wrench, Target } from "lucide-react";
 import { useState } from "react";
 
 export default function ResumeEditor() {
-  const { resume, updateResume } = useResumeStore();
-  const [activeSection, setActiveSection] = useState<string>("basics");
+  const { resume, updateResume, targetJob, jobDescription, setTargetJob, setJobDescription } = useResumeStore();
+  const [activeSection, setActiveSection] = useState<string>("target");
   const [isEnhancing, setIsEnhancing] = useState<Record<string, boolean>>({});
 
   if (!resume) return null;
@@ -45,7 +45,10 @@ export default function ResumeEditor() {
     try {
       const response = await fetch("/api/resume/enhance-bullets", {
         method: "POST",
-        body: JSON.stringify({ highlights: bullets }),
+        body: JSON.stringify({ 
+          highlights: bullets,
+          jobDescription: targetJob === "specific" ? jobDescription : undefined
+        }),
       });
 
       if (!response.ok) {
@@ -90,6 +93,38 @@ export default function ResumeEditor() {
 
   return (
     <div className="space-y-4 pb-20">
+      {/* Target Job Section */}
+      <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
+        <SectionHeader id="target" title="Job Targeting" icon={Target} />
+        {activeSection === 'target' && (
+          <div className="p-8 pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="targetJob" value="general" checked={targetJob === "general"} onChange={() => setTargetJob("general")} className="text-indigo-600 focus:ring-indigo-500 w-4 h-4" />
+                <span className="text-sm font-bold text-on-surface">General Resume</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="targetJob" value="specific" checked={targetJob === "specific"} onChange={() => setTargetJob("specific")} className="text-indigo-600 focus:ring-indigo-500 w-4 h-4" />
+                <span className="text-sm font-bold text-on-surface">Specific Job</span>
+              </label>
+            </div>
+            
+            {targetJob === "specific" && (
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Job Description</label>
+                <textarea 
+                  value={jobDescription} 
+                  onChange={(e) => setJobDescription(e.target.value)} 
+                  placeholder="Paste the job description here. Our AI will tweak your bullets to match keywords and be ATS friendly..." 
+                  className="w-full bg-surface-container p-4 rounded-2xl border border-transparent focus:border-indigo-500/30 focus:outline-none transition-all text-sm min-h-[120px] resize-none" 
+                />
+                <p className="text-xs text-on-surface-variant italic">When you click 'AI Fix' on your experience or achievements, it will now optimize for this job description.</p>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+
       {/* Basics Section */}
       <section className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] overflow-hidden shadow-sm">
         <SectionHeader id="basics" title="Personal Information" icon={Users} />

@@ -56,9 +56,10 @@ async function fetchAi(prompt: string) {
 /**
  * Rewrites a list of bullet points to be more action-oriented and metric-driven.
  */
-export async function enhanceBulletPoints(highlights: string[]): Promise<string[]> {
+export async function enhanceBulletPoints(highlights: string[], jobDescription?: string): Promise<string[]> {
   const prompt = `You are an expert resume writer. Rewrite the following resume bullet points to be high-impact, action-oriented, and metric-driven (if possible).
 Keep the original meaning but make them sound more professional and ATS-friendly.
+${jobDescription ? `\nVERY IMPORTANT: Tailor these bullets specifically to align with this Job Description: "${jobDescription}".\nUse keywords and phrasing from the job description to ensure high ATS compatibility while maintaining truthfulness.` : ''}
 
 Bullet Points:
 ${highlights.map((h, i) => `${i + 1}. ${h}`).join("\n")}
