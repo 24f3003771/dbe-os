@@ -115,6 +115,53 @@ export default function InternshipHunterPage() {
     const [isSearching, setIsSearching] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
     const [customKeyword, setCustomKeyword] = useState("");
+    const [placeholderText, setPlaceholderText] = useState("");
+
+    const ROLES = [
+        "Data Analyst...",
+        "Product Manager...",
+        "Marketing Intern...",
+        "Software Engineer...",
+        "Business Consultant...",
+        "UI/UX Designer...",
+        "Finance Analyst...",
+        "Operations Lead..."
+    ];
+
+    React.useEffect(() => {
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let timeout: NodeJS.Timeout;
+
+        const type = () => {
+            const currentRole = ROLES[roleIndex];
+            
+            if (isDeleting) {
+                setPlaceholderText(currentRole.substring(0, charIndex - 1));
+                charIndex--;
+            } else {
+                setPlaceholderText(currentRole.substring(0, charIndex + 1));
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentRole.length) {
+                isDeleting = true;
+                typeSpeed = 2000; // Pause at end
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % ROLES.length;
+                typeSpeed = 500;
+            }
+
+            timeout = setTimeout(type, typeSpeed);
+        };
+
+        type();
+        return () => clearTimeout(timeout);
+    }, []);
 
     const PRESETS = [
         { id: "All", label: "Fetch All", icon: Globe },
@@ -260,7 +307,7 @@ export default function InternshipHunterPage() {
                                 <Search className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-slate-300" />
                                 <input 
                                     type="text"
-                                    placeholder={viewMode === 'PORTALS' ? "Find top firms..." : "Search for positions (e.g. Data Analyst, Product Manager)..."}
+                                    placeholder={viewMode === 'PORTALS' ? "Find top firms..." : `Search for ${placeholderText}`}
                                     className="w-full bg-slate-50 border-none rounded-2xl md:rounded-[2rem] py-3 md:py-5 pl-14 md:pl-16 pr-6 md:pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-sm md:text-lg placeholder:text-slate-400"
                                     value={viewMode === 'PORTALS' ? searchQuery : customKeyword}
                                     onChange={(e) => viewMode === 'PORTALS' ? setSearchQuery(e.target.value) : setCustomKeyword(e.target.value)}
