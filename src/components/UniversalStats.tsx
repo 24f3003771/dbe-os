@@ -66,7 +66,7 @@ export default function UniversalStats() {
                 <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest block opacity-40">Total Tomatoes</span>
                 <div className="flex items-center gap-2">
                   <span className="text-4xl font-black text-primary">{totalTomatoesEarned}</span>
-                  <TomatoSplash size="w-6 h-6" />
+                  <span className="text-2xl">🍅</span>
                 </div>
               </div>
               

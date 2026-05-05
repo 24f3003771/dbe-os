@@ -26,7 +26,7 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
             <header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm print:hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-                <TomatoSplash size="w-10 h-10" />
+                <TomatoSplash size="w-14 h-14" />
                 <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-red-500 transition-colors">
                   DBE OS
                 </span>

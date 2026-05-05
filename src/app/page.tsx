@@ -70,7 +70,7 @@ const IPadSidebar = () => {
               exit={{ opacity: 0, scale: 2 }}
               className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex items-center gap-3 pointer-events-none drop-shadow-2xl"
             >
-              <img src="/icon.png" alt="Tomato" className="w-20 h-20 rounded-2xl shadow-2xl" />
+              <div className="text-6xl">🍅</div>
               <span className="text-6xl font-black text-red-500">+{lastEarned}</span>
             </motion.div>
           )}
