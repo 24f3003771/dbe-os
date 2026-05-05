@@ -140,7 +140,19 @@ export default function InternshipHunterPage() {
             const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(query)}&location=India&limit=50`);
             const data = await response.json();
             if (Array.isArray(data)) {
-                setLiveJobs(data);
+                // Sort by most recent (newest first)
+                const parseDate = (d: string) => {
+                    const s = d.toLowerCase();
+                    const n = parseInt(s.match(/\d+/)?.[0] || "0");
+                    if (s.includes("minute")) return n;
+                    if (s.includes("hour")) return n * 60;
+                    if (s.includes("day")) return n * 1440;
+                    if (s.includes("week")) return n * 10080;
+                    if (s.includes("month")) return n * 43200;
+                    return 999999;
+                };
+                const sorted = [...data].sort((a, b) => parseDate(a.postDate) - parseDate(b.postDate));
+                setLiveJobs(sorted);
             } else {
                 setLiveJobs([]);
             }
