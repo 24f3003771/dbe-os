@@ -125,7 +125,6 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
     // Trigger AI evaluation in the background when user leaves a text question.
     // Fires once per question (guarded by aiEvalPromisesRef).
     const triggerAiEvalIfNeeded = useCallback((index: number) => {
-        if (mode !== "exam") return;
         const q = questions[index];
         if (q?.input_type !== "text") return;           // MCQ — skip
         if (!textAnswers[index]?.trim()) return;        // blank answer — skip
@@ -198,10 +197,10 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     explanation: q.explanation ?? null,
                 };
             }
+            }
         });
 
-        if (mode === "exam") {
-            // ── Step 2: Wait for any still-pending AI evaluations ──────────────
+        // ── Step 2: Wait for any still-pending AI evaluations ──────────────
             // (Most will already be done since they fired on each Next click)
             const pendingIndices = [...aiEvalPromisesRef.current.entries()]
                 .filter(([idx]) => !aiEvalResultsRef.current.has(idx))
@@ -234,6 +233,9 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                 else if (negMarkingValue === "1/4") negPenalty = 1/4;
                 else negPenalty = 1/3;
             }
+            
+            const totalTimeFromQuestions = finalTimes.reduce((a, b) => a + b, 0);
+            const avgTimePerQ = questions.length > 0 ? Math.round(totalTimeFromQuestions / questions.length) : 0;
 
             const finalScore = responses.reduce((acc, r) => {
                 if (r.inputType === "mcq") {
@@ -245,18 +247,9 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                 return acc;
             }, 0);
 
-            const totalTimeFromQuestions = finalTimes.reduce((a, b) => a + b, 0);
-            const tomatoes = Math.round(2 * questions.length + finalScore * 5);
-            const avgTimePerQ = questions.length > 0 ? Math.round(totalTimeFromQuestions / questions.length) : 0;
-            
-            // Legacy mistakes array for the dashboard count
-            const legacyMistakes = responses.filter(r => {
-                if (r.inputType === "mcq") return !r.isCorrect;
-                if (r.inputType === "text") return (r.ai_grade ?? 100) < 100;
-                return false;
-            });
-
-            // ── Step 5: Save to DB ────────────────────────────────────
+            if (mode === "exam") {
+                const tomatoes = Math.round(2 * questions.length + finalScore * 5);
+                // ── Step 5: Save to DB ────────────────────────────────────
             setIsSaving(true);
             try {
                 await saveExamResult({
@@ -303,8 +296,8 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                 console.error("Farm store sync error:", e);
             }
         } else {
-            // Practice mode — 1 tomato per question attempted
-            const practiceTomatoes = questions.length;
+            // Practice/AI mode — (1 * questions.length) + (finalScore * 2)
+            const practiceTomatoes = Math.round(questions.length + (finalScore * 2));
             try {
                 if (practiceTomatoes > 0) {
                     const isAi = quizSubMode === "ai";
