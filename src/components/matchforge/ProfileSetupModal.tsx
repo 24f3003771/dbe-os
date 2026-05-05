@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { UserCircle, Linkedin, Phone, Save, Loader2, Rocket, ArrowRight, Edit3, Sparkles, CheckCircle2, GraduationCap, Briefcase, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { updateProfile } from "@/actions/matchforge";
+import { updateProfile, scrapeLinkedInProfile } from "@/actions/matchforge";
 import { MatchProfile } from "@/types/matchforge";
 
 const ROLES = ['Finance', 'Marketing', 'Operations', 'Product', 'Strategy', 'Design', 'Data', 'UI/UX'];
@@ -21,6 +21,8 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
   const [activeTab, setActiveTab] = useState<'basic' | 'professional' | 'academic'>('basic');
   
   const [formData, setFormData] = useState({
+    full_name: initialData?.full_name || '',
+    headline: initialData?.headline || '',
     roles: initialData?.roles || [] as string[],
     bio: initialData?.bio || '',
     skills: initialData?.skills || [] as string[],
@@ -52,24 +54,29 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
   const handleFetchLinkedIn = async () => {
     if (!formData.linkedin_url) return alert("Please enter your LinkedIn URL first");
     setIsSubmitting(true);
-    // Simulate In-Depth LinkedIn Fetch
-    setTimeout(() => {
-      setFormData(prev => ({
-        ...prev,
-        bio: prev.bio || "BBA Student at IIM Bangalore. Previously worked on Fintech market research and Digital Marketing strategies. Passionate about Product Management in the AI space.",
-        experience: [
-          { company: "Nova Unplugged", role: "Product Intern", duration: "Jun 2024 - Aug 2024" },
-          { company: "DBE Student Council", role: "Member", duration: "Jan 2024 - Present" }
-        ],
-        education: [
-          { school: "IIM Bangalore", degree: "BBA in Digital Business & Entrepreneurship", year: "2026" },
-          { school: "National Public School", degree: "High School", year: "2022" }
-        ],
-        skills: [...new Set([...prev.skills, 'Strategy', 'Analytics', 'Product Management', 'Market Research', 'Python'])]
-      }));
+    
+    try {
+      const result = await scrapeLinkedInProfile(formData.linkedin_url);
+      if (result.success && result.data) {
+        setFormData(prev => ({
+          ...prev,
+          full_name: result.data.full_name,
+          headline: result.data.headline,
+          bio: result.data.bio,
+          location: result.data.location,
+          skills: [...new Set([...prev.skills, ...result.data.skills])],
+          experience: result.data.experience,
+          education: result.data.education
+        }));
+        setStep('PREVIEW');
+      } else {
+        alert("Could not fetch detailed profile. Please check the URL or setup manually.");
+      }
+    } catch (error) {
+      console.error("Scrape Error:", error);
+    } finally {
       setIsSubmitting(false);
-      setStep('PREVIEW');
-    }, 2000);
+    }
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -177,6 +184,17 @@ export default function ProfileSetupModal({ isOpen, initialData }: { isOpen: boo
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[30vh] overflow-y-auto custom-scrollbar p-2">
+                  <div className="bg-surface-container-low p-5 rounded-2xl space-y-3 col-span-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-black">
+                        {formData.full_name?.charAt(0)}
+                      </div>
+                      <div>
+                        <div className="text-sm font-black text-on-surface">{formData.full_name}</div>
+                        <div className="text-[10px] font-medium text-on-surface-variant">{formData.headline}</div>
+                      </div>
+                    </div>
+                  </div>
                   <div className="bg-surface-container-low p-5 rounded-2xl space-y-3">
                     <div className="flex items-center gap-2 text-indigo-600">
                       <GraduationCap className="w-4 h-4" />

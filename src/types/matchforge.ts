@@ -2,6 +2,8 @@ export type ListingType = 'Case Competition' | 'Hackathon' | 'Co-founder' | 'Lea
 
 export interface MatchProfile {
   id: string;
+  full_name?: string;
+  headline?: string;
   roles: string[];
   bio: string;
   skills: string[];

@@ -29,18 +29,27 @@ export default function ProfileCard({ profile }: { profile: MatchProfile & { mat
                 </span>
               ))}
             </div>
-            <h3 className="text-xl font-black font-headline text-on-surface pt-1">Anonymous Peer</h3>
-            <div className="flex items-center gap-2 text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">
-              <span>Term {profile.current_term}</span>
-              {profile.location && (
-                <>
-                  <span className="w-1 h-1 bg-outline-variant rounded-full" />
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    {profile.location}
-                  </div>
-                </>
+            <h3 className="text-xl font-black font-headline text-on-surface pt-1">
+              {profile.full_name || "Anonymous Peer"}
+            </h3>
+            <div className="flex flex-col gap-1">
+              {profile.headline && (
+                <p className="text-[10px] text-indigo-600 font-bold uppercase tracking-wider line-clamp-1">
+                  {profile.headline}
+                </p>
               )}
+              <div className="flex items-center gap-2 text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">
+                <span>Term {profile.current_term}</span>
+                {profile.location && (
+                  <>
+                    <span className="w-1 h-1 bg-outline-variant rounded-full" />
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" />
+                      {profile.location}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
           
