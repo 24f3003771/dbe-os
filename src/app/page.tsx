@@ -204,42 +204,55 @@ export default function Dashboard() {
                     <div className="relative z-10 flex flex-col h-full">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-black font-headline text-on-surface tracking-tight uppercase flex items-center gap-2">
-                                <Rocket className="w-5 h-5 text-indigo-600" /> Quiz & Practice
+                                <Rocket className="w-5 h-5 text-indigo-600" /> Quiz
                             </h3>
                         </div>
-                        <div className="flex-1 space-y-3 mb-6 flex flex-col justify-center">
-                            <Link href="/quiz" className="block bg-indigo-50/50 border border-indigo-100 p-5 rounded-2xl hover:bg-indigo-50 hover:border-indigo-300 transition-all group/item shadow-sm relative overflow-hidden">
-                                <div className="relative z-10 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                                            <Wrench className="w-5 h-5" />
+                        <div className="flex-1 space-y-3 mb-6">
+                            <Link href="/quiz/practice" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-indigo-300 transition-all group/item shadow-sm">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                                            <Rocket className="w-4 h-4" />
                                         </div>
-                                        <div>
-                                            <p className="text-base font-bold font-headline text-indigo-900 group-hover/item:text-indigo-700 transition-colors">Concept Builder</p>
-                                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5">Topic-wise practice</p>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-indigo-600 transition-colors truncate">Practice</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-indigo-400 group-hover/item:text-indigo-600 transition-colors group-hover/item:translate-x-1" />
+                                    <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-indigo-600 transition-colors group-hover/item:translate-x-1" />
                                 </div>
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-200/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover/item:bg-indigo-300/30 transition-colors" />
                             </Link>
 
-                            <Link href="/quiz/pyq" className="block bg-amber-50/50 border border-amber-100 p-5 rounded-2xl hover:bg-amber-50 hover:border-amber-300 transition-all group/item shadow-sm relative overflow-hidden">
-                                <div className="relative z-10 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
-                                            <Trophy className="w-5 h-5" />
+                            <Link href="/quiz" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-emerald-300 transition-all group/item shadow-sm">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                                            <Wrench className="w-4 h-4" />
                                         </div>
-                                        <div>
-                                            <p className="text-base font-bold font-headline text-amber-900 group-hover/item:text-amber-700 transition-colors">PYQ & Mock</p>
-                                            <p className="text-[10px] font-bold text-amber-400 uppercase tracking-widest mt-0.5">Exam simulation</p>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-emerald-600 transition-colors truncate">Concept Builder</p>
                                         </div>
                                     </div>
-                                    <ArrowRight className="w-5 h-5 text-amber-400 group-hover/item:text-amber-600 transition-colors group-hover/item:translate-x-1" />
+                                    <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-emerald-600 transition-colors group-hover/item:translate-x-1" />
                                 </div>
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-200/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover/item:bg-amber-300/30 transition-colors" />
+                            </Link>
+
+                            <Link href="/quiz/pyq" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-amber-300 transition-all group/item shadow-sm">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs">
+                                            <Trophy className="w-4 h-4" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-amber-600 transition-colors truncate">PYQ & Mock</p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-amber-600 transition-colors group-hover/item:translate-x-1" />
+                                </div>
                             </Link>
                         </div>
+                        <Link href="/quiz/subjects" className="block mt-auto">
+                            <button className="w-full py-3.5 bg-indigo-50 hover:bg-indigo-100 rounded-xl text-xs font-black uppercase tracking-widest text-indigo-600 transition-all border border-indigo-100">View All Subject wise</button>
+                        </Link>
                     </div>
                     {/* Decorative circle */}
                     <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-50 rounded-full opacity-50 blur-3xl pointer-events-none" />
