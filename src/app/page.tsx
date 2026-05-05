@@ -262,37 +262,37 @@ export default function Dashboard() {
             <section className="space-y-4 md:col-span-2 mt-4">
                 {/* Row 1: 3 columns */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Link href="/tools/tracker" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                        <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">📋</span>
-                        <span className="font-black font-headline text-on-surface text-[15px] leading-tight">Application Tracker & FAQs</span>
-                    </Link>
-                    <Link href="/quiz/pyq" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
+                    <Link href="/tools/resume-builder" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
                         <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">📝</span>
-                        <span className="font-black font-headline text-on-surface text-[15px] leading-tight">Explore IPMAT & CUET PYQs</span>
+                        <span className="font-black font-headline text-on-surface text-[15px] leading-tight">AI Resume Forge</span>
                     </Link>
-                    <Link href="/tools/interview" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                        <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">📜</span>
-                        <span className="font-black font-headline text-on-surface text-[15px] leading-tight">Interview Guide</span>
+                    <Link href="/tools/internships" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
+                        <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">🚀</span>
+                        <span className="font-black font-headline text-on-surface text-[15px] leading-tight">Internship Hunter</span>
+                    </Link>
+                    <Link href="/matchforge" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
+                        <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">👥</span>
+                        <span className="font-black font-headline text-on-surface text-[15px] leading-tight">MatchForge Network</span>
                     </Link>
                 </div>
                 
                 {/* Row 2: 4 columns */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Link href="/tools/eligibility" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                        <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">⁉️</span>
-                        <span className="font-black font-headline text-on-surface text-sm leading-tight">IIM Eligibility</span>
+                    <Link href="/tools/career-guides" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
+                        <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">📘</span>
+                        <span className="font-black font-headline text-on-surface text-sm leading-tight">Career Guides</span>
                     </Link>
-                    <Link href="/tools/cutoff" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                        <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">🔢</span>
-                        <span className="font-black font-headline text-on-surface text-sm leading-tight">IIM Cutoff Data</span>
+                    <Link href="/tools/pitch-decks" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
+                        <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">📊</span>
+                        <span className="font-black font-headline text-on-surface text-sm leading-tight">Pro Pitch Decks</span>
                     </Link>
                     <Link href="/tools/cgpa-calculator" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
                         <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">🧮</span>
                         <span className="font-black font-headline text-on-surface text-sm leading-tight">CGPA Calculator</span>
                     </Link>
-                    <Link href="/tools/colleges" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                        <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">🎒</span>
-                        <span className="font-black font-headline text-on-surface text-sm leading-tight">DU Colleges & Courses</span>
+                    <Link href="/tools/competitions" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
+                        <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">🏆</span>
+                        <span className="font-black font-headline text-on-surface text-sm leading-tight">Competitions</span>
                     </Link>
                 </div>
             </section>
