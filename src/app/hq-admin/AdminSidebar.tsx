@@ -34,9 +34,7 @@ export default function AdminSidebar() {
             <div className="p-5 border-b border-outline-variant/20 bg-error relative overflow-hidden">
                 <div className="absolute top-[-20%] right-[-10%] w-24 h-24 bg-white/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center gap-3 relative z-10">
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1 shadow-lg">
-                        <img src="/icon.png" alt="Logo" className="w-full h-full object-contain" />
-                    </div>
+                    <img src="/icon.png" alt="Logo" className="w-10 h-10 rounded-xl shadow-lg" />
                     <div>
                         <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white">HQ Admin</p>
                         <p className="text-[9px] font-bold text-white/60 uppercase tracking-widest leading-tight">Secure Zone</p>
