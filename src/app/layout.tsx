@@ -87,11 +87,20 @@ export const metadata: Metadata = {
     siteName: "DBE OS",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "DBE OS - Your Productivity. Upgraded.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "DBE OS | IIM Bangalore BBA DBE Platform",
     description: "Your academic command center for IIM Bangalore BBA DBE.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

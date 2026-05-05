@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import Image from 'next/image';
 
 interface TomatoSplashProps {
   className?: string;
@@ -12,7 +12,14 @@ export default function TomatoSplash({ className = '', size = 'w-10 h-10' }: Tom
     <div 
       className={`relative flex items-center justify-center ${size} ${className}`}
     >
-      <span className="text-2xl select-none">🍅</span>
+      <Image 
+        src="/logo.png" 
+        alt="DBE OS Logo" 
+        width={40} 
+        height={40} 
+        className="object-contain select-none"
+        priority
+      />
       <div className="absolute inset-0 bg-red-500/5 blur-lg rounded-full animate-pulse"></div>
     </div>
   );
