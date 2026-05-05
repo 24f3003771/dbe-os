@@ -164,41 +164,23 @@ export default function InternshipHunterPage() {
 
     return (
         <div className="min-h-screen bg-stone-50/50 text-slate-900 animate-in fade-in duration-1000 pb-40">
-            {/* Soft Premium Hero */}
-            <header className="relative py-28 px-6 lg:px-12 bg-slate-950 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-primary/5 opacity-40" />
-                <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-16">
-                        <div className="space-y-8 max-w-3xl">
-                            <div className="inline-flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-full text-emerald-400 font-black text-[10px] tracking-widest uppercase border border-emerald-500/20">
-                                <Rocket className="w-3.5 h-3.5" /> Direct Access Engine
-                            </div>
-                            <h1 className="text-6xl lg:text-8xl font-black font-headline tracking-tighter text-white leading-[0.9] italic">
-                                Internship <br/><span className="text-emerald-400">Hunter.</span>
+            {/* Minimal Header */}
+            <header className="py-12 px-6 border-b border-slate-100 bg-white">
+                <div className="max-w-7xl mx-auto space-y-4">
+                    <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border border-emerald-100">
+                        <Rocket className="w-3 h-3" /> Direct Access Engine
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div className="space-y-2">
+                            <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tighter text-slate-900 italic">
+                                Internship <span className="text-emerald-500 text-stroke-sm">Hunter.</span>
                             </h1>
-                            <p className="text-slate-400 text-xl md:text-2xl font-medium italic leading-relaxed">
-                                Access the official career portals of 50+ elite global firms. Real-time extraction. Zero marketing fluff.
+                            <p className="text-slate-500 text-lg md:text-xl font-medium italic leading-relaxed max-w-2xl">
+                                Verified corporate portals and real-time AI extraction. Access elite global opportunities directly from the source.
                             </p>
                         </div>
-                        
-                        <div className="hidden xl:flex items-center gap-4">
-                            <div className="bg-white/5 backdrop-blur-2xl rounded-[3rem] p-10 border border-white/10 shadow-2xl space-y-6 w-96 transform hover:-translate-y-2 transition-transform duration-500">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 leading-none">Global Coverage</p>
-                                <div className="flex -space-x-4">
-                                    {['G', 'A', 'M', 'T', 'B'].map((letter, i) => (
-                                        <div key={i} className="w-12 h-12 rounded-full border-4 border-slate-950 bg-slate-800 flex items-center justify-center text-white font-black text-sm">
-                                            {letter}
-                                        </div>
-                                    ))}
-                                    <div className="w-12 h-12 rounded-full border-4 border-slate-950 bg-emerald-500 flex items-center justify-center text-white font-black text-xs">
-                                        +50
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-white font-bold text-xl tracking-tight italic">MAANG to Unicorns.</h4>
-                                    <p className="text-slate-500 text-xs font-medium leading-relaxed">Direct links to verified corporate hiring pipelines.</p>
-                                </div>
-                            </div>
+                        <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest pb-2">
+                            <Globe className="w-3.5 h-3.5" /> 50+ Global Firms
                         </div>
                     </div>
                 </div>
