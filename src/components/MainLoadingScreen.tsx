@@ -84,7 +84,7 @@ export default function MainLoadingScreen() {
           {/* Footer Branding */}
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
             <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-2xl border border-white/10">
-              <span className="text-xl">🍅</span>
+              <img src="/icon.png" alt="Logo" className="w-5 h-5 object-contain" />
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">DBE OS Platform</span>
             </div>
             <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.4em]">Optimizing Academic Performance</p>
