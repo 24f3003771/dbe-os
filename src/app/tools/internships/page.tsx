@@ -107,24 +107,34 @@ const SECTORS = [
 ];
 
 export default function InternshipHunterPage() {
-    const [viewMode, setViewMode] = useState<"CHOOSE" | "PORTALS" | "LIVE">("CHOOSE");
+    const [viewMode, setViewMode] = useState<"PORTALS" | "LIVE">("LIVE");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedSector, setSelectedSector] = useState("All");
     const [selectedTier, setSelectedTier] = useState("All");
     const [liveJobs, setLiveJobs] = useState<any[]>([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [customKeyword, setCustomKeyword] = useState("Digital Business");
+    const [hasSearched, setHasSearched] = useState(false);
+    const [customKeyword, setCustomKeyword] = useState("");
 
     const PRESETS = [
-        { id: "Marketing", label: "Marketing & Strategy", icon: TrendingUp },
+        { id: "All", label: "Fetch All", icon: Globe },
+        { id: "Marketing", label: "Marketing", icon: TrendingUp },
         { id: "Product", label: "Product Management", icon: Target },
         { id: "Analytics", label: "Business Analytics", icon: BarChart3 },
+        { id: "Software", label: "Software Engineering", icon: Cpu },
+        { id: "Data", label: "Data Science", icon: BarChart3 },
+        { id: "Design", label: "UI/UX Design", icon: Sparkles },
+        { id: "Finance", label: "Finance & IB", icon: Coins },
+        { id: "HR", label: "Human Resources", icon: Users },
+        { id: "Operations", label: "Operations", icon: Target },
+        { id: "Sales", label: "Sales & BD", icon: TrendingUp },
     ];
 
     const handleLiveSearch = async (queryOverride?: string) => {
-        const query = queryOverride || customKeyword || "Internship";
+        const query = queryOverride === "Fetch All" ? "Internship" : (queryOverride || customKeyword || "Internship");
         console.log("Starting live search for:", query);
         setIsSearching(true);
+        setHasSearched(true);
         setViewMode("LIVE");
         try {
             const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(query)}&location=India&limit=50`);
@@ -152,32 +162,8 @@ export default function InternshipHunterPage() {
         });
     }, [searchQuery, selectedSector, selectedTier]);
 
-    const OPPORTUNITY_NAV = [
-        { name: "Hub", href: "/tools", icon: Globe },
-        { name: "Internships", href: "/tools/internships", icon: Briefcase, active: true },
-        { name: "Competitions", href: "/tools/competitions", icon: Trophy },
-        { name: "Winners Bank", href: "/tools/winning-repository", icon: Star },
-        { name: "Pitch Decks", href: "/tools/pitch-decks", icon: Sparkles },
-    ];
-
     return (
         <div className="min-h-screen bg-stone-50/50 text-slate-900 animate-in fade-in duration-1000 pb-40">
-            {/* Global Opportunity Nav */}
-            <nav className="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100 px-4 md:px-6 py-2 md:py-3 flex justify-center overflow-x-auto no-scrollbar">
-                <div className="flex items-center gap-1 md:gap-2 bg-slate-100/50 p-1 rounded-xl md:rounded-2xl border border-slate-200/50 min-w-max">
-                    {OPPORTUNITY_NAV.map((nav) => (
-                        <Link 
-                            key={nav.name}
-                            href={nav.href}
-                            className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all ${nav.active ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
-                        >
-                            <nav.icon className="w-3 h-3" />
-                            <span className="whitespace-nowrap">{nav.name}</span>
-                        </Link>
-                    ))}
-                </div>
-            </nav>
-
             {/* Soft Premium Hero */}
             <header className="relative py-28 px-6 lg:px-12 bg-slate-950 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-primary/5 opacity-40" />
@@ -218,51 +204,7 @@ export default function InternshipHunterPage() {
                 </div>
             </header>
 
-            {/* Mode Selection Gatekeeper */}
-            {viewMode === "CHOOSE" && (
-                <section className="max-w-7xl mx-auto px-4 md:px-6 -mt-12 md:-mt-20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                        <button 
-                            onClick={() => setViewMode("PORTALS")}
-                            className="group relative bg-white border border-stone-100 rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-left hover:border-primary transition-all shadow-2xl shadow-stone-200/50"
-                        >
-                            <div className="space-y-4 md:space-y-6">
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-stone-50 rounded-2xl md:rounded-[1.8rem] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                                    <Building2 className="w-8 h-8 md:w-10 md:h-10" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-3xl md:text-4xl font-black font-headline tracking-tight leading-none italic">Verified Corporate <br/><span className="text-primary">Portals.</span></h3>
-                                    <p className="text-stone-500 font-medium text-base md:text-lg leading-relaxed">Direct links to official career pages of Tier 1 firms, MAANG, and Elite Consulting.</p>
-                                </div>
-                                <div className="flex items-center gap-3 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-primary">
-                                    Direct Redirect <ChevronRight className="w-4 h-4" />
-                                </div>
-                            </div>
-                        </button>
 
-                        <button 
-                            onClick={() => handleLiveSearch()}
-                            className="group relative bg-[#1A1A1A] rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-left hover:ring-2 hover:ring-primary/50 transition-all shadow-2xl"
-                        >
-                            <div className="space-y-4 md:space-y-6">
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-2xl md:rounded-[1.8rem] flex items-center justify-center text-white group-hover:bg-primary transition-all">
-                                    <Linkedin className="w-8 h-8 md:w-10 md:h-10" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-3xl md:text-4xl font-black font-headline tracking-tight leading-none italic text-white">Live AI Job <br/><span className="text-primary">Hunter.</span></h3>
-                                    <p className="text-stone-300 font-medium text-base md:text-lg leading-relaxed">Real-time LinkedIn scraping for internships posted in the <span className="text-primary underline underline-offset-4 decoration-2">last 15 days</span>.</p>
-                                </div>
-                                <div className="flex items-center gap-3 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover:text-primary">
-                                    Extract Openings <ChevronRight className="w-4 h-4" />
-                                </div>
-                            </div>
-                            <div className="absolute top-6 md:top-8 right-6 md:right-8">
-                                <div className="px-2 md:px-3 py-1 bg-primary text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white rounded-full animate-pulse">Live Now</div>
-                            </div>
-                        </button>
-                    </div>
-                </section>
-            )}
 
             {viewMode !== "CHOOSE" && (
                 <section className="max-w-7xl mx-auto px-6 space-y-10">
@@ -325,8 +267,8 @@ export default function InternshipHunterPage() {
                                 <Search className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-slate-300" />
                                 <input 
                                     type="text"
-                                    placeholder={viewMode === 'PORTALS' ? "Find top firms..." : "Type field (e.g. UX Design)..."}
-                                    className="w-full bg-slate-50 border-none rounded-2xl md:rounded-[2rem] py-3 md:py-5 pl-14 md:pl-16 pr-6 md:pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-sm md:text-lg placeholder:text-slate-300"
+                                    placeholder={viewMode === 'PORTALS' ? "Find top firms..." : "Search for positions (e.g. Data Analyst, Product Manager)..."}
+                                    className="w-full bg-slate-50 border-none rounded-2xl md:rounded-[2rem] py-3 md:py-5 pl-14 md:pl-16 pr-6 md:pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-sm md:text-lg placeholder:text-slate-400"
                                     value={viewMode === 'PORTALS' ? searchQuery : customKeyword}
                                     onChange={(e) => viewMode === 'PORTALS' ? setSearchQuery(e.target.value) : setCustomKeyword(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && (viewMode === 'LIVE' ? handleLiveSearch() : null)}
@@ -365,8 +307,18 @@ export default function InternshipHunterPage() {
                                 Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
                             ) : liveJobs.length > 0 ? (
                                 liveJobs.map((job, idx) => <LinkedInJobCard key={idx} job={job} />)
+                            ) : hasSearched ? (
+                                <EmptyState onReset={() => { setHasSearched(false); setLiveJobs([]); }} />
                             ) : (
-                                <EmptyState onReset={() => setViewMode("CHOOSE")} />
+                                <div className="col-span-full py-20 text-center space-y-4 bg-white border border-stone-100 rounded-[3rem]">
+                                    <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto text-emerald-500">
+                                        <Search className="w-10 h-10" />
+                                    </div>
+                                    <h3 className="text-xl font-black italic leading-none">Ready to Hunt?</h3>
+                                    <p className="text-stone-500 font-medium max-w-sm mx-auto text-sm leading-relaxed">
+                                        Search for a position above or select one of the presets to fetch the latest internship opportunities.
+                                    </p>
+                                </div>
                             )
                         ) : (
                             filteredPortals.map(company => <PortalCard key={company.id} company={company} />)
@@ -375,80 +327,13 @@ export default function InternshipHunterPage() {
                 </section>
             )}
 
-            {/* Preparation Roadmap Section (Moved below Mode Selector) */}
-            {viewMode === "CHOOSE" && (
-                <section className="max-w-7xl mx-auto px-6 py-20 mt-10">
-                    <div className="flex items-center gap-4 mb-12 px-4">
-                        <div className="w-1.5 h-8 bg-primary rounded-full" />
-                        <h2 className="text-3xl font-black font-headline italic tracking-tight">The B-School Prep Roadmap</h2>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 px-4">
-                        <RoadmapItem step="01" label="Profile Design" detail="High-yield resume, LinkedIn SEO, and Portfolio setup." icon={FileText} color="bg-indigo-500" />
-                        <RoadmapItem step="02" label="Core Preparation" detail="Aptitude logic, Domain depth, and Case prep." icon={Zap} color="bg-amber-500" />
-                        <RoadmapItem step="03" label="Hunter Phase" detail="Apply via official portals and Referral networking." icon={ExternalLink} color="bg-primary" />
-                        <RoadmapItem step="04" label="Closing" detail="Mock behavioral rounds and Negotiation style." icon={Target} color="bg-rose-500" />
-                    </div>
-                </section>
-            )}
 
-            {/* General Preparation Guide (Minimal Footer) */}
-            <section className="max-w-5xl mx-auto px-6 mt-32">
-                <div className="bg-[#1A1A1A] text-white p-10 md:p-16 rounded-[3rem] shadow-2xl relative overflow-hidden group">
-                    <div className="relative z-10 space-y-8">
-                        <div className="space-y-4">
-                            <h3 className="text-4xl font-black font-headline tracking-tighter italic">General Prep Guide</h3>
-                            <p className="text-stone-400 font-medium italic text-lg leading-relaxed max-w-2xl">
-                                Success isn't just about applying. It's about being ready when the mail hits your inbox. Follow these rules:
-                            </p>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <div className="space-y-4">
-                                <h5 className="text-primary font-black uppercase tracking-widest text-[10px]">Technical Pillar</h5>
-                                <ul className="space-y-3">
-                                    <li className="flex gap-3 text-sm font-bold text-stone-300">
-                                        <Check className="w-4 h-4 text-primary shrink-0" /> Focus on Guesstimates and First Principles.
-                                    </li>
-                                    <li className="flex gap-3 text-sm font-bold text-stone-300">
-                                        <Check className="w-4 h-4 text-primary shrink-0" /> Domain Specific Tools (SQL, Figma, R, Excel).
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="space-y-4">
-                                <h5 className="text-primary font-black uppercase tracking-widest text-[10px]">Behavioral Pillar</h5>
-                                <ul className="space-y-3">
-                                    <li className="flex gap-3 text-sm font-bold text-stone-300">
-                                        <Check className="w-4 h-4 text-primary shrink-0" /> STAR method for all your past experiences.
-                                    </li>
-                                    <li className="flex gap-3 text-sm font-bold text-stone-300">
-                                        <Check className="w-4 h-4 text-primary shrink-0" /> Understanding the firm's cultural DNA.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+
         </div>
     );
 }
 
-function RoadmapItem({ step, label, detail, icon: Icon, color }: any) {
-    return (
-        <div className="bg-white border border-stone-100 p-6 md:p-8 rounded-[1.8rem] md:rounded-[2rem] space-y-3 md:space-y-4 hover:shadow-xl transition-all group">
-            <div className="flex items-center justify-between">
-                <span className="text-[9px] md:text-[10px] font-black text-stone-300 uppercase underline decoration-primary/50 underline-offset-8 decoration-2">{step}</span>
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl ${color} flex items-center justify-center text-white shadow-lg`}>
-                    <Icon className="w-5 h-5 md:w-6 md:h-6" />
-                </div>
-            </div>
-            <div>
-                <h4 className="text-base md:text-lg font-black font-headline text-stone-900 group-hover:text-primary transition-colors italic">{label}</h4>
-                <p className="text-[10px] md:text-[11px] text-stone-500 font-medium leading-relaxed mt-1 md:mt-2 italic">{detail}</p>
-            </div>
-        </div>
-    );
-}
+
 
 function PortalCard({ company }: any) {
     return (
