@@ -38,8 +38,8 @@ export default function UniversalStats() {
           {/* Header Row */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-primary/10 rounded-2xl border border-primary/20">
-                <Trophy className="w-8 h-8 text-primary" />
+              <div className="p-1 bg-white rounded-2xl border border-primary/20 shadow-lg">
+                <img src="/icon.png" alt="Mascot" className="w-12 h-12 rounded-xl object-contain" />
               </div>
               <div>
                 <h1 className="text-3xl font-black font-headline text-on-surface tracking-tighter leading-none flex items-center gap-2">
