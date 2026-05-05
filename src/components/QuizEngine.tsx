@@ -266,7 +266,6 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     timerPerQuestion: avgTimePerQ, 
                     totalTimeTaken: elapsed,
                     responses,
-                    mistakes: JSON.stringify(legacyMistakes),
                     tomatoesEarned: tomatoes,
                     quizSetId: quizSetId,
                 });
