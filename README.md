@@ -32,9 +32,9 @@ A robust, admin-controlled management system for the entire DBE academic cycle.
 
 ### 🛠️ Academic Tools (The Student Command Center)
 A centralized suite of utilities to empower student success, preparation, and discovery.
-- **CGPA Calculator:** Accurate WAM/CGPA tracking based on the official IIMB manual.
+- **CGPA Calculator:** Accurate WAM/CGPA tracking based on the official IIMB manual with **Supabase Cloud Sync** for cross-device persistence.
 - **AI Resume Forge:** A comprehensive AI-powered command center for resume building, enhancement (NVIDIA GLM-5.1), and JD matching.
-- **Discovery Engine:** Real-time aggregator of high-impact B-school challenges, MNC internships, and recurring program cycles.
+- **Discovery Engine:** Real-time aggregator of high-impact B-school challenges and MNC internships with **Live AI Extraction** from LinkedIn.
 - **Pro Pitch Decks:** Exclusive library of award-winning case decks from global organizations (L'Oréal, Maersk, etc.).
 - **Winners Bank:** A repository of successful case submissions and roadmaps from top-tier competitions.
 - **Career Guides:** Official playbooks for preparing for BCG, Google, HUL, and other Tier 1 firms.
