@@ -200,6 +200,9 @@ export default function InternshipHunterPage() {
                 };
                 const sorted = [...data].sort((a, b) => parseDate(a.postDate) - parseDate(b.postDate));
                 setLiveJobs(sorted);
+            } else if (data && data.error) {
+                console.error("LinkedIn API returned error:", data.message);
+                setLiveJobs([]);
             } else {
                 setLiveJobs([]);
             }
@@ -498,7 +501,7 @@ function EmptyState({ onReset }: any) {
             </div>
             <h3 className="text-xl font-black italic leading-none">No live listings found.</h3>
             <p className="text-stone-500 font-medium max-w-xs mx-auto text-sm leading-relaxed">
-                LinkedIn extraction failed or returned zero results for the last 15 days. Try broadening your keywords.
+                LinkedIn extraction failed or returned zero results for the past month. Try broadening your keywords.
             </p>
             <button 
                 onClick={onReset}
