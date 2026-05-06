@@ -22,6 +22,9 @@ import {
 import Link from "next/link";
 import jsPDF from "jspdf";
 import { toCanvas } from "html-to-image";
+import { getCGPADataAction, saveCGPADataAction } from "@/actions/cgpa";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 // Data from IIMB BBA DBE Programme Manual
 const TERMS_DATA = [
@@ -165,18 +168,49 @@ export default function CGPACalculator() {
   const [grades, setGrades] = useState<Record<number, Record<string, number>>>({});
   const [activeTab, setActiveTab] = useState<"input" | "summary">("input");
   const [isExporting, setIsExporting] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSynced, setLastSynced] = useState<Date | null>(null);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // Initialize Auth
   useEffect(() => {
-    const saved = localStorage.getItem("dbe_os_cgpa_data");
-    if (saved) {
-      try {
-        setGrades(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to parse saved grades", e);
-      }
-    }
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
   }, []);
+
+  // Load Data
+  useEffect(() => {
+    const loadData = async () => {
+      setIsSyncing(true);
+      
+      // 1. Try to get from Supabase if logged in
+      if (user) {
+        const cloudData = await getCGPADataAction();
+        if (cloudData && Object.keys(cloudData).length > 0) {
+          setGrades(cloudData as Record<number, Record<string, number>>);
+          setLastSynced(new Date());
+          setIsSyncing(false);
+          return;
+        }
+      }
+
+      // 2. Fallback to Local Storage
+      const saved = localStorage.getItem("dbe_os_cgpa_data");
+      if (saved) {
+        try {
+          setGrades(JSON.parse(saved));
+        } catch (e) {
+          console.error("Failed to parse saved grades", e);
+        }
+      }
+      setIsSyncing(false);
+    };
+
+    loadData();
+  }, [user]);
 
   const handleMarkChange = (termId: number, subjectName: string, mark: string) => {
     const val = parseFloat(mark);
@@ -191,9 +225,25 @@ export default function CGPACalculator() {
     }));
   };
 
-  const saveGrades = () => {
+  const saveGrades = async () => {
+    setIsSyncing(true);
+    
+    // Always save to local storage
     localStorage.setItem("dbe_os_cgpa_data", JSON.stringify(grades));
-    alert("Progress saved to local storage!");
+    
+    // Save to Supabase if logged in
+    if (user) {
+      const result = await saveCGPADataAction(grades);
+      if (result.success) {
+        setLastSynced(new Date());
+      } else {
+        alert("Failed to sync with cloud: " + result.error);
+      }
+    } else {
+      alert("Progress saved to local storage! (Log in to sync across devices)");
+    }
+    
+    setIsSyncing(false);
   };
 
   const calculateTermWAM = (termId: number) => {
@@ -356,6 +406,14 @@ export default function CGPACalculator() {
               <span className="text-xs font-black uppercase tracking-widest text-amber-600">IIMB BBA DBE Utility</span>
             </div>
             <h1 className="text-4xl font-black font-headline text-on-surface tracking-tight">CGPA Calculator</h1>
+            {user && (
+              <div className="flex items-center gap-2 mt-2">
+                <div className={`w-2 h-2 rounded-full ${isSyncing ? 'bg-amber-400 animate-pulse' : 'bg-emerald-500'}`} />
+                <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+                  {isSyncing ? 'Syncing with cloud...' : lastSynced ? `Last synced ${lastSynced.toLocaleTimeString()}` : 'Cloud Sync Active'}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -369,9 +427,10 @@ export default function CGPACalculator() {
           </button>
           <button
             onClick={saveGrades}
-            className="flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-100 hover:scale-105 active:scale-95 transition-all"
+            disabled={isSyncing}
+            className={`flex items-center gap-2 px-6 py-2 bg-amber-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-100 hover:scale-105 active:scale-95 transition-all ${isSyncing ? 'opacity-50' : ''}`}
           >
-            <Save className="w-4 h-4" /> Save Progress
+            <Save className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} /> {isSyncing ? 'Syncing...' : 'Save Progress'}
           </button>
         </div>
       </div>
