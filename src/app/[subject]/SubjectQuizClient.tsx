@@ -201,7 +201,9 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                         />
                     </div>
                 </div>
-                     <div className="flex items-center justify-between">
+            )}
+
+            <div className="flex items-center justify-between">
                 <Link href="/quiz" className="flex items-center text-sm font-bold text-on-surface-variant hover:text-primary transition-colors w-fit">
                     <ChevronLeft className="w-5 h-5 mr-1" /> Back to Subjects
                 </Link>
@@ -243,7 +245,6 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                     </button>
                 </div>
             </header>
-</header>
 
             {activeTab === "history" ? (
                 <section className="space-y-8 animate-in slide-in-from-right-4 duration-500">
