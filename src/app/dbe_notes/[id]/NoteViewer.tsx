@@ -151,6 +151,15 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                         img: ({ src, alt }) => {
                                             const [error, setError] = useState(false);
                                             
+                                            // Transform Google Drive links to direct image links
+                                            let finalSrc = src || "";
+                                            if (finalSrc.includes("drive.google.com")) {
+                                                const fileIdMatch = finalSrc.match(/\/file\/d\/([^\/]+)/) || finalSrc.match(/[?&]id=([^&]+)/);
+                                                if (fileIdMatch && fileIdMatch[1]) {
+                                                    finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                                                }
+                                            }
+
                                             if (error) {
                                                 return (
                                                     <a 
@@ -168,7 +177,7 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                             return (
                                                 <div className="my-8 rounded-2xl overflow-hidden border border-stone-200 shadow-lg bg-white">
                                                     <img 
-                                                        src={src} 
+                                                        src={finalSrc} 
                                                         alt={alt} 
                                                         className="w-full h-auto" 
                                                         onError={() => setError(true)}
