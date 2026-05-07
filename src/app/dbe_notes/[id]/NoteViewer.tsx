@@ -154,13 +154,13 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                             if (error) {
                                                 return (
                                                     <a 
-                                                        href={src} 
+                                                        href={src as string} 
                                                         target="_blank" 
                                                         rel="noopener noreferrer"
                                                         className="block my-6 p-4 bg-stone-50 border border-dashed border-stone-200 rounded-2xl text-center group hover:bg-stone-100 transition-all"
                                                     >
                                                         <div className="text-stone-400 text-xs font-black uppercase tracking-widest mb-1">Link Reference</div>
-                                                        <div className="text-indigo-500 font-bold truncate underline decoration-indigo-200 group-hover:decoration-indigo-500">{src}</div>
+                                                        <div className="text-indigo-500 font-bold truncate underline decoration-indigo-200 group-hover:decoration-indigo-500">{String(src)}</div>
                                                     </a>
                                                 );
                                             }
