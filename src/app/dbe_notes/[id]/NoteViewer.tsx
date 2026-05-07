@@ -6,6 +6,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import DistributionVisualizer from "@/components/DistributionVisualizer";
 
 type Note = { id: string; module_number: number; content: string; topic_id: string | null };
 type Subject = { id: string; name: string; code: string; module_count: number; term_id: number };
@@ -147,14 +148,55 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                         p: ({ children }) => <p style={{ fontFamily: "'Kalam', cursive", marginBottom: "14px", lineHeight: "1.9" }}>{children}</p>,
                                         li: ({ children }) => <li style={{ fontFamily: "'Kalam', cursive", marginBottom: "6px" }}>{children}</li>,
                                         strong: ({ children }) => <strong style={{ fontWeight: 700, color: "#4F46E5" }}>{children}</strong>,
-                                        code: ({ children }) => <code style={{ background: "#f5f5f5", padding: "2px 6px", borderRadius: "4px", fontSize: "14px", fontFamily: "monospace" }}>{children}</code>,
+                                        img: ({ src, alt }) => (
+                                            <div className="my-8 rounded-2xl overflow-hidden border border-stone-200 shadow-lg">
+                                                <img src={src} alt={alt} className="w-full h-auto" />
+                                                {alt && <div className="px-4 py-2 bg-stone-50 text-[10px] text-stone-400 font-bold uppercase tracking-widest border-t border-stone-100">{alt}</div>}
+                                            </div>
+                                        ),
+                                        a: ({ href, children }) => (
+                                            <a 
+                                                href={href} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="text-[#6366F1] underline decoration-indigo-200 hover:decoration-indigo-500 transition-all font-bold"
+                                            >
+                                                {children}
+                                            </a>
+                                        ),
+                                        code: ({ node, inline, className, children, ...props }: any) => {
+                                            const match = /language-(\w+)/.exec(className || '');
+                                            const isVisualizer = match && match[1] === 'visualizer';
+                                            
+                                            if (!inline && isVisualizer) {
+                                                try {
+                                                    const config = JSON.parse(String(children).replace(/\n$/, ''));
+                                                    return <DistributionVisualizer {...config} />;
+                                                } catch (e) {
+                                                    return (
+                                                        <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono">
+                                                            Visualizer Error: Invalid JSON configuration
+                                                        </div>
+                                                    );
+                                                }
+                                            }
+
+                                            return (
+                                                <code style={{ background: "#f5f5f5", padding: "2px 6px", borderRadius: "4px", fontSize: "14px", fontFamily: "monospace" }} {...props}>
+                                                    {children}
+                                                </code>
+                                            );
+                                        },
                                         blockquote: ({ children }) => <blockquote style={{ borderLeft: "3px solid #4F46E5", paddingLeft: "16px", color: "#6B6B6B", fontStyle: "italic" }}>{children}</blockquote>,
                                         table: ({ children }) => <table style={{ borderCollapse: "collapse", width: "100%", marginBottom: "16px" }}>{children}</table>,
                                         th: ({ children }) => <th style={{ border: "1px solid #e0d8d4", padding: "8px 12px", background: "#f8f4f2", fontWeight: 700 }}>{children}</th>,
                                         td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "8px 12px" }}>{children}</td>,
                                     }}
                                 >
-                                    {activeNote.content}
+                                    {activeNote.content
+                                        // Fix common image syntax error: ![alt]url -> ![alt](url)
+                                        .replace(/!\[([^\]]*)\](https?:\/\/[^\s\)]+)(?!\))/g, '![$1]($2)')
+                                    }
                                 </ReactMarkdown>
                             </div>
                         ) : (
