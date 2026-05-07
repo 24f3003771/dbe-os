@@ -148,6 +148,22 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                         p: ({ children }) => <p style={{ fontFamily: "'Kalam', cursive", marginBottom: "14px", lineHeight: "1.9" }}>{children}</p>,
                                         li: ({ children }) => <li style={{ fontFamily: "'Kalam', cursive", marginBottom: "6px" }}>{children}</li>,
                                         strong: ({ children }) => <strong style={{ fontWeight: 700, color: "#4F46E5" }}>{children}</strong>,
+                                        img: ({ src, alt }) => (
+                                            <div className="my-8 rounded-2xl overflow-hidden border border-stone-200 shadow-lg">
+                                                <img src={src} alt={alt} className="w-full h-auto" />
+                                                {alt && <div className="px-4 py-2 bg-stone-50 text-[10px] text-stone-400 font-bold uppercase tracking-widest border-t border-stone-100">{alt}</div>}
+                                            </div>
+                                        ),
+                                        a: ({ href, children }) => (
+                                            <a 
+                                                href={href} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="text-[#6366F1] underline decoration-indigo-200 hover:decoration-indigo-500 transition-all font-bold"
+                                            >
+                                                {children}
+                                            </a>
+                                        ),
                                         code: ({ node, inline, className, children, ...props }: any) => {
                                             const match = /language-(\w+)/.exec(className || '');
                                             const isVisualizer = match && match[1] === 'visualizer';
@@ -177,7 +193,10 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                         td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "8px 12px" }}>{children}</td>,
                                     }}
                                 >
-                                    {activeNote.content}
+                                    {activeNote.content
+                                        // Fix common image syntax error: ![alt]url -> ![alt](url)
+                                        .replace(/!\[([^\]]*)\](https?:\/\/[^\s\)]+)(?!\))/g, '![$1]($2)')
+                                    }
                                 </ReactMarkdown>
                             </div>
                         ) : (
