@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import type { Question } from "@/data/db";
-import { BookOpen, Activity, Play, ChevronLeft, Timer, Target, History, Trash2, Calendar, Sparkles, Eye } from "lucide-react";
+import { BookOpen, Activity, Play, ChevronLeft, ChevronRight, Timer, Target, History, Trash2, Calendar, Sparkles, Eye } from "lucide-react";
 import Link from "next/link";
 import QuizEngine from "@/components/QuizEngine";
 import ExamAnalysisView from "@/components/ExamAnalysisView";
