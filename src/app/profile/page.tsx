@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { User as UserIcon, Mail, MapPin, Building, Phone, GraduationCap, Compass, Trophy, Star, Shield } from "lucide-react";
 import Link from "next/link";
+import ProfileClient from "./ProfileClient";
 
 export default async function ProfilePage() {
     const cookieStore = await cookies();
@@ -21,6 +22,16 @@ export default async function ProfilePage() {
         .eq('id', user.id)
         .single();
 
+    // Fetch unique batches from terms
+    const { data: terms } = await supabase
+        .from('terms')
+        .select('assigned_batch');
+    
+    const availableBatches = Array.from(new Set((terms || [])
+        .map(t => t.assigned_batch)
+        .filter(Boolean) as string[]))
+        .sort();
+
     // Fallback to Auth metadata if the database row is missing (e.g. for older accounts)
     const profile = dbProfile || {
         name: user.user_metadata?.full_name || 'Scholar',
@@ -38,7 +49,9 @@ export default async function ProfilePage() {
     const initials = profile.name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'MS';
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500 relative">
+            <ProfileClient profile={profile} availableBatches={availableBatches} />
+
             {/* Header Card */}
             <div className="bg-surface-container rounded-3xl p-8 relative overflow-hidden shadow-sm border border-outline-variant/10">
                 <div className="absolute -right-10 -top-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
