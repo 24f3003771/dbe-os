@@ -218,7 +218,8 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                 >
                                     {activeNote.content
                                         // Fix common image syntax error: ![alt]url or ![alt]url) -> ![alt](url)
-                                        .replace(/!\[([^\]]*)\](https?:\/\/[^\s\)]+)\)?/g, '![$1]($2)')
+                                        // Consumes any trailing parentheses to avoid artifacts
+                                        .replace(/!\[([^\]]*)\](https?:\/\/[^\s\)]+)\)*/g, '![$1]($2)')
                                     }
                                 </ReactMarkdown>
                             </div>
