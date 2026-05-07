@@ -152,8 +152,8 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                             const [error, setError] = useState(false);
                                             
                                             // Transform Google Drive links to direct image links
-                                            let finalSrc = src || "";
-                                            if (finalSrc.includes("drive.google.com")) {
+                                            let finalSrc = (src as string) || "";
+                                            if (typeof finalSrc === "string" && finalSrc.includes("drive.google.com")) {
                                                 const fileIdMatch = finalSrc.match(/\/file\/d\/([^\/]+)/) || finalSrc.match(/[?&]id=([^&]+)/);
                                                 if (fileIdMatch && fileIdMatch[1]) {
                                                     finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
