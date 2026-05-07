@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Loader2, CheckCircle2, AlertCircle, Trash2, Tag } from "lucide-react";
+import { Loader2, CheckCircle2, AlertCircle, Trash2, Tag, Hash } from "lucide-react";
+import MDEditor from '@uiw/react-md-editor';
 import { upsertNote, deleteNote, type Note, type Subject, type Topic } from "@/actions/curriculum";
 
 const modules = (count: number) => Array.from({ length: count }, (_, i) => i + 1);
@@ -158,14 +159,80 @@ export default function NotesTab({
                     </div>
                 )}
 
-                {/* Markdown textarea */}
-                <textarea
-                    value={content}
-                    onChange={(e) => { setContent(e.target.value); setStatus("idle"); }}
-                    placeholder={`# Module ${selectedModule}\n\nPaste your markdown notes here...`}
-                    className="w-full h-[500px] bg-white border border-stone-200 rounded-2xl px-5 py-4 text-sm font-mono text-stone-800 placeholder:text-stone-300 outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 resize-none transition-all leading-relaxed"
-                />
-                <p className="text-[10px] font-bold text-stone-400">{content.length} characters · Markdown supported</p>
+                {/* Markdown Editor */}
+                <div className="border border-stone-200 rounded-2xl overflow-hidden bg-white">
+                    <MDEditor
+                        value={content}
+                        onChange={(val) => { setContent(val ?? ""); setStatus("idle"); }}
+                        height={600}
+                        preview="edit"
+                        onPaste={async (event) => {
+                            const items = event.clipboardData.items;
+                            for (const item of items) {
+                                if (item.type.indexOf("image") !== -1) {
+                                    event.preventDefault();
+                                    const file = item.getAsFile();
+                                    if (file) {
+                                        const formData = new FormData();
+                                        formData.append("file", file);
+                                        try {
+                                            const res = await fetch("/api/upload", {
+                                                method: "POST",
+                                                body: formData,
+                                            });
+                                            const data = await res.json();
+                                            if (data.url) {
+                                                const insertion = `\n![Image](${data.url})\n`;
+                                                setContent(prev => prev + insertion);
+                                            }
+                                        } catch (err) {
+                                            console.error("Image upload failed", err);
+                                            alert("Failed to upload image from clipboard.");
+                                        }
+                                    }
+                                }
+                            }
+                        }}
+                        textareaProps={{
+                            placeholder: `# Module ${selectedModule}\n\nPaste your markdown notes here or drag & drop images...`
+                        }}
+                        className="!shadow-none border-none"
+                    />
+                </div>
+                <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-bold text-stone-400">{content.length} characters · Markdown supported</p>
+                    <div className="flex items-center gap-4">
+                        <label className="flex items-center gap-1.5 cursor-pointer text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors">
+                            <Hash className="w-3 h-3" />
+                            <span>Upload Image</span>
+                            <input 
+                                type="file" 
+                                className="hidden" 
+                                accept="image/*"
+                                onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const formData = new FormData();
+                                        formData.append("file", file);
+                                        try {
+                                            const res = await fetch("/api/upload", {
+                                                method: "POST",
+                                                body: formData,
+                                            });
+                                            const data = await res.json();
+                                            if (data.url) {
+                                                const insertion = `\n![Image](${data.url})\n`;
+                                                setContent(prev => prev + insertion);
+                                            }
+                                        } catch (err) {
+                                            alert("Upload failed.");
+                                        }
+                                    }
+                                }}
+                            />
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     );
