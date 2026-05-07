@@ -154,7 +154,7 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                             // Transform Google Drive links to direct image links
                                             let finalSrc = (src as string) || "";
                                             if (typeof finalSrc === "string" && finalSrc.includes("drive.google.com")) {
-                                                const fileIdMatch = finalSrc.match(/\/file\/d\/([^\/]+)/) || finalSrc.match(/[?&]id=([^&]+)/);
+                                                const fileIdMatch = finalSrc.match(/\/(?:file\/d|folders)\/([^\/?]+)/) || finalSrc.match(/[?&]id=([^&]+)/);
                                                 if (fileIdMatch && fileIdMatch[1]) {
                                                     finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
                                                 }
@@ -227,8 +227,9 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                 >
                                     {activeNote.content
                                         // Fix common image syntax error: ![alt]url or ![alt]url) -> ![alt](url)
-                                        // Consumes any trailing parentheses to avoid artifacts
                                         .replace(/!\[([^\]]*)\](https?:\/\/[^\s\)]+)\)*/g, '![$1]($2)')
+                                        // Auto-convert standard Drive links to image syntax if they are in link format
+                                        .replace(/\[([^\]]*)\](https:\/\/drive\.google\.com\/[^\s\)]+)/g, '![$1]($2)')
                                     }
                                 </ReactMarkdown>
                             </div>
