@@ -227,10 +227,10 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                 >
                                     {activeNote.content
                                         // 1. Fix common missing parenthesis error: ![alt]http... -> ![alt](http...)
-                                        // Uses a negative lookahead to avoid doubling up existing parentheses
                                         .replace(/!\[([^\]]*)\](?!\()(https?:\/\/[^\s\)]+)\)*/g, '![$1]($2)')
                                         // 2. Auto-convert Drive links that are just links: [text](drive_url) -> ![text](drive_url)
-                                        .replace(/\[([^\]]*)\](https:\/\/drive\.google\.com\/[^\s\)]+)/g, '![$1]($2)')
+                                        // Only if NOT preceded by an exclamation mark
+                                        .replace(/(?<!\!)\[([^\]]*)\](https:\/\/drive\.google\.com\/[^\s\)]+)/g, '![$1]($2)')
                                     }
                                 </ReactMarkdown>
                             </div>
