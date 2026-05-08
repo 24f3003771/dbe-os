@@ -5,11 +5,18 @@ import "./globals.css";
 import Link from "next/link";
 import { HelpCircle, Info } from "lucide-react";
 import NavLinks from "@/components/NavLinks";
-import AssistantWidget from "@/components/AssistantWidget";
-import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
-import OfflineOverlay from "@/components/OfflineOverlay";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import dynamic from "next/dynamic";
+import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
+
+const AssistantWidget = dynamic(() => import("@/components/AssistantWidget"), {
+  ssr: false,
+});
+
+const OfflineOverlay = dynamic(() => import("@/components/OfflineOverlay"), {
+  ssr: false,
+});
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -138,6 +145,8 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${beVietnamPro.variable}`}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
         <script
           type="application/ld+json"
