@@ -6,6 +6,15 @@ import { usePathname } from "next/navigation";
 import TomatoSplash from "@/components/TomatoSplash";
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
+
+const AssistantWidget = dynamic(() => import("@/components/AssistantWidget"), {
+    ssr: false,
+});
+
+const OfflineOverlay = dynamic(() => import("@/components/OfflineOverlay"), {
+    ssr: false,
+});
 
 export default function ClientNavbarWrapper({ user }: { user: any }) {
     const pathname = usePathname();
@@ -73,6 +82,8 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
               <NavLinks showLabels={true} isBottomNav={true} />
             </div>
           </nav>
+          <AssistantWidget />
+          <OfflineOverlay />
         </>
     );
 }

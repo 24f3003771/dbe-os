@@ -10,14 +10,6 @@ import { createClient } from "@/utils/supabase/server";
 import dynamic from "next/dynamic";
 import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
 
-const AssistantWidget = dynamic(() => import("@/components/AssistantWidget"), {
-  ssr: false,
-});
-
-const OfflineOverlay = dynamic(() => import("@/components/OfflineOverlay"), {
-  ssr: false,
-});
-
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-headline",
@@ -209,8 +201,6 @@ export default async function RootLayout({
           <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 mb-24 md:mb-0">
             {children}
           </main>
-          <AssistantWidget />
-          <OfflineOverlay />
 
       </body>
     </html>
