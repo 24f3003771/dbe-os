@@ -34,11 +34,24 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
         <>
             <header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm print:hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-              <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-                <TomatoSplash size="w-14 h-14" />
-                <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-red-500 transition-colors">
-                  DBE OS
-                </span>
+              <Link href="/" className="flex flex-col group flex-shrink-0">
+                {user ? (
+                  <>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/60 group-hover:text-primary transition-all">
+                      Welcome back,
+                    </span>
+                    <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-primary transition-all">
+                      {user.user_metadata?.full_name?.split(' ')[0] || 'Scholar'}
+                    </span>
+                  </>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <TomatoSplash size="w-12 h-12" />
+                    <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-primary transition-all">
+                      DBE OS
+                    </span>
+                  </div>
+                )}
               </Link>
 
               <nav className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-on-surface-variant">
