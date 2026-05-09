@@ -40,6 +40,24 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
                   DBE OS
                 </span>
               </Link>
+
+              {/* Global Search - Tablet & Desktop */}
+              <div className="hidden lg:flex flex-1 max-w-md mx-8">
+                <div className="relative w-full group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-xl">search</span>
+                  </div>
+                  <input 
+                    type="text" 
+                    placeholder="Search notes, tools, or topics..." 
+                    className="w-full bg-surface-container-low border border-outline-variant/10 rounded-full py-2.5 pl-12 pr-4 text-xs font-bold focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary/30 outline-none transition-all placeholder:text-on-surface-variant/30"
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-surface-container rounded-lg border border-outline-variant/20 text-[9px] font-black text-on-surface-variant/40 uppercase tracking-widest hidden sm:block">
+                    ⌘ K
+                  </div>
+                </div>
+              </div>
+
               <nav className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-on-surface-variant">
                 <div className="hidden md:flex items-center gap-1">
                   <NavLinks />
@@ -54,11 +72,46 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
                              <span className="font-black text-on-surface text-[13px]">{tomatoesBalance}</span>
                           </Link>
 
-                          <Link href="/profile" className="flex items-center gap-3 group pl-2">
-                            <div className="w-9 h-9 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-black text-[11px] group-hover:bg-on-surface group-hover:text-surface transition-all duration-300 border border-outline-variant/10 shadow-inner">
-                              {user.user_metadata?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'IJ'}
+                          <div className="relative group/profile">
+                            <button 
+                              className="flex items-center gap-3 group pl-2 transition-all"
+                            >
+                              <div className="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-black text-[11px] group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 border border-outline-variant/10 shadow-inner overflow-hidden">
+                                {user.user_metadata?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'IJ'}
+                              </div>
+                            </button>
+
+                            {/* Dropdown Menu */}
+                            <div className="absolute top-full right-0 pt-3 z-50 opacity-0 invisible group-hover/profile:opacity-100 group-hover/profile:visible transition-all duration-300 translate-y-2 group-hover/profile:translate-y-0">
+                                <div className="w-64 bg-surface border border-outline-variant/20 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-4 overflow-hidden backdrop-blur-xl">
+                                    <div className="px-6 pb-4 mb-2 border-b border-outline-variant/10">
+                                        <p className="text-xs font-black text-on-surface truncate">{user.user_metadata?.full_name || 'Student'}</p>
+                                        <p className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest truncate">{user.email}</p>
+                                    </div>
+                                    <div className="px-2 space-y-1">
+                                        <Link href="/profile" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold text-on-surface hover:bg-primary/5 hover:text-primary transition-all">
+                                            <span className="material-symbols-outlined text-lg">person</span>
+                                            My Profile
+                                        </Link>
+                                        <Link href="/deadlines" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold text-on-surface hover:bg-primary/5 hover:text-primary transition-all">
+                                            <span className="material-symbols-outlined text-lg">task_alt</span>
+                                            My Tasks
+                                        </Link>
+                                        <Link href="/tools/cgpa-calculator" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold text-on-surface hover:bg-primary/5 hover:text-primary transition-all">
+                                            <span className="material-symbols-outlined text-lg">calculate</span>
+                                            CGPA Tracker
+                                        </Link>
+                                        <div className="h-px bg-outline-variant/10 mx-4 my-2" />
+                                        <form action="/auth/signout" method="post">
+                                          <button type="submit" className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold text-error hover:bg-error/5 transition-all text-left">
+                                              <span className="material-symbols-outlined text-lg">logout</span>
+                                              Sign Out
+                                          </button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                          </Link>
+                          </div>
                         </div>
                     ) : (
                       <>

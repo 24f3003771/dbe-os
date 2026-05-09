@@ -11,6 +11,11 @@ export async function updateProfile(data: {
     city?: string;
     state?: string;
     pincode?: string;
+    linkedin_url?: string;
+    instagram_url?: string;
+    twitter_url?: string;
+    roll_number?: string;
+    current_term?: string;
 }) {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);

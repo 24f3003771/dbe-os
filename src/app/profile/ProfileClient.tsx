@@ -23,6 +23,11 @@ export default function ProfileClient({ profile, availableBatches }: ProfileClie
         city: profile.city || "",
         state: profile.state || "",
         pincode: profile.pincode || "",
+        linkedin_url: profile.linkedin_url || "",
+        instagram_url: profile.instagram_url || "",
+        twitter_url: profile.twitter_url || "",
+        roll_number: profile.roll_number || "",
+        current_term: profile.current_term || "",
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -162,6 +167,67 @@ export default function ProfileClient({ profile, availableBatches }: ProfileClie
                                             onChange={(e) => setFormData({...formData, pincode: e.target.value})}
                                             className="w-full bg-surface-container border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary transition-all outline-none"
                                         />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Roll Number</label>
+                                        <div className="relative">
+                                            <Building className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="e.g. 24DBE001"
+                                                value={formData.roll_number} 
+                                                onChange={(e) => setFormData({...formData, roll_number: e.target.value})}
+                                                className="w-full bg-surface-container border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary transition-all outline-none"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Current Term</label>
+                                        <div className="relative">
+                                            <GraduationCap className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="e.g. Term 2"
+                                                value={formData.current_term} 
+                                                onChange={(e) => setFormData({...formData, current_term: e.target.value})}
+                                                className="w-full bg-surface-container border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary transition-all outline-none"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t border-outline-variant/10">
+                                    <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-1">Social Profiles</p>
+                                    
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">LinkedIn URL</label>
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50 flex items-center justify-center font-black text-[10px]">in</div>
+                                            <input 
+                                                type="url" 
+                                                placeholder="https://linkedin.com/in/..."
+                                                value={formData.linkedin_url} 
+                                                onChange={(e) => setFormData({...formData, linkedin_url: e.target.value})}
+                                                className="w-full bg-surface-container border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary transition-all outline-none"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Instagram URL</label>
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50 flex items-center justify-center font-black text-[10px]">ig</div>
+                                            <input 
+                                                type="url" 
+                                                placeholder="https://instagram.com/..."
+                                                value={formData.instagram_url} 
+                                                onChange={(e) => setFormData({...formData, instagram_url: e.target.value})}
+                                                className="w-full bg-surface-container border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary transition-all outline-none"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
