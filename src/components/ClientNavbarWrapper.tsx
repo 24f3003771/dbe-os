@@ -41,23 +41,6 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
                 </span>
               </Link>
 
-              {/* Global Search - Tablet & Desktop */}
-              <div className="hidden lg:flex flex-1 max-w-md mx-8">
-                <div className="relative w-full group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-xl">search</span>
-                  </div>
-                  <input 
-                    type="text" 
-                    placeholder="Search notes, tools, or topics..." 
-                    className="w-full bg-surface-container-low border border-outline-variant/10 rounded-full py-2.5 pl-12 pr-4 text-xs font-bold focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary/30 outline-none transition-all placeholder:text-on-surface-variant/30"
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-surface-container rounded-lg border border-outline-variant/20 text-[9px] font-black text-on-surface-variant/40 uppercase tracking-widest hidden sm:block">
-                    ⌘ K
-                  </div>
-                </div>
-              </div>
-
               <nav className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-on-surface-variant">
                 <div className="hidden md:flex items-center gap-1">
                   <NavLinks />
