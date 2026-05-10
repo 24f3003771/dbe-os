@@ -66,6 +66,7 @@ export type Question = {
     module_to: number;
     topic_id: string | null;
     quiz_set_id: string | null;
+    batch: string | null;        // e.g. "Batch 1", "Batch 2" — primarily for cla/midterm
     question: string;
     options: string[] | null;
     correct_index: number | null;
@@ -412,6 +413,7 @@ export async function bulkImportQuestions(
                 module_to: q.module_to,
                 topic_id: q.topic_id || defaultTopicId || null,
                 quiz_set_id: effectiveQuizSetId,
+                batch: (q.batch as string) || null,
                 question: q.question,
                 options: q.input_type === "mcq" ? q.options : null,
                 correct_index: q.input_type === "mcq" ? q.correct_index : null,

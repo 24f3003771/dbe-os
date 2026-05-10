@@ -47,6 +47,11 @@ function QuestionRow({ q, onDelete, onUpdated, topics, subject, quizSets }: { q:
                         Mod {q.module_from === q.module_to ? q.module_from : `${q.module_from}–${q.module_to}`}
                     </span>
                     {topic && <span className="text-[10px] font-bold text-stone-400"># {topic.name}</span>}
+                    {(q.type === "cla" || q.type === "midterm") && q.batch && (
+                        <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border bg-amber-50 text-amber-600 border-amber-200">
+                            {q.batch}
+                        </span>
+                    )}
                     {q.type === "exam" && setName && (
                         <span className="text-[10px] font-bold text-rose-600">
                             {setName}
@@ -101,6 +106,7 @@ function EditQuestionForm({ subject, topics, quizSets, initial, onSaved, onCance
         module_to: String(initial.module_to),
         topic_id: initial.topic_id ?? "",
         quiz_set_id: initial.quiz_set_id ?? "",
+        batch: initial.batch ?? "",
         question: initial.question,
         options: initial.options ?? ["", "", "", ""],
         correct_index: initial.correct_index ?? 0,
@@ -121,6 +127,7 @@ function EditQuestionForm({ subject, topics, quizSets, initial, onSaved, onCance
                     module_from: parseInt(form.module_from), module_to: parseInt(form.module_to),
                     topic_id: form.topic_id || null,
                     quiz_set_id: form.type === "exam" ? (form.quiz_set_id || null) : null,
+                    batch: (form.type === "cla" || form.type === "midterm") ? (form.batch || null) : null,
                     question: form.question,
                     options: form.input_type === "mcq" ? form.options : null,
                     correct_index: form.input_type === "mcq" ? form.correct_index : null,
@@ -172,6 +179,12 @@ function EditQuestionForm({ subject, topics, quizSets, initial, onSaved, onCance
                         </div>
                     )}
                 </div>
+                {(form.type === "cla" || form.type === "midterm") && (
+                    <div>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Batch (optional)</label>
+                        <input type="text" value={form.batch} onChange={(e) => setForm({ ...form, batch: e.target.value })} placeholder="e.g. Batch 1, Batch 2" className={inputCls} />
+                    </div>
+                )}
                 {form.input_type === "text" && (
                     <div><label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Word Limit</label><input type="number" value={form.word_limit} onChange={(e) => setForm({ ...form, word_limit: e.target.value })} placeholder="250" className={inputCls} /></div>
                 )}
@@ -235,6 +248,7 @@ function AddQuestionForm({ subject, topics, quizSets, onSaved, onCancel }: {
         module_from: "1", module_to: "1",
         topic_id: "", question: "",
         quiz_set_id: "",
+        batch: "",
         options: ["", "", "", ""],
         correct_index: 0,
         explanation: "",
@@ -257,6 +271,7 @@ function AddQuestionForm({ subject, topics, quizSets, onSaved, onCancel }: {
                     module_from: parseInt(form.module_from), module_to: parseInt(form.module_to),
                     topic_id: form.topic_id || null,
                     quiz_set_id: form.type === "exam" ? (form.quiz_set_id || null) : null,
+                    batch: (form.type === "cla" || form.type === "midterm") ? (form.batch || null) : null,
                     question: form.question,
                     options: form.input_type === "mcq" ? form.options : null,
                     correct_index: form.input_type === "mcq" ? form.correct_index : null,
@@ -309,6 +324,14 @@ function AddQuestionForm({ subject, topics, quizSets, onSaved, onCancel }: {
                         </div>
                     )}
                 </div>
+
+                {/* Batch field — CLA & Midterm only */}
+                {(form.type === "cla" || form.type === "midterm") && (
+                    <div>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Batch (optional)</label>
+                        <input type="text" placeholder="e.g. Batch 1, Batch 2" value={form.batch} onChange={(e) => setForm({ ...form, batch: e.target.value })} className={inputCls} />
+                    </div>
+                )}
 
                 {/* Text fields */}
                 {form.input_type === "text" && (
@@ -606,6 +629,7 @@ function BulkImportModal({ subject, topics, quizSets, onDone, onClose, initialJs
     "input_type": "mcq", // Purpose: Determines answer format. "mcq" (Multiple Choice) or "text" (Subjective typing)
     "module_from": 1, // Purpose: The starting module number this question belongs to.
     "module_to": 1, // Purpose: The ending module number. Use if a question spans multiple modules (e.g., 1 to 4).
+    "batch": "Batch 1", // Purpose: Optional. Which batch this question is for. Used mainly for cla/midterm.
     "question": "Question text...", // Purpose: The actual question displayed to the student.
     "options": ["A", "B", "C", "D"], // Purpose: The choices for MCQ. MUST be omitted if input_type is "text".
     "correct_index": 0, // Purpose: The 0-based index of the correct option (0=A, 1=B, 2=C, 3=D). Omit for "text".
