@@ -781,6 +781,11 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                                     Mod {question.module_from === question.module_to ? question.module_from : `${question.module_from}–${question.module_to}`}
                                 </span>
                             )}
+                            {(question.type === "cla" || question.type === "midterm") && question.batch && (
+                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border bg-amber-50 text-amber-600 border-amber-200">
+                                    {question.batch}
+                                </span>
+                            )}
                             {/* Legacy pyq_year/pyq_month display removed — use Exam Set badge instead */}
                             {question.input_type === "text" && question.word_limit && (
                                 <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">

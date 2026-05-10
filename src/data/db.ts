@@ -8,6 +8,7 @@ export interface Question {
     explanation: string;
     type?: string;
     quiz_set_id?: string | null;
+    batch?: string | null;
     input_type?: string;
     word_limit?: number | null;
     module_from?: number;
