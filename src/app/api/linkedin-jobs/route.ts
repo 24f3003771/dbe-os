@@ -24,7 +24,20 @@ export async function GET(request: Request) {
         console.log(`Fetching LinkedIn jobs for: ${keyword} in ${location} (Limit: ${limit})`);
         const jobs = await query(queryOptions);
         
-        return NextResponse.json(jobs);
+        // Normalize field names: the library returns `position` and `agoTime`
+        // but our frontend reads `title` and `postDate`
+        const normalized = Array.isArray(jobs)
+            ? jobs.map((job: any) => ({
+                title: job.position || job.title || 'Untitled Role',
+                company: job.company || '',
+                location: job.location || '',
+                postDate: job.agoTime || job.postDate || job.date || '',
+                jobUrl: job.jobUrl || job.url || '#',
+                companyLogo: job.companyLogo || job.logo || '',
+            }))
+            : [];
+
+        return NextResponse.json(normalized);
     } catch (error: any) {
         console.error('LinkedIn API Error:', error);
         return NextResponse.json({ 
