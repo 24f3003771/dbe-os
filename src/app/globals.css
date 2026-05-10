@@ -91,3 +91,30 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-outline);
 }
+
+/* ─── Performance Optimizations ─────────────────────────── */
+
+/* Promote sticky navbar to its own GPU layer */
+header[class*="sticky"] {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent large blurry blobs from triggering repaints */
+[class*="blur-"] {
+  transform: translateZ(0);
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

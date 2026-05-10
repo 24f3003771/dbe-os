@@ -16,7 +16,7 @@ export default function MainLoadingScreen() {
       return;
     }
 
-    const startExit = setTimeout(() => setIsVisible(false), 2500);
+    const startExit = setTimeout(() => setIsVisible(false), 1400);
     sessionStorage.setItem('dbe_os_booted_v11', 'true');
 
     return () => clearTimeout(startExit);
