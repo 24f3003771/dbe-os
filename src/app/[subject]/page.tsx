@@ -15,6 +15,7 @@ function mapQuestion(q: any): Question {
         explanation: q.explanation ?? "",
         type: q.type,
         quiz_set_id: q.quiz_set_id,
+        batch: q.batch ?? null,
         input_type: q.input_type,
         word_limit: q.word_limit,
         module_from: q.module_from,
