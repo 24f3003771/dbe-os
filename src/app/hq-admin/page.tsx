@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import AdminTable from "./AdminTable";
+import WaitlistPanel from "./WaitlistPanel";
 
 export default async function HQAdminPage() {
   const cookieStore = await cookies();
@@ -27,13 +28,21 @@ export default async function HQAdminPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
+      {/* User Management */}
       <div>
-        <h1 className="text-3xl font-black font-headline text-on-surface tracking-tight mb-2">User Management</h1>
-        <p className="text-sm font-bold text-on-surface-variant">Manage all registered accounts, statuses, and permissions.</p>
+        <div className="mb-6">
+          <h1 className="text-3xl font-black font-headline text-on-surface tracking-tight mb-1">User Management</h1>
+          <p className="text-sm font-bold text-on-surface-variant">Manage all registered accounts, statuses, and permissions.</p>
+        </div>
+        <AdminTable initialUsers={users || []} />
       </div>
 
-      <AdminTable initialUsers={users || []} />
+      {/* Divider */}
+      <div className="border-t border-outline-variant/20" />
+
+      {/* Waitlist Management — SUPER_ADMIN only */}
+      <WaitlistPanel />
     </div>
   );
 }

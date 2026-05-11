@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, Users, BookOpen, Hash, Settings, LogOut, ChevronRight } from "lucide-react";
+import { ShieldAlert, Users, BookOpen, Hash, Settings, LogOut, ChevronRight, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 const navItems = [
     { icon: Users,     label: "Users",       href: "/hq-admin",            exact: true  },
+    { icon: Bell,      label: "Waitlist",    href: "/hq-admin",            exact: true, section: "waitlist"  },
     { icon: BookOpen,  label: "Curriculum",  href: "/hq-admin/curriculum", exact: false },
     { icon: Hash,      label: "Topics",      href: "/hq-admin/topics",     exact: false },
     { icon: Settings,  label: "Settings",    href: "/hq-admin/settings",   exact: false },
