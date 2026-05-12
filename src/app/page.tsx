@@ -28,7 +28,9 @@ const IPadSidebar = () => {
   const [user, setUser] = useState<any>(null);
   const [batch, setBatch] = useState("Batch 2"); // Defaulting to Batch 2 to show the schedule
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [announcements, setAnnouncements] = useState<any[]>([
+    { id: 'loading', title: "Loading notices...", text: "Fetching the latest updates...", date: "Just now" }
+  ]);
 
   useEffect(() => {
     const fetchUserAndAnnouncements = async () => {
