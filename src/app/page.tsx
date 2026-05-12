@@ -82,7 +82,7 @@ const IPadSidebar = () => {
   };
 
   return (
-    <div className="sticky top-24 bg-[#FFFCF8] rounded-[2rem] border-[8px] border-[#E5E5EA] shadow-xl p-6 md:p-8 flex flex-col h-[75vh] min-h-[600px] overflow-hidden" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px)', backgroundAttachment: 'local', backgroundPosition: '0 1rem' }}>
+    <div className="sticky top-24 bg-[#FFFCF8] rounded-[2rem] border-[8px] border-[#E5E5EA] shadow-xl p-6 md:p-8 flex flex-col h-[75vh] min-h-[600px] overflow-y-auto overflow-x-hidden" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px)', backgroundAttachment: 'local', backgroundPosition: '0 1rem' }}>
         
         {/* iPad Camera details */}
         <div className="absolute top-3 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-black/80 ring-2 ring-black/10"></div>
@@ -125,7 +125,7 @@ const IPadSidebar = () => {
             </div>
             
             {/* Announcements Slideshow */}
-            <div className="flex-1 relative bg-white/40 rounded-3xl border-2 border-dashed border-[#3498db]/30 p-6 overflow-hidden flex flex-col justify-center">
+            <div className="flex-1 min-h-[240px] relative bg-white/40 rounded-3xl border-2 border-dashed border-[#3498db]/30 p-6 overflow-hidden flex flex-col justify-center mt-2">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={currentSlide}
