@@ -77,12 +77,6 @@ function WaitlistButton({ toolId, accent }: { toolId: string; accent: string }) 
 // ─── Tools Data ───────────────────────────────────────────────────────────────
 const LIVE_TOOLS = [
   {
-    id: "matchforge", title: "Find Your Team", subtitle: "MatchForge",
-    icon: Users, href: "/matchforge",
-    textColor: "text-indigo-600", lightColor: "bg-indigo-50",
-    description: "Discover co-founders, case teammates & study partners in the DBE community.",
-  },
-  {
     id: "cgpa-calculator", title: "Check My CGPA", subtitle: "CGPA Calculator",
     icon: Calculator, href: "/tools/cgpa-calculator",
     textColor: "text-amber-600", lightColor: "bg-amber-50",
@@ -91,6 +85,24 @@ const LIVE_TOOLS = [
 ];
 
 const COMING_TOOLS = [
+  {
+    id: "matchforge",
+    title: "Find Your Team",
+    subtitle: "MatchForge",
+    icon: Users,
+    accent: "from-indigo-500 to-purple-600",
+    lightColor: "bg-indigo-50",
+    textColor: "text-indigo-600",
+    tagline: "The smartest way to find co-founders, case teammates & study partners in the DBE community.",
+    features: [
+      "Skill-based matching — find people who complement your strengths",
+      "Filter by interest: Case Comps, Startups, Research, Study Groups",
+      "In-app connection requests and profile previews",
+      "Leaderboard integration to find top performers",
+    ],
+    badge: "Community",
+    badgeColor: "bg-indigo-100 text-indigo-700",
+  },
   {
     id: "resume-builder",
     title: "Build My Resume with AI",
