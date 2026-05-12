@@ -162,7 +162,7 @@ export default function AnnouncementsPanel() {
                       <span className="text-[10px] font-bold text-on-surface-variant/50 ml-auto">{new Date(a.created_at).toLocaleDateString()}</span>
                     </div>
                     <h4 className="font-bold text-sm text-on-surface mb-1">{a.title}</h4>
-                    <p className="text-xs text-on-surface-variant font-medium leading-relaxed">{a.message}</p>
+                    <p className="text-xs text-on-surface-variant font-medium leading-relaxed whitespace-pre-wrap">{a.message}</p>
                   </div>
                   <button 
                     onClick={() => handleDelete(a.id)}

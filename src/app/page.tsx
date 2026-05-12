@@ -171,7 +171,7 @@ const IPadSidebar = () => {
                         <h3 className="text-3xl font-bold text-[#2c3e50] leading-tight">
                             {announcements[currentSlide].title}
                         </h3>
-                        <p className="text-2xl text-[#34495e]/80 leading-relaxed font-medium">
+                        <p className="text-2xl text-[#34495e]/80 leading-relaxed font-medium whitespace-pre-wrap">
                             {announcements[currentSlide].text}
                         </p>
                     </motion.div>
