@@ -226,30 +226,30 @@ export default function RegisterPage() {
                                 className="space-y-4"
                                 onSubmit={handleNextStep}
                             >
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Full Name</label>
-                                    <div className="relative">
-                                        <UserIcon className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                        <input required type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" />
+                                <div className="space-y-1.5 group">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors">Full Name</label>
+                                    <div className="relative hover:scale-[1.01] transition-transform duration-300">
+                                        <UserIcon className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
+                                        <input required type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold hover:border-primary/50 hover:bg-surface-container-low focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none shadow-sm focus:shadow-md" />
                                     </div>
                                 </div>
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Email Address</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                        <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your.email@example.com" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" />
+                                <div className="space-y-1.5 group">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors">Email Address</label>
+                                    <div className="relative hover:scale-[1.01] transition-transform duration-300">
+                                        <Mail className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
+                                        <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your.email@example.com" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold hover:border-primary/50 hover:bg-surface-container-low focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none shadow-sm focus:shadow-md" />
                                     </div>
                                 </div>
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Password</label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                        <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" />
+                                <div className="space-y-1.5 group">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors">Password</label>
+                                    <div className="relative hover:scale-[1.01] transition-transform duration-300">
+                                        <Lock className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
+                                        <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold hover:border-primary/50 hover:bg-surface-container-low focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none shadow-sm focus:shadow-md" />
                                     </div>
                                 </div>
                                 <div className="pt-4">
-                                    <button type="submit" className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2">
-                                        Continue <ArrowRight className="w-4 h-4" />
+                                    <button type="submit" className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] active:translate-y-0 transition-all duration-300 flex justify-center items-center gap-2 group/btn">
+                                        Continue <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                                     </button>
                                 </div>
                             </motion.form>

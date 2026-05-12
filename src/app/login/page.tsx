@@ -197,41 +197,41 @@ function LoginPageContent() {
                             onSubmit={handleLogin}
                         >
                             {/* Email Input */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Email Address</label>
-                                <div className="relative">
+                            <div className="space-y-1.5 group">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors">Email Address</label>
+                                <div className="relative hover:scale-[1.01] transition-transform duration-300">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Mail className="w-4 h-4 text-on-surface-variant/50" />
+                                        <Mail className="w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
                                     </div>
                                     <input 
                                         type="email" 
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="your.email@example.com" 
-                                        className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                        className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-on-surface placeholder:text-on-surface-variant/30 hover:border-primary/50 hover:bg-surface-container-low focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:shadow-md"
                                         required
                                     />
                                 </div>
                             </div>
 
                             {/* Password Input */}
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 group">
                                 <div className="flex items-center justify-between ml-1">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Password</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-focus-within:text-primary transition-colors">Password</label>
                                     <button type="button" onClick={() => setIsOtpMode(true)} className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary/80 transition-colors">
                                         Forgot / Use OTP?
                                     </button>
                                 </div>
-                                <div className="relative">
+                                <div className="relative hover:scale-[1.01] transition-transform duration-300">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Lock className="w-4 h-4 text-on-surface-variant/50" />
+                                        <Lock className="w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
                                     </div>
                                     <input 
                                         type="password" 
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="••••••••" 
-                                        className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                        className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-on-surface placeholder:text-on-surface-variant/30 hover:border-primary/50 hover:bg-surface-container-low focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm focus:shadow-md"
                                         required
                                     />
                                 </div>
@@ -240,9 +240,9 @@ function LoginPageContent() {
                             <button 
                                 type="submit" 
                                 disabled={isLoading}
-                                className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+                                className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4 group/btn"
                             >
-                                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Sign In <ArrowRight className="w-4 h-4" /></>}
+                                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Sign In <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" /></>}
                             </button>
                         </motion.form>
                     ) : isOtpVerified ? (
