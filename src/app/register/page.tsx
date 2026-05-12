@@ -195,10 +195,11 @@ export default function RegisterPage() {
 
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-black font-headline text-on-surface tracking-tight">
-                        {step === 1 ? "Create Account" : step === 2 ? "Location Details" : step === 3 ? "Academic Info" : "Verify Email"}
+                        {step === 1 ? "Start Your Journey" : step === 2 ? "Establish Base" : step === 3 ? "Choose Your Guild" : "Final Unlock"}
                     </h1>
-                    <p className="text-xs font-bold text-on-surface-variant mt-2 uppercase tracking-widest">
-                        {step === 1 ? "Step 1 of 3" : step === 2 ? "Step 2 of 3" : step === 3 ? "Final Step" : "Almost Done"}
+                    <p className="text-xs font-bold text-primary mt-2 uppercase tracking-widest flex justify-center items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        {step === 1 ? "LEVEL 1 / 3" : step === 2 ? "LEVEL 2 / 3" : step === 3 ? "BOSS LEVEL" : "EPILOGUE"}
                     </p>
                 </div>
 
@@ -292,11 +293,11 @@ export default function RegisterPage() {
                                     </div>
                                 </div>
                                 <div className="flex gap-3 pt-6">
-                                    <button type="button" onClick={() => setStep(1)} className="py-4 px-6 bg-surface border border-outline-variant/20 rounded-2xl font-black text-on-surface-variant hover:bg-surface-container transition-all">
-                                        Back
+                                    <button type="button" onClick={() => setStep(1)} className="py-4 px-6 bg-surface border border-outline-variant/20 rounded-2xl font-black text-on-surface-variant hover:bg-surface-container hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                        Retreat
                                     </button>
-                                    <button type="submit" disabled={isFetchingLocation} className="flex-1 py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2 disabled:opacity-50">
-                                        Continue <ArrowRight className="w-4 h-4" />
+                                    <button type="submit" disabled={isFetchingLocation} className="flex-1 py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] active:translate-y-0 transition-all flex justify-center items-center gap-2 disabled:opacity-50 group/btn">
+                                        Level Up <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                                     </button>
                                 </div>
                             </motion.form>
@@ -314,20 +315,20 @@ export default function RegisterPage() {
                                 className="space-y-4"
                                 onSubmit={handleRegister}
                             >
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Phone Number</label>
-                                    <div className="relative">
-                                        <Phone className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                        <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 9876543210" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:border-primary transition-all outline-none" />
+                                <div className="space-y-1.5 group">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors">Phone Number</label>
+                                    <div className="relative hover:scale-[1.01] transition-transform duration-300">
+                                        <Phone className="absolute left-4 top-3.5 w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
+                                        <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 9876543210" className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold hover:border-primary/50 hover:bg-surface-container-low focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none shadow-sm focus:shadow-md" />
                                     </div>
                                 </div>
                                 {email.toLowerCase().endsWith("@iimb.ac.in") && (
                                     <div className="grid grid-cols-2 gap-3">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Zone</label>
-                                            <div className="relative">
-                                                <Compass className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                                <select required value={zone} onChange={(e) => setZone(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-xs font-bold focus:border-primary transition-all outline-none appearance-none">
+                                        <div className="space-y-1.5 group">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors">Zone</label>
+                                            <div className="relative hover:scale-[1.01] transition-transform duration-300">
+                                                <Compass className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
+                                                <select required value={zone} onChange={(e) => setZone(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-xs font-bold hover:border-primary/50 hover:bg-surface-container-low focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none appearance-none shadow-sm focus:shadow-md">
                                                     <option value="" disabled>Select Zone</option>
                                                     <option value="NORTH ZONE 01">NORTH ZONE 01</option>
                                                     <option value="NORTH ZONE 02">NORTH ZONE 02</option>
@@ -340,11 +341,11 @@ export default function RegisterPage() {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1">Batch</label>
-                                            <div className="relative">
-                                                <GraduationCap className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50" />
-                                                <select required value={batch} onChange={(e) => setBatch(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold focus:border-primary transition-all outline-none appearance-none">
+                                        <div className="space-y-1.5 group">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors">Batch</label>
+                                            <div className="relative hover:scale-[1.01] transition-transform duration-300">
+                                                <GraduationCap className="absolute left-3 top-3.5 w-4 h-4 text-on-surface-variant/50 group-focus-within:text-primary transition-colors" />
+                                                <select required value={batch} onChange={(e) => setBatch(e.target.value)} className="w-full bg-surface border border-outline-variant/20 rounded-2xl py-3.5 pl-9 pr-3 text-sm font-bold hover:border-primary/50 hover:bg-surface-container-low focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none appearance-none shadow-sm focus:shadow-md">
                                                     <option value="" disabled>Select Batch</option>
                                                     <option value="Batch 1">Batch 1</option>
                                                     <option value="Batch 2">Batch 2</option>
@@ -354,11 +355,11 @@ export default function RegisterPage() {
                                     </div>
                                 )}
                                 <div className="flex gap-3 pt-6">
-                                    <button type="button" onClick={() => setStep(2)} className="py-4 px-6 bg-surface border border-outline-variant/20 rounded-2xl font-black text-on-surface-variant hover:bg-surface-container transition-all">
-                                        Back
+                                    <button type="button" onClick={() => setStep(2)} className="py-4 px-6 bg-surface border border-outline-variant/20 rounded-2xl font-black text-on-surface-variant hover:bg-surface-container hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                        Retreat
                                     </button>
-                                    <button type="submit" disabled={isLoading} className="flex-1 py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2 disabled:opacity-50">
-                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Finish & Verify</>}
+                                    <button type="submit" disabled={isLoading} className="flex-1 py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] active:translate-y-0 transition-all flex justify-center items-center gap-2 disabled:opacity-50 group/btn">
+                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Complete Quest</>}
                                     </button>
                                 </div>
                             </motion.form>
@@ -401,9 +402,9 @@ export default function RegisterPage() {
                                     <button 
                                         type="submit" 
                                         disabled={isLoading || otp.length !== 6}
-                                        className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all disabled:opacity-50 flex items-center justify-center"
+                                        className="w-full py-4 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50 flex items-center justify-center"
                                     >
-                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify Account"}
+                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Unlock OS Access"}
                                     </button>
                                 </div>
                             </motion.form>
