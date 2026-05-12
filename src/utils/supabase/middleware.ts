@@ -42,21 +42,19 @@ export const updateSession = async (request: NextRequest) => {
     // refreshing the auth token
     const { data: { user } } = await supabase.auth.getUser()
 
-    const protectedRoutes = ["/", "/dashboard", "/notes", "/leaderboard", "/matchforge", "/dbe_notes", "/profile", "/hq-admin"];
-    const authRoutes = ["/login", "/register"];
-    const isProtectedRoute = protectedRoutes.some(route => 
-      route === '/' ? request.nextUrl.pathname === '/' : request.nextUrl.pathname.startsWith(route)
-    );
-    const isAuthRoute = authRoutes.some(route => request.nextUrl.pathname.startsWith(route));
+    const publicRoutes = ["/login", "/register", "/auth", "/api/auth"];
+    const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route));
+    const isAuthRoute = ["/login", "/register"].some(route => request.nextUrl.pathname.startsWith(route));
 
-    if (!user && isProtectedRoute) {
+    // Protect EVERYTHING by default unless it's explicitly public
+    if (!user && !isPublicRoute) {
         const url = request.nextUrl.clone();
         url.pathname = "/login";
         return NextResponse.redirect(url);
     }
 
     // Check if the user is active (type !== 0) and check admin route permissions
-    if (user && isProtectedRoute) {
+    if (user && !isPublicRoute) {
         const { data: profile } = await supabase.from('users').select('type, role').eq('id', user.id).single();
         
         // If disabled, we let them through to the page, but layout.tsx will render a global un-dismissible dialog.
