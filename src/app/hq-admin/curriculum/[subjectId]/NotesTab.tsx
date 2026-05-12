@@ -5,7 +5,10 @@ import { Loader2, CheckCircle2, AlertCircle, Trash2, Tag, Hash } from "lucide-re
 import MDEditor from '@uiw/react-md-editor';
 import { upsertNote, deleteNote, type Note, type Subject, type Topic } from "@/actions/curriculum";
 
-const modules = (count: number) => Array.from({ length: count }, (_, i) => i + 1);
+const specialModules = [
+    { id: 98, label: "Formula Sheet" },
+    { id: 99, label: "Mind Maps" }
+];
 
 export default function NotesTab({
     subject,
@@ -82,7 +85,7 @@ export default function NotesTab({
             {/* Module List */}
             <div className="w-44 shrink-0 space-y-1">
                 <p className="text-[9px] font-black uppercase tracking-widest text-stone-400 px-2 mb-3">Modules</p>
-                {modules(subject.module_count).map((mod) => {
+                {Array.from({ length: subject.module_count }, (_, i) => i + 1).map((mod) => {
                     const hasNote = notes.some((n) => n.module_number === mod);
                     return (
                         <button
@@ -99,13 +102,35 @@ export default function NotesTab({
                         </button>
                     );
                 })}
+
+                <p className="text-[9px] font-black uppercase tracking-widest text-stone-400 px-2 mb-3 mt-6">Special Resources</p>
+                {specialModules.map((special) => {
+                    const mod = special.id;
+                    const hasNote = notes.some((n) => n.module_number === mod);
+                    return (
+                        <button
+                            key={mod}
+                            onClick={() => handleModuleSelect(mod)}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                selectedModule === mod
+                                    ? "bg-stone-100 border border-stone-200 text-stone-800"
+                                    : "text-stone-500 hover:text-stone-700 hover:bg-stone-50"
+                            }`}
+                        >
+                            <span>{special.label}</span>
+                            {hasNote && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Editor */}
             <div className="flex-1 space-y-4">
                 <div className="flex items-center justify-between flex-wrap gap-3">
                     <div>
-                        <p className="text-sm font-black text-stone-800">Module {selectedModule}</p>
+                        <p className="text-sm font-black text-stone-800">
+                            {selectedModule === 98 ? "Formula Sheet" : selectedModule === 99 ? "Mind Maps" : `Module ${selectedModule}`}
+                        </p>
                         <p className="text-xs font-bold text-stone-400">
                             {activeNote
                                 ? `Last updated ${new Date(activeNote.updated_at).toLocaleDateString()}`
@@ -194,7 +219,7 @@ export default function NotesTab({
                             }
                         }}
                         textareaProps={{
-                            placeholder: `# Module ${selectedModule}\n\nPaste your markdown notes here or drag & drop images...`
+                            placeholder: `# ${selectedModule === 98 ? "Formula Sheet" : selectedModule === 99 ? "Mind Maps" : `Module ${selectedModule}`}\n\nPaste your markdown notes here or drag & drop images...`
                         }}
                         className="!shadow-none border-none"
                     />
