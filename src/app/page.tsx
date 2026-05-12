@@ -24,36 +24,64 @@ const BATCH_1_SCHEDULE = [
   { date: "2026-05-25", title: "Batch 1 Term Exams Placeholder" },
 ];
 
-const ANNOUNCEMENTS_B2 = [
-  { id: 1, title: "Exam Schedule Released", text: "Term 2 Final In-Centre exams are set for May 23rd & 24th. Start preparing!", date: "2 days ago" },
-  { id: 2, title: "Projects Update", text: "Dates for Website Development & Rs. 250 Venture will be shared by the Support team soon.", date: "4 days ago" },
-];
-
-const ANNOUNCEMENTS_B1 = [
-  { id: 1, title: "Batch 1 Updates", text: "Term schedules will be updated shortly. Keep an eye on this space.", date: "1 week ago" },
-];
-
 const IPadSidebar = () => {
   const [user, setUser] = useState<any>(null);
   const [batch, setBatch] = useState("Batch 2"); // Defaulting to Batch 2 to show the schedule
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserAndAnnouncements = async () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
+      
+      let currentBatch = "Batch 2";
       if (user) {
         setUser(user);
         if (user.user_metadata?.batch) {
-          setBatch(user.user_metadata.batch);
+          currentBatch = user.user_metadata.batch;
+          setBatch(currentBatch);
         }
       }
+
+      // Fetch dynamic announcements based on batch
+      const { data: notices } = await supabase
+        .from("announcements")
+        .select("*")
+        .eq("batch", currentBatch)
+        .order("created_at", { ascending: false });
+
+      if (notices && notices.length > 0) {
+        // Format dates
+        const formattedNotices = notices.map(n => {
+            const date = new Date(n.created_at);
+            const now = new Date();
+            const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 3600 * 24));
+            let dateStr = "Today";
+            if (diffDays === 1) dateStr = "Yesterday";
+            else if (diffDays > 1) dateStr = `${diffDays} days ago`;
+            
+            return {
+                ...n,
+                text: n.message, // Map to what the UI expects
+                date: dateStr
+            };
+        });
+        setAnnouncements(formattedNotices);
+      } else {
+        // Fallback placeholder if none exist
+        setAnnouncements([{
+            id: 0,
+            title: "No active notices",
+            text: `You're all caught up for ${currentBatch}. Check back later.`,
+            date: "Just now"
+        }]);
+      }
     };
-    fetchUser();
+    fetchUserAndAnnouncements();
   }, []);
 
   const schedule = batch === "Batch 1" ? BATCH_1_SCHEDULE : BATCH_2_SCHEDULE;
-  const announcements = batch === "Batch 1" ? ANNOUNCEMENTS_B1 : ANNOUNCEMENTS_B2;
 
   // Auto-advance slideshow
   useEffect(() => {

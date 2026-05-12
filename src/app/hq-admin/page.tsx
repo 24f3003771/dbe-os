@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import AdminTable from "./AdminTable";
 import WaitlistPanel from "./WaitlistPanel";
+import AnnouncementsPanel from "./AnnouncementsPanel";
 
 export default async function HQAdminPage() {
   const cookieStore = await cookies();
@@ -43,6 +44,12 @@ export default async function HQAdminPage() {
 
       {/* Waitlist Management — SUPER_ADMIN only */}
       <WaitlistPanel />
+
+      {/* Divider */}
+      <div className="border-t border-outline-variant/20" />
+
+      {/* Announcements Management */}
+      <AnnouncementsPanel />
     </div>
   );
 }
