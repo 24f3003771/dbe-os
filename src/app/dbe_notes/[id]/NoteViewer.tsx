@@ -12,11 +12,14 @@ type Note = { id: string; module_number: number; content: string; topic_id: stri
 type Subject = { id: string; name: string; code: string; module_count: number; term_id: number };
 
 export default function NoteViewer({ subject, notes }: { subject: Subject; notes: Note[] }) {
-    const [activeModule, setActiveModule] = useState(1);
+    const [activeModule, setActiveModule] = useState<number | "mind-maps">(1);
     const printRef = useRef<HTMLDivElement>(null);
 
-    const modules = Array.from({ length: subject.module_count }, (_, i) => i + 1);
-    const activeNote = notes.find((n) => n.module_number === activeModule);
+    const modules: (number | "mind-maps")[] = [...Array.from({ length: subject.module_count }, (_, i) => i + 1), "mind-maps"];
+    
+    const activeNote = activeModule === "mind-maps" 
+        ? notes.find((n) => n.module_number === 99)
+        : notes.find((n) => n.module_number === activeModule);
 
     const handlePrint = () => {
         const content = printRef.current?.innerHTML;
@@ -26,7 +29,7 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
         win.document.write(`
             <html>
             <head>
-                <title>${subject.name} — Module ${activeModule}</title>
+                <title>${subject.name} — ${activeModule === "mind-maps" ? "Mind Maps" : `Module ${activeModule}`}</title>
                 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet" />
                 <style>
                     body { font-family: 'Kalam', cursive; padding: 40px; max-width: 800px; margin: 0 auto; font-size: 15px; line-height: 1.8; color: #2D2422; background: #FFFEF9; }
@@ -40,7 +43,7 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
             </head>
             <body>
                 <h1 style="font-size: 24px; margin-bottom: 4px">${subject.name}</h1>
-                <p style="opacity: 0.5; font-size: 13px; margin-bottom: 32px">${subject.code} · Module ${activeModule}</p>
+                <p style="opacity: 0.5; font-size: 13px; margin-bottom: 32px">${subject.code} · ${activeModule === "mind-maps" ? "Mind Maps" : `Module ${activeModule}`}</p>
                 ${content}
             </body>
             </html>
@@ -88,7 +91,9 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                 {/* Module Tabs */}
                 <div className="flex items-center gap-1 mt-8 bg-stone-100 rounded-2xl p-1 w-fit flex-wrap">
                     {modules.map((mod) => {
-                        const hasNote = notes.some((n) => n.module_number === mod);
+                        const isMindMap = mod === "mind-maps";
+                        const hasNote = isMindMap ? notes.some((n) => n.module_number === 99) : notes.some((n) => n.module_number === mod);
+                        const label = isMindMap ? "Mind Maps" : `M${mod}`;
                         return (
                             <button
                                 key={mod}
@@ -99,7 +104,7 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                         : "text-stone-400 hover:text-stone-600"
                                 }`}
                             >
-                                M{mod}
+                                {label}
                                 {!hasNote && <span className="ml-1 text-[8px] text-stone-300">—</span>}
                             </button>
                         );
@@ -118,7 +123,7 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                             <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
                         </div>
                         <div className="text-[10px] font-mono text-stone-500 uppercase tracking-[0.3em]">
-                            {subject.code}.module-{activeModule}.notes
+                            {subject.code}.{activeModule === "mind-maps" ? "mind-maps" : `module-${activeModule}`}.notes
                         </div>
                         <div className="w-12" />
                     </div>
@@ -237,7 +242,9 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                         ) : (
                             <div className="flex items-center justify-center h-64">
                                 <div className="text-center space-y-2">
-                                    <p className="text-stone-300 text-2xl" style={{ fontFamily: "'Kalam', cursive" }}>No notes yet for Module {activeModule}</p>
+                                    <p className="text-stone-300 text-2xl" style={{ fontFamily: "'Kalam', cursive" }}>
+                                        {activeModule === "mind-maps" ? "No Mind Maps yet" : `No notes yet for Module ${activeModule}`}
+                                    </p>
                                     <p className="text-stone-200 text-sm" style={{ fontFamily: "'Kalam', cursive" }}>Check back soon!</p>
                                 </div>
                             </div>
