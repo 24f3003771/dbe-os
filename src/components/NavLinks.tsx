@@ -76,40 +76,7 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                 const dropdownItems = dropdownData[label];
 
                 if (!isBottomNav && dropdownItems) {
-                    return (
-                        <div key={href} className="relative group">
-                            <Link
-                                href={href}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${isActive
-                                    ? `bg-surface-container-highest shadow-sm ring-1 ring-outline-variant/20`
-                                    : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low"
-                                    }`}
-                            >
-                                <Icon className={`w-4 h-4 ${isActive ? iconColors[label] : "text-on-surface-variant group-hover:" + iconColors[label]}`} />
-                                <span className={`text-xs font-black uppercase tracking-widest ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
-                                    {label}
-                                </span>
-                            </Link>
-
-                            {/* Dropdown Menu */}
-                            <div className="absolute top-full left-0 pt-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-1 group-hover:translate-y-0">
-                                <div className="w-64 bg-surface border border-outline-variant/20 rounded-2xl shadow-2xl py-3 overflow-hidden backdrop-blur-xl">
-                                    <div className="px-4 pb-2 mb-2 border-b border-outline-variant/10">
-                                        <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em]">{label} Library</p>
-                                    </div>
-                                    {dropdownItems.map((item) => (
-                                        <Link
-                                            key={item.href}
-                                            href={item.href}
-                                            className="block px-4 py-2.5 text-xs font-bold text-on-surface hover:text-primary hover:bg-surface-container-low transition-all uppercase tracking-tight"
-                                        >
-                                            {item.label}
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    );
+                    // Dropdowns removed per request. Now just renders standard link.
                 }
 
                 return (
