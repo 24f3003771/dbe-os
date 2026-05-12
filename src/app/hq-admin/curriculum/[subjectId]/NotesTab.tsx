@@ -221,6 +221,30 @@ export default function NotesTab({
                         textareaProps={{
                             placeholder: `# ${selectedModule === 98 ? "Formula Sheet" : selectedModule === 99 ? "Mind Maps" : `Module ${selectedModule}`}\n\nPaste your markdown notes here or drag & drop images...`
                         }}
+                        previewOptions={{
+                            components: {
+                                img: ({ src, alt, ...props }) => {
+                                    let finalSrc = (src as string) || "";
+                                    if (typeof finalSrc === "string" && finalSrc.includes("drive.google.com")) {
+                                        const fileIdMatch = finalSrc.match(/\/(?:file\/d|folders)\/([^\/?]+)/) || finalSrc.match(/[?&]id=([^&]+)/);
+                                        if (fileIdMatch && fileIdMatch[1]) {
+                                            finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                                        }
+                                    }
+                                    return <img src={finalSrc} alt={alt} className="w-full h-auto rounded-xl shadow-sm border border-stone-200 my-4" {...props} />;
+                                },
+                                a: ({ href, children, ...props }) => {
+                                    if (typeof href === "string" && href.includes("drive.google.com")) {
+                                        const fileIdMatch = href.match(/\/(?:file\/d|folders)\/([^\/?]+)/) || href.match(/[?&]id=([^&]+)/);
+                                        if (fileIdMatch && fileIdMatch[1]) {
+                                            const finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                                            return <img src={finalSrc} alt="Google Drive Embedded Image" className="w-full h-auto rounded-xl shadow-sm border border-stone-200 my-4" />;
+                                        }
+                                    }
+                                    return <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline" {...props}>{children}</a>;
+                                }
+                            }
+                        }}
                         className="!shadow-none border-none"
                     />
                 </div>

@@ -194,16 +194,26 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                                 </div>
                                             );
                                         },
-                                        a: ({ href, children }) => (
-                                            <a 
-                                                href={href} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer" 
-                                                className="text-[#6366F1] underline underline-offset-4 decoration-indigo-200 hover:decoration-indigo-500 transition-all font-bold"
-                                            >
-                                                {children}
-                                            </a>
-                                        ),
+                                        a: ({ href, children, ...props }) => {
+                                            if (typeof href === "string" && href.includes("drive.google.com")) {
+                                                const fileIdMatch = href.match(/\/(?:file\/d|folders)\/([^\/?]+)/) || href.match(/[?&]id=([^&]+)/);
+                                                if (fileIdMatch && fileIdMatch[1]) {
+                                                    const finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                                                    return <img src={finalSrc} alt="Google Drive Embedded Image" className="w-full h-auto rounded-xl shadow-sm border border-stone-200 my-8" />;
+                                                }
+                                            }
+                                            return (
+                                                <a 
+                                                    href={href} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer" 
+                                                    className="text-[#6366F1] underline underline-offset-4 decoration-indigo-200 hover:decoration-indigo-500 transition-all font-bold"
+                                                    {...props}
+                                                >
+                                                    {children}
+                                                </a>
+                                            );
+                                        },
                                         code: ({ node, inline, className, children, ...props }: any) => {
                                             const match = /language-(\w+)/.exec(className || '');
                                             const isVisualizer = match && match[1] === 'visualizer';
