@@ -2,57 +2,71 @@
 
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight, Wrench, Award } from "lucide-react";
+import { Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight, Wrench, Award, Megaphone, Bell } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Caveat } from "next/font/google";
-import { useTodos } from "@/hooks/useTodos";
 import { getAllSubjects } from "@/data/db";
 import TomatoSplash from "@/components/TomatoSplash";
 import UniversalStats from "@/components/UniversalStats";
+import { createClient } from "@/utils/supabase/client";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
+const BATCH_2_SCHEDULE = [
+  { date: "2026-05-23", title: "Term 2 Exams (Day 1): Comm, Eco, Accounting" },
+  { date: "2026-05-24", title: "Term 2 Exams (Day 2): IKS, Stats 2, FoBC II" },
+];
+
+const BATCH_1_SCHEDULE = [
+  // Placeholder: Update when Batch 1 schedule is available
+  { date: "2026-05-25", title: "Batch 1 Term Exams Placeholder" },
+];
+
+const ANNOUNCEMENTS_B2 = [
+  { id: 1, title: "Exam Schedule Released", text: "Term 2 Final In-Centre exams are set for May 23rd & 24th. Start preparing!", date: "2 days ago" },
+  { id: 2, title: "Projects Update", text: "Dates for Website Development & Rs. 250 Venture will be shared by the Support team soon.", date: "4 days ago" },
+];
+
+const ANNOUNCEMENTS_B1 = [
+  { id: 1, title: "Batch 1 Updates", text: "Term schedules will be updated shortly. Keep an eye on this space.", date: "1 week ago" },
+];
+
 const IPadSidebar = () => {
-  // TODO: Fetch user session from Supabase
-  const user = null as any;
-  const { tasks, addTask: persistTask, toggleTask: togglePersistedTask, deleteTask: deletePersistedTask } = useTodos(new Date());
-  const { earnTomatoes } = useFarmStore();
-  const [newTaskText, setNewTaskText] = useState("");
-  const [showTomatoAnim, setShowTomatoAnim] = useState(false);
-  const [lastEarned, setLastEarned] = useState(2);
+  const [user, setUser] = useState<any>(null);
+  const [batch, setBatch] = useState("Batch 2"); // Defaulting to Batch 2 to show the schedule
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  const toggleTask = (id: string) => {
-    const task = tasks.find(t => t.id === id);
-    if (task && !task.completed) {
-      // Award tomatoes when completing a task
-      const amount = Math.random() > 0.5 ? 5 : 2;
-      earnTomatoes({
-        actionType: "task_completion",
-        description: `Completed task: ${task.title}`,
-        tomatoes: amount
-      });
-      setLastEarned(amount);
-      setShowTomatoAnim(true);
-      setTimeout(() => setShowTomatoAnim(false), 2000);
-    }
-    togglePersistedTask(id);
-  };
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        if (user.user_metadata?.batch) {
+          setBatch(user.user_metadata.batch);
+        }
+      }
+    };
+    fetchUser();
+  }, []);
 
-  const addTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTaskText.trim()) return;
-    persistTask({ title: newTaskText, subject: "General", time: new Date().toTimeString().substring(0, 5) });
-    setNewTaskText("");
-  };
+  const schedule = batch === "Batch 1" ? BATCH_1_SCHEDULE : BATCH_2_SCHEDULE;
+  const announcements = batch === "Batch 1" ? ANNOUNCEMENTS_B1 : ANNOUNCEMENTS_B2;
 
-  const deleteTask = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    deletePersistedTask(id);
-  };
+  // Auto-advance slideshow
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % announcements.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [announcements.length]);
 
   const today = new Date();
+  const currentMonthStr = String(today.getMonth() + 1).padStart(2, '0');
+  const currentYearStr = String(today.getFullYear());
+  
   const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
   
@@ -60,39 +74,35 @@ const IPadSidebar = () => {
   for (let i = 0; i < firstDayOfMonth; i++) calendarDays.push(null);
   for (let i = 1; i <= daysInMonth; i++) calendarDays.push(i);
 
-  return (
-    <div className="sticky top-24 bg-[#FFFCF8] rounded-[2rem] border-[8px] border-[#E5E5EA] shadow-xl p-6 md:p-8 flex flex-col h-[75vh] min-h-[600px] overflow-y-auto" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px)', backgroundAttachment: 'local', backgroundPosition: '0 1rem' }}>
-        <AnimatePresence>
-          {showTomatoAnim && (
-            <motion.div 
-              initial={{ opacity: 0, y: 0, scale: 0.5 }}
-              animate={{ opacity: 1, y: -100, scale: 1.5 }}
-              exit={{ opacity: 0, scale: 2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex items-center gap-3 pointer-events-none drop-shadow-2xl"
-            >
-              <div className="text-6xl">🍅</div>
-              <span className="text-6xl font-black text-red-500">+{lastEarned}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+  // Helper to check if a day has a scheduled event
+  const isScheduled = (day: number) => {
+    const dayStr = String(day).padStart(2, '0');
+    const dateStr = `${currentYearStr}-${currentMonthStr}-${dayStr}`;
+    return schedule.some(s => s.date === dateStr);
+  };
 
+  return (
+    <div className="sticky top-24 bg-[#FFFCF8] rounded-[2rem] border-[8px] border-[#E5E5EA] shadow-xl p-6 md:p-8 flex flex-col h-[75vh] min-h-[600px] overflow-hidden" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px)', backgroundAttachment: 'local', backgroundPosition: '0 1rem' }}>
+        
         {/* iPad Camera details */}
         <div className="absolute top-3 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-black/80 ring-2 ring-black/10"></div>
         <div className="absolute top-3.5 left-[calc(50%+1rem)] w-1 h-1 rounded-full bg-green-500 shadow-[0_0_4px_#22c55e]"></div>
         
-        <div className={`mt-8 ${caveat.className}`}>
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-4xl text-[#2c3e50] font-bold drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">{user?.firstName ? `${user.firstName}'s` : 'My'} Month</h2>
+        <div className={`mt-8 ${caveat.className} flex-1 flex flex-col`}>
+            <div className="flex justify-between items-center mb-4 shrink-0">
+                <h2 className="text-4xl text-[#2c3e50] font-bold drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">{user?.user_metadata?.first_name ? `${user.user_metadata.first_name}'s` : 'My'} Month</h2>
                 <span className="text-xl text-[#e74c3c] font-bold rotate-[-5deg] border-b-2 border-[#e74c3c] border-dashed">{today.toLocaleString('default', { month: 'long' })}</span>
             </div>
             
             {/* Calendar */}
-            <div className="grid grid-cols-7 gap-x-1 gap-y-2 text-center mb-8 text-[#34495e]">
+            <div className="grid grid-cols-7 gap-x-1 gap-y-2 text-center mb-6 text-[#34495e] shrink-0">
                 {['S','M','T','W','T','F','S'].map(d => <div key={d} className="text-2xl font-bold opacity-70">{d}</div>)}
-                {calendarDays.map((d, i) => (
+                {calendarDays.map((d, i) => {
+                    const hasEvent = d ? isScheduled(d) : false;
+                    return (
                     <div key={i} className="relative aspect-square flex items-center justify-center text-2xl font-bold">
                         {d}
-                        {d && d < today.getDate() && (
+                        {d && d < today.getDate() && !hasEvent && (
                             <svg className="absolute inset-0 w-full h-full text-[#e74c3c]/80 pointer-events-none drop-shadow-sm" viewBox="0 0 100 100">
                                 <path d="M20,20 Q50,40 80,80 M80,20 Q50,60 20,80" stroke="currentColor" strokeWidth="5" strokeLinecap="round" fill="none" />
                             </svg>
@@ -100,50 +110,55 @@ const IPadSidebar = () => {
                         {d === today.getDate() && (
                             <div className="absolute inset-1 border-4 border-[#3498db] rounded-full opacity-60 mix-blend-multiply"></div>
                         )}
+                        {hasEvent && (
+                            <div className="absolute inset-1 bg-amber-200/40 border-2 border-amber-400 rounded-full mix-blend-multiply animate-pulse"></div>
+                        )}
                     </div>
-                ))}
+                )})}
             </div>
 
-            <h2 className="text-4xl text-[#2c3e50] font-bold mb-4 drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">To-Do Today</h2>
-            <ul className="space-y-[0.6rem]">
-                {tasks.map((task) => (
-                    <li 
-                        key={task.id} 
-                        className="flex items-center justify-between group"
-                    >
-                        <div className="flex items-start gap-4 cursor-pointer flex-1" onClick={() => toggleTask(task.id)}>
-                            <span className={`text-4xl leading-none -mt-1 transition-colors ${task.completed ? 'text-[#2ecc71]' : 'text-[#3498db] group-hover:text-[#2980b9]'}`}>
-                                <span className="material-symbols-outlined">
-                                    {task.completed ? 'check_circle' : 'radio_button_unchecked'}
-                                </span>
-                            </span>
-                            <span className={`text-3xl leading-none mt-1 transition-all duration-300 ${
-                                task.completed
-                                    ? 'text-[#2c3e50] opacity-60 line-through decoration-wavy decoration-[#2ecc71]' 
-                                    : 'text-[#2c3e50] opacity-100'
-                            }`}>
-                                {task.title}
-                            </span>
-                        </div>
-                        <button onClick={(e) => deleteTask(task.id, e)} className="text-xl text-[#e74c3c] opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-[#e74c3c]/10 rounded-full" title="Delete Task">
-                            <Trash2 className="w-5 h-5" />
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <div className="flex items-center justify-between mb-4 mt-2 shrink-0">
+                <h2 className="text-4xl text-[#2c3e50] font-bold drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)] flex items-center gap-2">
+                    Official Notice <Megaphone className="w-6 h-6 text-[#e74c3c] mt-1" />
+                </h2>
+                <span className="text-lg text-indigo-600 font-bold bg-indigo-50 px-3 py-1 rounded-xl font-sans text-sm">{batch}</span>
+            </div>
             
-            <form onSubmit={addTask} className="mt-4 flex gap-2 items-center">
-                <input 
-                    type="text" 
-                    value={newTaskText}
-                    onChange={(e) => setNewTaskText(e.target.value)}
-                    placeholder="Add a new task..." 
-                    className="flex-1 bg-transparent border-b-2 border-dashed border-[#95a5a6]/50 focus:border-[#3498db] outline-none text-3xl text-[#2c3e50] py-2 placeholder:text-[#95a5a6]/50 transition-colors"
-                />
-                <button type="submit" className="text-4xl text-[#3498db] hover:text-[#2980b9] font-bold p-2 transition-colors">+</button>
-            </form>
+            {/* Announcements Slideshow */}
+            <div className="flex-1 relative bg-white/40 rounded-3xl border-2 border-dashed border-[#3498db]/30 p-6 overflow-hidden flex flex-col justify-center">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={currentSlide}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.4 }}
+                        className="space-y-3"
+                    >
+                        <div className="inline-flex items-center gap-2 bg-[#e74c3c]/10 text-[#e74c3c] px-3 py-1 rounded-full text-xs font-sans font-bold uppercase tracking-widest">
+                            <Bell className="w-3.5 h-3.5" /> {announcements[currentSlide].date}
+                        </div>
+                        <h3 className="text-3xl font-bold text-[#2c3e50] leading-tight">
+                            {announcements[currentSlide].title}
+                        </h3>
+                        <p className="text-2xl text-[#34495e]/80 leading-relaxed font-medium">
+                            {announcements[currentSlide].text}
+                        </p>
+                    </motion.div>
+                </AnimatePresence>
 
-            <div className="mt-8 text-center text-[#95a5a6] text-xl opacity-80 italic">-- points for every task! --</div>
+                {/* Slideshow dots */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                    {announcements.map((_, idx) => (
+                        <div 
+                            key={idx} 
+                            className={`h-2 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-6 bg-[#3498db]' : 'w-2 bg-[#3498db]/30'}`}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            <div className="mt-6 text-center text-[#95a5a6] text-xl opacity-80 italic shrink-0">-- updates pulled from HQ --</div>
         </div>
     </div>
   )
