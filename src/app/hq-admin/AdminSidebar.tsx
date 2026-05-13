@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, Users, BookOpen, Hash, Settings, LogOut, ChevronRight, Bell, Megaphone } from "lucide-react";
+import { ShieldAlert, Users, BookOpen, Hash, Settings, LogOut, ChevronRight, Bell, Megaphone, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
@@ -11,8 +11,9 @@ const navItems = [
     { icon: Bell,      label: "Waitlist",      href: "/hq-admin#waitlist",   exact: true, section: "waitlist"  },
     { icon: Megaphone, label: "Announcements", href: "/hq-admin#notices",    exact: true, section: "notices"   },
     { icon: BookOpen,  label: "Curriculum",    href: "/hq-admin/curriculum", exact: false },
-    { icon: Hash,      label: "Topics",        href: "/hq-admin/topics",     exact: false },
-    { icon: Settings,  label: "Settings",      href: "/hq-admin/settings",   exact: false },
+    { icon: Hash,      label: "Topics",        href: "/hq-admin/topics",           exact: false },
+    { icon: Zap,       label: "Quiz Levels",   href: "/hq-admin/concept-builder",  exact: false },
+    { icon: Settings,  label: "Settings",      href: "/hq-admin/settings",         exact: false },
 ];
 
 export default function AdminSidebar() {

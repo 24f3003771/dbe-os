@@ -8,6 +8,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── Global Settings ───────────────────────────────────
+model AppSettings {
+  id              Int      @id @default(1)
+  restrict_emails Boolean  @default(true)
+  tools_enabled   Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
+
 // ─── Gamified User Profile ───────────────────────────
 model User {
   id                    String   @id // Using Clerk User ID

@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Wrench, Calculator, FileText, Info, Briefcase,
   Star, Trophy, BookOpen, Rocket, Users, Bell, Check, Loader2,
-  ChevronRight, Sparkles, Zap, Target, TrendingUp, Lock
+  ChevronRight, Sparkles, Zap, Target, TrendingUp, Lock, ShieldOff
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 // ─── Waitlist Button ──────────────────────────────────────────────────────────
 function WaitlistButton({ toolId, accent }: { toolId: string; accent: string }) {
@@ -233,8 +234,62 @@ const COMING_TOOLS = [
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ToolsPage() {
+  const [toolsEnabled, setToolsEnabled] = useState<boolean | null>(null);
+  const [maintenanceBanner, setMaintenanceBanner] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const supabase = createClient();
+        const { data } = await supabase.from('app_settings').select('tools_enabled').eq('id', 1).single();
+        setToolsEnabled(data?.tools_enabled !== false);
+      } catch {
+        setToolsEnabled(true);
+      }
+    };
+    load();
+  }, []);
+
+  const handleLockedToolClick = (e: React.MouseEvent) => {
+    if (toolsEnabled === false) {
+      e.preventDefault();
+      setMaintenanceBanner(true);
+      setTimeout(() => setMaintenanceBanner(false), 3500);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto py-12 px-4 space-y-16">
+
+      {/* Maintenance Banner Toast */}
+      <AnimatePresence>
+        {maintenanceBanner && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3"
+          >
+            <ShieldOff className="w-5 h-5 text-orange-400" />
+            <span className="font-black text-sm">Tools are under maintenance. Only CGPA Calculator is available.</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Maintenance Banner */}
+      {toolsEnabled === false && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-orange-50 border border-orange-200 p-4 rounded-2xl flex items-start gap-3"
+        >
+          <ShieldOff className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-black text-orange-800">Tools Hub Under Maintenance</p>
+            <p className="text-xs text-orange-700 font-medium mt-0.5">The admin team is updating the tools. Only the CGPA Calculator is accessible right now.</p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
@@ -256,14 +311,15 @@ export default function ToolsPage() {
         </div>
       </motion.div>
 
-      {/* Live Tools */}
+      {/* Live Tools — CGPA always accessible */}
       <div>
         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mb-4">Live Now</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {LIVE_TOOLS.map((tool, i) => (
             <motion.div key={tool.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
+              {/* CGPA Calculator is always accessible regardless of toolsEnabled */}
               <Link href={tool.href}
-                className="group flex items-center gap-4 bg-surface-container-lowest border border-outline-variant/15 rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                className="group flex items-center gap-4 bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <div className={`w-12 h-12 ${tool.lightColor} rounded-xl flex items-center justify-center ${tool.textColor} shrink-0`}>
                   <tool.icon className="w-6 h-6" />
                 </div>
@@ -272,7 +328,8 @@ export default function ToolsPage() {
                   <h3 className="font-black text-on-surface text-base">{tool.title}</h3>
                   <p className="text-xs text-on-surface-variant font-medium truncate">{tool.description}</p>
                 </div>
-                <div className={`shrink-0 flex items-center gap-1 text-xs font-black ${tool.textColor}`}>
+                <div className={`shrink-0 flex items-center gap-2 text-xs font-black ${tool.textColor}`}>
+                  <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest">Always On</span>
                   Open <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>
@@ -297,8 +354,20 @@ export default function ToolsPage() {
           <motion.div key={tool.id}
             initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 + i * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] p-7 flex flex-col gap-5 hover:shadow-xl transition-all duration-400 group"
+            className={`relative bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] p-7 flex flex-col gap-5 transition-all duration-400 group ${
+              toolsEnabled === false ? 'opacity-60' : 'hover:shadow-xl'
+            }`}
+            onClick={toolsEnabled === false ? handleLockedToolClick : undefined}
           >
+            {/* Maintenance lock overlay */}
+            {toolsEnabled === false && (
+              <div className="absolute inset-0 rounded-[2rem] z-10 flex items-center justify-center bg-surface/30 backdrop-blur-[1px] cursor-not-allowed">
+                <div className="bg-slate-900/80 text-white text-xs font-black uppercase tracking-widest px-4 py-2 rounded-xl flex items-center gap-2">
+                  <Lock className="w-3.5 h-3.5" /> Under Maintenance
+                </div>
+              </div>
+            )}
+
             {/* Top */}
             <div className="flex items-start justify-between gap-3">
               <div className={`w-16 h-16 ${tool.lightColor} rounded-2xl flex items-center justify-center ${tool.textColor} group-hover:scale-110 transition-transform duration-500 shadow-sm`}>

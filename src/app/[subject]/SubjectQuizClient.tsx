@@ -24,10 +24,10 @@ type SubjectData = {
 
 export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     const [activeTab, setActiveTab] = useState<"overview" | "quiz" | "history">("overview");
-    const [viewMode, setViewMode] = useState<"selection" | "practice" | "ai" | "exam">("selection");
+    const [viewMode, setViewMode] = useState<"selection" | "practice" | "exam">("selection");
     const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
     const [quizMode, setQuizMode] = useState<"practice" | "exam">("practice");
-    const [quizSubMode, setQuizSubMode] = useState<"practice" | "ai" | "exam-set">("practice");
+    const [quizSubMode, setQuizSubMode] = useState<"practice" | "exam-set">("practice");
     const [activeQuizSetId, setActiveQuizSetId] = useState<string | null>(null);
 
     // Module-level mode selection state
@@ -65,16 +65,15 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         }
     };
 
-    // Module click (either Practice or AI mode)
-    const handleStartModuleQuiz = (moduleId: number, mode: "practice" | "ai") => {
+    // Module click (Practice mode only)
+    const handleStartModuleQuiz = (moduleId: number) => {
         const selectedModule = data.modules.find((m) => m.id === moduleId);
         if (selectedModule && selectedModule.questions.filter(q => q.type !== "exam").length === 0) {
             setEmptyMessageModuleId(moduleId);
             setTimeout(() => setEmptyMessageModuleId(null), 3000);
             return;
         }
-        
-        setQuizSubMode(mode);
+        setQuizSubMode("practice");
         setQuizMode("practice");
         setExamTimer(undefined);
         setActiveQuizSetId(null);
@@ -125,15 +124,13 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                 </div>
             )}
 
-            {/* Quiz view — module practice/ai */}
+            {/* Quiz view — module practice */}
             {activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule && (
                 <div className="fixed inset-0 z-[200] bg-surface flex flex-col p-4 animate-in fade-in duration-300">
                     <div className="max-w-[1600px] mx-auto w-full flex flex-col h-full">
                         <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div>
-                                <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">
-                                    {quizSubMode === "ai" ? "AI Concept Builder" : "Practice Mode"}
-                                </span>
+                                <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">Practice Mode</span>
                                 <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
                             </div>
                         </div>
@@ -142,12 +139,8 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             subjectTitle={data.title}
                             moduleId={activeModule.id}
                             moduleTitle={activeModule.title}
-                            quizSubMode={quizSubMode}
-                            questions={
-                                quizSubMode === "ai"
-                                    ? activeModule.questions.filter((q) => q.type === "practice")
-                                    : activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice")
-                            }
+                            quizSubMode="practice"
+                            questions={activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice")}
                             mode="practice"
                             showCalculator={data.calculatorEnabled}
                             negativeMarking={false}
@@ -363,7 +356,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 </div>
                                 <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight group-hover:text-primary transition-colors">Practice</h3>
                                 <p className="text-xs text-on-surface-variant font-medium leading-relaxed opacity-70">
-                                    Untimed sessions to master each module at your own pace. Ideal for initial learning and revision.
+                                    Questions from graded assignments, CLAs, and mid-terms across all batches. Untimed, module-wise sessions at your own pace.
                                 </p>
                                 <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                                     Explore Modules <ArrowRight className="w-3 h-3" />
@@ -371,9 +364,9 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">01</div>
                             </button>
 
-                            {/* Block 2: Concept Builder */}
-                            <button
-                                onClick={() => setViewMode("ai")}
+                            {/* Block 2: Concept Builder → links to dedicated page */}
+                            <Link
+                                href={`/quiz/concept-builder/${data.subjectId}`}
                                 className="group relative aspect-[4/5] bg-gradient-to-br from-purple-500/[0.02] to-indigo-500/[0.02] bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-purple-500/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-purple-500/5"
                             >
                                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -381,13 +374,13 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 </div>
                                 <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight group-hover:text-purple-600 transition-colors">Concept Builder</h3>
                                 <p className="text-xs text-on-surface-variant font-medium leading-relaxed opacity-70">
-                                    AI-powered adaptive questions designed to bridge your knowledge gaps and build core intuition.
+                                    Adaptive module-wise, level-by-level learning. Score ≥80% on each level to advance — Easy → Medium → Hard. Progress saved automatically.
                                 </p>
                                 <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    Bridge Gaps <ArrowRight className="w-3 h-3" />
+                                    Start Levels <ArrowRight className="w-3 h-3" />
                                 </div>
                                 <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">02</div>
-                            </button>
+                            </Link>
 
                             {/* Block 3: PYQs and Mocks */}
                             <button
@@ -399,7 +392,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 </div>
                                 <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight group-hover:text-amber-600 transition-colors">PYQs & MOCK</h3>
                                 <p className="text-xs text-on-surface-variant font-medium leading-relaxed opacity-70">
-                                    Full subject-scope timed mocks. The ultimate test for your preparation before the actual exam.
+                                    Attempt all previous year question papers from past batches and sample papers curated on the previous year pattern.
                                 </p>
                                 <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">
                                     Simulate Exam <ArrowRight className="w-3 h-3" />
@@ -407,14 +400,12 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">03</div>
                             </button>
                         </div>
-                    ) : viewMode === "practice" || viewMode === "ai" ? (
+                    ) : viewMode === "practice" ? (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    {viewMode === "practice" ? <BookOpen className="w-6 h-6 text-primary" /> : <Sparkles className="w-6 h-6 text-purple-600" />}
-                                    <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight">
-                                        {viewMode === "practice" ? "Practice Modules" : "Concept Builder Modules"}
-                                    </h2>
+                                    <BookOpen className="w-6 h-6 text-primary" />
+                                    <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight">Practice Modules</h2>
                                 </div>
                                 <button onClick={() => setViewMode("selection")} className="text-xs font-bold text-on-surface-variant hover:text-primary">Cancel</button>
                             </div>
@@ -430,19 +421,19 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                         return (
                                             <div
                                                 key={mod.id}
-                                                className={`group p-6 rounded-[2rem] bg-surface-container-low border border-outline-variant/15 hover:border-${viewMode === 'practice' ? 'primary' : 'purple-500'}/50 transition-all hover:bg-surface-container flex flex-col cursor-pointer hover-lift shadow-sm`}
-                                                onClick={() => handleStartModuleQuiz(mod.id, viewMode)}
+                                                className="group p-6 rounded-[2rem] bg-surface-container-low border border-outline-variant/15 hover:border-primary/50 transition-all hover:bg-surface-container flex flex-col cursor-pointer hover-lift shadow-sm"
+                                                onClick={() => handleStartModuleQuiz(mod.id)}
                                             >
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex-1 min-w-0">
-                                                        <h3 className={`font-black text-lg text-on-surface group-hover:text-${viewMode === 'practice' ? 'primary' : 'purple-600'} transition-colors leading-tight truncate uppercase tracking-tight`}>{mod.title}</h3>
+                                                        <h3 className="font-black text-lg text-on-surface group-hover:text-primary transition-colors leading-tight truncate uppercase tracking-tight">{mod.title}</h3>
                                                         {emptyMessageModuleId === mod.id ? (
                                                             <p className="text-xs text-amber-500 font-bold tracking-wider mt-1 animate-in fade-in slide-in-from-top-1 duration-300">Wait, questions will be available soon</p>
                                                         ) : (
                                                             <p className="text-xs text-on-surface-variant font-black uppercase tracking-widest mt-1 opacity-50">{practiceCount} Questions</p>
                                                         )}
                                                     </div>
-                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all transform flex-shrink-0 ml-4 shadow-sm border ${practiceCount === 0 ? "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant/30" : `bg-surface-container-highest border-outline-variant/10 text-on-surface-variant group-hover:scale-110 group-hover:bg-${viewMode === 'practice' ? 'primary' : 'purple-600'} group-hover:border-transparent group-hover:text-white`}`}>
+                                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all transform flex-shrink-0 ml-4 shadow-sm border ${practiceCount === 0 ? "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant/30" : "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant group-hover:scale-110 group-hover:bg-primary group-hover:border-transparent group-hover:text-white"}`}>
                                                         <Play className="w-5 h-5 ml-1" />
                                                     </div>
                                                 </div>

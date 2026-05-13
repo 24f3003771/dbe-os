@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, BookOpen, ChevronRight, Target, Search } from "lucide-react";
+import { Activity, BookOpen, ChevronRight, Target, Search, Zap } from "lucide-react";
 import Link from "next/link";
 
 type SubjectWithCount = {
@@ -44,9 +44,15 @@ export default function QuizDashboard({
                         </div>
                         <p className="text-lg text-on-surface-variant max-w-2xl font-medium md:ml-[52px]">
                             {termName
-                                ? `${batch} · ${termName} — Select a subject to start practicing.`
-                                : "Select a subject below to access practice tests and exam simulators."}
+                                ? `${batch} · ${termName} — Select a subject to begin.`
+                                : "Select a subject to start the 3-level concept builder."}
                         </p>
+                        <div className="flex items-center gap-2 mt-2 md:ml-[52px]">
+                            {["🌱 Easy","⚡ Medium","🔥 Hard"].map((l,i) => (
+                                <span key={i} className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-surface-container border border-outline-variant/20 text-on-surface-variant">{l}</span>
+                            ))}
+                            <span className="text-[10px] text-on-surface-variant/50 font-medium ml-1">· 10 Qs each · 80% to unlock next</span>
+                        </div>
                     </div>
                 </div>
 
@@ -76,7 +82,7 @@ export default function QuizDashboard({
                 ) : (
                     filtered.map((subject) => (
                         <Link
-                            href={`/${subject.id}`}
+                            href={`/quiz/concept-builder/${subject.id}`}
                             key={subject.id}
                             className="group bg-surface-container-lowest border border-outline-variant/15 p-6 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 flex flex-col justify-between hover:scale-[1.02] active:scale-95 transition-all"
                         >
@@ -100,6 +106,10 @@ export default function QuizDashboard({
                                 </div>
                                 <div className="flex items-center gap-1.5">
                                     <Activity className="w-3.5 h-3.5" /> {subject.questionCount} Qs
+                                </div>
+                                <div className="ml-auto flex items-center gap-1 text-indigo-500">
+                                    <Zap className="w-3 h-3" />
+                                    <span className="text-[10px]">3 Levels</span>
                                 </div>
                             </div>
                         </Link>

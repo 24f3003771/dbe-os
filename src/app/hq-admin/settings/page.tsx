@@ -23,11 +23,12 @@ export default async function HQAdminSettingsPage() {
   // Fetch current setting
   const { data: settings } = await supabase
     .from('app_settings')
-    .select('restrict_emails')
+    .select('restrict_emails, tools_enabled')
     .eq('id', 1)
     .single();
 
   const restrictEmails = settings ? settings.restrict_emails : true; // Default to true if not found
+  const toolsEnabled = settings ? settings.tools_enabled : true;
 
   return (
     <div className="space-y-8">
@@ -36,7 +37,7 @@ export default async function HQAdminSettingsPage() {
         <p className="text-sm font-bold text-on-surface-variant">Configure platform-wide settings and security rules.</p>
       </div>
 
-      <SettingsForm initialRestrictEmails={restrictEmails} />
+      <SettingsForm initialRestrictEmails={restrictEmails} initialToolsEnabled={toolsEnabled} />
     </div>
   );
 }
