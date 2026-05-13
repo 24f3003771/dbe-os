@@ -44,14 +44,13 @@ export default function QuizDashboard({
                         </div>
                         <p className="text-lg text-on-surface-variant max-w-2xl font-medium md:ml-[52px]">
                             {termName
-                                ? `${batch} · ${termName} — Select a subject to begin.`
-                                : "Select a subject to start the 3-level concept builder."}
+                                ? `${batch} · ${termName} — Select a subject to access Practice, Concept Builder, and PYQ/Mock modes.`
+                                : "Select a subject below to access all practice modules, adaptive concept builder, and exam sets."}
                         </p>
-                        <div className="flex items-center gap-2 mt-2 md:ml-[52px]">
-                            {["🌱 Easy","⚡ Medium","🔥 Hard"].map((l,i) => (
-                                <span key={i} className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-surface-container border border-outline-variant/20 text-on-surface-variant">{l}</span>
-                            ))}
-                            <span className="text-[10px] text-on-surface-variant/50 font-medium ml-1">· 10 Qs each · 80% to unlock next</span>
+                        <div className="flex flex-wrap items-center gap-2 mt-2 md:ml-[52px]">
+                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary border border-primary/20">Practice</span>
+                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-400 border border-purple-500/20">Concept Builder</span>
+                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20">PYQ & Mock</span>
                         </div>
                     </div>
                 </div>
@@ -82,7 +81,7 @@ export default function QuizDashboard({
                 ) : (
                     filtered.map((subject) => (
                         <Link
-                            href={`/quiz/concept-builder/${subject.id}`}
+                            href={`/${subject.id}`}
                             key={subject.id}
                             className="group bg-surface-container-lowest border border-outline-variant/15 p-6 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 flex flex-col justify-between hover:scale-[1.02] active:scale-95 transition-all"
                         >
@@ -107,9 +106,9 @@ export default function QuizDashboard({
                                 <div className="flex items-center gap-1.5">
                                     <Activity className="w-3.5 h-3.5" /> {subject.questionCount} Qs
                                 </div>
-                                <div className="ml-auto flex items-center gap-1 text-indigo-500">
-                                    <Zap className="w-3 h-3" />
-                                    <span className="text-[10px]">3 Levels</span>
+                                <div className="ml-auto flex items-center gap-1 text-primary font-black uppercase tracking-widest">
+                                    <Zap className="w-3 h-3 text-amber-500" />
+                                    <span className="text-[10px]">3 Modes</span>
                                 </div>
                             </div>
                         </Link>

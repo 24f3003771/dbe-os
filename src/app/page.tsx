@@ -260,7 +260,7 @@ export default function Dashboard() {
                             </h3>
                         </div>
                         <div className="flex-1 space-y-3 mb-6">
-                            <Link href="/quiz/practice" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-indigo-300 transition-all group/item shadow-sm">
+                            <Link href="/quiz" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-indigo-300 transition-all group/item shadow-sm">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
@@ -288,7 +288,7 @@ export default function Dashboard() {
                                 </div>
                             </Link>
 
-                            <Link href="/quiz/pyq" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-amber-300 transition-all group/item shadow-sm">
+                            <Link href="/quiz" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-amber-300 transition-all group/item shadow-sm">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs">
@@ -302,7 +302,7 @@ export default function Dashboard() {
                                 </div>
                             </Link>
                         </div>
-                        <Link href="/quiz/subjects" className="block mt-auto">
+                        <Link href="/quiz" className="block mt-auto">
                             <button className="w-full py-3.5 bg-indigo-50 hover:bg-indigo-100 rounded-xl text-xs font-black uppercase tracking-widest text-indigo-600 transition-all border border-indigo-100">View All Subject wise</button>
                         </Link>
                     </div>
