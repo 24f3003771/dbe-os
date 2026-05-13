@@ -3,13 +3,13 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
-import { ChevronLeft, CheckCircle2, XCircle, Trophy, AlertTriangle, Layers, TrendingUp } from "lucide-react";
+import { ChevronLeft, CheckCircle2, XCircle, Trophy, AlertTriangle, Layers, TrendingUp, Sparkles, Zap, Flame } from "lucide-react";
 import Link from "next/link";
 
 const LEVELS = [
-    { key: "easy",   label: "Easy",   emoji: "🌱", gradient: "from-emerald-400 to-teal-500",  bg: "bg-emerald-50",  border: "border-emerald-300", text: "text-emerald-700", bar: "bg-emerald-500" },
-    { key: "medium", label: "Medium", emoji: "⚡", gradient: "from-amber-400 to-orange-500",  bg: "bg-amber-50",   border: "border-amber-300",   text: "text-amber-700",   bar: "bg-amber-500"   },
-    { key: "hard",   label: "Hard",   emoji: "🔥", gradient: "from-rose-500 to-pink-600",     bg: "bg-rose-50",    border: "border-rose-300",    text: "text-rose-700",    bar: "bg-rose-500"    },
+    { key: "easy",   label: "Easy",   Icon: Sparkles, gradient: "from-emerald-400 to-teal-500",  bg: "bg-emerald-50",  border: "border-emerald-300", text: "text-emerald-700", bar: "bg-emerald-500" },
+    { key: "medium", label: "Medium", Icon: Zap,      gradient: "from-amber-400 to-orange-500",  bg: "bg-amber-50",   border: "border-amber-300",   text: "text-amber-700",   bar: "bg-amber-500"   },
+    { key: "hard",   label: "Hard",   Icon: Flame,    gradient: "from-rose-500 to-pink-600",     bg: "bg-rose-50",    border: "border-rose-300",    text: "text-rose-700",    bar: "bg-rose-500"    },
 ] as const;
 
 const PASS = 80;
@@ -180,7 +180,7 @@ export default function ConceptBuilderClient({ subject, modules, progress: initi
                         <h2 className="text-base font-black uppercase tracking-wide">Adaptive Level-by-Level Learning</h2>
                     </div>
                     <p className="text-violet-100 text-sm leading-relaxed">
-                        Each module has 3 levels — 🌱 Easy, ⚡ Medium, 🔥 Hard. Score <strong>≥80%</strong> to advance to the next level. Tap any module to continue from where you left off. Unlimited attempts.
+                        Each module has 3 levels — Easy, Medium, Hard. Score <strong>≥80%</strong> to advance to the next level. Tap any module to continue from where you left off. Unlimited attempts.
                     </p>
                 </div>
 
@@ -209,8 +209,8 @@ export default function ConceptBuilderClient({ subject, modules, progress: initi
                                                     <CheckCircle2 className="w-3 h-3" /> Completed
                                                 </span>
                                             ) : hasQuestions ? (
-                                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${lv.bg} ${lv.text}`}>
-                                                    {lv.emoji} {lv.label} Level
+                                                <span className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black ${lv.bg} ${lv.text} border ${lv.border}`}>
+                                                    <lv.Icon className="w-3 h-3" /> {lv.label} Level
                                                 </span>
                                             ) : null}
                                         </div>
@@ -231,14 +231,14 @@ export default function ConceptBuilderClient({ subject, modules, progress: initi
                                             const best = p?.best_score ?? 0;
                                             const isActive = lvl.key === currentLevel && !allDone;
                                             return (
-                                                <div key={lvl.key} className="flex flex-col items-center gap-1">
-                                                    <div className="w-2 h-8 rounded-full bg-surface-container-high overflow-hidden relative">
+                                                <div key={lvl.key} className="flex flex-col items-center gap-1" title={`${lvl.label}: ${done ? "Completed" : best + "% Best"}`}>
+                                                    <div className="w-2.5 h-8 rounded-full bg-surface-container-high overflow-hidden relative">
                                                         <div
                                                             className={`absolute bottom-0 left-0 right-0 rounded-full transition-all duration-500 ${done ? lvl.bar : best > 0 ? lvl.bar + " opacity-40" : ""}`}
                                                             style={{ height: done ? "100%" : best > 0 ? `${best}%` : "0%" }}
                                                         />
                                                     </div>
-                                                    <span className="text-[9px]">{lvl.emoji}</span>
+                                                    <lvl.Icon className={`w-3 h-3 ${isActive ? lvl.text : "text-on-surface-variant/40"}`} />
                                                 </div>
                                             );
                                         })}
@@ -272,8 +272,8 @@ export default function ConceptBuilderClient({ subject, modules, progress: initi
                     <h2 className="text-3xl font-black text-on-surface">
                         {allComplete ? "Module Complete! 🏆" : passed ? "Level Cleared! 🎉" : "Keep Going..."}
                     </h2>
-                    <p className="text-on-surface-variant font-medium mt-1 text-sm">
-                        {activeMod.title} · {lv.emoji} {lv.label} Level
+                    <p className="text-on-surface-variant font-medium mt-1 text-sm flex items-center justify-center gap-1.5">
+                        {activeMod.title} · <lv.Icon className={`w-4 h-4 ${lv.text}`} /> <span className={lv.text}>{lv.label} Level</span>
                     </p>
                     <p className="text-on-surface-variant text-sm mt-1">
                         {allComplete ? "You've mastered all 3 levels for this module!" :
@@ -304,8 +304,8 @@ export default function ConceptBuilderClient({ subject, modules, progress: initi
                     {/* Auto-advance to next level */}
                     {canAdvance && nextLv && (
                         <button onClick={() => startQuiz(activeMod, nextLv.key as "easy" | "medium" | "hard")}
-                            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-600 text-white font-black text-sm uppercase tracking-widest shadow-lg hover:scale-[1.02] transition-transform">
-                            {nextLv.emoji} Go to {nextLv.label}
+                            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-600 text-white font-black text-sm uppercase tracking-widest shadow-lg hover:scale-[1.02] transition-transform flex items-center gap-2">
+                            <nextLv.Icon className="w-4 h-4" /> Go to {nextLv.label}
                         </button>
                     )}
                     <button onClick={() => setPhase("modules")}
@@ -332,7 +332,9 @@ export default function ConceptBuilderClient({ subject, modules, progress: initi
                 </button>
                 <div className="text-center">
                     <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant/60">{activeMod?.title}</p>
-                    <p className={`text-sm font-black ${lv.text}`}>{lv.emoji} {lv.label} Level</p>
+                    <p className={`text-sm font-black ${lv.text} flex items-center justify-center gap-1 mt-0.5`}>
+                        <lv.Icon className="w-4 h-4" /> {lv.label} Level
+                    </p>
                 </div>
                 <div className={`px-3 py-1 rounded-xl ${lv.bg} ${lv.text} text-xs font-black`}>{correct}/{idx} ✓</div>
             </div>
