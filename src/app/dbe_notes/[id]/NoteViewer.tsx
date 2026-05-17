@@ -195,11 +195,29 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                             );
                                         },
                                         a: ({ href, children, ...props }) => {
-                                            if (typeof href === "string" && href.includes("drive.google.com")) {
-                                                const fileIdMatch = href.match(/\/(?:file\/d|folders)\/([^\/?]+)/) || href.match(/[?&]id=([^&]+)/);
-                                                if (fileIdMatch && fileIdMatch[1]) {
-                                                    const finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
-                                                    return <img src={finalSrc} alt="Google Drive Embedded Image" className="w-full h-auto rounded-xl shadow-sm border border-stone-200 my-8" />;
+                                            if (typeof href === "string") {
+                                                // Check for YouTube links
+                                                const ytMatch = href.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+                                                if (ytMatch && ytMatch[1]) {
+                                                    return (
+                                                        <div className="my-8 rounded-2xl overflow-hidden border border-stone-200 shadow-lg bg-white w-full aspect-video relative">
+                                                            <iframe
+                                                                src={`https://www.youtube.com/embed/${ytMatch[1]}`}
+                                                                className="absolute top-0 left-0 w-full h-full"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowFullScreen
+                                                                title="YouTube video player"
+                                                            ></iframe>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                if (href.includes("drive.google.com")) {
+                                                    const fileIdMatch = href.match(/\/(?:file\/d|folders)\/([^\/?]+)/) || href.match(/[?&]id=([^&]+)/);
+                                                    if (fileIdMatch && fileIdMatch[1]) {
+                                                        const finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                                                        return <img src={finalSrc} alt="Google Drive Embedded Image" className="w-full h-auto rounded-xl shadow-sm border border-stone-200 my-8" />;
+                                                    }
                                                 }
                                             }
                                             return (
