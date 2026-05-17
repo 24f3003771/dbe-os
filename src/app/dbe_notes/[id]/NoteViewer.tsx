@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ChevronLeft, Download, FileText } from "lucide-react";
+import { ChevronLeft, Download, FileText, Image as ImageIcon, ImageOff } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -13,6 +13,7 @@ type Subject = { id: string; name: string; code: string; module_count: number; t
 
 export default function NoteViewer({ subject, notes }: { subject: Subject; notes: Note[] }) {
     const [activeModule, setActiveModule] = useState<number | "formula-sheet" | "mind-maps">(1);
+    const [showMedia, setShowMedia] = useState(true);
     const printRef = useRef<HTMLDivElement>(null);
 
     const modules: (number | "formula-sheet" | "mind-maps")[] = [...Array.from({ length: subject.module_count }, (_, i) => i + 1), "formula-sheet", "mind-maps"];
@@ -82,12 +83,21 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                             {subject.name}
                         </h1>
                     </div>
-                    <button
-                        onClick={handlePrint}
-                        className="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-sm shadow-sm transition-all shrink-0"
-                    >
-                        <Download className="w-4 h-4" /> Download PDF
-                    </button>
+                    <div className="flex flex-wrap items-center gap-3">
+                        <button
+                            onClick={() => setShowMedia(!showMedia)}
+                            className="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-sm shadow-sm transition-all shrink-0"
+                        >
+                            {showMedia ? <ImageOff className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
+                            {showMedia ? "Hide Media" : "Show Media"}
+                        </button>
+                        <button
+                            onClick={handlePrint}
+                            className="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-sm shadow-sm transition-all shrink-0"
+                        >
+                            <Download className="w-4 h-4" /> Download PDF
+                        </button>
+                    </div>
                 </div>
 
                 {/* Module Tabs */}
@@ -168,6 +178,19 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                                 }
                                             }
 
+                                            if (!showMedia) {
+                                                return (
+                                                    <a 
+                                                        href={finalSrc} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-stone-50 border border-stone-200 rounded-lg text-xs font-bold text-stone-500 hover:bg-stone-100 hover:text-indigo-500 transition-all my-2"
+                                                    >
+                                                        <ImageIcon className="w-3.5 h-3.5" /> [Media Hidden: {alt || "Image"}]
+                                                    </a>
+                                                );
+                                            }
+
                                             if (error) {
                                                 return (
                                                     <a 
@@ -199,6 +222,18 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                                 // Check for YouTube links
                                                 const ytMatch = href.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
                                                 if (ytMatch && ytMatch[1]) {
+                                                    if (!showMedia) {
+                                                        return (
+                                                            <a 
+                                                                href={href} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-stone-50 border border-stone-200 rounded-lg text-xs font-bold text-stone-500 hover:bg-stone-100 hover:text-indigo-500 transition-all my-2"
+                                                            >
+                                                                <ImageIcon className="w-3.5 h-3.5" /> [Video Hidden: YouTube]
+                                                            </a>
+                                                        );
+                                                    }
                                                     return (
                                                         <div className="my-8 rounded-2xl overflow-hidden border border-stone-200 shadow-lg bg-white w-full aspect-video relative">
                                                             <iframe
@@ -216,6 +251,18 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                                                     const fileIdMatch = href.match(/\/(?:file\/d|folders)\/([^\/?]+)/) || href.match(/[?&]id=([^&]+)/);
                                                     if (fileIdMatch && fileIdMatch[1]) {
                                                         const finalSrc = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+                                                        if (!showMedia) {
+                                                            return (
+                                                                <a 
+                                                                    href={finalSrc} 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-stone-50 border border-stone-200 rounded-lg text-xs font-bold text-stone-500 hover:bg-stone-100 hover:text-indigo-500 transition-all my-2"
+                                                                >
+                                                                    <ImageIcon className="w-3.5 h-3.5" /> [Image Hidden: Google Drive]
+                                                                </a>
+                                                            );
+                                                        }
                                                         return <img src={finalSrc} alt="Google Drive Embedded Image" className="w-full h-auto rounded-xl shadow-sm border border-stone-200 my-8" />;
                                                     }
                                                 }
