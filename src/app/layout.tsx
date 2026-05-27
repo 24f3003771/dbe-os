@@ -187,6 +187,15 @@ export default async function RootLayout({
       </head>
       <body className="bg-surface text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body">
 
+          {/* SITE LOCKDOWN OVERLAY */}
+          <div className="fixed inset-0 z-[999999] bg-surface flex flex-col items-center justify-center p-6 text-center">
+            <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-primary/20 shadow-inner">
+               <span className="text-5xl animate-bounce">🍳</span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-black font-headline text-on-surface tracking-tight mb-4">Coming soon</h1>
+            <p className="text-xl md:text-2xl font-bold text-on-surface-variant">Something is cooking</p>
+          </div>
+
           {isUserDisabled && (
             <div className="fixed inset-0 z-[9999] bg-surface/95 backdrop-blur-xl flex items-center justify-center p-4">
               <div className="bg-surface-container border border-error/20 p-8 md:p-10 rounded-[2.5rem] max-w-md w-full shadow-2xl text-center relative overflow-hidden">
