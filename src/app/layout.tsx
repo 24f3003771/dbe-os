@@ -187,34 +187,7 @@ export default async function RootLayout({
       </head>
       <body className="bg-surface text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body">
 
-          {/* SITE LOCKDOWN OVERLAY */}
-          <div className="fixed inset-0 z-[999999] bg-surface/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 text-center overflow-hidden">
-            {/* Animated Background Blobs */}
-            <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] bg-primary/20 rounded-full mix-blend-multiply filter blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '6s' }}></div>
-            <div className="absolute bottom-[20%] right-[20%] w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] bg-tertiary/20 rounded-full mix-blend-multiply filter blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '8s' }}></div>
-            
-            {/* Main Content */}
-            <div className="relative z-10 flex flex-col items-center group">
-              <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-tr from-primary/10 to-tertiary/10 rounded-full flex items-center justify-center mx-auto mb-10 shadow-[0_0_60px_rgba(41,102,76,0.15)] border border-primary/20 relative">
-                 <div className="absolute inset-0 rounded-full border-4 border-primary/10 border-t-primary/60 animate-spin" style={{ animationDuration: '3s' }}></div>
-                 <div className="absolute inset-[-10px] rounded-full border border-tertiary/20 border-b-tertiary/60 animate-spin" style={{ animationDuration: '5s', animationDirection: 'reverse' }}></div>
-                 <span className="text-6xl md:text-7xl animate-bounce" style={{ animationDuration: '2.5s' }}>🍳</span>
-              </div>
-              
-              <h1 className="text-5xl md:text-8xl font-black font-headline text-transparent bg-clip-text bg-gradient-to-br from-on-surface to-on-surface-variant tracking-tighter mb-6 drop-shadow-sm">
-                Coming soon
-              </h1>
-              
-              <p className="text-xl md:text-3xl font-medium text-on-surface-variant/80 tracking-wide flex items-center justify-center gap-3">
-                Something is cooking
-                <span className="flex gap-1.5 mt-1">
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '200ms' }}></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '400ms' }}></span>
-                </span>
-              </p>
-            </div>
-          </div>
+
 
           {isUserDisabled && (
             <div className="fixed inset-0 z-[9999] bg-surface/95 backdrop-blur-xl flex items-center justify-center p-4">
