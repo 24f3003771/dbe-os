@@ -83,7 +83,56 @@ const LIVE_TOOLS = [
     textColor: "text-amber-600", lightColor: "bg-amber-50",
     description: "Calculate WAM & CGPA using the official IIMB BBA DBE grading formula.",
   },
+  {
+    id: "matchforge", title: "Find Your Team", subtitle: "MatchForge",
+    icon: Users, href: "/matchforge",
+    textColor: "text-indigo-600", lightColor: "bg-indigo-50",
+    description: "The smartest way to find co-founders, case teammates & study partners in the DBE community.",
+  },
+  {
+    id: "resume-builder", title: "Build My Resume with AI", subtitle: "AI Resume Forge",
+    icon: Briefcase, href: "/tools/resume-builder",
+    textColor: "text-violet-600", lightColor: "bg-violet-50",
+    description: "Land interviews at Tier-1 companies with an AI-powered resume.",
+  },
+  {
+    id: "internships", title: "Find Internships Near Me", subtitle: "Internship Hunter",
+    icon: Rocket, href: "/tools/internships",
+    textColor: "text-emerald-600", lightColor: "bg-emerald-50",
+    description: "50+ Tier-1 portals + live LinkedIn extraction in one place.",
+  },
+  {
+    id: "competitions", title: "Join a Competition", subtitle: "Competition Finder",
+    icon: Trophy, href: "/tools/competitions",
+    textColor: "text-orange-600", lightColor: "bg-orange-50",
+    description: "Never miss HUL LIME, BCG Strategy Cup, or Google HashCode again.",
+  },
+  {
+    id: "pitch-decks", title: "See Winning Pitch Decks", subtitle: "Pro Pitch Decks",
+    icon: FileText, href: "/tools/pitch-decks",
+    textColor: "text-blue-600", lightColor: "bg-blue-50",
+    description: "Study award-winning decks from global brands and consulting firms.",
+  },
+  {
+    id: "winners-bank", title: "Learn From Winners", subtitle: "Winners Bank",
+    icon: Star, href: "/tools/winning-repository",
+    textColor: "text-violet-600", lightColor: "bg-violet-50",
+    description: "Reverse-engineer winning strategies from the top 1% of B-school performers.",
+  },
+  {
+    id: "career-guides", title: "Read Career Playbooks", subtitle: "Career Guides",
+    icon: BookOpen, href: "/tools/career-guides",
+    textColor: "text-rose-600", lightColor: "bg-rose-50",
+    description: "Official preparation guides for BCG, Google, HUL, and other Tier-1 companies.",
+  },
+  {
+    id: "transcript-generator", title: "Preview My Transcript", subtitle: "Transcript Preview",
+    icon: FileText, href: "#",
+    textColor: "text-stone-600", lightColor: "bg-stone-100",
+    description: "Visualize your academic journey before the official transcript is out.",
+  },
 ];
+
 
 const COMING_TOOLS = [
   {
@@ -234,63 +283,8 @@ const COMING_TOOLS = [
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ToolsPage() {
-  const [toolsEnabled, setToolsEnabled] = useState<boolean | null>(null);
-  const [maintenanceBanner, setMaintenanceBanner] = useState(false);
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const supabase = createClient();
-        const { data } = await supabase.from('app_settings').select('tools_enabled').eq('id', 1).single();
-        setToolsEnabled(data?.tools_enabled !== false);
-      } catch {
-        setToolsEnabled(true);
-      }
-    };
-    load();
-  }, []);
-
-  const handleLockedToolClick = (e: React.MouseEvent) => {
-    if (toolsEnabled === false) {
-      e.preventDefault();
-      setMaintenanceBanner(true);
-      setTimeout(() => setMaintenanceBanner(false), 3500);
-    }
-  };
-
   return (
     <div className="max-w-5xl mx-auto py-12 px-4 space-y-16">
-
-      {/* Maintenance Banner Toast */}
-      <AnimatePresence>
-        {maintenanceBanner && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3"
-          >
-            <ShieldOff className="w-5 h-5 text-orange-400" />
-            <span className="font-black text-sm">Tools are under maintenance. Only CGPA Calculator is available.</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Maintenance Banner */}
-      {toolsEnabled === false && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-orange-50 border border-orange-200 p-4 rounded-2xl flex items-start gap-3"
-        >
-          <ShieldOff className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-black text-orange-800">Tools Hub Under Maintenance</p>
-            <p className="text-xs text-orange-700 font-medium mt-0.5">The admin team is updating the tools. Only the CGPA Calculator is accessible right now.</p>
-          </div>
-        </motion.div>
-      )}
-
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center gap-3 mb-4">
@@ -302,22 +296,13 @@ export default function ToolsPage() {
             <p className="text-on-surface-variant font-medium">Smart utilities built for the BBA DBE community.</p>
           </div>
         </div>
-        <div className="bg-amber-50 border border-amber-200/60 p-4 rounded-2xl flex items-start gap-3">
-          <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-800 font-medium leading-relaxed">
-            The tools below are <strong>coming in the next version</strong> of DBE OS.
-            Join the waitlist for each tool you want — the more people who sign up, the sooner we ship it! 🚀
-          </p>
-        </div>
       </motion.div>
 
-      {/* Live Tools — CGPA always accessible */}
+      {/* Live Tools */}
       <div>
-        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 mb-4">Live Now</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {LIVE_TOOLS.map((tool, i) => (
             <motion.div key={tool.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
-              {/* CGPA Calculator is always accessible regardless of toolsEnabled */}
               <Link href={tool.href}
                 className="group flex items-center gap-4 bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <div className={`w-12 h-12 ${tool.lightColor} rounded-xl flex items-center justify-center ${tool.textColor} shrink-0`}>
@@ -329,80 +314,12 @@ export default function ToolsPage() {
                   <p className="text-xs text-on-surface-variant font-medium truncate">{tool.description}</p>
                 </div>
                 <div className={`shrink-0 flex items-center gap-2 text-xs font-black ${tool.textColor}`}>
-                  <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest">Always On</span>
                   Open <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>
             </motion.div>
           ))}
         </div>
-      </div>
-
-      {/* Divider */}
-      <div className="flex items-center gap-4">
-        <div className="h-px flex-1 bg-outline-variant/20" />
-        <div className="flex items-center gap-2 bg-surface-container px-4 py-2 rounded-full border border-outline-variant/15">
-          <Lock className="w-3.5 h-3.5 text-on-surface-variant/60" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Coming in Next Version</span>
-        </div>
-        <div className="h-px flex-1 bg-outline-variant/20" />
-      </div>
-
-      {/* Coming Soon Tools Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {COMING_TOOLS.map((tool, i) => (
-          <motion.div key={tool.id}
-            initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + i * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative bg-surface-container-lowest border border-outline-variant/15 rounded-[2rem] p-7 flex flex-col gap-5 transition-all duration-400 group ${
-              toolsEnabled === false ? 'opacity-60' : 'hover:shadow-xl'
-            }`}
-            onClick={toolsEnabled === false ? handleLockedToolClick : undefined}
-          >
-            {/* Maintenance lock overlay */}
-            {toolsEnabled === false && (
-              <div className="absolute inset-0 rounded-[2rem] z-10 flex items-center justify-center bg-surface/30 backdrop-blur-[1px] cursor-not-allowed">
-                <div className="bg-slate-900/80 text-white text-xs font-black uppercase tracking-widest px-4 py-2 rounded-xl flex items-center gap-2">
-                  <Lock className="w-3.5 h-3.5" /> Under Maintenance
-                </div>
-              </div>
-            )}
-
-            {/* Top */}
-            <div className="flex items-start justify-between gap-3">
-              <div className={`w-16 h-16 ${tool.lightColor} rounded-2xl flex items-center justify-center ${tool.textColor} group-hover:scale-110 transition-transform duration-500 shadow-sm`}>
-                <tool.icon className="w-8 h-8" />
-              </div>
-              <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${tool.badgeColor}`}>
-                {tool.badge}
-              </span>
-            </div>
-
-            {/* Title */}
-            <div>
-              <p className={`text-[10px] font-black uppercase tracking-widest ${tool.textColor} opacity-70 mb-1`}>{tool.subtitle}</p>
-              <h2 className="text-2xl font-black font-headline text-on-surface leading-tight mb-2">{tool.title}</h2>
-              <p className="text-on-surface-variant font-medium text-sm leading-relaxed">{tool.tagline}</p>
-            </div>
-
-            {/* Feature list */}
-            <ul className="space-y-2.5">
-              {tool.features.map((f, fi) => (
-                <li key={fi} className="flex items-start gap-2.5 text-sm">
-                  <div className={`w-5 h-5 rounded-lg ${tool.lightColor} flex items-center justify-center shrink-0 mt-0.5`}>
-                    <Check className={`w-3 h-3 ${tool.textColor}`} />
-                  </div>
-                  <span className="text-on-surface-variant font-medium">{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            {/* Waitlist CTA */}
-            <div className="pt-1">
-              <WaitlistButton toolId={tool.id} accent={tool.accent} />
-            </div>
-          </motion.div>
-        ))}
       </div>
 
       {/* Bottom CTA */}

@@ -33,7 +33,6 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     // Module-level mode selection state
     const [pendingModuleId, setPendingModuleId] = useState<number | null>(null);
     const [examTimer, setExamTimer] = useState<number | undefined>(undefined);
-    const [emptyMessageModuleId, setEmptyMessageModuleId] = useState<number | null>(null);
     const [resultToAnalyze, setResultToAnalyze] = useState<any | null>(null);
 
     const [examHistory, setExamHistory] = useState<any[]>([]);
@@ -67,12 +66,6 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
 
     // Module click (Practice mode only)
     const handleStartModuleQuiz = (moduleId: number) => {
-        const selectedModule = data.modules.find((m) => m.id === moduleId);
-        if (selectedModule && selectedModule.questions.filter(q => q.type !== "exam").length === 0) {
-            setEmptyMessageModuleId(moduleId);
-            setTimeout(() => setEmptyMessageModuleId(null), 3000);
-            return;
-        }
         setQuizSubMode("practice");
         setQuizMode("practice");
         setExamTimer(undefined);
@@ -427,11 +420,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="font-black text-lg text-on-surface group-hover:text-primary transition-colors leading-tight truncate uppercase tracking-tight">{mod.title}</h3>
-                                                        {emptyMessageModuleId === mod.id ? (
-                                                            <p className="text-xs text-amber-500 font-bold tracking-wider mt-1 animate-in fade-in slide-in-from-top-1 duration-300">Wait, questions will be available soon</p>
-                                                        ) : (
-                                                            <p className="text-xs text-on-surface-variant font-black uppercase tracking-widest mt-1 opacity-50">{practiceCount} Questions</p>
-                                                        )}
+                                                        <p className="text-xs text-on-surface-variant font-black uppercase tracking-widest mt-1 opacity-50">{practiceCount} Questions</p>
                                                     </div>
                                                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all transform flex-shrink-0 ml-4 shadow-sm border ${practiceCount === 0 ? "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant/30" : "bg-surface-container-highest border-outline-variant/10 text-on-surface-variant group-hover:scale-110 group-hover:bg-primary group-hover:border-transparent group-hover:text-white"}`}>
                                                         <Play className="w-5 h-5 ml-1" />
@@ -457,7 +446,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 <div className="bg-surface-container rounded-[2rem] p-16 text-center border-2 border-dashed border-outline-variant/20">
                                     <Timer className="w-16 h-16 text-on-surface-variant/20 mx-auto mb-4" />
                                     <h3 className="text-xl font-bold text-on-surface mb-2">No Exam Sets</h3>
-                                    <p className="text-on-surface-variant max-w-xs mx-auto">Mocks and PYQs for this subject will be available here soon.</p>
+                                    <p className="text-on-surface-variant max-w-xs mx-auto">No Mocks or PYQs available yet.</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

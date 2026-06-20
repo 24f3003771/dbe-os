@@ -198,18 +198,11 @@ export default function Dashboard() {
   // TODO: Fetch user session from Supabase
   const user = null as any;
   const { totalTomatoesEarned, tomatoesBalance, position, rank, fetchFarmData, isInitialized } = useFarmStore();
-  const [toolsEnabled, setToolsEnabled] = useState(true);
   const subjects = getAllSubjects();
   const notesPreview = subjects.slice(0, 3);
 
   useEffect(() => {
     if (!isInitialized) fetchFarmData();
-    const fetchSettings = async () => {
-       const supabase = createClient();
-       const { data } = await supabase.from('app_settings').select('tools_enabled').eq('id', 1).single();
-       if (data) setToolsEnabled(data.tools_enabled !== false);
-    };
-    fetchSettings();
   }, [isInitialized, fetchFarmData]);
 
   return (
@@ -323,18 +316,9 @@ export default function Dashboard() {
                     </Link>
                 </div>
 
-                {/* Rest of Tools — locked when toolsEnabled is false */}
+                {/* Rest of Tools */}
                 <div className="relative">
-                    {!toolsEnabled && (
-                        <div className="absolute inset-0 z-20 bg-surface/60 backdrop-blur-[2px] rounded-[1.5rem] flex flex-col items-center justify-center p-6 border border-outline-variant/20 shadow-lg">
-                            <Wrench className="w-10 h-10 text-on-surface-variant/50 mb-3 animate-pulse" />
-                            <h3 className="font-black font-headline text-lg text-on-surface">Tools Hub Maintenance</h3>
-                            <p className="text-sm font-bold text-on-surface-variant text-center mt-2 max-w-sm">
-                                The administrative team is currently updating the tools section. Check back soon!
-                            </p>
-                        </div>
-                    )}
-                    <div className={!toolsEnabled ? "opacity-40 pointer-events-none select-none blur-[1px] transition-all space-y-4" : "transition-all space-y-4"}>
+                    <div className="transition-all space-y-4">
                         {/* Row 1: 3 columns */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <Link href="/tools/resume-builder" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
