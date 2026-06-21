@@ -21,6 +21,7 @@ export default function NotesDashboard({
     batch: string;
 }) {
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedTerm, setSelectedTerm] = useState("Term 3");
 
     const filtered = subjects.filter(
         (s) =>
@@ -54,22 +55,52 @@ export default function NotesDashboard({
                     </div>
                 </div>
 
-                <div className="relative max-w-xl md:ml-[52px]">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Search className="h-5 w-5 text-on-surface-variant opacity-70" />
+                <div className="flex flex-col gap-6 md:ml-[52px]">
+                    <div className="flex gap-6 border-b border-outline-variant/10">
+                        <button
+                            onClick={() => setSelectedTerm("Term 3")}
+                            className={`pb-3 px-1 text-sm font-black uppercase tracking-widest transition-all ${
+                                selectedTerm === "Term 3" 
+                                    ? "text-[#E07A5F] border-b-[3px] border-[#E07A5F]" 
+                                    : "text-on-surface-variant hover:text-on-surface"
+                            }`}
+                        >
+                            Term 3
+                        </button>
+                        <button
+                            onClick={() => setSelectedTerm("Term 2")}
+                            className={`pb-3 px-1 text-sm font-black uppercase tracking-widest transition-all ${
+                                selectedTerm === "Term 2" 
+                                    ? "text-[#E07A5F] border-b-[3px] border-[#E07A5F]" 
+                                    : "text-on-surface-variant hover:text-on-surface"
+                            }`}
+                        >
+                            Term 2 <span className="ml-1 text-[9px] bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-md">Locked</span>
+                        </button>
                     </div>
-                    <input
-                        type="text"
-                        className="w-full bg-surface-container-high border border-outline-variant/20 rounded-2xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
-                        placeholder="Search for a subject or course code..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+
+                    <div className="relative max-w-xl">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-on-surface-variant opacity-70" />
+                        </div>
+                        <input
+                            type="text"
+                            className="w-full bg-surface-container-high border border-outline-variant/20 rounded-2xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
+                            placeholder="Search for a subject or course code..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
                 </div>
             </header>
 
             <div className="md:ml-[52px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtered.length === 0 ? (
+                {selectedTerm === "Term 2" ? (
+                    <div className="col-span-full border border-dashed border-outline-variant/30 rounded-3xl p-16 text-center">
+                        <p className="text-on-surface-variant font-black text-lg">Term 2 notes are locked.</p>
+                        <p className="text-sm mt-2 opacity-70 font-medium">Access to previous term materials is currently restricted.</p>
+                    </div>
+                ) : filtered.length === 0 ? (
                     <div className="col-span-full border border-dashed border-outline-variant/30 rounded-3xl p-16 text-center">
                         <p className="text-on-surface-variant font-medium">
                             {searchQuery
