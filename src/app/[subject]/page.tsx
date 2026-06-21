@@ -20,6 +20,7 @@ function mapQuestion(q: any): Question {
         word_limit: q.word_limit,
         module_from: q.module_from,
         module_to: q.module_to,
+        lecture_id: q.lecture_id ?? null,
     };
 }
 
@@ -63,8 +64,16 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
         .eq("subject_id", subjectId)
         .order("created_at", { ascending: false });
 
+    const { data: lecturesData } = await supabase
+        .from("lectures")
+        .select("*")
+        .eq("subject_id", subjectId)
+        .order("module_number", { ascending: true })
+        .order("lecture_number", { ascending: true });
+
     const questions = rawQuestions ?? [];
     const quizSets = quizSetsData ?? [];
+    const lectures = lecturesData ?? [];
 
     // Group questions into modules by module_from
     const moduleCount = subject.module_count as number;
@@ -73,10 +82,20 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
         const modQuestions = questions
             .filter((q: any) => q.module_from <= modNum && q.module_to >= modNum)
             .map(mapQuestion);
+        
+        const modLectures = lectures
+            .filter((l: any) => l.module_number === modNum)
+            .map((l: any) => ({
+                id: l.id,
+                lectureNumber: l.lecture_number,
+                title: l.title,
+            }));
+
         return {
             id: modNum,
             title: `Module ${modNum}`,
             questions: modQuestions,
+            lectures: modLectures,
         };
     });
 

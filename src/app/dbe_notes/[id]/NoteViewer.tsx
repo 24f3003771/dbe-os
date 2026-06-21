@@ -8,11 +8,13 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import DistributionVisualizer from "@/components/DistributionVisualizer";
 
-type Note = { id: string; module_number: number; content: string; topic_id: string | null };
+type Note = { id: string; module_number: number; content: string; topic_id: string | null; lecture_id?: string | null };
+type Lecture = { id: string; module_number: number; lecture_number: number; title: string };
 type Subject = { id: string; name: string; code: string; module_count: number; term_id: number };
 
-export default function NoteViewer({ subject, notes }: { subject: Subject; notes: Note[] }) {
+export default function NoteViewer({ subject, notes, lectures = [] }: { subject: Subject; notes: Note[]; lectures?: Lecture[] }) {
     const [activeModule, setActiveModule] = useState<number | "formula-sheet" | "mind-maps">(1);
+    const [activeLectureId, setActiveLectureId] = useState<string | null>(null);
     const [showMedia, setShowMedia] = useState(true);
     const printRef = useRef<HTMLDivElement>(null);
 
@@ -22,7 +24,11 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
         ? notes.find((n) => n.module_number === 99)
         : activeModule === "formula-sheet"
         ? notes.find((n) => n.module_number === 98)
-        : notes.find((n) => n.module_number === activeModule);
+        : activeLectureId 
+        ? notes.find((n) => n.module_number === activeModule && n.lecture_id === activeLectureId)
+        : notes.find((n) => n.module_number === activeModule && !n.lecture_id);
+
+    const currentModuleLectures = typeof activeModule === "number" ? lectures.filter(l => l.module_number === activeModule) : [];
 
     const handlePrint = () => {
         const content = printRef.current?.innerHTML;
@@ -110,7 +116,7 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                         return (
                             <button
                                 key={mod}
-                                onClick={() => setActiveModule(mod)}
+                                onClick={() => { setActiveModule(mod); setActiveLectureId(null); }}
                                 className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${
                                     activeModule === mod
                                         ? "bg-white text-[#2D2422] shadow-sm"
@@ -123,6 +129,39 @@ export default function NoteViewer({ subject, notes }: { subject: Subject; notes
                         );
                     })}
                 </div>
+
+                {/* Lecture Sub-Tabs */}
+                {currentModuleLectures.length > 0 && (
+                    <div className="flex items-center gap-2 mt-4 flex-wrap">
+                        <button
+                            onClick={() => setActiveLectureId(null)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                                activeLectureId === null
+                                    ? "bg-indigo-50 text-indigo-600 border-indigo-200"
+                                    : "bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-700"
+                            }`}
+                        >
+                            Module Summary
+                        </button>
+                        {currentModuleLectures.map(lecture => {
+                            const hasLectureNote = notes.some(n => n.lecture_id === lecture.id);
+                            return (
+                                <button
+                                    key={lecture.id}
+                                    onClick={() => setActiveLectureId(lecture.id)}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border flex items-center gap-1.5 ${
+                                        activeLectureId === lecture.id
+                                            ? "bg-indigo-50 text-indigo-600 border-indigo-200"
+                                            : "bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-700"
+                                    }`}
+                                >
+                                    <span>L{lecture.lecture_number}</span>
+                                    {!hasLectureNote && <span className="text-[10px] text-stone-300">— no notes</span>}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             {/* Note Content */}

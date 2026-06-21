@@ -9,7 +9,8 @@ import ExamAnalysisView from "@/components/ExamAnalysisView";
 import { getExamHistory, deleteExamResult } from "@/actions/quiz";
 import LoadingScreen from "@/components/LoadingScreen";
 
-type Module = { id: number; title: string; questions: Question[] };
+type Lecture = { id: string; lectureNumber: number; title: string };
+type Module = { id: number; title: string; questions: Question[]; lectures?: Lecture[] };
 type SubjectData = {
     id: string;          // subject code e.g. "ES21X"
     subjectId: string;   // supabase UUID
@@ -24,8 +25,9 @@ type SubjectData = {
 
 export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     const [activeTab, setActiveTab] = useState<"overview" | "quiz" | "history">("overview");
-    const [viewMode, setViewMode] = useState<"selection" | "practice" | "exam">("selection");
+    const [viewMode, setViewMode] = useState<"selection" | "practice" | "exam" | "lectures">("selection");
     const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
+    const [activeLectureId, setActiveLectureId] = useState<string | null>(null);
     const [quizMode, setQuizMode] = useState<"practice" | "exam">("practice");
     const [quizSubMode, setQuizSubMode] = useState<"practice" | "exam-set">("practice");
     const [activeQuizSetId, setActiveQuizSetId] = useState<string | null>(null);
@@ -65,12 +67,13 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     };
 
     // Module click (Practice mode only)
-    const handleStartModuleQuiz = (moduleId: number) => {
+    const handleStartModuleQuiz = (moduleId: number, lectureId: string | null = null) => {
         setQuizSubMode("practice");
         setQuizMode("practice");
         setExamTimer(undefined);
         setActiveQuizSetId(null);
         setActiveModuleId(moduleId);
+        setActiveLectureId(lectureId);
         setActiveTab("quiz");
     };
 
@@ -133,7 +136,11 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             moduleId={activeModule.id}
                             moduleTitle={activeModule.title}
                             quizSubMode="practice"
-                            questions={activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice")}
+                            questions={
+                                activeLectureId
+                                ? activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice" && q.lecture_id === activeLectureId)
+                                : activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice")
+                            }
                             mode="practice"
                             showCalculator={data.calculatorEnabled}
                             negativeMarking={false}
@@ -141,6 +148,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             onComplete={() => {
                                 setActiveTab("overview");
                                 setActiveModuleId(null);
+                                setActiveLectureId(null);
                             }}
                         />
                     </div>
@@ -338,16 +346,16 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
             ) : (
                 <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     {viewMode === "selection" ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                             {/* Block 1: Practice */}
                             <button
                                 onClick={() => setViewMode("practice")}
-                                className="group relative aspect-[4/5] bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-primary/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-primary/5"
+                                className="group relative aspect-video bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-primary/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-primary/5"
                             >
                                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                     <BookOpen className="w-6 h-6 text-primary" />
                                 </div>
-                                <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight group-hover:text-primary transition-colors">Practice</h3>
+                                <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight group-hover:text-primary transition-colors">Module Practice</h3>
                                 <p className="text-xs text-on-surface-variant font-medium leading-relaxed opacity-70">
                                     Questions from graded assignments, CLAs, and mid-terms across all batches. Untimed, module-wise sessions at your own pace.
                                 </p>
@@ -357,28 +365,46 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">01</div>
                             </button>
 
-                            {/* Block 2: Concept Builder → links to dedicated page */}
+                            {/* Block 2: Lecture-Wise Quiz */}
+                            <button
+                                onClick={() => setViewMode("lectures")}
+                                className="group relative aspect-video bg-gradient-to-br from-emerald-500/[0.02] to-teal-500/[0.02] bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-emerald-500/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-emerald-500/5"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <Play className="w-6 h-6 text-emerald-600" />
+                                </div>
+                                <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight group-hover:text-emerald-600 transition-colors">Lecture-Wise</h3>
+                                <p className="text-xs text-on-surface-variant font-medium leading-relaxed opacity-70">
+                                    Micro-quizzes focused on individual lectures. Test your understanding immediately after watching a lecture.
+                                </p>
+                                <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Select Lecture <ArrowRight className="w-3 h-3" />
+                                </div>
+                                <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">02</div>
+                            </button>
+
+                            {/* Block 3: Concept Builder */}
                             <Link
                                 href={`/quiz/concept-builder/${data.subjectId}`}
-                                className="group relative aspect-[4/5] bg-gradient-to-br from-purple-500/[0.02] to-indigo-500/[0.02] bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-purple-500/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-purple-500/5"
+                                className="group relative aspect-video bg-gradient-to-br from-purple-500/[0.02] to-indigo-500/[0.02] bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-purple-500/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-purple-500/5"
                             >
                                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                     <Sparkles className="w-6 h-6 text-purple-600" />
                                 </div>
                                 <h3 className="text-2xl font-black font-headline text-on-surface mb-2 tracking-tight group-hover:text-purple-600 transition-colors">Concept Builder</h3>
                                 <p className="text-xs text-on-surface-variant font-medium leading-relaxed opacity-70">
-                                    Adaptive module-wise, level-by-level learning. Score ≥80% on each level to advance — Easy → Medium → Hard. Progress saved automatically.
+                                    Adaptive module-wise, level-by-level learning. Score ≥80% on each level to advance — Easy → Medium → Hard.
                                 </p>
                                 <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
                                     Start Levels <ArrowRight className="w-3 h-3" />
                                 </div>
-                                <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">02</div>
+                                <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">03</div>
                             </Link>
 
-                            {/* Block 3: PYQs and Mocks */}
+                            {/* Block 4: PYQs and Mocks */}
                             <button
                                 onClick={() => setViewMode("exam")}
-                                className="group relative aspect-[4/5] bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-amber-500/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-amber-500/5"
+                                className="group relative aspect-video bg-surface-container-lowest border-2 border-outline-variant/10 rounded-[2rem] p-6 flex flex-col items-start text-left hover:border-amber-500/40 hover:bg-surface-container transition-all hover-lift shadow-sm hover:shadow-2xl hover:shadow-amber-500/5"
                             >
                                 <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                     <Timer className="w-6 h-6 text-amber-500" />
@@ -390,7 +416,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">
                                     Simulate Exam <ArrowRight className="w-3 h-3" />
                                 </div>
-                                <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">03</div>
+                                <div className="absolute top-4 right-4 opacity-5 font-black text-5xl select-none group-hover:opacity-10 transition-opacity">04</div>
                             </button>
                         </div>
                     ) : viewMode === "practice" ? (
@@ -429,6 +455,59 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                             </div>
                                         );
                                     })
+                                )}
+                            </div>
+                        </div>
+                    ) : viewMode === "lectures" ? (
+                        <div className="space-y-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <Play className="w-6 h-6 text-emerald-600" />
+                                    <h2 className="text-2xl font-black font-headline text-on-surface tracking-tight">Lecture-Wise Practice</h2>
+                                </div>
+                                <button onClick={() => setViewMode("selection")} className="text-xs font-bold text-on-surface-variant hover:text-primary">Cancel</button>
+                            </div>
+
+                            <div className="space-y-6">
+                                {data.modules.length === 0 ? (
+                                    <p className="text-on-surface-variant italic border border-dashed border-outline-variant/30 p-10 rounded-2xl text-center font-medium">
+                                        No modules available.
+                                    </p>
+                                ) : (
+                                    data.modules.map((mod) => (
+                                        <div key={mod.id} className="bg-surface-container-lowest border border-outline-variant/10 rounded-3xl p-6">
+                                            <h3 className="text-lg font-black uppercase tracking-tight mb-4 text-on-surface">{mod.title}</h3>
+                                            
+                                            {(!mod.lectures || mod.lectures.length === 0) ? (
+                                                <p className="text-sm text-on-surface-variant/50 italic">No lectures found for this module.</p>
+                                            ) : (
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                    {mod.lectures.map(lecture => {
+                                                        const lectureQCount = mod.questions.filter(q => q.lecture_id === lecture.id && q.type !== "exam" && q.type !== "practice").length;
+                                                        return (
+                                                            <div
+                                                                key={lecture.id}
+                                                                className="group p-4 rounded-2xl bg-surface-container-low border border-outline-variant/15 hover:border-emerald-500/50 transition-all hover:bg-surface-container flex flex-col cursor-pointer shadow-sm"
+                                                                onClick={() => handleStartModuleQuiz(mod.id, lecture.id)}
+                                                            >
+                                                                <div className="flex items-center justify-between mb-2">
+                                                                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                                                        L{lecture.lectureNumber}
+                                                                    </span>
+                                                                    <span className="text-[10px] font-bold text-on-surface-variant">
+                                                                        {lectureQCount} Qs
+                                                                    </span>
+                                                                </div>
+                                                                <h4 className="font-bold text-sm text-on-surface group-hover:text-emerald-600 transition-colors leading-tight line-clamp-2">
+                                                                    {lecture.title}
+                                                                </h4>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))
                                 )}
                             </div>
                         </div>

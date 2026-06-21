@@ -13,12 +13,20 @@ export interface Question {
     word_limit?: number | null;
     module_from?: number;
     module_to?: number;
+    lecture_id?: string | null;
+}
+
+export interface Lecture {
+    id: string;
+    lectureNumber: number;
+    title: string;
 }
 
 export interface Module {
     id: number;
     title: string;
     questions: Question[];
+    lectures?: Lecture[];
 }
 
 export interface Subject {

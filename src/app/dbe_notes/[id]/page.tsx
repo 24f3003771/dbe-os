@@ -20,14 +20,23 @@ export default async function UniversalNotePage({ params }: { params: Promise<{ 
     // Fetch all notes for this subject
     const { data: notes } = await supabase
         .from("notes")
-        .select("id, module_number, content, topic_id")
+        .select("id, module_number, content, topic_id, lecture_id")
         .eq("subject_id", id)
         .order("module_number", { ascending: true });
+
+    // Fetch lectures
+    const { data: lectures } = await supabase
+        .from("lectures")
+        .select("*")
+        .eq("subject_id", id)
+        .order("module_number", { ascending: true })
+        .order("lecture_number", { ascending: true });
 
     return (
         <NoteViewer
             subject={subject}
             notes={notes ?? []}
+            lectures={lectures ?? []}
         />
     );
 }
