@@ -26,7 +26,7 @@ export default function UniversalStats() {
   }, []);
 
   return (
-    <section className="mb-8">
+    <section>
       <div className="bg-[#F6E3DB] rounded-[2rem] p-6 md:p-8 relative overflow-hidden shadow-sm border border-white/40">
         
         <div className="relative z-10 space-y-8">
