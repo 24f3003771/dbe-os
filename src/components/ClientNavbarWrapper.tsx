@@ -32,49 +32,50 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
 
     return (
         <>
-            <header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm print:hidden">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-              <Link href="/" className="flex flex-col group flex-shrink-0">
-                {user ? (
-                  <>
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/60 group-hover:text-primary transition-all">
-                      Welcome back,
-                    </span>
-                    <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-primary transition-all">
-                      {user.user_metadata?.full_name?.split(' ')[0] || 'Scholar'}
-                    </span>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-3">
-                    <TomatoSplash size="w-12 h-12" />
-                    <span className="font-bold font-headline tracking-tighter text-[#1A1A1A] text-xl group-hover:text-primary transition-all">
-                      DBE OS
-                    </span>
+            <div className="w-full flex justify-center sticky top-6 z-50 px-4 mb-8 pointer-events-none print:hidden">
+              <header className="pointer-events-auto flex items-center justify-between bg-[#FCF8F6] rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] px-8 py-3 w-full max-w-5xl border border-white">
+                <Link href="/" className="flex flex-col group flex-shrink-0">
+                  {user ? (
+                    <>
+                      <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-0.5">
+                        Welcome back,
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-black tracking-tight text-gray-900 text-lg leading-none group-hover:text-[#E87A5D] transition-colors">
+                          {user.user_metadata?.full_name?.split(' ')[0] || 'Scholar'}
+                        </span>
+                        <span className="text-lg leading-none">👋</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <TomatoSplash size="w-8 h-8" />
+                      <span className="font-black tracking-tight text-gray-900 text-lg group-hover:text-[#E87A5D] transition-colors">
+                        DBE OS
+                      </span>
+                    </div>
+                  )}
+                </Link>
+
+                <nav className="flex items-center gap-1 sm:gap-2 text-sm font-medium">
+                  <div className="hidden md:flex items-center gap-2">
+                    <NavLinks />
                   </div>
-                )}
-              </Link>
-
-              <nav className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-on-surface-variant">
-                <div className="hidden md:flex items-center gap-1">
-                  <NavLinks />
-                </div>
-                <div className="md:ml-4 md:pl-4 md:border-l border-outline-variant/20 flex items-center gap-2">
-                  <div className="flex flex-col items-end gap-1">
+                  
+                  {/* Right side icons */}
+                  <div className="md:ml-6 md:pl-6 md:border-l border-gray-200 flex items-center gap-3">
                     {user ? (
-                        <div className="flex items-center gap-2">
-                          {/* Global Tomato Balance */}
-                          <Link href="/profile" className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-highest/50 rounded-full border border-outline-variant/10 hover:bg-white hover:shadow-sm transition-all duration-300">
+                        <>
+                          {/* Tomato Balance */}
+                          <Link href="/profile" className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF0EB] rounded-full hover:bg-[#FFEBE5] transition-all">
                              <span className="text-sm">🍅</span>
-                             <span className="font-black text-on-surface text-[13px]">{tomatoesBalance}</span>
+                             <span className="font-black text-[#4A3D36] text-[13px]">{tomatoesBalance}</span>
                           </Link>
-
-                          <div className="relative group/profile">
-                            <button 
-                              className="flex items-center gap-3 group pl-2 transition-all"
-                            >
-                              <div className="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-black text-[11px] group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 border border-outline-variant/10 shadow-inner overflow-hidden">
-                                {user.user_metadata?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'IJ'}
-                              </div>
+                          
+                          {/* Avatar Dropdown */}
+                          <div className="relative group/profile pointer-events-auto">
+                            <button className="w-10 h-10 rounded-full bg-[#FFF0EB] text-[#E87A5D] flex items-center justify-center font-black text-xs border border-[#FFEBE5] hover:scale-105 transition-all shadow-sm">
+                               {user.user_metadata?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'IJ'}
                             </button>
 
                             {/* Dropdown Menu */}
@@ -108,31 +109,28 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
                                 </div>
                             </div>
                           </div>
-                        </div>
+                        </>
                     ) : (
-                      <>
-                        <Link href="/login">
-                          <button className="bg-primary text-white px-4 sm:px-6 py-1.5 sm:py-2 rounded-full font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:scale-95 text-[10px] sm:text-xs uppercase tracking-wider">
-                            Sign In
-                          </button>
-                        </Link>
-                      </>
+                      <Link href="/login" className="pointer-events-auto">
+                        <button className="bg-[#E87A5D] text-white px-5 py-2 rounded-full font-bold shadow-md hover:-translate-y-0.5 transition-all text-[11px] uppercase tracking-wider">
+                          Sign In
+                        </button>
+                      </Link>
                     )}
                   </div>
-                </div>
-              </nav>
+                </nav>
+              </header>
             </div>
-          </header>
 
-          {/* Bottom Navigation for Mobile - Strict Optimization */}
-          <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface border-t border-outline-variant/10 px-4 pt-3 pb-safe-area-inset-bottom rounded-t-[2.5rem] shadow-[0_-12px_24px_rgba(0,0,0,0.08)] print:hidden">
-            <div className="w-12 h-1.5 bg-on-surface/10 rounded-full mx-auto mb-4" /> {/* Decoration handle */}
-            <div className="flex items-center justify-around pb-2">
-              <NavLinks showLabels={true} isBottomNav={true} />
-            </div>
-          </nav>
-          <AssistantWidget />
-          <OfflineOverlay />
+            {/* Bottom Navigation for Mobile - Strict Optimization */}
+            <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface border-t border-outline-variant/10 px-4 pt-3 pb-safe-area-inset-bottom rounded-t-[2.5rem] shadow-[0_-12px_24px_rgba(0,0,0,0.08)] print:hidden pointer-events-auto">
+              <div className="w-12 h-1.5 bg-on-surface/10 rounded-full mx-auto mb-4" /> {/* Decoration handle */}
+              <div className="flex items-center justify-around pb-2">
+                <NavLinks showLabels={true} isBottomNav={true} />
+              </div>
+            </nav>
+            <AssistantWidget />
+            <OfflineOverlay />
         </>
     );
 }

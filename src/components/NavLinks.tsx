@@ -30,24 +30,8 @@ interface NavLinksProps {
 
 export default function NavLinks({ showLabels = false, isBottomNav = false }: NavLinksProps) {
     const pathname = usePathname();
-    const subjects = getAllSubjects();
 
     const links = isBottomNav ? mobileLinks : desktopLinks;
-
-    const dropdownData: Record<string, { label: string; href: string }[]> = {
-        Notes: subjects.map(s => ({ label: s.title, href: `/dbe_notes/${s.id}` })),
-        Quiz: subjects.map(s => ({ label: s.title, href: `/${s.id}` })),
-        Tools: [
-            { label: "MatchForge", href: "/matchforge" },
-            { label: "CGPA Calculator", href: "/tools/cgpa-calculator" },
-            { label: "AI Resume Forge", href: "/tools/resume-builder" },
-            { label: "Internships", href: "/tools/internships" },
-            { label: "Competitions", href: "/tools/competitions" },
-            { label: "Pro Pitch Decks", href: "/tools/pitch-decks" },
-            { label: "Winners Bank", href: "/tools/winning-repository" },
-            { label: "Career Guides", href: "/tools/career-guides" },
-        ],
-    };
 
     const iconColors: Record<string, string> = {
         "Dashboard": "text-rose-500",
@@ -73,22 +57,14 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                         ? pathname === "/" || pathname.match(/^\/[A-Z]{2}\d/)
                         : pathname.startsWith(href);
 
-                const dropdownItems = dropdownData[label];
-
-                if (!isBottomNav && dropdownItems) {
-                    // Dropdowns removed per request. Now just renders standard link.
-                }
-
                 return (
                     <Link
                         key={href}
                         href={href}
                         className={`flex transition-all ${isBottomNav
                             ? "flex-col items-center gap-1.5 px-1 py-1 min-w-[60px] flex-1"
-                            : "items-center gap-2 px-4 py-2 rounded-xl group"
-                            } ${isActive
-                                ? isBottomNav ? "text-primary" : "bg-surface-container-highest shadow-sm ring-1 ring-outline-variant/20"
-                                : "text-on-surface-variant hover:text-on-surface" + (isBottomNav ? "" : " hover:bg-surface-container-low")
+                            : `items-center gap-2 px-5 py-2.5 rounded-xl group ${isActive ? "bg-[#FFEBE5]" : "hover:bg-gray-100/50"}`
+                            } ${isActive && isBottomNav ? "text-primary" : ""
                             }`}
                     >
                         {isBottomNav ? (
@@ -102,8 +78,8 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
                             </>
                         ) : (
                             <>
-                                <Icon className={`w-4 h-4 transition-colors ${isActive ? iconColors[label] : "text-on-surface-variant group-hover:" + iconColors[label]}`} />
-                                <span className={`text-xs font-black uppercase tracking-widest ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
+                                <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-[#E87A5D]" : "text-gray-400 group-hover:text-gray-600"}`} />
+                                <span className={`text-[11px] font-black uppercase tracking-widest ${isActive ? "text-[#E87A5D]" : "text-gray-500 group-hover:text-gray-800"}`}>
                                     {label}
                                 </span>
                             </>
