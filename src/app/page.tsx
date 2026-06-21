@@ -319,48 +319,48 @@ export default function Dashboard() {
       </div>
 
       {/* DBE Tools Grid Section */}
-      <section className="space-y-4 mt-8">
+      <section className="space-y-6 mt-8">
           <div className="grid grid-cols-1">
-              <Link href="/tools/cgpa-calculator" className="bg-surface-container-lowest border-2 border-primary/20 rounded-[1.5rem] p-5 flex items-center gap-4 hover:bg-surface-container hover:border-primary/40 transition-all hover:scale-[1.005] shadow-sm group">
-                  <span className="text-4xl group-hover:-translate-y-1 transition-transform">🧮</span>
-                  <div>
-                      <span className="font-black font-headline text-on-surface text-[15px] leading-tight block">CGPA Calculator</span>
-                      <span className="text-xs text-primary font-bold">Always Available ✓</span>
+              <Link href="/tools/cgpa-calculator" className="bg-white border border-gray-100 rounded-[2rem] p-5 pr-8 flex items-center justify-between hover:bg-gray-50 transition-all shadow-sm group">
+                  <div className="flex items-center gap-5">
+                      <div className="w-16 h-16 rounded-[1.2rem] bg-gradient-to-br from-[#FFEBE5] to-[#FFD6CC] flex items-center justify-center text-3xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.6)] border border-white/60">
+                          🧮
+                      </div>
+                      <div>
+                          <span className="font-black font-headline text-[#2D2622] text-xl leading-tight block mb-0.5">CGPA Calculator</span>
+                          <span className="text-xs text-[#8C7A70] font-bold tracking-wide">Always A+ Ahead! ✨</span>
+                      </div>
+                  </div>
+                  <div className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center shrink-0 text-[#8C7A70] group-hover:text-[#2D2622] transition-colors bg-white">
+                      <ChevronRight className="w-4 h-4" />
                   </div>
               </Link>
           </div>
 
-          <div className="relative">
-              <div className="transition-all space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Link href="/tools/resume-builder" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                          <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">📝</span>
-                          <span className="font-black font-headline text-on-surface text-[15px] leading-tight">AI Resume Forge</span>
-                      </Link>
-                      <Link href="/tools/internships" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                          <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">🚀</span>
-                          <span className="font-black font-headline text-on-surface text-[15px] leading-tight">Internship Hunter</span>
-                      </Link>
-                      <Link href="/matchforge" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-8 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                          <span className="text-5xl mb-4 group-hover:-translate-y-1 transition-transform">👥</span>
-                          <span className="font-black font-headline text-on-surface text-[15px] leading-tight">MatchForge Network</span>
-                      </Link>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Link href="/tools/career-guides" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                          <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">📘</span>
-                          <span className="font-black font-headline text-on-surface text-sm leading-tight">Career Guides</span>
-                      </Link>
-                      <Link href="/tools/pitch-decks" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                          <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">📊</span>
-                          <span className="font-black font-headline text-on-surface text-sm leading-tight">Pro Pitch Decks</span>
-                      </Link>
-                      <Link href="/tools/competitions" className="bg-surface-container-lowest border border-outline-variant/10 rounded-[1.5rem] p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container hover:border-primary/20 transition-all hover:scale-[1.01] shadow-sm group">
-                          <span className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">🏆</span>
-                          <span className="font-black font-headline text-on-surface text-sm leading-tight">Competitions</span>
-                      </Link>
-                  </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { href: "/tools/resume-builder", title: "AI Resume Forge", subtitle: "Smart. Sleek. Hired.", emoji: "📝", bg: "from-[#FFEBE5] to-[#FFD6CC]" },
+                { href: "/tools/internships", title: "Internship Hunter", subtitle: "Find. Apply. Launch.", emoji: "🚀", bg: "from-[#FDF0F3] to-[#FCE1E8]" },
+                { href: "/matchforge", title: "MasterForge Network", subtitle: "Connect. Collaborate. Grow.", emoji: "👥", bg: "from-[#F3EDF7] to-[#E8DCF2]" },
+                { href: "/tools/career-guides", title: "Career Guides", subtitle: "Clarity for your career path.", emoji: "📘", bg: "from-[#EDF4F9] to-[#DCEAF3]" },
+                { href: "/tools/pitch-decks", title: "Pro Pitch Decks", subtitle: "Pitch like a pro.", emoji: "📊", bg: "from-[#EBF7F2] to-[#D5EFE4]" },
+                { href: "/tools/competitions", title: "Competitions", subtitle: "Compete. Excel. Win.", emoji: "🏆", bg: "from-[#FFF6E5] to-[#FFE8CC]" },
+              ].map((tool, idx) => (
+                  <Link key={idx} href={tool.href} className="bg-white border border-gray-100 rounded-[2rem] p-6 flex flex-col justify-between min-h-[220px] hover:bg-gray-50 transition-all shadow-sm group">
+                      <div className={`w-14 h-14 rounded-[1.2rem] bg-gradient-to-br flex items-center justify-center text-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.6)] border border-white/60 mb-8 ${tool.bg}`}>
+                          {tool.emoji}
+                      </div>
+                      <div className="flex items-end justify-between gap-4">
+                          <div>
+                              <span className="font-black font-headline text-[#2D2622] text-lg leading-tight block mb-1">{tool.title}</span>
+                              <span className="text-[11px] text-[#8C7A70] font-bold tracking-wide">{tool.subtitle}</span>
+                          </div>
+                          <div className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center shrink-0 text-[#8C7A70] group-hover:text-[#2D2622] transition-colors bg-white">
+                              <ChevronRight className="w-4 h-4" />
+                          </div>
+                      </div>
+                  </Link>
+              ))}
           </div>
       </section>
 
