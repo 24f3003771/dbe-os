@@ -61,33 +61,35 @@ const CalendarWidget = () => {
   };
 
   return (
-    <div className="bg-[#FFFCF8] h-full rounded-[2rem] border-[8px] border-[#E5E5EA] shadow-xl p-6 md:p-8 flex flex-col relative" style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px)', backgroundAttachment: 'local', backgroundPosition: '0 1rem' }}>
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-black/80 ring-2 ring-black/10"></div>
-        <div className="absolute top-3.5 left-[calc(50%+1rem)] w-1 h-1 rounded-full bg-green-500 shadow-[0_0_4px_#22c55e]"></div>
+    <div className="bg-white h-full rounded-[2rem] border border-gray-100 shadow-sm p-6 md:p-8 flex flex-col relative">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-gray-800"></div>
+            <div className="w-1 h-1 rounded-full bg-green-500"></div>
+        </div>
         
         <div className={`mt-4 ${caveat.className} flex-1 flex flex-col`}>
-            <div className="flex justify-between items-center mb-6 shrink-0">
-                <h2 className="text-4xl text-[#2c3e50] font-bold drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">{user?.user_metadata?.first_name ? `${user.user_metadata.first_name}'s` : 'My'} Month</h2>
-                <span className="text-xl text-[#e74c3c] font-bold rotate-[-5deg] border-b-2 border-[#e74c3c] border-dashed">{today.toLocaleString('default', { month: 'long' })}</span>
+            <div className="flex justify-between items-end mb-6 shrink-0 border-b border-gray-100 pb-2">
+                <h2 className="text-4xl text-[#2D2622] font-bold tracking-tight">{user?.user_metadata?.first_name ? `${user.user_metadata.first_name}'s` : 'My'} Month</h2>
+                <span className="text-2xl text-red-400 font-bold -rotate-6 underline decoration-dashed underline-offset-4">{today.toLocaleString('default', { month: 'long' })}</span>
             </div>
             
-            <div className="grid grid-cols-7 gap-x-1 gap-y-4 text-center mb-6 text-[#34495e] shrink-0">
-                {['S','M','T','W','T','F','S'].map(d => <div key={d} className="text-2xl font-bold opacity-70">{d}</div>)}
+            <div className="grid grid-cols-7 gap-x-1 gap-y-3 text-center mb-6 text-[#5C4D45] shrink-0">
+                {['S','M','T','W','T','F','S'].map(d => <div key={d} className="text-2xl font-bold opacity-60 border-b border-gray-100 pb-1">{d}</div>)}
                 {calendarDays.map((d, i) => {
                     const hasEvent = d ? isScheduled(d) : false;
                     return (
-                    <div key={i} className="relative aspect-square flex items-center justify-center text-2xl font-bold">
+                    <div key={i} className="relative aspect-[4/3] flex items-center justify-center text-2xl font-bold border-b border-gray-50">
                         {d}
                         {d && d < today.getDate() && !hasEvent && (
-                            <svg className="absolute inset-0 w-full h-full text-[#e74c3c]/80 pointer-events-none drop-shadow-sm" viewBox="0 0 100 100">
-                                <path d="M20,20 Q50,40 80,80 M80,20 Q50,60 20,80" stroke="currentColor" strokeWidth="5" strokeLinecap="round" fill="none" />
+                            <svg className="absolute inset-0 w-full h-full text-red-400/70 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                <path d="M20,20 L80,80 M80,20 L20,80" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none" />
                             </svg>
                         )}
                         {d === today.getDate() && (
-                            <div className="absolute inset-1 border-4 border-[#3498db] rounded-full opacity-60 mix-blend-multiply"></div>
+                            <div className="absolute inset-1 border-[3px] border-blue-400 rounded-full opacity-80"></div>
                         )}
                         {hasEvent && (
-                            <div className="absolute inset-1 bg-amber-200/40 border-2 border-amber-400 rounded-full mix-blend-multiply animate-pulse"></div>
+                            <div className="absolute inset-2 bg-amber-100 border-2 border-amber-300 rounded-full mix-blend-multiply"></div>
                         )}
                     </div>
                 )})}
@@ -157,15 +159,15 @@ const NoticeWidget = () => {
   }, [announcements.length]);
 
   return (
-    <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 border border-outline-variant/15 shadow-sm flex flex-col h-full relative overflow-hidden">
+    <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm flex flex-col h-full relative overflow-hidden">
         <div className="flex justify-between items-center mb-6 z-10">
-            <h3 className="text-xl font-black font-headline text-on-surface tracking-tight flex items-center gap-2">
+            <h3 className="text-lg font-black font-headline text-[#2D2622] tracking-tight">
                 Official Notice
             </h3>
-            <span className="text-xs text-indigo-600 font-bold bg-indigo-50 px-3 py-1 rounded-xl font-sans">{batch}</span>
+            <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest">{batch}</span>
         </div>
         
-        <div className="flex-1 relative bg-red-50/50 rounded-2xl border border-red-100 p-6 overflow-hidden flex flex-col justify-center min-h-[160px] z-10">
+        <div className="flex-1 relative bg-[#FFF8F8] rounded-2xl border border-[#FFE8E8] p-6 overflow-hidden flex flex-col justify-center min-h-[160px] z-10">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentSlide}
@@ -175,10 +177,10 @@ const NoticeWidget = () => {
                     transition={{ duration: 0.3 }}
                     className="space-y-3"
                 >
-                    <div className="inline-flex items-center gap-1.5 bg-red-100 text-red-600 px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider">
+                    <div className="inline-flex items-center gap-1.5 text-red-500 bg-white shadow-sm border border-red-100 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider">
                         <Bell className="w-3 h-3" /> {announcements[currentSlide].date}
                     </div>
-                    <h3 className="text-lg font-black text-on-surface leading-tight">
+                    <h3 className="text-[15px] font-black text-[#2D2622] leading-tight pr-8">
                         {announcements[currentSlide].title}
                     </h3>
                 </motion.div>
@@ -194,8 +196,8 @@ const NoticeWidget = () => {
             </div>
             
             {/* Decorative icon */}
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-20 pointer-events-none">
-                <Megaphone className="w-24 h-24 text-red-500 -rotate-12" />
+            <div className="absolute right-[-10px] top-1/2 -translate-y-1/2 opacity-[0.06] pointer-events-none">
+                <Megaphone className="w-28 h-28 text-red-600 -rotate-12" />
             </div>
         </div>
     </div>
@@ -227,28 +229,28 @@ export default function Dashboard() {
       {/* Bottom Row: Notes, Quiz, Official Notice */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Notes Section */}
-            <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 border border-outline-variant/15 shadow-sm flex flex-col group h-full">
+            <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm flex flex-col group h-full">
                 <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-black font-headline text-on-surface tracking-tight uppercase flex items-center gap-2">
-                        <BookOpen className="w-5 h-5 text-primary" /> Notes
+                    <h3 className="text-lg font-black font-headline text-[#4A3B32] uppercase flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-[#4A3B32]" /> NOTES
                     </h3>
-                    <Link href="/notes" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                    <Link href="/notes" className="text-[10px] font-bold text-emerald-600 hover:underline flex items-center gap-1 uppercase tracking-widest">
                         View all <ArrowRight className="w-3 h-3" />
                     </Link>
                 </div>
                 <div className="flex-1 space-y-3">
                     {notesPreview.map((note: any, idx: number) => (
-                        <Link key={note.id} href={`/dbe_notes/${note.id}`} className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-primary/30 transition-all group/item shadow-sm">
+                        <Link key={note.id} href={`/dbe_notes/${note.id}`} className="block bg-[#FAF2ED] p-3 px-4 rounded-2xl hover:bg-[#F2E5DD] transition-all group/item border border-[#F5E6DD]">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                                    <div className="w-7 h-7 rounded-full bg-[#EADDD3] text-[#4A3B32] flex items-center justify-center font-bold text-xs">
                                         {idx + 1}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-primary transition-colors truncate">{note.title}</p>
+                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-[#4A3B32] transition-colors truncate">{note.title}</p>
                                     </div>
                                 </div>
-                                <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-primary transition-colors group-hover/item:translate-x-1" />
+                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-[#4A3B32] transition-colors group-hover/item:translate-x-1" />
                             </div>
                         </Link>
                     ))}
@@ -256,56 +258,56 @@ export default function Dashboard() {
             </div>
 
             {/* Quiz Section */}
-            <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 border border-outline-variant/15 shadow-sm flex flex-col group relative overflow-hidden h-full">
+            <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm flex flex-col group relative overflow-hidden h-full">
                 <div className="relative z-10 flex flex-col h-full">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-black font-headline text-on-surface tracking-tight uppercase flex items-center gap-2">
-                            <Rocket className="w-5 h-5 text-indigo-600" /> Quiz
+                        <h3 className="text-lg font-black font-headline text-[#4A3B32] uppercase flex items-center gap-2">
+                            <Rocket className="w-4 h-4 text-[#4A3B32]" /> QUIZ
                         </h3>
-                        <Link href="/quiz" className="text-xs font-bold text-indigo-600 hover:underline flex items-center gap-1">
+                        <Link href="/quiz" className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-1 uppercase tracking-widest">
                             View all subjects <ArrowRight className="w-3 h-3" />
                         </Link>
                     </div>
                     <div className="flex-1 space-y-3">
-                        <Link href="/quiz" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-indigo-300 transition-all group/item shadow-sm">
+                        <Link href="/quiz" className="block bg-[#F0EEF8] p-3 px-4 rounded-2xl hover:bg-[#E5E0F2] transition-all group/item border border-[#E6E2F5]">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
-                                        <Rocket className="w-4 h-4" />
+                                    <div className="w-7 h-7 rounded-full bg-[#DCD8F0] text-indigo-600 flex items-center justify-center font-bold text-xs">
+                                        <Rocket className="w-3.5 h-3.5" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-indigo-600 transition-colors truncate">Practice</p>
+                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-indigo-700 transition-colors truncate">Practice</p>
                                     </div>
                                 </div>
-                                <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-indigo-600 transition-colors group-hover/item:translate-x-1" />
+                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-indigo-700 transition-colors group-hover/item:translate-x-1" />
                             </div>
                         </Link>
 
-                        <Link href="/quiz" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-emerald-300 transition-all group/item shadow-sm">
+                        <Link href="/quiz" className="block bg-[#E6F8F0] p-3 px-4 rounded-2xl hover:bg-[#D4EFE4] transition-all group/item border border-[#DAF2E7]">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs">
-                                        <Wrench className="w-4 h-4" />
+                                    <div className="w-7 h-7 rounded-full bg-[#C7EADB] text-emerald-600 flex items-center justify-center font-bold text-xs">
+                                        <Wrench className="w-3.5 h-3.5" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-emerald-600 transition-colors truncate">Concept Builder</p>
+                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-emerald-700 transition-colors truncate">Concept Builder</p>
                                     </div>
                                 </div>
-                                <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-emerald-600 transition-colors group-hover/item:translate-x-1" />
+                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-emerald-700 transition-colors group-hover/item:translate-x-1" />
                             </div>
                         </Link>
 
-                        <Link href="/quiz" className="block bg-surface-container-low border border-outline-variant/10 p-4 rounded-2xl hover:bg-surface-container hover:border-amber-300 transition-all group/item shadow-sm">
+                        <Link href="/quiz" className="block bg-[#FFF4E5] p-3 px-4 rounded-2xl hover:bg-[#FFE8CC] transition-all group/item border border-[#FFEEDB]">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs">
-                                        <Trophy className="w-4 h-4" />
+                                    <div className="w-7 h-7 rounded-full bg-[#FFDFB3] text-amber-600 flex items-center justify-center font-bold text-xs">
+                                        <Trophy className="w-3.5 h-3.5" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-bold font-headline text-on-surface group-hover/item:text-amber-600 transition-colors truncate">PYQ & Mock</p>
+                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-amber-700 transition-colors truncate">PYQ & Mock</p>
                                     </div>
                                 </div>
-                                <ArrowRight className="w-4 h-4 text-on-surface-variant group-hover/item:text-amber-600 transition-colors group-hover/item:translate-x-1" />
+                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-amber-700 transition-colors group-hover/item:translate-x-1" />
                             </div>
                         </Link>
                     </div>
