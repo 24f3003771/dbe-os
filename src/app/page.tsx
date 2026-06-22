@@ -40,6 +40,12 @@ export default function Dashboard() {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [greeting, setGreeting] = useState({ text: "Good Day", Icon: Sun });
   const [quote, setQuote] = useState({ text: "Stay consistent, your future self will thank you.", author: "Unknown" });
+  const [currentDateInfo, setCurrentDateInfo] = useState({
+    month: "June",
+    today: 23,
+    daysInMonth: 30,
+    firstDay: 0
+  });
 
   // Control Center State
   const [controls, setControls] = useState(() => {
@@ -155,6 +161,14 @@ export default function Dashboard() {
     ];
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
     setQuote(quotes[dayOfYear % quotes.length]);
+
+    const now = new Date();
+    setCurrentDateInfo({
+      month: now.toLocaleString('default', { month: 'long' }),
+      today: now.getDate(),
+      daysInMonth: new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(),
+      firstDay: new Date(now.getFullYear(), now.getMonth(), 1).getDay()
+    });
 
     const fetchBoard = async () => {
         try {
@@ -386,28 +400,27 @@ export default function Dashboard() {
                           <h3 className="font-black text-stone-900 text-base">My Month</h3>
                       </div>
                       <div className="flex items-center gap-3">
-                          <span className={`text-xl text-rose-500 font-bold ${caveat.className} tracking-wide -rotate-6`}>June</span>
+                          <span className={`text-xl text-rose-500 font-bold ${caveat.className} tracking-wide -rotate-6`}>{currentDateInfo.month}</span>
                       </div>
                   </div>
                   
                   <div className="grid grid-cols-7 gap-y-3 text-center text-xs font-black text-stone-400 mb-6 z-10 flex-1">
                       {['S','M','T','W','T','F','S'].map(d => <div key={d} className="">{d}</div>)}
                       
+                      {/* Empty cells for offset */}
+                      {[...Array(currentDateInfo.firstDay)].map((_, i) => (
+                          <div key={`empty-${i}`} className="h-10"></div>
+                      ))}
+
                       {/* Calendar Days Simulation */}
-                      {[...Array(30)].map((_, i) => {
+                      {[...Array(currentDateInfo.daysInMonth)].map((_, i) => {
                           const d = i + 1;
-                          const isToday = d === 23;
-                          const hasGreen = d % 3 !== 0;
-                          const hasOrange = d % 5 === 0;
+                          const isToday = d === currentDateInfo.today;
                           return (
                               <div key={i} className="relative flex flex-col items-center justify-center h-10 hover:bg-white/50 rounded-xl cursor-pointer transition-colors">
                                   <span className={`font-bold text-sm ${isToday ? 'bg-rose-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm shadow-rose-300' : 'text-stone-700'}`}>
                                       {d}
                                   </span>
-                                  <div className="flex gap-1 mt-1 absolute bottom-0">
-                                      {hasGreen && <div className="w-1 h-1 rounded-full bg-emerald-400" />}
-                                      {hasOrange && <div className="w-1 h-1 rounded-full bg-orange-400" />}
-                                  </div>
                               </div>
                           )
                       })}
