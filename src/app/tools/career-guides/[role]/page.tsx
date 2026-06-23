@@ -6,6 +6,8 @@ import { ChevronLeft, Loader2, Info } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import HowToUseRoadmapModal from "@/components/HowToUseRoadmapModal";
+
 export default function RoleRoadmapPage() {
   const params = useParams();
   const role = params.role as string;
@@ -19,6 +21,16 @@ export default function RoleRoadmapPage() {
   const [isStarted, setIsStarted] = useState(false);
   const [completedTopics, setCompletedTopics] = useState<string[]>([]);
   const [tutorialStep, setTutorialStep] = useState(0);
+  
+  // Global modal state
+  const [showHowTo, setShowHowTo] = useState(false);
+
+  useEffect(() => {
+    const pref = localStorage.getItem('hideRoadmapHowTo');
+    if (pref !== 'true') {
+      setShowHowTo(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadRoadmap() {
@@ -109,7 +121,8 @@ export default function RoleRoadmapPage() {
     .join(' ');
 
   return (
-    <div className="w-full h-screen p-2 md:p-4">
+    <>
+      <div className="w-full h-screen p-2 md:p-4 bg-slate-50">
           <div className="w-full h-full bg-[#f8f9fa] rounded-3xl shadow-2xl border border-slate-200/60 flex flex-col overflow-hidden relative">
             {/* Mac OS Header */}
             <div className="h-12 bg-white/80 backdrop-blur-md border-b border-slate-200/60 w-full flex items-center px-4 relative shrink-0 z-20">
@@ -229,5 +242,7 @@ export default function RoleRoadmapPage() {
             )}
           </div>
         </div>
+        <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={true} />
+      </>
   );
 }

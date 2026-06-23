@@ -11,11 +11,13 @@ import {
   Tag,
   ChevronLeft,
   Sparkles,
-  Map
+  Map,
+  Info
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import HowToUseRoadmapModal from "@/components/HowToUseRoadmapModal";
 
 export default function CareerGuidesPage() {
   const router = useRouter();
@@ -23,6 +25,7 @@ export default function CareerGuidesPage() {
   const [activeFilters, setActiveFilters] = useState({
     category: "All",
   });
+  const [showHowTo, setShowHowTo] = useState(false);
 
   // Extract unique values for filters
   const categories = ["All", ...Array.from(new Set(careerGuides.map(d => d.category)))].sort();
@@ -40,6 +43,7 @@ export default function CareerGuidesPage() {
   }, [searchQuery, activeFilters]);
 
   return (
+    <>
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 p-8">
       <Link href="/tools" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group mb-2 w-fit">
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Opportunity Hub
@@ -50,7 +54,16 @@ export default function CareerGuidesPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
             <Sparkles className="w-3 h-3" /> Official Roadmaps
           </div>
-          <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter text-[#1A1A1A]">Career Guides.</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter text-[#1A1A1A]">Career Guides.</h1>
+            <button 
+              onClick={() => setShowHowTo(true)}
+              className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors shadow-sm"
+              title="How to use roadmaps"
+            >
+              <Info className="w-5 h-5" />
+            </button>
+          </div>
           <p className="text-stone-500 font-medium text-lg">Interactive step-by-step developer roadmaps and guides.</p>
         </div>
         <div className="relative w-full md:w-96">
@@ -116,7 +129,9 @@ export default function CareerGuidesPage() {
           )}
         </div>
       </div>
+      <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={false} />
     </div>
+    </>
   );
 }
 
