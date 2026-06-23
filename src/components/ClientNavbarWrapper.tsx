@@ -5,7 +5,7 @@ import NavLinks from "@/components/NavLinks";
 import { usePathname } from "next/navigation";
 import TomatoSplash from "@/components/TomatoSplash";
 import { useFarmStore } from "@/hooks/useFarmStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const AssistantWidget = dynamic(() => import("@/components/AssistantWidget"), {
@@ -19,6 +19,9 @@ const OfflineOverlay = dynamic(() => import("@/components/OfflineOverlay"), {
 export default function ClientNavbarWrapper({ user }: { user: any }) {
     const pathname = usePathname();
     const { tomatoesBalance, isInitialized, fetchFarmData } = useFarmStore();
+    
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
 
     useEffect(() => {
         if (user && !isInitialized) {
@@ -26,14 +29,45 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
         }
     }, [user, isInitialized, fetchFarmData]);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            // Auto hide if scrolling down and past 100px. Show if scrolling up.
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                setIsVisible(false);
+            } else {
+                setIsVisible(true);
+            }
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [lastScrollY]);
+
     if (pathname.startsWith('/hq-admin')) {
         return null;
     }
 
     return (
         <>
-            <div className="w-full flex justify-center sticky top-6 z-50 px-4 mb-8 pointer-events-none print:hidden">
-              <header className="pointer-events-auto flex items-center justify-between bg-[#FCF8F6] rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] px-8 py-3 w-full max-w-5xl border border-white">
+            {/* Minimal Pull Tab for respawning navbar */}
+            <div 
+                className={`fixed top-0 left-1/2 -translate-x-1/2 z-[60] w-32 h-6 flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out ${
+                    !isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+                }`}
+                onMouseEnter={() => setIsVisible(true)}
+                onClick={() => setIsVisible(true)}
+            >
+                <div className="w-16 h-1.5 bg-gray-300 rounded-full hover:bg-gray-400 hover:w-20 transition-all shadow-sm backdrop-blur-md" />
+            </div>
+
+            <div 
+                className={`w-full flex justify-center fixed top-6 z-50 px-4 pointer-events-none print:hidden transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    isVisible ? 'translate-y-0' : '-translate-y-[150%]'
+                }`}
+            >
+              <header className="pointer-events-auto flex items-center justify-between bg-[#FCF8F6]/90 backdrop-blur-md rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] px-8 py-3 w-full max-w-5xl border border-white">
                 <Link href="/" className="flex flex-col group flex-shrink-0">
                   {user ? (
                     <>
@@ -123,7 +157,11 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
             </div>
 
             {/* Bottom Navigation for Mobile - Strict Optimization */}
-            <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface border-t border-outline-variant/10 px-4 pt-3 pb-safe-area-inset-bottom rounded-t-[2.5rem] shadow-[0_-12px_24px_rgba(0,0,0,0.08)] print:hidden pointer-events-auto">
+            <nav 
+                className={`fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface/90 backdrop-blur-md border-t border-outline-variant/10 px-4 pt-3 pb-safe-area-inset-bottom rounded-t-[2.5rem] shadow-[0_-12px_24px_rgba(0,0,0,0.08)] print:hidden pointer-events-auto transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    isVisible ? 'translate-y-0' : 'translate-y-[150%]'
+                }`}
+            >
               <div className="w-12 h-1.5 bg-on-surface/10 rounded-full mx-auto mb-4" /> {/* Decoration handle */}
               <div className="flex items-center justify-around pb-2">
                 <NavLinks showLabels={true} isBottomNav={true} />

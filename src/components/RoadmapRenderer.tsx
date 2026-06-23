@@ -163,8 +163,19 @@ export default function RoadmapRenderer({ nodesData }: { nodesData: any[] }) {
   // Ensure nodes have exactly what reactflow needs and strip away complex stuff that might break React
   const nodes = useMemo(() => {
     return nodesData.map((n: any) => {
+      // Inject width and height into the wrapper style to enforce absolute sizing
+      const nodeStyle = { 
+        ...n.style, 
+        width: n.width, 
+        height: n.height 
+      };
+
       // Create a shallow copy
-      const node = { ...n, draggable: false };
+      const node = { 
+        ...n, 
+        draggable: false,
+        style: nodeStyle
+      };
       
       // If the type is not registered, default to paragraph or label to not break
       if (!nodeTypes[node.type as keyof typeof nodeTypes]) {
