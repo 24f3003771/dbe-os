@@ -78,7 +78,7 @@ const SECTION_ACCENTS = [
   { bg: '#1e3f35', border: '#0d9488', dot: '#14b8a6', tag: 'bg-teal-100 text-teal-700' },
 ];
 
-// ─── Info Modal (Macbook Pop) ────────────────────────────────────────────────────────
+// ─── Info Modal (Macbook Pop) ───────────────────────────────────────────────
 function InfoModal({ 
   topic, 
   onClose,
@@ -94,23 +94,18 @@ function InfoModal({
   const note = topic.description || getTopicNote(topic.label);
   return (
     <>
-      <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 animate-in fade-in duration-200" onClick={onClose} />
+      <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 animate-in fade-in duration-200" onClick={onClose} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] shadow-2xl w-full max-w-sm overflow-hidden pointer-events-auto animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5) inset' }}>
-          <div className="px-6 py-5 border-b border-slate-200/50 flex items-start justify-between shrink-0">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Topic Notes</p>
-              <h3 className="font-black text-slate-800 text-lg leading-tight flex items-center gap-2">
-                {topic.label}
-                {isCompleted && <span className="w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-xs shadow-sm">✓</span>}
-              </h3>
-            </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors flex-shrink-0" aria-label="Close">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-            </button>
+        <div className="bg-white/95 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl w-full max-w-sm overflow-hidden pointer-events-auto animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05)' }}>
+          <div className="pt-8 pb-4 px-6 text-center shrink-0">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Topic Notes</p>
+            <h2 className="text-[22px] leading-tight font-bold text-slate-900 flex items-center justify-center gap-2">
+              {topic.label}
+              {isCompleted && <span className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs shadow-sm">✓</span>}
+            </h2>
           </div>
           
-          <div className="overflow-y-auto p-6 flex flex-col gap-6 flex-1">
+          <div className="overflow-y-auto px-6 pb-6 flex flex-col gap-6 flex-1">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> How to Learn
@@ -151,19 +146,27 @@ function InfoModal({
             </div>
           </div>
 
-          <div className="p-4 border-t border-slate-200/50 shrink-0 bg-slate-50">
+          <div className="p-4 flex flex-col gap-2 shrink-0 bg-white/50 border-t border-slate-100">
+            {!isCompleted ? (
+              <button 
+                onClick={() => { onToggleComplete(topic.label, true); onClose(); }}
+                className="w-full py-3.5 rounded-full bg-blue-500 hover:bg-blue-600 text-white font-semibold text-[15px] transition-colors shadow-sm"
+              >
+                Mark as Completed
+              </button>
+            ) : (
+              <button 
+                onClick={() => { onToggleComplete(topic.label, false); onClose(); }}
+                className="w-full py-3.5 rounded-full bg-red-100 hover:bg-red-200 text-red-500 font-semibold text-[15px] transition-colors"
+              >
+                Mark as Incomplete
+              </button>
+            )}
             <button 
-              onClick={() => onToggleComplete(topic.label, !isCompleted)}
-              className={`w-full py-3.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center gap-2 text-sm
-                ${isCompleted 
-                  ? 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100' 
-                  : 'bg-green-500 hover:bg-green-600 text-white shadow-md hover:shadow-lg'}`}
+              onClick={onClose} 
+              className="w-full py-3.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[15px] transition-colors"
             >
-              {isCompleted ? (
-                <><span>↺</span> Mark as Incomplete</>
-              ) : (
-                <><span>✓</span> Mark as Completed</>
-              )}
+              Close
             </button>
           </div>
         </div>
