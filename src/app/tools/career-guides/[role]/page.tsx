@@ -165,7 +165,7 @@ export default function RoleRoadmapPage() {
 
             {/* Roadmap Body */}
             {!loading && !error && nodes && (
-              <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8f9fa] relative">
+              <div className="flex-1 overflow-y-auto p-4 md:p-8 relative [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-stone-200/80 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-stone-300/80">
                 
                 {/* Start Roadmap Overlay */}
                 {!isStarted && (
