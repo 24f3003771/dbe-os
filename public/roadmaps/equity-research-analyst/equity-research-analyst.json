@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "biz_node_673_6heivx",
+      "id": "biz_node_673_rvxba6",
       "type": "title",
       "position": {
         "x": 220,
@@ -29,7 +29,7 @@
       }
     },
     {
-      "id": "biz_node_674_fl7c7m",
+      "id": "biz_node_674_1o2bad",
       "type": "topic",
       "position": {
         "x": 250,
@@ -37,6 +37,7 @@
       },
       "data": {
         "label": "Stock Markets Basics",
+        "isSection": true,
         "style": {
           "fontSize": 17,
           "borderColor": "#1e1e2e",
@@ -58,7 +59,7 @@
       }
     },
     {
-      "id": "biz_node_675_hmf372",
+      "id": "biz_node_675_n3vd1v",
       "type": "topic",
       "position": {
         "x": -370,
@@ -86,7 +87,7 @@
       }
     },
     {
-      "id": "biz_node_677_1w0qjx",
+      "id": "biz_node_677_yx7m7h",
       "type": "topic",
       "position": {
         "x": -110,
@@ -114,7 +115,7 @@
       }
     },
     {
-      "id": "biz_node_679_mvg05c",
+      "id": "biz_node_679_j6n8h8",
       "type": "topic",
       "position": {
         "x": 150,
@@ -142,7 +143,7 @@
       }
     },
     {
-      "id": "biz_node_681_diruxs",
+      "id": "biz_node_681_y87qrt",
       "type": "topic",
       "position": {
         "x": 410,
@@ -170,7 +171,7 @@
       }
     },
     {
-      "id": "biz_node_683_collcq",
+      "id": "biz_node_683_kntjiy",
       "type": "topic",
       "position": {
         "x": 670,
@@ -198,7 +199,7 @@
       }
     },
     {
-      "id": "biz_node_685_0cth36",
+      "id": "biz_node_685_tebmie",
       "type": "topic",
       "position": {
         "x": 930,
@@ -226,7 +227,7 @@
       }
     },
     {
-      "id": "biz_node_687_kg3q6m",
+      "id": "biz_node_687_0p310m",
       "type": "topic",
       "position": {
         "x": 250,
@@ -234,6 +235,7 @@
       },
       "data": {
         "label": "Financial Statements",
+        "isSection": true,
         "style": {
           "fontSize": 17,
           "borderColor": "#1e1e2e",
@@ -255,7 +257,7 @@
       }
     },
     {
-      "id": "biz_node_689_ntqrg4",
+      "id": "biz_node_689_0jw80p",
       "type": "topic",
       "position": {
         "x": -370,
@@ -283,7 +285,7 @@
       }
     },
     {
-      "id": "biz_node_691_80qqm8",
+      "id": "biz_node_691_tkl3hg",
       "type": "topic",
       "position": {
         "x": -110,
@@ -311,7 +313,7 @@
       }
     },
     {
-      "id": "biz_node_693_l5okel",
+      "id": "biz_node_693_aeav8h",
       "type": "topic",
       "position": {
         "x": 150,
@@ -339,7 +341,7 @@
       }
     },
     {
-      "id": "biz_node_695_4vw406",
+      "id": "biz_node_695_zqxnyz",
       "type": "topic",
       "position": {
         "x": 410,
@@ -367,7 +369,7 @@
       }
     },
     {
-      "id": "biz_node_697_ru1vdq",
+      "id": "biz_node_697_ypv6xp",
       "type": "topic",
       "position": {
         "x": 670,
@@ -395,7 +397,7 @@
       }
     },
     {
-      "id": "biz_node_699_s418fh",
+      "id": "biz_node_699_3ouuce",
       "type": "topic",
       "position": {
         "x": 930,
@@ -423,7 +425,7 @@
       }
     },
     {
-      "id": "biz_node_701_8ysw4c",
+      "id": "biz_node_701_gbbhf9",
       "type": "topic",
       "position": {
         "x": 250,
@@ -431,6 +433,7 @@
       },
       "data": {
         "label": "Valuation",
+        "isSection": true,
         "style": {
           "fontSize": 17,
           "borderColor": "#1e1e2e",
@@ -452,7 +455,7 @@
       }
     },
     {
-      "id": "biz_node_703_f11x6e",
+      "id": "biz_node_703_jfjaex",
       "type": "topic",
       "position": {
         "x": -370,
@@ -480,7 +483,7 @@
       }
     },
     {
-      "id": "biz_node_705_4il21m",
+      "id": "biz_node_705_okptst",
       "type": "topic",
       "position": {
         "x": -110,
@@ -508,7 +511,7 @@
       }
     },
     {
-      "id": "biz_node_707_q01t1c",
+      "id": "biz_node_707_ibb0ds",
       "type": "topic",
       "position": {
         "x": 150,
@@ -536,7 +539,7 @@
       }
     },
     {
-      "id": "biz_node_709_3mnwwm",
+      "id": "biz_node_709_g1gi09",
       "type": "topic",
       "position": {
         "x": 410,
@@ -564,7 +567,7 @@
       }
     },
     {
-      "id": "biz_node_711_pryhha",
+      "id": "biz_node_711_5f6pop",
       "type": "topic",
       "position": {
         "x": 670,
@@ -592,7 +595,7 @@
       }
     },
     {
-      "id": "biz_node_713_bu5gyj",
+      "id": "biz_node_713_k0391z",
       "type": "topic",
       "position": {
         "x": 930,
@@ -620,7 +623,7 @@
       }
     },
     {
-      "id": "biz_node_715_c6ou6e",
+      "id": "biz_node_715_0ited4",
       "type": "topic",
       "position": {
         "x": 250,
@@ -628,6 +631,7 @@
       },
       "data": {
         "label": "Industry Research",
+        "isSection": true,
         "style": {
           "fontSize": 17,
           "borderColor": "#1e1e2e",
@@ -649,7 +653,7 @@
       }
     },
     {
-      "id": "biz_node_717_ja0cx1",
+      "id": "biz_node_717_jfkc1v",
       "type": "topic",
       "position": {
         "x": -370,
@@ -677,7 +681,7 @@
       }
     },
     {
-      "id": "biz_node_719_akuamt",
+      "id": "biz_node_719_goaxk2",
       "type": "topic",
       "position": {
         "x": -110,
@@ -705,7 +709,7 @@
       }
     },
     {
-      "id": "biz_node_721_fvoutz",
+      "id": "biz_node_721_t3pyy4",
       "type": "topic",
       "position": {
         "x": 150,
@@ -733,7 +737,7 @@
       }
     },
     {
-      "id": "biz_node_723_dylej3",
+      "id": "biz_node_723_gh5a5v",
       "type": "topic",
       "position": {
         "x": 410,
@@ -761,7 +765,7 @@
       }
     },
     {
-      "id": "biz_node_725_pbyndd",
+      "id": "biz_node_725_21sqh3",
       "type": "topic",
       "position": {
         "x": 670,
@@ -789,7 +793,7 @@
       }
     },
     {
-      "id": "biz_node_727_8gu7lt",
+      "id": "biz_node_727_2a9jcq",
       "type": "topic",
       "position": {
         "x": 930,
@@ -817,7 +821,7 @@
       }
     },
     {
-      "id": "biz_node_729_4jbvuq",
+      "id": "biz_node_729_lay8ge",
       "type": "topic",
       "position": {
         "x": 250,
@@ -825,6 +829,7 @@
       },
       "data": {
         "label": "Investment Thesis",
+        "isSection": true,
         "style": {
           "fontSize": 17,
           "borderColor": "#1e1e2e",
@@ -846,7 +851,7 @@
       }
     },
     {
-      "id": "biz_node_731_k6ebzg",
+      "id": "biz_node_731_s9b8ai",
       "type": "topic",
       "position": {
         "x": -370,
@@ -874,7 +879,7 @@
       }
     },
     {
-      "id": "biz_node_733_a67wfi",
+      "id": "biz_node_733_w1ks12",
       "type": "topic",
       "position": {
         "x": -110,
@@ -902,7 +907,7 @@
       }
     },
     {
-      "id": "biz_node_735_49sjc4",
+      "id": "biz_node_735_5rfq6d",
       "type": "topic",
       "position": {
         "x": 150,
@@ -930,7 +935,7 @@
       }
     },
     {
-      "id": "biz_node_737_1u04cv",
+      "id": "biz_node_737_lvgvbh",
       "type": "topic",
       "position": {
         "x": 410,
@@ -958,7 +963,7 @@
       }
     },
     {
-      "id": "biz_node_739_prezww",
+      "id": "biz_node_739_kuzdxq",
       "type": "topic",
       "position": {
         "x": 670,
@@ -986,7 +991,7 @@
       }
     },
     {
-      "id": "biz_node_741_3o775k",
+      "id": "biz_node_741_57fcdt",
       "type": "topic",
       "position": {
         "x": 930,
@@ -1014,7 +1019,7 @@
       }
     },
     {
-      "id": "biz_node_743_68ebmo",
+      "id": "biz_node_743_406f85",
       "type": "topic",
       "position": {
         "x": 250,
@@ -1022,6 +1027,7 @@
       },
       "data": {
         "label": "Research Reports",
+        "isSection": true,
         "style": {
           "fontSize": 17,
           "borderColor": "#1e1e2e",
@@ -1043,7 +1049,7 @@
       }
     },
     {
-      "id": "biz_node_745_02bdbt",
+      "id": "biz_node_745_umk5t8",
       "type": "topic",
       "position": {
         "x": -370,
@@ -1071,7 +1077,7 @@
       }
     },
     {
-      "id": "biz_node_747_ef13fs",
+      "id": "biz_node_747_8cyjz0",
       "type": "topic",
       "position": {
         "x": -110,
@@ -1099,7 +1105,7 @@
       }
     },
     {
-      "id": "biz_node_749_yx96h4",
+      "id": "biz_node_749_cqvjag",
       "type": "topic",
       "position": {
         "x": 150,
@@ -1127,7 +1133,7 @@
       }
     },
     {
-      "id": "biz_node_751_3vccm0",
+      "id": "biz_node_751_bzg1b0",
       "type": "topic",
       "position": {
         "x": 410,
@@ -1155,7 +1161,7 @@
       }
     },
     {
-      "id": "biz_node_753_2ss3t5",
+      "id": "biz_node_753_bzo1ia",
       "type": "topic",
       "position": {
         "x": 670,
@@ -1183,7 +1189,7 @@
       }
     },
     {
-      "id": "biz_node_755_4s6qvm",
+      "id": "biz_node_755_hw12r8",
       "type": "topic",
       "position": {
         "x": 930,
@@ -1211,7 +1217,7 @@
       }
     },
     {
-      "id": "biz_node_757_0ywmfk",
+      "id": "biz_node_757_gq2mcf",
       "type": "topic",
       "position": {
         "x": 250,
@@ -1219,6 +1225,7 @@
       },
       "data": {
         "label": "Financial Modeling",
+        "isSection": true,
         "style": {
           "fontSize": 17,
           "borderColor": "#1e1e2e",
@@ -1240,7 +1247,7 @@
       }
     },
     {
-      "id": "biz_node_759_wfcy4p",
+      "id": "biz_node_759_7o3aar",
       "type": "topic",
       "position": {
         "x": -370,
@@ -1268,7 +1275,7 @@
       }
     },
     {
-      "id": "biz_node_761_idva1d",
+      "id": "biz_node_761_cb002v",
       "type": "topic",
       "position": {
         "x": -110,
@@ -1296,7 +1303,7 @@
       }
     },
     {
-      "id": "biz_node_763_2u99xg",
+      "id": "biz_node_763_zcn7fl",
       "type": "topic",
       "position": {
         "x": 150,
@@ -1324,7 +1331,7 @@
       }
     },
     {
-      "id": "biz_node_765_xlhm1w",
+      "id": "biz_node_765_gzlqcm",
       "type": "topic",
       "position": {
         "x": 410,
@@ -1352,7 +1359,7 @@
       }
     },
     {
-      "id": "biz_node_767_kfawxv",
+      "id": "biz_node_767_lik2m0",
       "type": "topic",
       "position": {
         "x": 670,
@@ -1380,7 +1387,7 @@
       }
     },
     {
-      "id": "biz_node_769_e9xiel",
+      "id": "biz_node_769_743foo",
       "type": "topic",
       "position": {
         "x": 930,
@@ -1410,9 +1417,9 @@
   ],
   "edges": [
     {
-      "id": "biz_node_676_teso83",
-      "source": "biz_node_674_fl7c7m",
-      "target": "biz_node_675_hmf372",
+      "id": "biz_node_676_tu1wvc",
+      "source": "biz_node_674_1o2bad",
+      "target": "biz_node_675_n3vd1v",
       "type": "default",
       "animated": true,
       "style": {
@@ -1426,9 +1433,9 @@
       }
     },
     {
-      "id": "biz_node_678_txy9vo",
-      "source": "biz_node_674_fl7c7m",
-      "target": "biz_node_677_1w0qjx",
+      "id": "biz_node_678_rzerqr",
+      "source": "biz_node_674_1o2bad",
+      "target": "biz_node_677_yx7m7h",
       "type": "default",
       "animated": true,
       "style": {
@@ -1442,9 +1449,9 @@
       }
     },
     {
-      "id": "biz_node_680_slumic",
-      "source": "biz_node_674_fl7c7m",
-      "target": "biz_node_679_mvg05c",
+      "id": "biz_node_680_ftjwdo",
+      "source": "biz_node_674_1o2bad",
+      "target": "biz_node_679_j6n8h8",
       "type": "default",
       "animated": true,
       "style": {
@@ -1458,9 +1465,9 @@
       }
     },
     {
-      "id": "biz_node_682_mb9jli",
-      "source": "biz_node_674_fl7c7m",
-      "target": "biz_node_681_diruxs",
+      "id": "biz_node_682_6zfxha",
+      "source": "biz_node_674_1o2bad",
+      "target": "biz_node_681_y87qrt",
       "type": "default",
       "animated": true,
       "style": {
@@ -1474,9 +1481,9 @@
       }
     },
     {
-      "id": "biz_node_684_lm83fc",
-      "source": "biz_node_674_fl7c7m",
-      "target": "biz_node_683_collcq",
+      "id": "biz_node_684_w6qkez",
+      "source": "biz_node_674_1o2bad",
+      "target": "biz_node_683_kntjiy",
       "type": "default",
       "animated": true,
       "style": {
@@ -1490,9 +1497,9 @@
       }
     },
     {
-      "id": "biz_node_686_kp1vvc",
-      "source": "biz_node_674_fl7c7m",
-      "target": "biz_node_685_0cth36",
+      "id": "biz_node_686_2uzokk",
+      "source": "biz_node_674_1o2bad",
+      "target": "biz_node_685_tebmie",
       "type": "default",
       "animated": true,
       "style": {
@@ -1506,9 +1513,9 @@
       }
     },
     {
-      "id": "biz_node_688_gg9rfk",
-      "source": "biz_node_674_fl7c7m",
-      "target": "biz_node_687_kg3q6m",
+      "id": "biz_node_688_pneeag",
+      "source": "biz_node_674_1o2bad",
+      "target": "biz_node_687_0p310m",
       "type": "default",
       "animated": false,
       "style": {
@@ -1521,9 +1528,9 @@
       }
     },
     {
-      "id": "biz_node_690_bwwmng",
-      "source": "biz_node_687_kg3q6m",
-      "target": "biz_node_689_ntqrg4",
+      "id": "biz_node_690_fkmh92",
+      "source": "biz_node_687_0p310m",
+      "target": "biz_node_689_0jw80p",
       "type": "default",
       "animated": true,
       "style": {
@@ -1537,9 +1544,9 @@
       }
     },
     {
-      "id": "biz_node_692_ix3tkq",
-      "source": "biz_node_687_kg3q6m",
-      "target": "biz_node_691_80qqm8",
+      "id": "biz_node_692_2f8hg8",
+      "source": "biz_node_687_0p310m",
+      "target": "biz_node_691_tkl3hg",
       "type": "default",
       "animated": true,
       "style": {
@@ -1553,9 +1560,9 @@
       }
     },
     {
-      "id": "biz_node_694_shkkh6",
-      "source": "biz_node_687_kg3q6m",
-      "target": "biz_node_693_l5okel",
+      "id": "biz_node_694_o7x3i0",
+      "source": "biz_node_687_0p310m",
+      "target": "biz_node_693_aeav8h",
       "type": "default",
       "animated": true,
       "style": {
@@ -1569,9 +1576,9 @@
       }
     },
     {
-      "id": "biz_node_696_n103mw",
-      "source": "biz_node_687_kg3q6m",
-      "target": "biz_node_695_4vw406",
+      "id": "biz_node_696_ts4a8x",
+      "source": "biz_node_687_0p310m",
+      "target": "biz_node_695_zqxnyz",
       "type": "default",
       "animated": true,
       "style": {
@@ -1585,9 +1592,9 @@
       }
     },
     {
-      "id": "biz_node_698_k7d1l6",
-      "source": "biz_node_687_kg3q6m",
-      "target": "biz_node_697_ru1vdq",
+      "id": "biz_node_698_cty2c6",
+      "source": "biz_node_687_0p310m",
+      "target": "biz_node_697_ypv6xp",
       "type": "default",
       "animated": true,
       "style": {
@@ -1601,9 +1608,9 @@
       }
     },
     {
-      "id": "biz_node_700_mwr4cj",
-      "source": "biz_node_687_kg3q6m",
-      "target": "biz_node_699_s418fh",
+      "id": "biz_node_700_yah27e",
+      "source": "biz_node_687_0p310m",
+      "target": "biz_node_699_3ouuce",
       "type": "default",
       "animated": true,
       "style": {
@@ -1617,9 +1624,9 @@
       }
     },
     {
-      "id": "biz_node_702_tqh3lr",
-      "source": "biz_node_687_kg3q6m",
-      "target": "biz_node_701_8ysw4c",
+      "id": "biz_node_702_kxv75v",
+      "source": "biz_node_687_0p310m",
+      "target": "biz_node_701_gbbhf9",
       "type": "default",
       "animated": false,
       "style": {
@@ -1632,9 +1639,9 @@
       }
     },
     {
-      "id": "biz_node_704_exz7cc",
-      "source": "biz_node_701_8ysw4c",
-      "target": "biz_node_703_f11x6e",
+      "id": "biz_node_704_h0ndlw",
+      "source": "biz_node_701_gbbhf9",
+      "target": "biz_node_703_jfjaex",
       "type": "default",
       "animated": true,
       "style": {
@@ -1648,9 +1655,9 @@
       }
     },
     {
-      "id": "biz_node_706_gm4e4w",
-      "source": "biz_node_701_8ysw4c",
-      "target": "biz_node_705_4il21m",
+      "id": "biz_node_706_eb9hfv",
+      "source": "biz_node_701_gbbhf9",
+      "target": "biz_node_705_okptst",
       "type": "default",
       "animated": true,
       "style": {
@@ -1664,9 +1671,9 @@
       }
     },
     {
-      "id": "biz_node_708_69rz01",
-      "source": "biz_node_701_8ysw4c",
-      "target": "biz_node_707_q01t1c",
+      "id": "biz_node_708_euth2j",
+      "source": "biz_node_701_gbbhf9",
+      "target": "biz_node_707_ibb0ds",
       "type": "default",
       "animated": true,
       "style": {
@@ -1680,9 +1687,9 @@
       }
     },
     {
-      "id": "biz_node_710_wjapvs",
-      "source": "biz_node_701_8ysw4c",
-      "target": "biz_node_709_3mnwwm",
+      "id": "biz_node_710_povcuf",
+      "source": "biz_node_701_gbbhf9",
+      "target": "biz_node_709_g1gi09",
       "type": "default",
       "animated": true,
       "style": {
@@ -1696,9 +1703,9 @@
       }
     },
     {
-      "id": "biz_node_712_ubiv7u",
-      "source": "biz_node_701_8ysw4c",
-      "target": "biz_node_711_pryhha",
+      "id": "biz_node_712_sx5tyw",
+      "source": "biz_node_701_gbbhf9",
+      "target": "biz_node_711_5f6pop",
       "type": "default",
       "animated": true,
       "style": {
@@ -1712,9 +1719,9 @@
       }
     },
     {
-      "id": "biz_node_714_o5ic7u",
-      "source": "biz_node_701_8ysw4c",
-      "target": "biz_node_713_bu5gyj",
+      "id": "biz_node_714_r8syyz",
+      "source": "biz_node_701_gbbhf9",
+      "target": "biz_node_713_k0391z",
       "type": "default",
       "animated": true,
       "style": {
@@ -1728,9 +1735,9 @@
       }
     },
     {
-      "id": "biz_node_716_jyvjah",
-      "source": "biz_node_701_8ysw4c",
-      "target": "biz_node_715_c6ou6e",
+      "id": "biz_node_716_xeutvw",
+      "source": "biz_node_701_gbbhf9",
+      "target": "biz_node_715_0ited4",
       "type": "default",
       "animated": false,
       "style": {
@@ -1743,9 +1750,9 @@
       }
     },
     {
-      "id": "biz_node_718_hrdehe",
-      "source": "biz_node_715_c6ou6e",
-      "target": "biz_node_717_ja0cx1",
+      "id": "biz_node_718_mcicrp",
+      "source": "biz_node_715_0ited4",
+      "target": "biz_node_717_jfkc1v",
       "type": "default",
       "animated": true,
       "style": {
@@ -1759,9 +1766,9 @@
       }
     },
     {
-      "id": "biz_node_720_un8c7j",
-      "source": "biz_node_715_c6ou6e",
-      "target": "biz_node_719_akuamt",
+      "id": "biz_node_720_wss6s9",
+      "source": "biz_node_715_0ited4",
+      "target": "biz_node_719_goaxk2",
       "type": "default",
       "animated": true,
       "style": {
@@ -1775,9 +1782,9 @@
       }
     },
     {
-      "id": "biz_node_722_axeru5",
-      "source": "biz_node_715_c6ou6e",
-      "target": "biz_node_721_fvoutz",
+      "id": "biz_node_722_0juw97",
+      "source": "biz_node_715_0ited4",
+      "target": "biz_node_721_t3pyy4",
       "type": "default",
       "animated": true,
       "style": {
@@ -1791,9 +1798,9 @@
       }
     },
     {
-      "id": "biz_node_724_fw6jnd",
-      "source": "biz_node_715_c6ou6e",
-      "target": "biz_node_723_dylej3",
+      "id": "biz_node_724_gz700f",
+      "source": "biz_node_715_0ited4",
+      "target": "biz_node_723_gh5a5v",
       "type": "default",
       "animated": true,
       "style": {
@@ -1807,9 +1814,9 @@
       }
     },
     {
-      "id": "biz_node_726_lldjl2",
-      "source": "biz_node_715_c6ou6e",
-      "target": "biz_node_725_pbyndd",
+      "id": "biz_node_726_lub15g",
+      "source": "biz_node_715_0ited4",
+      "target": "biz_node_725_21sqh3",
       "type": "default",
       "animated": true,
       "style": {
@@ -1823,9 +1830,9 @@
       }
     },
     {
-      "id": "biz_node_728_lbsaxm",
-      "source": "biz_node_715_c6ou6e",
-      "target": "biz_node_727_8gu7lt",
+      "id": "biz_node_728_fo7cho",
+      "source": "biz_node_715_0ited4",
+      "target": "biz_node_727_2a9jcq",
       "type": "default",
       "animated": true,
       "style": {
@@ -1839,9 +1846,9 @@
       }
     },
     {
-      "id": "biz_node_730_dgghxe",
-      "source": "biz_node_715_c6ou6e",
-      "target": "biz_node_729_4jbvuq",
+      "id": "biz_node_730_2ykzdo",
+      "source": "biz_node_715_0ited4",
+      "target": "biz_node_729_lay8ge",
       "type": "default",
       "animated": false,
       "style": {
@@ -1854,9 +1861,9 @@
       }
     },
     {
-      "id": "biz_node_732_bhp90q",
-      "source": "biz_node_729_4jbvuq",
-      "target": "biz_node_731_k6ebzg",
+      "id": "biz_node_732_882753",
+      "source": "biz_node_729_lay8ge",
+      "target": "biz_node_731_s9b8ai",
       "type": "default",
       "animated": true,
       "style": {
@@ -1870,9 +1877,9 @@
       }
     },
     {
-      "id": "biz_node_734_zogq47",
-      "source": "biz_node_729_4jbvuq",
-      "target": "biz_node_733_a67wfi",
+      "id": "biz_node_734_0vsl1r",
+      "source": "biz_node_729_lay8ge",
+      "target": "biz_node_733_w1ks12",
       "type": "default",
       "animated": true,
       "style": {
@@ -1886,9 +1893,9 @@
       }
     },
     {
-      "id": "biz_node_736_gu0a4u",
-      "source": "biz_node_729_4jbvuq",
-      "target": "biz_node_735_49sjc4",
+      "id": "biz_node_736_ym428x",
+      "source": "biz_node_729_lay8ge",
+      "target": "biz_node_735_5rfq6d",
       "type": "default",
       "animated": true,
       "style": {
@@ -1902,9 +1909,9 @@
       }
     },
     {
-      "id": "biz_node_738_ts9lht",
-      "source": "biz_node_729_4jbvuq",
-      "target": "biz_node_737_1u04cv",
+      "id": "biz_node_738_1ju73n",
+      "source": "biz_node_729_lay8ge",
+      "target": "biz_node_737_lvgvbh",
       "type": "default",
       "animated": true,
       "style": {
@@ -1918,9 +1925,9 @@
       }
     },
     {
-      "id": "biz_node_740_8w5ngc",
-      "source": "biz_node_729_4jbvuq",
-      "target": "biz_node_739_prezww",
+      "id": "biz_node_740_njyij1",
+      "source": "biz_node_729_lay8ge",
+      "target": "biz_node_739_kuzdxq",
       "type": "default",
       "animated": true,
       "style": {
@@ -1934,9 +1941,9 @@
       }
     },
     {
-      "id": "biz_node_742_6fvu5q",
-      "source": "biz_node_729_4jbvuq",
-      "target": "biz_node_741_3o775k",
+      "id": "biz_node_742_ctpd21",
+      "source": "biz_node_729_lay8ge",
+      "target": "biz_node_741_57fcdt",
       "type": "default",
       "animated": true,
       "style": {
@@ -1950,9 +1957,9 @@
       }
     },
     {
-      "id": "biz_node_744_lx7ujj",
-      "source": "biz_node_729_4jbvuq",
-      "target": "biz_node_743_68ebmo",
+      "id": "biz_node_744_476i20",
+      "source": "biz_node_729_lay8ge",
+      "target": "biz_node_743_406f85",
       "type": "default",
       "animated": false,
       "style": {
@@ -1965,9 +1972,9 @@
       }
     },
     {
-      "id": "biz_node_746_oi800e",
-      "source": "biz_node_743_68ebmo",
-      "target": "biz_node_745_02bdbt",
+      "id": "biz_node_746_n1b0p8",
+      "source": "biz_node_743_406f85",
+      "target": "biz_node_745_umk5t8",
       "type": "default",
       "animated": true,
       "style": {
@@ -1981,9 +1988,9 @@
       }
     },
     {
-      "id": "biz_node_748_2qp48o",
-      "source": "biz_node_743_68ebmo",
-      "target": "biz_node_747_ef13fs",
+      "id": "biz_node_748_tbapex",
+      "source": "biz_node_743_406f85",
+      "target": "biz_node_747_8cyjz0",
       "type": "default",
       "animated": true,
       "style": {
@@ -1997,9 +2004,9 @@
       }
     },
     {
-      "id": "biz_node_750_9t8cny",
-      "source": "biz_node_743_68ebmo",
-      "target": "biz_node_749_yx96h4",
+      "id": "biz_node_750_6s5t8r",
+      "source": "biz_node_743_406f85",
+      "target": "biz_node_749_cqvjag",
       "type": "default",
       "animated": true,
       "style": {
@@ -2013,9 +2020,9 @@
       }
     },
     {
-      "id": "biz_node_752_g3grge",
-      "source": "biz_node_743_68ebmo",
-      "target": "biz_node_751_3vccm0",
+      "id": "biz_node_752_mvxmbn",
+      "source": "biz_node_743_406f85",
+      "target": "biz_node_751_bzg1b0",
       "type": "default",
       "animated": true,
       "style": {
@@ -2029,9 +2036,9 @@
       }
     },
     {
-      "id": "biz_node_754_vaev24",
-      "source": "biz_node_743_68ebmo",
-      "target": "biz_node_753_2ss3t5",
+      "id": "biz_node_754_wcibeq",
+      "source": "biz_node_743_406f85",
+      "target": "biz_node_753_bzo1ia",
       "type": "default",
       "animated": true,
       "style": {
@@ -2045,9 +2052,9 @@
       }
     },
     {
-      "id": "biz_node_756_6nwl1h",
-      "source": "biz_node_743_68ebmo",
-      "target": "biz_node_755_4s6qvm",
+      "id": "biz_node_756_fej15t",
+      "source": "biz_node_743_406f85",
+      "target": "biz_node_755_hw12r8",
       "type": "default",
       "animated": true,
       "style": {
@@ -2061,9 +2068,9 @@
       }
     },
     {
-      "id": "biz_node_758_7p8o9w",
-      "source": "biz_node_743_68ebmo",
-      "target": "biz_node_757_0ywmfk",
+      "id": "biz_node_758_w5a4fi",
+      "source": "biz_node_743_406f85",
+      "target": "biz_node_757_gq2mcf",
       "type": "default",
       "animated": false,
       "style": {
@@ -2076,9 +2083,9 @@
       }
     },
     {
-      "id": "biz_node_760_puzdq3",
-      "source": "biz_node_757_0ywmfk",
-      "target": "biz_node_759_wfcy4p",
+      "id": "biz_node_760_sghx5m",
+      "source": "biz_node_757_gq2mcf",
+      "target": "biz_node_759_7o3aar",
       "type": "default",
       "animated": true,
       "style": {
@@ -2092,9 +2099,9 @@
       }
     },
     {
-      "id": "biz_node_762_tglbvj",
-      "source": "biz_node_757_0ywmfk",
-      "target": "biz_node_761_idva1d",
+      "id": "biz_node_762_ftqyei",
+      "source": "biz_node_757_gq2mcf",
+      "target": "biz_node_761_cb002v",
       "type": "default",
       "animated": true,
       "style": {
@@ -2108,9 +2115,9 @@
       }
     },
     {
-      "id": "biz_node_764_fv0p7t",
-      "source": "biz_node_757_0ywmfk",
-      "target": "biz_node_763_2u99xg",
+      "id": "biz_node_764_95zzxf",
+      "source": "biz_node_757_gq2mcf",
+      "target": "biz_node_763_zcn7fl",
       "type": "default",
       "animated": true,
       "style": {
@@ -2124,9 +2131,9 @@
       }
     },
     {
-      "id": "biz_node_766_v50b9g",
-      "source": "biz_node_757_0ywmfk",
-      "target": "biz_node_765_xlhm1w",
+      "id": "biz_node_766_yt3k1u",
+      "source": "biz_node_757_gq2mcf",
+      "target": "biz_node_765_gzlqcm",
       "type": "default",
       "animated": true,
       "style": {
@@ -2140,9 +2147,9 @@
       }
     },
     {
-      "id": "biz_node_768_wxs1m7",
-      "source": "biz_node_757_0ywmfk",
-      "target": "biz_node_767_kfawxv",
+      "id": "biz_node_768_87pjpo",
+      "source": "biz_node_757_gq2mcf",
+      "target": "biz_node_767_lik2m0",
       "type": "default",
       "animated": true,
       "style": {
@@ -2156,9 +2163,9 @@
       }
     },
     {
-      "id": "biz_node_770_ozqg1t",
-      "source": "biz_node_757_0ywmfk",
-      "target": "biz_node_769_e9xiel",
+      "id": "biz_node_770_d25y1f",
+      "source": "biz_node_757_gq2mcf",
+      "target": "biz_node_769_743foo",
       "type": "default",
       "animated": true,
       "style": {

@@ -22,7 +22,7 @@ function titleNode(id, label, x, y) {
   return { id, type: 'title', position: { x, y }, data: { label, style: { fontSize: 32, fontWeight: 900 } }, width: 360, height: 60, style: { width: 360, height: 60 }, zIndex: 999, dragging: false, focusable: true, measured: { width: 360, height: 60 } };
 }
 function sectionNode(id, label, x, y) {
-  return { id, type: 'topic', position: { x, y }, data: { label, style: { fontSize: 17, borderColor: '#1e1e2e', borderWidth: '3px' } }, width: SECTION_W, height: SECTION_H, style: { width: SECTION_W, height: SECTION_H }, zIndex: 999, dragging: false, focusable: true, measured: { width: SECTION_W, height: SECTION_H } };
+  return { id, type: 'topic', position: { x, y }, data: { label, isSection: true, style: { fontSize: 17, borderColor: '#1e1e2e', borderWidth: '3px' } }, width: SECTION_W, height: SECTION_H, style: { width: SECTION_W, height: SECTION_H }, zIndex: 999, dragging: false, focusable: true, measured: { width: SECTION_W, height: SECTION_H } };
 }
 function topicNode(id, label, x, y, color = '#2D2622') {
   return { id, type: 'topic', position: { x, y }, data: { label, style: { fontSize: 15, borderColor: color } }, width: NODE_W, height: NODE_H, style: { width: NODE_W, height: NODE_H }, zIndex: 999, dragging: false, focusable: true, measured: { width: NODE_W, height: NODE_H } };
