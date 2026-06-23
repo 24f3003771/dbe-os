@@ -185,7 +185,8 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="bg-surface text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body">
+      <body className="bg-[#FAF7F2] text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body p-2 md:p-4 lg:p-6">
+        <div className="flex-1 w-full h-full bg-[#FFFDFB] rounded-[2.5rem] shadow-2xl border border-[#F2EDE5] flex flex-col overflow-hidden relative">
 
 
 
@@ -217,10 +218,10 @@ export default async function RootLayout({
 
           <ClientNavbarWrapper user={user} />
 
-          <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 mb-24 md:mb-0">
+          <main className="flex-1 w-full overflow-y-auto">
             {children}
           </main>
-
+        </div>
       </body>
     </html>
   );

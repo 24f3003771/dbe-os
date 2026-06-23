@@ -1,414 +1,530 @@
 "use client";
 
 import { useFarmStore } from "@/hooks/useFarmStore";
-import { motion, AnimatePresence } from "framer-motion";
-import { Droplet, Sprout, Sun, Leaf, Flame, Trash2, BookOpen, ShoppingBag, Target, Calendar, Users, Zap, Rocket, ArrowRight, Trophy, ChevronRight, Wrench, Award, Megaphone, Bell } from "lucide-react";
+import { motion } from "framer-motion";
+import { 
+    BookOpen, Target, Flame, Trophy, Calendar, Zap, 
+    MoreHorizontal, Play, CheckSquare, Square, Check,
+    Clock, Grid, ChevronRight, ChevronLeft, ChevronDown, 
+    Moon, Lock, Settings, Bell, Palette
+} from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import { Caveat } from "next/font/google";
-import { getAllSubjects } from "@/data/db";
-import TomatoSplash from "@/components/TomatoSplash";
-import UniversalStats from "@/components/UniversalStats";
+import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { Caveat } from "next/font/google";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
-const BATCH_2_SCHEDULE = [
-  { date: "2026-05-23", title: "Term 2 Exams (Day 1): Comm, Eco, Accounting" },
-  { date: "2026-05-24", title: "Term 2 Exams (Day 2): IKS, Stats 2, FoBC II" },
-];
-
-const BATCH_1_SCHEDULE = [
-  { date: "2026-05-25", title: "Batch 1 Term Exams Placeholder" },
-];
-
-const CalendarWidget = () => {
-  const [user, setUser] = useState<any>(null);
-  const [batch, setBatch] = useState("Batch 2");
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-        if (user.user_metadata?.batch) {
-          setBatch(user.user_metadata.batch);
-        }
-      }
-    };
-    fetchUser();
-  }, []);
-
-  const schedule = batch === "Batch 1" ? BATCH_1_SCHEDULE : BATCH_2_SCHEDULE;
-
-  const today = new Date();
-  const currentMonthStr = String(today.getMonth() + 1).padStart(2, '0');
-  const currentYearStr = String(today.getFullYear());
-  
-  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
-  
-  const calendarDays = [];
-  for (let i = 0; i < firstDayOfMonth; i++) calendarDays.push(null);
-  for (let i = 1; i <= daysInMonth; i++) calendarDays.push(i);
-
-  const isScheduled = (day: number) => {
-    const dayStr = String(day).padStart(2, '0');
-    const dateStr = `${currentYearStr}-${currentMonthStr}-${dayStr}`;
-    return schedule.some(s => s.date === dateStr);
-  };
-
-  return (
-    <div className="bg-white h-full rounded-[2rem] border border-gray-100 shadow-sm p-6 md:p-8 flex flex-col relative">
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-gray-800"></div>
-            <div className="w-1 h-1 rounded-full bg-green-500"></div>
-        </div>
-        
-        <div className={`mt-4 ${caveat.className} flex-1 flex flex-col`}>
-            <div className="flex justify-between items-end mb-6 shrink-0 border-b border-gray-100 pb-2">
-                <h2 className="text-4xl text-[#2D2622] font-bold tracking-tight">{user?.user_metadata?.first_name ? `${user.user_metadata.first_name}'s` : 'My'} Month</h2>
-                <span className="text-2xl text-red-400 font-bold -rotate-6 underline decoration-dashed underline-offset-4">{today.toLocaleString('default', { month: 'long' })}</span>
-            </div>
-            
-            <div className="grid grid-cols-7 gap-x-1 gap-y-3 text-center mb-6 text-[#5C4D45] shrink-0">
-                {['S','M','T','W','T','F','S'].map(d => <div key={d} className="text-2xl font-bold opacity-60 border-b border-gray-100 pb-1">{d}</div>)}
-                {calendarDays.map((d, i) => {
-                    const hasEvent = d ? isScheduled(d) : false;
-                    return (
-                    <div key={i} className="relative aspect-[4/3] flex items-center justify-center text-2xl font-bold border-b border-gray-50">
-                        {d}
-                        {d && d < today.getDate() && !hasEvent && (
-                            <svg className="absolute inset-0 w-full h-full text-red-400/70 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                <path d="M20,20 L80,80 M80,20 L20,80" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none" />
-                            </svg>
-                        )}
-                        {d === today.getDate() && (
-                            <div className="absolute inset-1 border-[3px] border-blue-400 rounded-full opacity-80"></div>
-                        )}
-                        {hasEvent && (
-                            <div className="absolute inset-2 bg-amber-100 border-2 border-amber-300 rounded-full mix-blend-multiply"></div>
-                        )}
-                    </div>
-                )})}
-            </div>
-        </div>
-    </div>
-  );
-};
-
-const NoticeWidget = () => {
-  const [batch, setBatch] = useState("Batch 2");
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [announcements, setAnnouncements] = useState<any[]>([
-    { id: 'loading', title: "Loading notices...", text: "Fetching the latest updates...", date: "Just now" }
-  ]);
-
-  useEffect(() => {
-    const fetchNotices = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      let currentBatch = "Batch 2";
-      if (user && user.user_metadata?.batch) {
-        currentBatch = user.user_metadata.batch;
-        setBatch(currentBatch);
-      }
-
-      const { data: notices } = await supabase
-        .from("announcements")
-        .select("*")
-        .eq("batch", currentBatch)
-        .order("created_at", { ascending: false });
-
-      if (notices && notices.length > 0) {
-        const formattedNotices = notices.map(n => {
-            const date = new Date(n.created_at);
-            const now = new Date();
-            const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 3600 * 24));
-            let dateStr = "Today";
-            if (diffDays === 1) dateStr = "Yesterday";
-            else if (diffDays > 1) dateStr = `${diffDays} days ago`;
-            
-            return {
-                ...n,
-                text: n.message,
-                date: dateStr
-            };
-        });
-        setAnnouncements(formattedNotices);
-      } else {
-        setAnnouncements([{
-            id: 0,
-            title: "No active notices",
-            text: `You're all caught up for ${currentBatch}. Check back later.`,
-            date: "Just now"
-        }]);
-      }
-    };
-    fetchNotices();
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % announcements.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [announcements.length]);
-
-  return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm flex flex-col h-full relative overflow-hidden">
-        <div className="flex justify-between items-center mb-6 z-10">
-            <h3 className="text-lg font-black font-headline text-[#2D2622] tracking-tight">
-                Official Notice
-            </h3>
-            <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest">{batch}</span>
-        </div>
-        
-        <div className="flex-1 relative bg-[#FFF8F8] rounded-2xl border border-[#FFE8E8] p-6 overflow-hidden flex flex-col justify-center min-h-[160px] z-10">
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={currentSlide}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="space-y-3"
-                >
-                    <div className="inline-flex items-center gap-1.5 text-red-500 bg-white shadow-sm border border-red-100 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider">
-                        <Bell className="w-3 h-3" /> {announcements[currentSlide].date}
-                    </div>
-                    <h3 className="text-[15px] font-black text-[#2D2622] leading-tight pr-8">
-                        {announcements[currentSlide].title}
-                    </h3>
-                </motion.div>
-            </AnimatePresence>
-
-            <div className="absolute bottom-3 right-4 flex items-center gap-1.5">
-                {announcements.map((_, idx) => (
-                    <div 
-                        key={idx} 
-                        className={`h-1.5 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-4 bg-red-400' : 'w-1.5 bg-red-200'}`}
-                    />
-                ))}
-            </div>
-            
-            {/* Decorative icon */}
-            <div className="absolute right-[-10px] top-1/2 -translate-y-1/2 opacity-[0.06] pointer-events-none">
-                <Megaphone className="w-28 h-28 text-red-600 -rotate-12" />
-            </div>
-        </div>
-    </div>
-  );
-};
-
 export default function Dashboard() {
   const { fetchFarmData, isInitialized } = useFarmStore();
-  const subjects = getAllSubjects();
-  const notesPreview = subjects.slice(0, 3);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     if (!isInitialized) fetchFarmData();
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      if (data.user) setUser(data.user);
+    };
+    fetchUser();
   }, [isInitialized, fetchFarmData]);
 
+  const firstName = user?.user_metadata?.full_name?.split(' ')[0] || 'Ishaan';
+
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-20 px-4 xl:px-0">
+    <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-20 px-4 md:px-8 xl:px-12 pt-4">
       
-      {/* Top Row: UniversalStats & Calendar */}
+      {/* Dynamic Island */}
+      <div className="flex justify-center mb-2">
+          <div className="bg-[#1C1625] rounded-full py-2 px-3 flex items-center gap-6 shadow-xl border border-white/10">
+              <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                      <BookOpen className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                      <span className="text-white font-black text-xs">Economics Notes</span>
+                      <span className="text-stone-400 text-[10px] font-bold">Week 4 • Market Structures</span>
+                  </div>
+              </div>
+              <div className="flex items-center gap-3 pr-2">
+                  <span className="text-cyan-400 font-bold text-sm">12:43</span>
+                  <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center gap-0.5">
+                      <div className="w-0.5 h-3 bg-indigo-400 rounded-full animate-pulse" />
+                      <div className="w-0.5 h-4 bg-indigo-400 rounded-full animate-pulse delay-75" />
+                      <div className="w-0.5 h-2 bg-indigo-400 rounded-full animate-pulse delay-150" />
+                  </div>
+              </div>
+          </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-            <UniversalStats />
-        </div>
-        <div className="lg:col-span-4">
-            <CalendarWidget />
-        </div>
-      </div>
-
-      {/* Bottom Row: Notes, Quiz, Official Notice */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Notes Section */}
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm flex flex-col group h-full">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-black font-headline text-[#4A3B32] uppercase flex items-center gap-2">
-                        <BookOpen className="w-4 h-4 text-[#4A3B32]" /> NOTES
-                    </h3>
-                    <Link href="/notes" className="text-[10px] font-bold text-emerald-600 hover:underline flex items-center gap-1 uppercase tracking-widest">
-                        View all <ArrowRight className="w-3 h-3" />
-                    </Link>
-                </div>
-                <div className="flex-1 space-y-3">
-                    {notesPreview.map((note: any, idx: number) => (
-                        <Link key={note.id} href={`/dbe_notes/${note.id}`} className="block bg-[#FAF2ED] p-3 px-4 rounded-2xl hover:bg-[#F2E5DD] transition-all group/item border border-[#F5E6DD]">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-7 h-7 rounded-full bg-[#EADDD3] text-[#4A3B32] flex items-center justify-center font-bold text-xs">
-                                        {idx + 1}
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-[#4A3B32] transition-colors truncate">{note.title}</p>
-                                    </div>
-                                </div>
-                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-[#4A3B32] transition-colors group-hover/item:translate-x-1" />
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-
-            {/* Quiz Section */}
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm flex flex-col group relative overflow-hidden h-full">
-                <div className="relative z-10 flex flex-col h-full">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-lg font-black font-headline text-[#4A3B32] uppercase flex items-center gap-2">
-                            <Rocket className="w-4 h-4 text-[#4A3B32]" /> QUIZ
-                        </h3>
-                        <Link href="/quiz" className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-1 uppercase tracking-widest">
-                            View all subjects <ArrowRight className="w-3 h-3" />
-                        </Link>
-                    </div>
-                    <div className="flex-1 space-y-3">
-                        <Link href="/quiz" className="block bg-[#F0EEF8] p-3 px-4 rounded-2xl hover:bg-[#E5E0F2] transition-all group/item border border-[#E6E2F5]">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-7 h-7 rounded-full bg-[#DCD8F0] text-indigo-600 flex items-center justify-center font-bold text-xs">
-                                        <Rocket className="w-3.5 h-3.5" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-indigo-700 transition-colors truncate">Practice</p>
-                                    </div>
-                                </div>
-                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-indigo-700 transition-colors group-hover/item:translate-x-1" />
-                            </div>
-                        </Link>
-
-                        <Link href="/quiz" className="block bg-[#E6F8F0] p-3 px-4 rounded-2xl hover:bg-[#D4EFE4] transition-all group/item border border-[#DAF2E7]">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-7 h-7 rounded-full bg-[#C7EADB] text-emerald-600 flex items-center justify-center font-bold text-xs">
-                                        <Wrench className="w-3.5 h-3.5" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-emerald-700 transition-colors truncate">Concept Builder</p>
-                                    </div>
-                                </div>
-                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-emerald-700 transition-colors group-hover/item:translate-x-1" />
-                            </div>
-                        </Link>
-
-                        <Link href="/quiz" className="block bg-[#FFF4E5] p-3 px-4 rounded-2xl hover:bg-[#FFE8CC] transition-all group/item border border-[#FFEEDB]">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-7 h-7 rounded-full bg-[#FFDFB3] text-amber-600 flex items-center justify-center font-bold text-xs">
-                                        <Trophy className="w-3.5 h-3.5" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-xs font-bold text-[#2D2622] group-hover/item:text-amber-700 transition-colors truncate">PYQ & Mock</p>
-                                    </div>
-                                </div>
-                                <ArrowRight className="w-3 h-3 text-[#A89890] group-hover/item:text-amber-700 transition-colors group-hover/item:translate-x-1" />
-                            </div>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-
-            {/* Official Notice Section */}
-            <NoticeWidget />
-      </div>
-
-      {/* DBE Tools Grid Section */}
-      <section className="space-y-6 mt-8">
-          <div className="grid grid-cols-1">
-              <Link href="/tools/cgpa-calculator" className="bg-white border border-gray-100 rounded-[2rem] p-5 pr-8 flex items-center justify-between hover:bg-gray-50 transition-all shadow-sm group">
-                  <div className="flex items-center gap-5">
-                      <div className="w-16 h-16 rounded-[1.2rem] bg-gradient-to-br from-[#FFEBE5] to-[#FFD6CC] flex items-center justify-center text-3xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.6)] border border-white/60">
-                          🧮
-                      </div>
-                      <div>
-                          <span className="font-black font-headline text-[#2D2622] text-xl leading-tight block mb-0.5">CGPA Calculator</span>
-                          <span className="text-xs text-[#8C7A70] font-bold tracking-wide">Always A+ Ahead! ✨</span>
-                      </div>
+          
+          {/* Main Content Area (Left 8 columns) */}
+          <div className="lg:col-span-8 flex flex-col gap-6">
+              
+              {/* Hero Banner */}
+              <div className="bg-gradient-to-br from-[#FFF0EB] to-[#FFE5DC] rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden border border-white/50 shadow-sm">
+                  {/* Background Mountains Vector Illusion */}
+                  <div className="absolute bottom-0 right-0 left-0 h-48 opacity-40 pointer-events-none">
+                      <div className="absolute bottom-0 right-10 w-64 h-64 bg-rose-200 rounded-full blur-3xl" />
+                      <div className="absolute bottom-10 right-32 w-32 h-32 bg-orange-300 rounded-full blur-2xl" />
+                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute bottom-0 w-full h-full text-rose-100/50 fill-current">
+                          <path d="M0,100 L0,50 L20,70 L40,40 L70,80 L90,30 L100,60 L100,100 Z" />
+                      </svg>
+                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute bottom-0 w-full h-full text-orange-100/40 fill-current">
+                          <path d="M0,100 L0,60 L30,80 L50,50 L80,90 L100,50 L100,100 Z" />
+                      </svg>
+                      <div className="absolute bottom-20 right-48 w-16 h-16 bg-gradient-to-tr from-orange-400 to-rose-400 rounded-full shadow-[0_0_40px_rgba(251,146,60,0.6)]" />
                   </div>
-                  <div className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center shrink-0 text-[#8C7A70] group-hover:text-[#2D2622] transition-colors bg-white">
-                      <ChevronRight className="w-4 h-4" />
-                  </div>
-              </Link>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { href: "/tools/resume-builder", title: "AI Resume Forge", subtitle: "Smart. Sleek. Hired.", emoji: "📝", bg: "from-[#FFEBE5] to-[#FFD6CC]" },
-                { href: "/tools/internships", title: "Internship Hunter", subtitle: "Find. Apply. Launch.", emoji: "🚀", bg: "from-[#FDF0F3] to-[#FCE1E8]" },
-                { href: "/matchforge", title: "MasterForge Network", subtitle: "Connect. Collaborate. Grow.", emoji: "👥", bg: "from-[#F3EDF7] to-[#E8DCF2]" },
-                { href: "/tools/career-guides", title: "Career Guides", subtitle: "Clarity for your career path.", emoji: "📘", bg: "from-[#EDF4F9] to-[#DCEAF3]" },
-                { href: "/tools/pitch-decks", title: "Pro Pitch Decks", subtitle: "Pitch like a pro.", emoji: "📊", bg: "from-[#EBF7F2] to-[#D5EFE4]" },
-                { href: "/tools/competitions", title: "Competitions", subtitle: "Compete. Excel. Win.", emoji: "🏆", bg: "from-[#FFF6E5] to-[#FFE8CC]" },
-              ].map((tool, idx) => (
-                  <Link key={idx} href={tool.href} className="bg-white border border-gray-100 rounded-[2rem] p-6 flex flex-col justify-between min-h-[220px] hover:bg-gray-50 transition-all shadow-sm group">
-                      <div className={`w-14 h-14 rounded-[1.2rem] bg-gradient-to-br flex items-center justify-center text-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.6)] border border-white/60 mb-8 ${tool.bg}`}>
-                          {tool.emoji}
-                      </div>
-                      <div className="flex items-end justify-between gap-4">
+                  <div className="relative z-10">
+                      <div className="flex justify-between items-start mb-8">
                           <div>
-                              <span className="font-black font-headline text-[#2D2622] text-lg leading-tight block mb-1">{tool.title}</span>
-                              <span className="text-[11px] text-[#8C7A70] font-bold tracking-wide">{tool.subtitle}</span>
+                              <h1 className="text-3xl md:text-4xl font-black text-stone-900 mb-2">Good Evening, {firstName} 👋</h1>
+                              <p className="text-stone-600 font-medium">Stay consistent, your future self will thank you.</p>
                           </div>
-                          <div className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center shrink-0 text-[#8C7A70] group-hover:text-[#2D2622] transition-colors bg-white">
-                              <ChevronRight className="w-4 h-4" />
+                          <div className="bg-white/80 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 border border-white shadow-sm">
+                              <Trophy className="w-5 h-5 text-amber-500" />
+                              <div className="flex flex-col">
+                                  <span className="text-xs font-black text-stone-900 leading-none">Top 1%</span>
+                                  <span className="text-[10px] font-bold text-stone-500 uppercase tracking-widest leading-none mt-0.5">Learner</span>
+                              </div>
                           </div>
                       </div>
-                  </Link>
-              ))}
-          </div>
-      </section>
 
-      {/* SEO Content Section for Google Ranking */}
-      <section className="mt-16 border-t border-outline-variant/10 pt-12 pb-8">
-          <h2 className="text-xs font-black uppercase tracking-[0.2em] text-primary mb-6">Indian Institute of Management Bangalore BBA Platform</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-on-surface-variant/70 text-sm font-medium leading-relaxed">
-              <div>
-                  <h3 className="text-on-surface font-bold mb-2">IIM Bangalore BBA DBE Resources</h3>
-                  <p className="mb-2">
-                      <strong>DBE OS</strong> is an educational platform and the ultimate <strong>IIM Bangalore BBA student platform</strong> co-founded by Ishaan Jha and Madhwendra. Recognized as the best preparation platform for BBA DBE students, we guide you through the <strong>Indian Institute of Management Bangalore BBA</strong> and the <strong>IIM Bangalore Digital Business Entrepreneurship</strong> program. 
-                  </p>
-                  <p>
-                      Our <strong>IIMB DBE community</strong> provides access to comprehensive <strong>IIM Bangalore DBE notes</strong>, tools, and the <strong>best online BBA programs in India</strong> preparation resources. Discover <strong>how to get into IIM Bangalore BBA</strong> and prepare effectively.
-                  </p>
-              </div>
-              <div>
-                  <h3 className="text-on-surface font-bold mb-2">Admissions & Eligibility 2026</h3>
-                  <p className="mb-2">
-                      Stay updated on the <strong>IIM Bangalore BBA DBE admission process 2026</strong>. We cover everything from <strong>IIM Bangalore BBA eligibility criteria for 12th students</strong>, <strong>IIM Bangalore BBA entrance exam details</strong>, to the <strong>IIM Bangalore BBA application form last date</strong>.
-                  </p>
-                  <p>
-                      Wondering about <strong>IIM Bangalore BBA fees</strong>, <strong>IIMB DBE course syllabus</strong>, or <strong>is IIM Bangalore BBA worth it</strong>? Check our guides and <strong>IIM Bangalore BBA online course review</strong> to make informed decisions.
-                  </p>
-              </div>
-              <div className="md:col-span-2 lg:col-span-1">
-                  <h3 className="text-on-surface font-bold mb-2">Why Choose IIMB DBE?</h3>
-                  <p className="mb-2">
-                      Understand the <strong>benefits of IIM Bangalore online degree</strong> and see how it compares: <strong>IIM Bangalore DBE vs regular BBA</strong>, <strong>IIM Bangalore BBA vs Indian Institute of Management Indore IPM</strong>, and <strong>IIM Bangalore BBA vs DU BBA</strong>.
-                  </p>
-                  <p>
-                      Join the <strong>IIM Bangalore DBE student network</strong> and explore <strong>IIM Bangalore courses for students after 12th</strong>. Your <strong>IIM Bangalore BBA preparation platform</strong> is here to guide you through <strong>what is digital business and entrepreneurship</strong>.
-                  </p>
-              </div>
-          </div>
-      </section>
+                      <div className="flex flex-wrap gap-4 mb-10">
+                          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center min-w-[120px] shadow-sm border border-white">
+                              <div className="flex items-center gap-2 text-rose-500 mb-1">
+                                  <Target className="w-5 h-5" />
+                                  <span className="text-3xl font-black text-stone-900">98</span>
+                              </div>
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Tomo</span>
+                          </div>
+                          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center min-w-[120px] shadow-sm border border-white">
+                              <div className="flex items-center gap-2 text-amber-500 mb-1">
+                                  <Trophy className="w-5 h-5" />
+                                  <span className="text-3xl font-black text-stone-900">#2</span>
+                              </div>
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Your Rank</span>
+                          </div>
+                          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center min-w-[120px] shadow-sm border border-white">
+                              <div className="flex items-center gap-2 text-orange-500 mb-1">
+                                  <Flame className="w-5 h-5" />
+                                  <span className="text-3xl font-black text-stone-900">12</span>
+                              </div>
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Day Streak</span>
+                          </div>
+                      </div>
 
-      {/* Footer Link to Founders */}
-      <footer className="mt-20 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row items-center justify-between gap-4 text-on-surface-variant/50">
-          <p className="text-xs font-medium italic">Built with passion by the IIM Bangalore community.</p>
-          <Link href="/about" className="group flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary/5 hover:text-primary transition-all border border-outline-variant/5">
-              Meet the Founders <div className="flex -space-x-2 ml-1">
-                  <Image src="https://github.com/Ishaan-jha-dev.png" width={20} height={20} className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Ishaan"/>
-                  <Image src="/madhwendra_profile.png" width={20} height={20} className="w-5 h-5 rounded-full border border-surface shadow-sm" alt="Madhwendra"/>
+                      <div className="bg-white/90 backdrop-blur-md rounded-2xl p-5 border border-white shadow-sm">
+                          <div className="flex items-center justify-between mb-4">
+                              <div>
+                                  <h3 className="text-xs font-black text-stone-900 mb-1">Continue Learning</h3>
+                                  <p className="text-xs font-bold text-stone-500">Economics Notes – Week 4: Market Structures</p>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                  <span className="font-black text-stone-900 text-sm">62%</span>
+                                  <button className="bg-rose-50 hover:bg-rose-100 text-rose-500 px-5 py-2 rounded-full font-bold text-xs transition-colors flex items-center gap-1.5">
+                                      Resume <Play className="w-3 h-3 fill-current" />
+                                  </button>
+                              </div>
+                          </div>
+                          <div className="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
+                              <div className="bg-rose-400 w-[62%] h-full rounded-full" />
+                          </div>
+                      </div>
+                  </div>
               </div>
-          </Link>
-      </footer>
+
+              {/* Middle Row: Mission & Continue Learning */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  
+                  {/* Today's Mission */}
+                  <div className="bg-white rounded-[2rem] p-6 border border-stone-100 shadow-sm flex flex-col">
+                      <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center gap-2 text-indigo-600">
+                              <Target className="w-5 h-5" />
+                              <h3 className="font-black text-stone-900 text-base">Today's Mission</h3>
+                          </div>
+                          <button className="text-stone-400 hover:text-stone-600">
+                              <MoreHorizontal className="w-5 h-5" />
+                          </button>
+                      </div>
+
+                      <div className="space-y-4 flex-1">
+                          <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded bg-rose-500 flex items-center justify-center text-white shrink-0 shadow-sm shadow-rose-200">
+                                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                              </div>
+                              <span className="text-sm font-bold text-stone-500 line-through">Finish Economics Notes</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded bg-rose-500 flex items-center justify-center text-white shrink-0 shadow-sm shadow-rose-200">
+                                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                              </div>
+                              <span className="text-sm font-bold text-stone-500 line-through">Attempt 2 Quizzes</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded border-2 border-stone-200 flex items-center justify-center shrink-0"></div>
+                              <span className="text-sm font-bold text-stone-900">Revise Statistics Formulas</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded border-2 border-stone-200 flex items-center justify-center shrink-0"></div>
+                              <span className="text-sm font-bold text-stone-900">Practice PYQs (10)</span>
+                          </div>
+                      </div>
+
+                      <div className="mt-6 pt-4 border-t border-stone-100">
+                          <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-bold text-stone-500">66% Completed</span>
+                          </div>
+                          <div className="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden flex">
+                              <div className="bg-rose-400 w-[66%] h-full rounded-l-full" />
+                          </div>
+                      </div>
+                  </div>
+
+                  {/* Continue Learning */}
+                  <div className="bg-white rounded-[2rem] p-6 border border-stone-100 shadow-sm flex flex-col">
+                      <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center gap-2 text-stone-600">
+                              <BookOpen className="w-5 h-5" />
+                              <h3 className="font-black text-stone-900 text-base">Continue Learning</h3>
+                          </div>
+                          <Link href="/notes" className="text-[10px] font-bold text-blue-500 hover:underline flex items-center gap-1 uppercase tracking-widest">
+                              View All <ChevronRight className="w-3 h-3" />
+                          </Link>
+                      </div>
+
+                      <div className="space-y-4">
+                          {/* Item 1 */}
+                          <div className="flex items-center gap-4 bg-indigo-50/50 p-3 rounded-2xl border border-indigo-100/50">
+                              <div className="w-10 h-10 rounded-xl bg-white border border-indigo-100 text-indigo-500 flex items-center justify-center shrink-0 shadow-sm">
+                                  <BookOpen className="w-5 h-5" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                  <h4 className="text-sm font-black text-stone-900 truncate">Economics Notes</h4>
+                                  <p className="text-[10px] font-bold text-stone-500 truncate">Week 4: Market Structures</p>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                  <div className="flex flex-col items-end">
+                                      <span className="text-xs font-black text-indigo-500 mb-1">62%</span>
+                                      <div className="w-12 h-1 rounded-full bg-indigo-100 overflow-hidden"><div className="w-[62%] h-full bg-indigo-500 rounded-full" /></div>
+                                  </div>
+                                  <button className="w-8 h-8 rounded-full bg-white border border-indigo-100 text-indigo-500 flex items-center justify-center hover:bg-indigo-50 transition-colors shadow-sm">
+                                      <Play className="w-3 h-3 fill-current ml-0.5" />
+                                  </button>
+                              </div>
+                          </div>
+
+                          {/* Item 2 */}
+                          <div className="flex items-center gap-4 bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100/50">
+                              <div className="w-10 h-10 rounded-xl bg-white border border-emerald-100 text-emerald-500 flex items-center justify-center shrink-0 shadow-sm">
+                                  <Grid className="w-5 h-5" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                  <h4 className="text-sm font-black text-stone-900 truncate">Statistics Quiz</h4>
+                                  <p className="text-[10px] font-bold text-stone-500 truncate">Mean, Median & Mode</p>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                  <div className="flex flex-col items-end">
+                                      <span className="text-xs font-black text-emerald-500 mb-1">31%</span>
+                                      <div className="w-12 h-1 rounded-full bg-emerald-100 overflow-hidden"><div className="w-[31%] h-full bg-emerald-500 rounded-full" /></div>
+                                  </div>
+                                  <button className="w-8 h-8 rounded-full bg-white border border-emerald-100 text-emerald-500 flex items-center justify-center hover:bg-emerald-50 transition-colors shadow-sm">
+                                      <Play className="w-3 h-3 fill-current ml-0.5" />
+                                  </button>
+                              </div>
+                          </div>
+
+                          {/* Item 3 */}
+                          <div className="flex items-center gap-4 bg-orange-50/50 p-3 rounded-2xl border border-orange-100/50">
+                              <div className="w-10 h-10 rounded-xl bg-white border border-orange-100 text-orange-500 flex items-center justify-center shrink-0 shadow-sm">
+                                  <Target className="w-5 h-5" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                  <h4 className="text-sm font-black text-stone-900 truncate">Indian Economy</h4>
+                                  <p className="text-[10px] font-bold text-stone-500 truncate">Week 2: Sectors</p>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                  <div className="flex flex-col items-end">
+                                      <span className="text-xs font-black text-orange-500 mb-1">84%</span>
+                                      <div className="w-12 h-1 rounded-full bg-orange-100 overflow-hidden"><div className="w-[84%] h-full bg-orange-500 rounded-full" /></div>
+                                  </div>
+                                  <button className="w-8 h-8 rounded-full bg-white border border-orange-100 text-orange-500 flex items-center justify-center hover:bg-orange-50 transition-colors shadow-sm">
+                                      <Play className="w-3 h-3 fill-current ml-0.5" />
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </div>
+
+              {/* Bottom Row: My Month, Leaderboard, Control Center */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* My Month */}
+                  <div className="bg-[#FFF4F0] rounded-[2rem] p-6 border border-[#FFEBE5] shadow-sm flex flex-col relative overflow-hidden">
+                      <div className="flex justify-between items-center mb-6 z-10">
+                          <div className="flex items-center gap-2 text-rose-500">
+                              <Calendar className="w-5 h-5" />
+                              <h3 className="font-black text-stone-900 text-base">My Month</h3>
+                          </div>
+                          <div className="flex items-center gap-3">
+                              <span className={`text-xl text-rose-500 font-bold ${caveat.className} tracking-wide -rotate-6`}>June</span>
+                              <div className="flex items-center gap-1">
+                                  <button className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-stone-400 hover:text-stone-600 shadow-sm"><ChevronLeft className="w-3 h-3" /></button>
+                                  <button className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-stone-400 hover:text-stone-600 shadow-sm"><ChevronRight className="w-3 h-3" /></button>
+                              </div>
+                          </div>
+                      </div>
+                      <div className="grid grid-cols-7 gap-y-2 text-center text-[10px] font-black text-stone-400 mb-4 z-10">
+                          {['S','M','T','W','T','F','S'].map(d => <div key={d}>{d}</div>)}
+                          
+                          {/* Calendar Days Simulation */}
+                          {[...Array(30)].map((_, i) => {
+                              const d = i + 1;
+                              const isToday = d === 23;
+                              const hasGreen = d % 3 !== 0;
+                              const hasOrange = d % 5 === 0;
+                              return (
+                                  <div key={i} className="relative flex flex-col items-center justify-center h-8">
+                                      <span className={`font-bold text-xs ${isToday ? 'bg-rose-500 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm shadow-rose-300' : 'text-stone-700'}`}>
+                                          {d}
+                                      </span>
+                                      <div className="flex gap-0.5 mt-0.5 absolute bottom-0">
+                                          {hasGreen && <div className="w-1 h-1 rounded-full bg-emerald-400" />}
+                                          {hasOrange && <div className="w-1 h-1 rounded-full bg-orange-400" />}
+                                      </div>
+                                  </div>
+                              )
+                          })}
+                      </div>
+                      
+                      <div className="mt-auto space-y-2 pt-2 border-t border-rose-100 z-10">
+                          <div className="flex items-center justify-between bg-white/60 p-2 px-3 rounded-xl">
+                              <div className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /><span className="text-xs font-black text-stone-800">23 Day Streak</span></div>
+                          </div>
+                          <div className="flex items-center justify-between bg-white/60 p-2 px-3 rounded-xl">
+                              <div className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-emerald-500" /><span className="text-xs font-black text-stone-800">87% Attendance</span></div>
+                          </div>
+                          <div className="flex items-center justify-between bg-white/60 p-2 px-3 rounded-xl">
+                              <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-emerald-500" /><span className="text-xs font-black text-stone-800">72h This Month</span></div>
+                          </div>
+                      </div>
+                  </div>
+
+                  {/* Leaderboard */}
+                  <div className="bg-white rounded-[2rem] p-6 border border-stone-100 shadow-sm flex flex-col">
+                      <div className="flex items-center justify-between mb-6">
+                          <h3 className="font-black text-stone-900 text-base">Leaderboard</h3>
+                          <Link href="/" className="text-[10px] font-bold text-blue-500 hover:underline flex items-center gap-1 uppercase tracking-widest">
+                              View All <ChevronRight className="w-3 h-3" />
+                          </Link>
+                      </div>
+
+                      <div className="space-y-4 flex-1">
+                          {/* 1st Place */}
+                          <div className="flex items-center gap-4">
+                              <div className="w-6 font-black text-stone-400 text-xs text-center">1</div>
+                              <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                                  <Trophy className="w-4 h-4" />
+                              </div>
+                              <span className="font-bold text-stone-900 text-sm flex-1 truncate">Madhwendra Singh</span>
+                              <span className="font-black text-stone-900 text-sm">393</span>
+                          </div>
+
+                          {/* 2nd Place (User) */}
+                          <div className="flex items-center gap-4 bg-rose-50/50 p-2 -mx-2 rounded-xl border border-rose-100/50">
+                              <div className="w-6 font-black text-rose-400 text-xs text-center">2</div>
+                              <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 font-black text-[10px]">
+                                  2
+                              </div>
+                              <span className="font-bold text-stone-900 text-sm flex-1 truncate">Ishaan Jha</span>
+                              <span className="font-black text-stone-900 text-sm">98</span>
+                          </div>
+
+                          {/* 3rd Place */}
+                          <div className="flex items-center gap-4">
+                              <div className="w-6 font-black text-stone-400 text-xs text-center">3</div>
+                              <div className="w-8 h-8 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center shrink-0 font-black text-[10px]">
+                                  3
+                              </div>
+                              <span className="font-bold text-stone-900 text-sm flex-1 truncate">Ishaan</span>
+                              <span className="font-black text-stone-900 text-sm">50</span>
+                          </div>
+                      </div>
+
+                      <div className="mt-6 pt-4 border-t border-stone-100">
+                          <p className="text-xs font-medium text-stone-500">You're in <strong className="text-emerald-500 font-black">the top 1%</strong> of learners!</p>
+                      </div>
+                  </div>
+
+                  {/* Control Center */}
+                  <div className="bg-[#FAF9F6] rounded-[2rem] p-6 border border-stone-100 shadow-sm flex flex-col">
+                      <div className="flex items-center justify-between mb-6">
+                          <h3 className="font-black text-stone-900 text-base">Control Center</h3>
+                          <Settings className="w-5 h-5 text-stone-400" />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                          {/* Switches */}
+                          <div className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                  <Moon className="w-4 h-4 text-indigo-500" />
+                                  <span className="text-[10px] font-black text-stone-700">Dark Mode</span>
+                              </div>
+                              <div className="w-8 h-4 bg-indigo-100 rounded-full relative"><div className="w-3 h-3 bg-indigo-500 rounded-full absolute right-0.5 top-0.5" /></div>
+                          </div>
+                          
+                          <div className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                  <Target className="w-4 h-4 text-rose-500" />
+                                  <span className="text-[10px] font-black text-stone-700">Focus Mode</span>
+                              </div>
+                              <div className="w-8 h-4 bg-rose-500 rounded-full relative"><div className="w-3 h-3 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm" /></div>
+                          </div>
+
+                          <div className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                  <Lock className="w-4 h-4 text-indigo-500" />
+                                  <span className="text-[10px] font-black text-stone-700">Strict Mode</span>
+                              </div>
+                              <div className="w-8 h-4 bg-indigo-100 rounded-full relative"><div className="w-3 h-3 bg-indigo-500 rounded-full absolute right-0.5 top-0.5" /></div>
+                          </div>
+
+                          <div className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                  <Bell className="w-4 h-4 text-rose-500" />
+                                  <span className="text-[10px] font-black text-stone-700">Notifications</span>
+                              </div>
+                              <div className="w-8 h-4 bg-rose-500 rounded-full relative"><div className="w-3 h-3 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm" /></div>
+                          </div>
+
+                          <div className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between col-span-2">
+                              <div className="flex items-center gap-2">
+                                  <Zap className="w-4 h-4 text-indigo-500" />
+                                  <span className="text-[10px] font-black text-stone-700">Performance Mode</span>
+                              </div>
+                              <div className="w-8 h-4 bg-stone-200 rounded-full relative"><div className="w-3 h-3 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm" /></div>
+                          </div>
+
+                          <div className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between col-span-2">
+                              <div className="flex items-center gap-2">
+                                  <Palette className="w-4 h-4 text-rose-500" />
+                                  <span className="text-[10px] font-black text-stone-700">Theme</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-[10px] font-black text-stone-500">
+                                  Peach <ChevronDown className="w-3 h-3" />
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </div>
+
+          </div>
+
+          {/* Sidebar (Right 4 columns) */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+              
+              {/* Focus Mode */}
+              <div className="bg-white rounded-[2.5rem] p-8 border border-stone-100 shadow-sm flex flex-col">
+                  <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-2 text-rose-500">
+                          <Target className="w-5 h-5" />
+                          <h3 className="font-black text-stone-900 text-base">Focus Mode</h3>
+                      </div>
+                      <MoreHorizontal className="w-5 h-5 text-stone-400" />
+                  </div>
+
+                  <div className="flex justify-center mb-8 relative">
+                      <svg width="200" height="200" viewBox="0 0 200 200" className="rotate-[-90deg]">
+                          {/* Background Circle */}
+                          <circle cx="100" cy="100" r="88" fill="none" stroke="#FFF0EB" strokeWidth="8" />
+                          {/* Progress Circle (roughly 35%) */}
+                          <circle cx="100" cy="100" r="88" fill="none" stroke="#FF5F56" strokeWidth="8" strokeDasharray="553" strokeDashoffset="360" strokeLinecap="round" />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-3xl font-black text-stone-900">01:45:22</span>
+                          <span className="text-xs font-bold text-stone-400 uppercase tracking-widest mt-1">Remaining</span>
+                      </div>
+                  </div>
+
+                  <div className="space-y-4">
+                      <div>
+                          <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">Today's Goal</p>
+                          <p className="text-sm font-black text-stone-900">3h 30m / 5h 00m</p>
+                          <div className="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden mt-2 flex">
+                              <div className="bg-rose-400 w-[70%] h-full rounded-l-full" />
+                          </div>
+                      </div>
+
+                      <button className="w-full bg-rose-50 hover:bg-rose-100 text-rose-500 py-4 rounded-2xl font-black text-sm transition-colors flex items-center justify-center gap-2">
+                          Resume Focus <Play className="w-4 h-4 fill-current" />
+                      </button>
+                  </div>
+              </div>
+
+              {/* Live Activity */}
+              <div className="bg-white rounded-[2.5rem] p-8 border border-stone-100 shadow-sm flex flex-col flex-1">
+                  <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-2 text-indigo-500">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                          <h3 className="font-black text-stone-900 text-base">Live Activity</h3>
+                      </div>
+                      <MoreHorizontal className="w-5 h-5 text-stone-400" />
+                  </div>
+
+                  <div className="space-y-6 flex-1">
+                      <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                              <Flame className="w-4 h-4 text-orange-500" />
+                              <span className="text-sm font-bold text-stone-600">Current Streak</span>
+                          </div>
+                          <span className="text-sm font-black text-stone-900">12 Days</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                              <Clock className="w-4 h-4 text-amber-500" />
+                              <span className="text-sm font-bold text-stone-600">Time Studied Today</span>
+                          </div>
+                          <span className="text-sm font-black text-stone-900">2h 41m</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                              <BookOpen className="w-4 h-4 text-emerald-500" />
+                              <span className="text-sm font-bold text-stone-600">Notes Completed</span>
+                          </div>
+                          <span className="text-sm font-black text-stone-900">6 / 8</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                              <Grid className="w-4 h-4 text-blue-500" />
+                              <span className="text-sm font-bold text-stone-600">Quizzes Attempted</span>
+                          </div>
+                          <span className="text-sm font-black text-stone-900">3 / 4</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                              <Target className="w-4 h-4 text-rose-500" />
+                              <span className="text-sm font-bold text-stone-600">Average Score</span>
+                          </div>
+                          <span className="text-sm font-black text-stone-900">84%</span>
+                      </div>
+                  </div>
+
+                  <button className="w-full bg-rose-50 hover:bg-rose-100 text-rose-500 py-4 rounded-2xl font-black text-xs transition-colors flex items-center justify-center gap-2 mt-8">
+                      View Detailed Analytics <ChevronRight className="w-4 h-4" />
+                  </button>
+              </div>
+
+          </div>
+      </div>
     </div>
   );
 }
-
