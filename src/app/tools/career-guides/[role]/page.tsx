@@ -11,6 +11,7 @@ export default function RoleRoadmapPage() {
   const role = params.role as string;
   
   const [nodes, setNodes] = useState<any[] | null>(null);
+  const [edges, setEdges] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -25,6 +26,7 @@ export default function RoleRoadmapPage() {
         }
         const data = await res.json();
         setNodes(data.nodes);
+        setEdges(data.edges || []);
       } catch (err: any) {
         setError(err.message || "Failed to load roadmap.");
       } finally {
@@ -62,8 +64,8 @@ export default function RoleRoadmapPage() {
           </div>
         )}
 
-        {!loading && !error && nodes && (
-          <RoadmapRenderer nodesData={nodes} />
+        {!loading && !error && nodes && edges && (
+          <RoadmapRenderer nodesData={nodes} edgesData={edges} />
         )}
       </div>
     </div>

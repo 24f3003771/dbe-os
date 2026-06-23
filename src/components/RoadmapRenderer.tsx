@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from 'react';
-import { ReactFlow, Controls, Background, NodeProps, Handle, Position } from '@xyflow/react';
+import { ReactFlow, Controls, Background, NodeProps, Handle, Position, MarkerType } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Balsamiq_Sans } from 'next/font/google';
 
@@ -159,7 +159,7 @@ const nodeTypes = {
   todo: TopicNode, // some roadmaps use todo
 };
 
-export default function RoadmapRenderer({ nodesData }: { nodesData: any[] }) {
+export default function RoadmapRenderer({ nodesData, edgesData = [] }: { nodesData: any[], edgesData?: any[] }) {
   // Ensure nodes have exactly what reactflow needs and strip away complex stuff that might break React
   const nodes = useMemo(() => {
     return nodesData.map((n: any) => {
@@ -186,10 +186,34 @@ export default function RoadmapRenderer({ nodesData }: { nodesData: any[] }) {
     });
   }, [nodesData]);
 
+  // Ensure edges have the correct properties and add arrows to them
+  const edges = useMemo(() => {
+    return edgesData.map((e: any) => {
+      // By default, roadmap edges should have arrows at the end if they are connecting nodes
+      const edgeStroke = e.style?.stroke || '#94A3B8';
+      
+      return {
+        ...e,
+        type: e.type || 'default',
+        animated: e.data?.edgeStyle === 'dashed' || !!e.style?.strokeDasharray,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: edgeStroke,
+        },
+        style: {
+          ...e.style,
+          stroke: edgeStroke,
+          strokeWidth: e.style?.strokeWidth || 2,
+        }
+      };
+    });
+  }, [edgesData]);
+
   return (
     <div className={`w-full h-full min-h-[85vh] bg-[#F8F9FA] rounded-[3rem] border border-stone-200 overflow-hidden shadow-inner ${balsamiq.className}`}>
       <ReactFlow
         nodes={nodes}
+        edges={edges}
         nodeTypes={nodeTypes}
         fitView
         minZoom={0.1}
