@@ -131,21 +131,6 @@ export default function RoleRoadmapPage() {
                 <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
                 <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
               </div>
-              
-              {/* Back Button integrated into Mac Header */}
-              <div className="absolute left-20">
-                <Link
-                  href="/tools/career-guides"
-                  className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-800 font-semibold text-xs transition-colors group"
-                >
-                  <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                  <span className="hidden sm:inline">Back</span>
-                </Link>
-              </div>
-
-              <div className="w-full text-center text-slate-500 text-[11px] font-semibold tracking-wide truncate px-32">
-                {displayTitle} Roadmap
-              </div>
             </div>
             
             {/* Loading / Error states */}
@@ -166,6 +151,15 @@ export default function RoleRoadmapPage() {
             {/* Roadmap Body */}
             {!loading && !error && nodes && (
               <div className="flex-1 overflow-y-auto p-4 md:p-8 relative [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-stone-200/80 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-stone-300/80">
+                
+                <div className="max-w-6xl mx-auto mb-6">
+                  <Link
+                    href="/tools/career-guides"
+                    className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-800 font-bold text-sm transition-colors group w-fit"
+                  >
+                    <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
+                  </Link>
+                </div>
                 
                 {/* Start Roadmap Overlay */}
                 {!isStarted && (

@@ -53,23 +53,15 @@ export default function CareerGuidesPage() {
             <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
             <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
           </div>
-          
-          {/* Back Button integrated into Mac Header */}
-          <div className="absolute left-20">
-            <Link href="/tools" className="inline-flex items-center gap-1 text-stone-400 hover:text-stone-800 font-semibold text-xs transition-colors group">
-              <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" /> Back
-            </Link>
-          </div>
-
-          <div className="w-full text-center text-stone-500 text-[11px] font-semibold tracking-wide truncate px-32 pointer-events-none">
-            Career Guides Explorer
-          </div>
         </div>
         
         {/* Main Content Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-stone-200/80 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-stone-300/80">
           <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 max-w-7xl mx-auto">
       
+      <Link href="/tools" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group mb-2 w-fit">
+        <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Opportunity Hub
+      </Link>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
