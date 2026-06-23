@@ -47,11 +47,35 @@ export default function CareerGuidesPage() {
     <div className="w-full h-[calc(100vh-5rem)] p-2 md:p-4 bg-[#fdfaf6]">
       <div className="w-full h-full bg-[#fcfaf8] rounded-3xl shadow-2xl border border-stone-200/60 flex flex-col overflow-hidden relative">
         {/* Mac OS Header */}
-        <div className="h-12 bg-white/80 backdrop-blur-md border-b border-stone-200/60 w-full flex items-center px-4 relative shrink-0 z-20">
+        <div className="h-12 bg-white/80 backdrop-blur-md border-b border-stone-200/60 w-full flex items-center px-4 relative shrink-0 z-20 group/mac">
           <div className="flex gap-2 absolute left-4">
-            <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
-            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
-            <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+            <button 
+              onClick={() => router.push('/tools')}
+              className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] flex items-center justify-center relative overflow-hidden"
+              title="Close"
+            >
+              <span className="opacity-0 group-hover/mac:opacity-100 text-[#4d0000] text-[8px] font-black leading-none">×</span>
+            </button>
+            <button 
+              onClick={() => router.back()}
+              className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] flex items-center justify-center relative overflow-hidden"
+              title="Minimize"
+            >
+              <span className="opacity-0 group-hover/mac:opacity-100 text-[#5c4300] text-[10px] font-black leading-none mt-[-4px]">-</span>
+            </button>
+            <button 
+              onClick={() => {
+                if (!document.fullscreenElement) {
+                  document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                  document.exitFullscreen();
+                }
+              }}
+              className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] flex items-center justify-center relative overflow-hidden"
+              title="Fullscreen"
+            >
+              <span className="opacity-0 group-hover/mac:opacity-100 text-[#004d00] text-[8px] font-black leading-none rotate-45">⤢</span>
+            </button>
           </div>
         </div>
         
