@@ -103,9 +103,7 @@ export default function RoleRoadmapPage() {
     .join(' ');
 
   return (
-      {/* ── Roadmap Content ── */}
-      {!loading && !error && nodes && (
-        <div className="w-full h-screen p-2 md:p-4">
+    <div className="w-full h-screen p-2 md:p-4">
           <div className="w-full h-full bg-[#f8f9fa] rounded-3xl shadow-2xl border border-slate-200/60 flex flex-col overflow-hidden relative">
             {/* Mac OS Header */}
             <div className="h-12 bg-white/80 backdrop-blur-md border-b border-slate-200/60 w-full flex items-center px-4 relative shrink-0 z-20">
@@ -186,6 +184,5 @@ export default function RoleRoadmapPage() {
             )}
           </div>
         </div>
-    </div>
   );
 }
