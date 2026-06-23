@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useCallback } from 'react';
-import { Balsamiq_Sans } from 'next/font/google';
 import HowToUseRoadmapModal from './HowToUseRoadmapModal';
-
-const balsamiq = Balsamiq_Sans({ weight: ['400', '700'], subsets: ['latin'] });
 
 // ─── Topic Notes ──────────────────────────────────────────────────────────────
 const TOPIC_NOTES: Record<string, string> = {
@@ -209,7 +206,7 @@ export default function RoadmapRenderer({
   if (!sections.length) return <div className="text-slate-400 text-center py-20 font-bold">No sections found.</div>;
 
   return (
-    <div className={`flex gap-6 items-start ${balsamiq.className}`}>
+    <div className="flex gap-6 items-start">
 
       {/* ── Sticky Sidebar ── */}
       <aside className="hidden md:flex flex-col w-56 shrink-0 sticky top-0 self-start max-h-[calc(100vh-6rem)]">

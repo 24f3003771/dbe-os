@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Balsamiq_Sans } from 'next/font/google';
-
-const balsamiq = Balsamiq_Sans({ weight: ['400', '700'], subsets: ['latin'] });
 
 export default function HowToUseRoadmapModal({ 
   isOpen, 
@@ -46,7 +43,7 @@ export default function HowToUseRoadmapModal({
     <>
       <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 animate-in fade-in duration-200" onClick={handleClose} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className={`bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] shadow-2xl w-full max-w-sm overflow-hidden pointer-events-auto animate-in zoom-in-95 duration-200 ${balsamiq.className}`} style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5) inset' }}>
+        <div className="bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] shadow-2xl w-full max-w-sm overflow-hidden pointer-events-auto animate-in zoom-in-95 duration-200" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5) inset' }}>
           <div className="px-6 py-5 border-b border-slate-200/50 flex items-start justify-between">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Career Guides</p>

@@ -45,7 +45,7 @@ export default function CareerGuidesPage() {
   return (
     <>
     <div className="w-full h-[calc(100vh-5rem)] p-2 md:p-4 bg-[#fdfaf6]">
-      <div className="w-full h-full bg-[#fcfaf8] rounded-3xl shadow-2xl border border-stone-200/60 flex flex-col overflow-hidden relative">
+      <div className="w-full h-full bg-white rounded-3xl shadow-2xl border border-stone-200/60 flex flex-col overflow-hidden relative">
         {/* Mac OS Header */}
         <div className="h-12 bg-white/80 backdrop-blur-md border-b border-stone-200/60 w-full flex items-center px-4 relative shrink-0 z-20">
           <div className="flex gap-2 absolute left-4">
