@@ -44,7 +44,23 @@ export default function CareerGuidesPage() {
 
   return (
     <>
-    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 p-8">
+    <div className="w-full h-[calc(100vh-5rem)] p-2 md:p-4 bg-[#fdfaf6]">
+      <div className="w-full h-full bg-[#fcfaf8] rounded-3xl shadow-2xl border border-stone-200/60 flex flex-col overflow-hidden relative">
+        {/* Mac OS Header */}
+        <div className="h-12 bg-white/80 backdrop-blur-md border-b border-stone-200/60 w-full flex items-center px-4 relative shrink-0 z-20">
+          <div className="flex gap-2 absolute left-4">
+            <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
+            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
+            <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+          </div>
+          <div className="w-full text-center text-stone-500 text-[11px] font-semibold tracking-wide truncate px-32">
+            Career Guides Explorer
+          </div>
+        </div>
+        
+        {/* Main Content Area */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 max-w-7xl mx-auto">
       <Link href="/tools" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group mb-2 w-fit">
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Opportunity Hub
       </Link>
@@ -129,8 +145,12 @@ export default function CareerGuidesPage() {
           )}
         </div>
       </div>
-      <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={false} />
+      
+          </div>
+        </div>
+      </div>
     </div>
+    <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={false} />
     </>
   );
 }
