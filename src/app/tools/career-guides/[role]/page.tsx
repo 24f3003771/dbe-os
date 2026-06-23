@@ -74,8 +74,25 @@ export default function RoleRoadmapPage() {
 
       {/* ── Roadmap Content ── */}
       {!loading && !error && nodes && (
-        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-6">
-          <RoadmapRenderer nodesData={nodes} edgesData={edges ?? []} title={role} />
+        <div className="max-w-7xl mx-auto px-4 md:px-8 pt-8 mb-20">
+          <div className="w-full bg-slate-50 rounded-[1.5rem] shadow-2xl border border-slate-200 flex flex-col">
+            {/* Mac OS Header */}
+            <div className="h-10 bg-[#1c1c1e] border-b border-[#2d2d2f] rounded-t-[1.5rem] w-full flex items-center px-4 relative shrink-0 sticky top-[72px] z-20">
+              <div className="flex gap-1.5 absolute left-4">
+                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+              </div>
+              <div className="w-full text-center text-[#86868b] text-[10px] font-mono tracking-widest uppercase truncate px-20">
+                {role ? `${role.toUpperCase().replace(/-/g, '_')}.ROADMAP` : 'ROADMAP.VIEW'}
+              </div>
+            </div>
+            
+            {/* Roadmap Body */}
+            <div className="p-4 md:p-6 pb-12">
+              <RoadmapRenderer nodesData={nodes} edgesData={edges ?? []} title={role} />
+            </div>
+          </div>
         </div>
       )}
     </div>

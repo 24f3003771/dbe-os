@@ -208,7 +208,7 @@ export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { 
     <div className={`flex gap-6 items-start ${balsamiq.className}`}>
 
       {/* ── Sticky Sidebar ── */}
-      <aside className="hidden md:flex flex-col w-48 shrink-0 sticky top-20 self-start max-h-[calc(100vh-6rem)] bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      <aside className="hidden md:flex flex-col w-48 shrink-0 sticky top-[136px] self-start max-h-[calc(100vh-10rem)] bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
         <div className="bg-[#1c1c1e] px-4 py-3 flex items-center justify-between shrink-0">
           <span className="text-[9px] font-black uppercase tracking-widest text-[#86868b]">Sections</span>
           <button onClick={() => setShowHowTo(true)}
