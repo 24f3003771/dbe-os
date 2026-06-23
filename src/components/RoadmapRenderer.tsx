@@ -145,18 +145,13 @@ const LegendNode = ({ data }: NodeProps) => (
 
 // We must also handle custom types that might exist like 'path' or other unknown nodes
 // by simply defaulting them to avoid errors.
-
 const nodeTypes = {
-  topic: TopicNode,
-  subtopic: SubtopicNode,
-  paragraph: ParagraphNode,
-  title: TitleNode,
-  vertical: VerticalNode,
   horizontal: HorizontalNode,
-  button: ButtonNode,
-  label: LabelNode,
-  legend: LegendNode,
+  vertical: VerticalNode,
+  title: TitleNode,
+  topic: TopicNode,
   todo: TopicNode, // some roadmaps use todo
+  label: LabelNode, // labels shouldn't have backgrounds
 };
 
 function RoadmapCanvas({ nodes, edges, title }: { nodes: any[], edges: any[], title?: string }) {
@@ -248,7 +243,15 @@ function RoadmapCanvas({ nodes, edges, title }: { nodes: any[], edges: any[], ti
 export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { nodesData: any[], edgesData?: any[], title?: string }) {
   // Ensure nodes have exactly what reactflow needs and strip away complex stuff that might break React
   const nodes = useMemo(() => {
-    return nodesData.map((n: any) => {
+    // List of roadmap.sh specific node types that are useless/spam in our embedded view
+    const USELESS_TYPES = ['paragraph', 'button', 'legend', 'linksgroup'];
+    
+    return nodesData
+      .filter((n: any) => !USELESS_TYPES.includes(n.type))
+      .map((n: any) => {
+      // Safely check if the string contains actual HTML vs just simple text
+      let safeLabel = n.data?.label || n.label || '';
+      
       // Inject width and height into the wrapper style to enforce absolute sizing
       const nodeStyle = { 
         ...n.style, 
@@ -256,19 +259,18 @@ export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { 
         height: n.height 
       };
 
-      // Create a shallow copy
-      const node = { 
-        ...n, 
+      return {
+        ...n,
         draggable: false,
-        style: nodeStyle
+        style: nodeStyle,
+        position: n.position || { x: 0, y: 0 },
+        // if type doesn't exist, we fallback to default
+        type: nodeTypes[n.type as keyof typeof nodeTypes] ? n.type : 'default',
+        data: {
+          ...n.data,
+          label: safeLabel,
+        }
       };
-      
-      // If the type is not registered, default to paragraph or label to not break
-      if (!nodeTypes[node.type as keyof typeof nodeTypes]) {
-        node.type = 'paragraph';
-      }
-
-      return node;
     });
   }, [nodesData]);
 
