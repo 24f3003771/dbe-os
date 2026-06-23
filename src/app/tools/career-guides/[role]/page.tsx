@@ -6,6 +6,7 @@ import { ChevronLeft, Loader2, Info } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
+import { motion } from "framer-motion";
 import HowToUseRoadmapModal from "@/components/HowToUseRoadmapModal";
 
 export default function RoleRoadmapPage() {
@@ -121,22 +122,43 @@ export default function RoleRoadmapPage() {
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => router.push('/tools'), 400);
+  };
+
+  const handleMinimize = () => {
+    setIsClosing(true);
+    setTimeout(() => router.back(), 400);
+  };
+
   return (
     <>
-      <div className="w-full h-[calc(100vh-5rem)] p-2 md:p-4 bg-[#fdfaf6]">
-          <div className="w-full h-full bg-[#fcfaf8] rounded-3xl shadow-2xl border border-slate-200/60 flex flex-col overflow-hidden relative">
+      <div className="w-full h-[calc(100vh-5rem)] p-2 md:p-4 bg-[#fdfaf6] perspective-1000">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8, y: 100, rotateX: 10 }}
+            animate={isClosing ? "closing" : "visible"}
+            variants={{
+              visible: { opacity: 1, scale: 1, y: 0, scaleX: 1, rotateX: 0, filter: "blur(0px)", transition: { type: "spring", damping: 25, stiffness: 200 } },
+              closing: { opacity: 0, scale: 0.05, y: -500, scaleX: 0.1, rotateX: -20, filter: "blur(20px)", transition: { duration: 0.4, ease: [0.32, 0, 0.67, 0] } }
+            }}
+            style={{ transformOrigin: "top center" }}
+            className="w-full h-full bg-[#fcfaf8] rounded-3xl shadow-2xl border border-slate-200/60 flex flex-col overflow-hidden relative"
+          >
             {/* Mac OS Header */}
             <div className="h-12 bg-white/80 backdrop-blur-md border-b border-slate-200/60 w-full flex items-center px-4 relative shrink-0 z-20 group/mac">
               <div className="flex gap-2 absolute left-4">
                 <button 
-                  onClick={() => router.push('/tools')}
+                  onClick={handleClose}
                   className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] flex items-center justify-center relative overflow-hidden"
                   title="Close"
                 >
                   <span className="opacity-0 group-hover/mac:opacity-100 text-[#4d0000] text-[8px] font-black leading-none">×</span>
                 </button>
                 <button 
-                  onClick={() => router.back()}
+                  onClick={handleMinimize}
                   className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] flex items-center justify-center relative overflow-hidden"
                   title="Minimize"
                 >
@@ -259,7 +281,7 @@ export default function RoleRoadmapPage() {
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
         <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={true} />
       </>
