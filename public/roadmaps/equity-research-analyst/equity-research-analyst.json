@@ -1,0 +1,2175 @@
+{
+  "nodes": [
+    {
+      "id": "biz_node_673_6heivx",
+      "type": "title",
+      "position": {
+        "x": 220,
+        "y": 0
+      },
+      "data": {
+        "label": "Equity Research Analyst",
+        "style": {
+          "fontSize": 32,
+          "fontWeight": 900
+        }
+      },
+      "width": 360,
+      "height": 60,
+      "style": {
+        "width": 360,
+        "height": 60
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 360,
+        "height": 60
+      }
+    },
+    {
+      "id": "biz_node_674_fl7c7m",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 100
+      },
+      "data": {
+        "label": "Stock Markets Basics",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_675_hmf372",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 176
+      },
+      "data": {
+        "label": "How Stock Markets Work",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_677_1w0qjx",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 176
+      },
+      "data": {
+        "label": "Market Participants",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_679_mvg05c",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 176
+      },
+      "data": {
+        "label": "Exchanges & Brokers",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_681_diruxs",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 176
+      },
+      "data": {
+        "label": "Bull vs. Bear Markets",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_683_collcq",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 176
+      },
+      "data": {
+        "label": "Market Indices",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_685_0cth36",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 176
+      },
+      "data": {
+        "label": "Stock Screeners",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_687_kg3q6m",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 304
+      },
+      "data": {
+        "label": "Financial Statements",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_689_ntqrg4",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 380
+      },
+      "data": {
+        "label": "Reading Annual Reports",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_691_80qqm8",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 380
+      },
+      "data": {
+        "label": "Income Statement Deep Dive",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_693_l5okel",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 380
+      },
+      "data": {
+        "label": "Balance Sheet Analysis",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_695_4vw406",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 380
+      },
+      "data": {
+        "label": "Cash Flow Statement",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_697_ru1vdq",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 380
+      },
+      "data": {
+        "label": "Footnotes & MD&A",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_699_s418fh",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 380
+      },
+      "data": {
+        "label": "GAAP vs. non-GAAP",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_701_8ysw4c",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 508
+      },
+      "data": {
+        "label": "Valuation",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_703_f11x6e",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 584
+      },
+      "data": {
+        "label": "P/E, P/B, P/S Ratios",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_705_4il21m",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 584
+      },
+      "data": {
+        "label": "EV/EBITDA",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_707_q01t1c",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 584
+      },
+      "data": {
+        "label": "DCF Analysis",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_709_3mnwwm",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 584
+      },
+      "data": {
+        "label": "Residual Income Model",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_711_pryhha",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 584
+      },
+      "data": {
+        "label": "Dividend Discount Model",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_713_bu5gyj",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 584
+      },
+      "data": {
+        "label": "Sum-of-the-Parts",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_715_c6ou6e",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 712
+      },
+      "data": {
+        "label": "Industry Research",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_717_ja0cx1",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 788
+      },
+      "data": {
+        "label": "Industry Structure Analysis",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_719_akuamt",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 788
+      },
+      "data": {
+        "label": "Competitive Landscape",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_721_fvoutz",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 788
+      },
+      "data": {
+        "label": "Regulatory Environment",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_723_dylej3",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 788
+      },
+      "data": {
+        "label": "Market Size & Growth",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_725_pbyndd",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 788
+      },
+      "data": {
+        "label": "Key Industry Drivers",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_727_8gu7lt",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 788
+      },
+      "data": {
+        "label": "Sector Rotation",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_729_4jbvuq",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 916
+      },
+      "data": {
+        "label": "Investment Thesis",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_731_k6ebzg",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 992
+      },
+      "data": {
+        "label": "Bull vs. Bear Case",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_733_a67wfi",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 992
+      },
+      "data": {
+        "label": "Catalysts & Risks",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_735_49sjc4",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 992
+      },
+      "data": {
+        "label": "Variant Perception",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_737_1u04cv",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 992
+      },
+      "data": {
+        "label": "Moat Analysis",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_739_prezww",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 992
+      },
+      "data": {
+        "label": "Management Assessment",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_741_3o775k",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 992
+      },
+      "data": {
+        "label": "ESG Considerations",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_743_68ebmo",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 1120
+      },
+      "data": {
+        "label": "Research Reports",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_745_02bdbt",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 1196
+      },
+      "data": {
+        "label": "Initiating Coverage Report",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_747_ef13fs",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 1196
+      },
+      "data": {
+        "label": "Earnings Updates",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_749_yx96h4",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 1196
+      },
+      "data": {
+        "label": "Target Price Models",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_751_3vccm0",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 1196
+      },
+      "data": {
+        "label": "Recommendation (Buy/Hold/Sell)",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_753_2ss3t5",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 1196
+      },
+      "data": {
+        "label": "Note Writing",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_755_4s6qvm",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 1196
+      },
+      "data": {
+        "label": "Executive Summary",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_757_0ywmfk",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 1324
+      },
+      "data": {
+        "label": "Financial Modeling",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_759_wfcy4p",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 1400
+      },
+      "data": {
+        "label": "Excel for Equity Research",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_761_idva1d",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 1400
+      },
+      "data": {
+        "label": "Three-Statement Model",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_763_2u99xg",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 1400
+      },
+      "data": {
+        "label": "Sensitivity Analysis",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_765_xlhm1w",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 1400
+      },
+      "data": {
+        "label": "Scenario Analysis",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_767_kfawxv",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 1400
+      },
+      "data": {
+        "label": "Comparable Company Tables",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_769_e9xiel",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 1400
+      },
+      "data": {
+        "label": "Football Field Chart",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "biz_node_676_teso83",
+      "source": "biz_node_674_fl7c7m",
+      "target": "biz_node_675_hmf372",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_678_txy9vo",
+      "source": "biz_node_674_fl7c7m",
+      "target": "biz_node_677_1w0qjx",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_680_slumic",
+      "source": "biz_node_674_fl7c7m",
+      "target": "biz_node_679_mvg05c",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_682_mb9jli",
+      "source": "biz_node_674_fl7c7m",
+      "target": "biz_node_681_diruxs",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_684_lm83fc",
+      "source": "biz_node_674_fl7c7m",
+      "target": "biz_node_683_collcq",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_686_kp1vvc",
+      "source": "biz_node_674_fl7c7m",
+      "target": "biz_node_685_0cth36",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_688_gg9rfk",
+      "source": "biz_node_674_fl7c7m",
+      "target": "biz_node_687_kg3q6m",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_690_bwwmng",
+      "source": "biz_node_687_kg3q6m",
+      "target": "biz_node_689_ntqrg4",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_692_ix3tkq",
+      "source": "biz_node_687_kg3q6m",
+      "target": "biz_node_691_80qqm8",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_694_shkkh6",
+      "source": "biz_node_687_kg3q6m",
+      "target": "biz_node_693_l5okel",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_696_n103mw",
+      "source": "biz_node_687_kg3q6m",
+      "target": "biz_node_695_4vw406",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_698_k7d1l6",
+      "source": "biz_node_687_kg3q6m",
+      "target": "biz_node_697_ru1vdq",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_700_mwr4cj",
+      "source": "biz_node_687_kg3q6m",
+      "target": "biz_node_699_s418fh",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_702_tqh3lr",
+      "source": "biz_node_687_kg3q6m",
+      "target": "biz_node_701_8ysw4c",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_704_exz7cc",
+      "source": "biz_node_701_8ysw4c",
+      "target": "biz_node_703_f11x6e",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_706_gm4e4w",
+      "source": "biz_node_701_8ysw4c",
+      "target": "biz_node_705_4il21m",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_708_69rz01",
+      "source": "biz_node_701_8ysw4c",
+      "target": "biz_node_707_q01t1c",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_710_wjapvs",
+      "source": "biz_node_701_8ysw4c",
+      "target": "biz_node_709_3mnwwm",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_712_ubiv7u",
+      "source": "biz_node_701_8ysw4c",
+      "target": "biz_node_711_pryhha",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_714_o5ic7u",
+      "source": "biz_node_701_8ysw4c",
+      "target": "biz_node_713_bu5gyj",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_716_jyvjah",
+      "source": "biz_node_701_8ysw4c",
+      "target": "biz_node_715_c6ou6e",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_718_hrdehe",
+      "source": "biz_node_715_c6ou6e",
+      "target": "biz_node_717_ja0cx1",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_720_un8c7j",
+      "source": "biz_node_715_c6ou6e",
+      "target": "biz_node_719_akuamt",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_722_axeru5",
+      "source": "biz_node_715_c6ou6e",
+      "target": "biz_node_721_fvoutz",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_724_fw6jnd",
+      "source": "biz_node_715_c6ou6e",
+      "target": "biz_node_723_dylej3",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_726_lldjl2",
+      "source": "biz_node_715_c6ou6e",
+      "target": "biz_node_725_pbyndd",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_728_lbsaxm",
+      "source": "biz_node_715_c6ou6e",
+      "target": "biz_node_727_8gu7lt",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_730_dgghxe",
+      "source": "biz_node_715_c6ou6e",
+      "target": "biz_node_729_4jbvuq",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_732_bhp90q",
+      "source": "biz_node_729_4jbvuq",
+      "target": "biz_node_731_k6ebzg",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_734_zogq47",
+      "source": "biz_node_729_4jbvuq",
+      "target": "biz_node_733_a67wfi",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_736_gu0a4u",
+      "source": "biz_node_729_4jbvuq",
+      "target": "biz_node_735_49sjc4",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_738_ts9lht",
+      "source": "biz_node_729_4jbvuq",
+      "target": "biz_node_737_1u04cv",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_740_8w5ngc",
+      "source": "biz_node_729_4jbvuq",
+      "target": "biz_node_739_prezww",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_742_6fvu5q",
+      "source": "biz_node_729_4jbvuq",
+      "target": "biz_node_741_3o775k",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_744_lx7ujj",
+      "source": "biz_node_729_4jbvuq",
+      "target": "biz_node_743_68ebmo",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_746_oi800e",
+      "source": "biz_node_743_68ebmo",
+      "target": "biz_node_745_02bdbt",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_748_2qp48o",
+      "source": "biz_node_743_68ebmo",
+      "target": "biz_node_747_ef13fs",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_750_9t8cny",
+      "source": "biz_node_743_68ebmo",
+      "target": "biz_node_749_yx96h4",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_752_g3grge",
+      "source": "biz_node_743_68ebmo",
+      "target": "biz_node_751_3vccm0",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_754_vaev24",
+      "source": "biz_node_743_68ebmo",
+      "target": "biz_node_753_2ss3t5",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_756_6nwl1h",
+      "source": "biz_node_743_68ebmo",
+      "target": "biz_node_755_4s6qvm",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_758_7p8o9w",
+      "source": "biz_node_743_68ebmo",
+      "target": "biz_node_757_0ywmfk",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_760_puzdq3",
+      "source": "biz_node_757_0ywmfk",
+      "target": "biz_node_759_wfcy4p",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_762_tglbvj",
+      "source": "biz_node_757_0ywmfk",
+      "target": "biz_node_761_idva1d",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_764_fv0p7t",
+      "source": "biz_node_757_0ywmfk",
+      "target": "biz_node_763_2u99xg",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_766_v50b9g",
+      "source": "biz_node_757_0ywmfk",
+      "target": "biz_node_765_xlhm1w",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_768_wxs1m7",
+      "source": "biz_node_757_0ywmfk",
+      "target": "biz_node_767_kfawxv",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_770_ozqg1t",
+      "source": "biz_node_757_0ywmfk",
+      "target": "biz_node_769_e9xiel",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    }
+  ]
+}

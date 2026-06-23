@@ -1,0 +1,2483 @@
+{
+  "nodes": [
+    {
+      "id": "biz_node_225_pr0kn3",
+      "type": "title",
+      "position": {
+        "x": 220,
+        "y": 0
+      },
+      "data": {
+        "label": "Marketing Manager",
+        "style": {
+          "fontSize": 32,
+          "fontWeight": 900
+        }
+      },
+      "width": 360,
+      "height": 60,
+      "style": {
+        "width": 360,
+        "height": 60
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 360,
+        "height": 60
+      }
+    },
+    {
+      "id": "biz_node_226_cw1lw0",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 100
+      },
+      "data": {
+        "label": "Consumer Psychology",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_227_pgvtaz",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 176
+      },
+      "data": {
+        "label": "Cognitive Biases",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_229_y988xz",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 176
+      },
+      "data": {
+        "label": "Emotional Triggers",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_231_bo71zh",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 176
+      },
+      "data": {
+        "label": "Behavioral Economics",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_233_pe1t60",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 176
+      },
+      "data": {
+        "label": "Decision Making",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_235_7fu63u",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 176
+      },
+      "data": {
+        "label": "Trust & Credibility",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_237_pnpcsk",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 176
+      },
+      "data": {
+        "label": "Loss Aversion",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_239_gjo985",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 304
+      },
+      "data": {
+        "label": "Brand Strategy",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_241_ehy4du",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 380
+      },
+      "data": {
+        "label": "Brand Identity",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_243_f7sc1w",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 380
+      },
+      "data": {
+        "label": "Positioning Statement",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_245_1ehgx2",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 380
+      },
+      "data": {
+        "label": "Target Audience",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_247_dd86sg",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 380
+      },
+      "data": {
+        "label": "Brand Voice & Tone",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_249_yfindq",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 380
+      },
+      "data": {
+        "label": "Visual Identity",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_251_vwj80t",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 380
+      },
+      "data": {
+        "label": "Brand Equity",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_253_wiyq33",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 508
+      },
+      "data": {
+        "label": "Content Marketing",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_255_olfelm",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 584
+      },
+      "data": {
+        "label": "Content Strategy",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_257_ttmpst",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 584
+      },
+      "data": {
+        "label": "Blogging & SEO Writing",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_259_niyu8s",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 584
+      },
+      "data": {
+        "label": "Video Marketing",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_261_qkowdu",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 584
+      },
+      "data": {
+        "label": "Podcast Marketing",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_263_aixbtw",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 584
+      },
+      "data": {
+        "label": "Email Newsletters",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_265_o8cc4e",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 584
+      },
+      "data": {
+        "label": "Content Calendar",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_267_5zm7cr",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 712
+      },
+      "data": {
+        "label": "SEO",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_269_lrqx87",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 788
+      },
+      "data": {
+        "label": "On-Page SEO",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_271_o7hk1n",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 788
+      },
+      "data": {
+        "label": "Keyword Research",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_273_j3o4eg",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 788
+      },
+      "data": {
+        "label": "Technical SEO",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_275_exlk7b",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 788
+      },
+      "data": {
+        "label": "Link Building",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_277_xhh7j8",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 788
+      },
+      "data": {
+        "label": "SEO Audit",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_279_nt6ynh",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 788
+      },
+      "data": {
+        "label": "Google Analytics / GSC",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_281_dlhxya",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 916
+      },
+      "data": {
+        "label": "Paid Advertising",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_283_4z3thp",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 992
+      },
+      "data": {
+        "label": "Google Ads",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_285_1bldca",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 992
+      },
+      "data": {
+        "label": "Meta Ads",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_287_iimpme",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 992
+      },
+      "data": {
+        "label": "LinkedIn Ads",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_289_0fnfv5",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 992
+      },
+      "data": {
+        "label": "Campaign Structure",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_291_h4emgk",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 992
+      },
+      "data": {
+        "label": "Creative Testing",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_293_degh51",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 992
+      },
+      "data": {
+        "label": "Budget Allocation",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_295_1bctk2",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 1120
+      },
+      "data": {
+        "label": "Performance Marketing",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_297_ulnvtd",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 1196
+      },
+      "data": {
+        "label": "CPA & ROAS",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_299_5wmmic",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 1196
+      },
+      "data": {
+        "label": "Attribution Modeling",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_301_o9bfv1",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 1196
+      },
+      "data": {
+        "label": "Retargeting",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_303_9vgnhj",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 1196
+      },
+      "data": {
+        "label": "Landing Page Optimization",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_305_ozdk4m",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 1196
+      },
+      "data": {
+        "label": "Conversion Rate Optimization",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_307_et4l64",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 1196
+      },
+      "data": {
+        "label": "Marketing Mix Modeling",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_309_sfulzi",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 1324
+      },
+      "data": {
+        "label": "Marketing Analytics",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_311_sv7mfz",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 1400
+      },
+      "data": {
+        "label": "Marketing Funnels",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_313_ih19a9",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 1400
+      },
+      "data": {
+        "label": "UTM Parameters",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_315_7wlqqg",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 1400
+      },
+      "data": {
+        "label": "GA4 & Dashboards",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_317_nnjuh8",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 1400
+      },
+      "data": {
+        "label": "Cohort Analysis",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_319_lm25gf",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 1400
+      },
+      "data": {
+        "label": "Customer LTV",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_321_xs8eid",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 1400
+      },
+      "data": {
+        "label": "CAC Payback Period",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_323_dliph1",
+      "type": "topic",
+      "position": {
+        "x": 250,
+        "y": 1528
+      },
+      "data": {
+        "label": "Growth & Campaigns",
+        "style": {
+          "fontSize": 17,
+          "borderColor": "#1e1e2e",
+          "borderWidth": "3px"
+        }
+      },
+      "width": 300,
+      "height": 56,
+      "style": {
+        "width": 300,
+        "height": 56
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 300,
+        "height": 56
+      }
+    },
+    {
+      "id": "biz_node_325_bth7et",
+      "type": "topic",
+      "position": {
+        "x": -370,
+        "y": 1604
+      },
+      "data": {
+        "label": "Campaign Planning",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_327_l1crvz",
+      "type": "topic",
+      "position": {
+        "x": -110,
+        "y": 1604
+      },
+      "data": {
+        "label": "Multi-Channel Strategy",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_329_1s9bfc",
+      "type": "topic",
+      "position": {
+        "x": 150,
+        "y": 1604
+      },
+      "data": {
+        "label": "Influencer Marketing",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_331_tdhm7z",
+      "type": "topic",
+      "position": {
+        "x": 410,
+        "y": 1604
+      },
+      "data": {
+        "label": "PR & Communications",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_333_topmuh",
+      "type": "topic",
+      "position": {
+        "x": 670,
+        "y": 1604
+      },
+      "data": {
+        "label": "Event Marketing",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    },
+    {
+      "id": "biz_node_335_aofmo5",
+      "type": "topic",
+      "position": {
+        "x": 930,
+        "y": 1604
+      },
+      "data": {
+        "label": "Co-Marketing Partnerships",
+        "style": {
+          "fontSize": 15,
+          "borderColor": "#2D2622"
+        }
+      },
+      "width": 240,
+      "height": 48,
+      "style": {
+        "width": 240,
+        "height": 48
+      },
+      "zIndex": 999,
+      "dragging": false,
+      "focusable": true,
+      "measured": {
+        "width": 240,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "biz_node_228_8d1esy",
+      "source": "biz_node_226_cw1lw0",
+      "target": "biz_node_227_pgvtaz",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_230_hlnikj",
+      "source": "biz_node_226_cw1lw0",
+      "target": "biz_node_229_y988xz",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_232_q46mt8",
+      "source": "biz_node_226_cw1lw0",
+      "target": "biz_node_231_bo71zh",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_234_i34god",
+      "source": "biz_node_226_cw1lw0",
+      "target": "biz_node_233_pe1t60",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_236_g6et2z",
+      "source": "biz_node_226_cw1lw0",
+      "target": "biz_node_235_7fu63u",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_238_bryc81",
+      "source": "biz_node_226_cw1lw0",
+      "target": "biz_node_237_pnpcsk",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_240_4xkjd3",
+      "source": "biz_node_226_cw1lw0",
+      "target": "biz_node_239_gjo985",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_242_n36p55",
+      "source": "biz_node_239_gjo985",
+      "target": "biz_node_241_ehy4du",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_244_yy6zz5",
+      "source": "biz_node_239_gjo985",
+      "target": "biz_node_243_f7sc1w",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_246_ih43ay",
+      "source": "biz_node_239_gjo985",
+      "target": "biz_node_245_1ehgx2",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_248_40p8nx",
+      "source": "biz_node_239_gjo985",
+      "target": "biz_node_247_dd86sg",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_250_yk7l4d",
+      "source": "biz_node_239_gjo985",
+      "target": "biz_node_249_yfindq",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_252_95iqjb",
+      "source": "biz_node_239_gjo985",
+      "target": "biz_node_251_vwj80t",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_254_y9c29n",
+      "source": "biz_node_239_gjo985",
+      "target": "biz_node_253_wiyq33",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_256_3q4gwp",
+      "source": "biz_node_253_wiyq33",
+      "target": "biz_node_255_olfelm",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_258_h6w3iu",
+      "source": "biz_node_253_wiyq33",
+      "target": "biz_node_257_ttmpst",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_260_u17m8s",
+      "source": "biz_node_253_wiyq33",
+      "target": "biz_node_259_niyu8s",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_262_b08u17",
+      "source": "biz_node_253_wiyq33",
+      "target": "biz_node_261_qkowdu",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_264_4bdgj9",
+      "source": "biz_node_253_wiyq33",
+      "target": "biz_node_263_aixbtw",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_266_fjwizy",
+      "source": "biz_node_253_wiyq33",
+      "target": "biz_node_265_o8cc4e",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_268_p1f9tv",
+      "source": "biz_node_253_wiyq33",
+      "target": "biz_node_267_5zm7cr",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_270_vlpqdx",
+      "source": "biz_node_267_5zm7cr",
+      "target": "biz_node_269_lrqx87",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_272_80i506",
+      "source": "biz_node_267_5zm7cr",
+      "target": "biz_node_271_o7hk1n",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_274_16ymji",
+      "source": "biz_node_267_5zm7cr",
+      "target": "biz_node_273_j3o4eg",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_276_s3cm1r",
+      "source": "biz_node_267_5zm7cr",
+      "target": "biz_node_275_exlk7b",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_278_2blifw",
+      "source": "biz_node_267_5zm7cr",
+      "target": "biz_node_277_xhh7j8",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_280_yxhcjq",
+      "source": "biz_node_267_5zm7cr",
+      "target": "biz_node_279_nt6ynh",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_282_68qguc",
+      "source": "biz_node_267_5zm7cr",
+      "target": "biz_node_281_dlhxya",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_284_yqnh3v",
+      "source": "biz_node_281_dlhxya",
+      "target": "biz_node_283_4z3thp",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_286_gzla32",
+      "source": "biz_node_281_dlhxya",
+      "target": "biz_node_285_1bldca",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_288_ftyp1h",
+      "source": "biz_node_281_dlhxya",
+      "target": "biz_node_287_iimpme",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_290_b4bq0i",
+      "source": "biz_node_281_dlhxya",
+      "target": "biz_node_289_0fnfv5",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_292_p0yqo6",
+      "source": "biz_node_281_dlhxya",
+      "target": "biz_node_291_h4emgk",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_294_zcmc8q",
+      "source": "biz_node_281_dlhxya",
+      "target": "biz_node_293_degh51",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_296_q901e3",
+      "source": "biz_node_281_dlhxya",
+      "target": "biz_node_295_1bctk2",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_298_gpzxrw",
+      "source": "biz_node_295_1bctk2",
+      "target": "biz_node_297_ulnvtd",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_300_1uxrib",
+      "source": "biz_node_295_1bctk2",
+      "target": "biz_node_299_5wmmic",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_302_lc3jzs",
+      "source": "biz_node_295_1bctk2",
+      "target": "biz_node_301_o9bfv1",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_304_m2062v",
+      "source": "biz_node_295_1bctk2",
+      "target": "biz_node_303_9vgnhj",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_306_oyj4bw",
+      "source": "biz_node_295_1bctk2",
+      "target": "biz_node_305_ozdk4m",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_308_crc84q",
+      "source": "biz_node_295_1bctk2",
+      "target": "biz_node_307_et4l64",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_310_z2amtd",
+      "source": "biz_node_295_1bctk2",
+      "target": "biz_node_309_sfulzi",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_312_mw3oqc",
+      "source": "biz_node_309_sfulzi",
+      "target": "biz_node_311_sv7mfz",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_314_4r8pb4",
+      "source": "biz_node_309_sfulzi",
+      "target": "biz_node_313_ih19a9",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_316_5e68vm",
+      "source": "biz_node_309_sfulzi",
+      "target": "biz_node_315_7wlqqg",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_318_jea23m",
+      "source": "biz_node_309_sfulzi",
+      "target": "biz_node_317_nnjuh8",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_320_i2wf5i",
+      "source": "biz_node_309_sfulzi",
+      "target": "biz_node_319_lm25gf",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_322_7fgy3e",
+      "source": "biz_node_309_sfulzi",
+      "target": "biz_node_321_xs8eid",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_324_bc6qnu",
+      "source": "biz_node_309_sfulzi",
+      "target": "biz_node_323_dliph1",
+      "type": "default",
+      "animated": false,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_326_yirmks",
+      "source": "biz_node_323_dliph1",
+      "target": "biz_node_325_bth7et",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_328_wa1eot",
+      "source": "biz_node_323_dliph1",
+      "target": "biz_node_327_l1crvz",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_330_lbnn05",
+      "source": "biz_node_323_dliph1",
+      "target": "biz_node_329_1s9bfc",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_332_e92jzw",
+      "source": "biz_node_323_dliph1",
+      "target": "biz_node_331_tdhm7z",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_334_6wkw9g",
+      "source": "biz_node_323_dliph1",
+      "target": "biz_node_333_topmuh",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    },
+    {
+      "id": "biz_node_336_9301ms",
+      "source": "biz_node_323_dliph1",
+      "target": "biz_node_335_aofmo5",
+      "type": "default",
+      "animated": true,
+      "style": {
+        "stroke": "#2b78e4",
+        "strokeWidth": 2.5,
+        "strokeDasharray": "5 5"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#2b78e4"
+      }
+    }
+  ]
+}
