@@ -6,10 +6,10 @@ import '@xyflow/react/dist/style.css';
 
 const TopicNode = ({ data }: NodeProps) => (
   <div 
-    style={{ ...data.style, border: '2px solid', borderRadius: '8px', padding: '10px', fontWeight: 'bold' }}
+    style={{ ...(data.style as React.CSSProperties || {}), border: '2px solid', borderRadius: '8px', padding: '10px', fontWeight: 'bold' }}
     className="bg-white hover:bg-stone-50 transition-colors cursor-pointer text-center flex items-center justify-center w-full h-full"
   >
-    {data.label}
+    {data.label as React.ReactNode}
     <Handle type="source" position={Position.Bottom} className="opacity-0" />
     <Handle type="target" position={Position.Top} className="opacity-0" />
   </div>
@@ -17,61 +17,64 @@ const TopicNode = ({ data }: NodeProps) => (
 
 const SubtopicNode = ({ data }: NodeProps) => (
   <div 
-    style={{ ...data.style, border: '1px dashed', borderRadius: '4px', padding: '6px', fontSize: '14px' }}
+    style={{ ...(data.style as React.CSSProperties || {}), border: '1px dashed', borderRadius: '4px', padding: '6px', fontSize: '14px' }}
     className="bg-white hover:bg-stone-50 transition-colors cursor-pointer text-center flex items-center justify-center w-full h-full"
   >
-    {data.label}
+    {data.label as React.ReactNode}
   </div>
 );
 
 const ParagraphNode = ({ data }: NodeProps) => (
   <div 
-    style={{ ...data.style, padding: '4px', fontSize: '14px', whiteSpace: 'pre-wrap' }}
+    style={{ ...(data.style as React.CSSProperties || {}), padding: '4px', fontSize: '14px', whiteSpace: 'pre-wrap' }}
     className="text-stone-600 flex items-center justify-center w-full h-full"
   >
-    {data.label}
+    {data.label as React.ReactNode}
   </div>
 );
 
 const TitleNode = ({ data }: NodeProps) => (
   <div 
-    style={{ ...data.style, fontWeight: '900', fontSize: '32px', letterSpacing: '-0.05em' }}
+    style={{ ...(data.style as React.CSSProperties || {}), fontWeight: '900', fontSize: '32px', letterSpacing: '-0.05em' }}
     className="text-stone-900 flex items-center justify-center w-full h-full"
   >
-    {data.label}
+    {data.label as React.ReactNode}
   </div>
 );
 
-const VerticalNode = ({ data }: NodeProps) => (
-  <div className="w-full h-full flex items-center justify-center">
-     <div style={{ width: '4px', height: '100%', backgroundColor: data.style?.stroke || '#CBD5E1' }}></div>
-  </div>
-);
+const VerticalNode = ({ data }: NodeProps) => {
+  const styleObj = (data.style || {}) as any;
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <div style={{ width: '4px', height: '100%', backgroundColor: styleObj.stroke || '#CBD5E1' }}></div>
+    </div>
+  );
+};
 
 const ButtonNode = ({ data }: NodeProps) => (
   <div 
-    style={{ ...data.style, padding: '8px', borderRadius: '6px' }}
+    style={{ ...(data.style as React.CSSProperties || {}), padding: '8px', borderRadius: '6px' }}
     className="bg-indigo-600 text-white font-bold cursor-pointer text-center hover:bg-indigo-700 transition-colors flex items-center justify-center w-full h-full"
   >
-    {data.label}
+    {data.label as React.ReactNode}
   </div>
 );
 
 const LabelNode = ({ data }: NodeProps) => (
   <div 
-    style={{ ...data.style }}
+    style={{ ...(data.style as React.CSSProperties || {}) }}
     className="text-xs font-bold uppercase tracking-widest text-stone-400 flex items-center justify-center w-full h-full"
   >
-    {data.label}
+    {data.label as React.ReactNode}
   </div>
 );
 
 const LegendNode = ({ data }: NodeProps) => (
   <div 
-    style={{ ...data.style, border: '1px solid', padding: '8px', borderRadius: '4px' }}
+    style={{ ...(data.style as React.CSSProperties || {}), border: '1px solid', padding: '8px', borderRadius: '4px' }}
     className="bg-white text-xs flex items-center justify-center w-full h-full"
   >
-    {data.label}
+    {data.label as React.ReactNode}
   </div>
 );
 
