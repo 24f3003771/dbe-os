@@ -184,16 +184,16 @@ function RoadmapCanvas({ nodes, edges, title }: { nodes: any[], edges: any[], ti
       
       {/* Quick Navigator Sidebar */}
       <div className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-stone-200 flex flex-col z-10 shrink-0">
-        <div className="p-4 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
-            <h3 className="font-bold text-xs uppercase tracking-widest text-stone-500">Navigator</h3>
-            <div className="flex gap-1 text-stone-400">
-                <button onClick={() => zoomIn({ duration: 300 })} className="p-1 hover:bg-stone-200 hover:text-stone-800 rounded transition-colors" title="Zoom In">
+        <div className="h-10 border-b border-[#2d2d2f] flex items-center justify-between bg-[#1c1c1e] px-4">
+            <h3 className="font-bold text-[10px] uppercase tracking-widest text-[#86868b]">Navigator</h3>
+            <div className="flex gap-1 text-[#86868b]">
+                <button onClick={() => zoomIn({ duration: 300 })} className="p-1 hover:bg-[#2d2d2f] hover:text-white rounded transition-colors" title="Zoom In">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
                 </button>
-                <button onClick={() => zoomOut({ duration: 300 })} className="p-1 hover:bg-stone-200 hover:text-stone-800 rounded transition-colors" title="Zoom Out">
+                <button onClick={() => zoomOut({ duration: 300 })} className="p-1 hover:bg-[#2d2d2f] hover:text-white rounded transition-colors" title="Zoom Out">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
                 </button>
-                <button onClick={() => fitView({ duration: 500 })} className="p-1 hover:bg-stone-200 hover:text-stone-800 rounded transition-colors" title="Fit View">
+                <button onClick={() => fitView({ duration: 500 })} className="p-1 hover:bg-[#2d2d2f] hover:text-white rounded transition-colors" title="Fit View">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
                 </button>
             </div>
@@ -214,7 +214,7 @@ function RoadmapCanvas({ nodes, edges, title }: { nodes: any[], edges: any[], ti
       {/* Main Canvas Area */}
       <div className="flex-1 flex flex-col h-full relative">
         {/* Mac OS Header */}
-        <div className="h-10 bg-[#1c1c1e] w-full flex items-center px-4 relative z-10 shrink-0">
+        <div className="h-10 bg-[#1c1c1e] border-b border-[#2d2d2f] w-full flex items-center px-4 relative z-10 shrink-0">
            <div className="flex gap-1.5 absolute left-4">
               <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
               <div className="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
@@ -278,8 +278,12 @@ export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { 
       // By default, roadmap edges should have arrows at the end if they are connecting nodes
       const edgeStroke = e.style?.stroke || '#94A3B8';
       
+      // Strip handle ids because our custom nodes only have one default handle,
+      // preventing ReactFlow from quietly dropping edges!
+      const { sourceHandle, targetHandle, ...restEdge } = e;
+      
       return {
-        ...e,
+        ...restEdge,
         type: e.type || 'default',
         animated: e.data?.edgeStyle === 'dashed' || !!e.style?.strokeDasharray,
         markerEnd: {
