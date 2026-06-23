@@ -65,7 +65,7 @@ export default function RoleRoadmapPage() {
         )}
 
         {!loading && !error && nodes && edges && (
-          <RoadmapRenderer nodesData={nodes} edgesData={edges} />
+          <RoadmapRenderer nodesData={nodes} edgesData={edges} title={role} />
         )}
       </div>
     </div>
