@@ -18,7 +18,7 @@ export default function RoleRoadmapPage() {
   // Progress tracking state
   const [isStarted, setIsStarted] = useState(false);
   const [completedTopics, setCompletedTopics] = useState<string[]>([]);
-  const [progressLoading, setProgressLoading] = useState(false);
+  const [tutorialStep, setTutorialStep] = useState(0);
 
   useEffect(() => {
     async function loadRoadmap() {
@@ -57,22 +57,28 @@ export default function RoleRoadmapPage() {
     }
   }, [role]);
 
-  const startRoadmap = async () => {
+  const handleNextTutorial = () => {
+    if (tutorialStep < 2) {
+      setTutorialStep(s => s + 1);
+    } else {
+      finishTutorialAndStart();
+    }
+  };
+
+  const finishTutorialAndStart = async () => {
+    // Optimistically unblock the UI so user isn't stuck if DB fails
+    setIsStarted(true);
+    setCompletedTopics([]);
+    setTutorialStep(0);
+    
     try {
-      setProgressLoading(true);
-      const res = await fetch('/api/roadmaps/progress', {
+      await fetch('/api/roadmaps/progress', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roadmapId: role })
       });
-      if (res.ok) {
-        setIsStarted(true);
-        setCompletedTopics([]);
-      }
     } catch (err) {
       console.error("Failed to start roadmap", err);
-    } finally {
-      setProgressLoading(false);
     }
   };
 
@@ -151,20 +157,59 @@ export default function RoleRoadmapPage() {
                 {/* Start Roadmap Overlay */}
                 {!isStarted && (
                   <div className="absolute inset-0 z-10 bg-slate-50/50 backdrop-blur-[2px] flex items-center justify-center p-4">
-                    <div className="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200/60 max-w-md text-center">
-                      <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
-                        🚀
+                    <div className="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200/60 max-w-md text-center transition-all duration-300 transform scale-100">
+                      
+                      {/* Step Dots */}
+                      <div className="flex justify-center gap-1.5 mb-6">
+                        {[0, 1, 2].map(step => (
+                          <div 
+                            key={step} 
+                            className={`h-1.5 rounded-full transition-all duration-300 ${tutorialStep === step ? 'w-6 bg-slate-800' : 'w-1.5 bg-slate-200'}`}
+                          />
+                        ))}
                       </div>
-                      <h2 className="text-2xl font-black text-slate-800 mb-2">Ready to start?</h2>
-                      <p className="text-slate-500 mb-6 text-sm">
-                        Set this roadmap as your active target. You'll be able to track your progress, mark topics as complete, and build your skillset step-by-step.
-                      </p>
+
+                      {tutorialStep === 0 && (
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                          <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
+                            🚀
+                          </div>
+                          <h2 className="text-2xl font-black text-slate-800 mb-2">Ready to start?</h2>
+                          <p className="text-slate-500 mb-6 text-sm">
+                            Set this roadmap as your active target. You'll be able to track your progress, mark topics as complete, and build your skillset step-by-step.
+                          </p>
+                        </div>
+                      )}
+
+                      {tutorialStep === 1 && (
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                          <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
+                            🖱️
+                          </div>
+                          <h2 className="text-2xl font-black text-slate-800 mb-2">How to use it</h2>
+                          <p className="text-slate-500 mb-6 text-sm">
+                            Click on any topic chip on the timeline to open its detailed notes, learning resources, and quick tips to master that specific skill.
+                          </p>
+                        </div>
+                      )}
+
+                      {tutorialStep === 2 && (
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
+                            📈
+                          </div>
+                          <h2 className="text-2xl font-black text-slate-800 mb-2">Track progress</h2>
+                          <p className="text-slate-500 mb-6 text-sm">
+                            Once you've learned a topic, mark it as completed inside the notes panel. Your overall progress will be tracked right here in the sidebar!
+                          </p>
+                        </div>
+                      )}
+
                       <button 
-                        onClick={startRoadmap}
-                        disabled={progressLoading}
-                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                        onClick={handleNextTutorial}
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
                       >
-                        {progressLoading ? "Starting..." : "Start this Roadmap"}
+                        {tutorialStep === 0 ? "Start this Roadmap" : tutorialStep === 1 ? "Next: Track Progress" : "Let's Go!"}
                       </button>
                     </div>
                   </div>
