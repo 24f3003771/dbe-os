@@ -34,6 +34,7 @@ model User {
   todos                 Todo[]
   profile               Profile?
   examResults           ExamResult[]
+  roadmaps              UserRoadmap[]
 }
 
 model ExamResult {
@@ -315,4 +316,29 @@ model Connection {
   targetProfile  Profile  @relation("TargetConnections", fields: [targetProfileId], references: [id], onDelete: Cascade)
 
   @@unique([profileId, targetProfileId])
+}
+
+// ─── Career Roadmaps Tracking ─────────────────────────
+model UserRoadmap {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmapId String   // e.g., "software-architect"
+  status    String   @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  completedTopics CompletedTopic[]
+  
+  @@unique([userId, roadmapId])
+}
+
+model CompletedTopic {
+  id            String      @id @default(cuid())
+  userRoadmapId String
+  userRoadmap   UserRoadmap @relation(fields: [userRoadmapId], references: [id], onDelete: Cascade)
+  topicLabel    String      // e.g., "Data Structures & Algorithms"
+  completedAt   DateTime    @default(now())
+  
+  @@unique([userRoadmapId, topicLabel])
 }

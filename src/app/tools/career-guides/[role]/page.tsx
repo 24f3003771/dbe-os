@@ -14,6 +14,11 @@ export default function RoleRoadmapPage() {
   const [edges, setEdges] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  // Progress tracking state
+  const [isStarted, setIsStarted] = useState(false);
+  const [completedTopics, setCompletedTopics] = useState<string[]>([]);
+  const [progressLoading, setProgressLoading] = useState(false);
 
   useEffect(() => {
     async function loadRoadmap() {
@@ -30,8 +35,67 @@ export default function RoleRoadmapPage() {
         setLoading(false);
       }
     }
-    if (role) loadRoadmap();
+    
+    async function fetchProgress() {
+      try {
+        const res = await fetch(`/api/roadmaps/progress?roadmapId=${role}`);
+        if (res.ok) {
+          const data = await res.json();
+          setIsStarted(data.started);
+          if (data.started) {
+            setCompletedTopics(data.completedTopics || []);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch progress", err);
+      }
+    }
+    
+    if (role) {
+      loadRoadmap();
+      fetchProgress();
+    }
   }, [role]);
+
+  const startRoadmap = async () => {
+    try {
+      setProgressLoading(true);
+      const res = await fetch('/api/roadmaps/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roadmapId: role })
+      });
+      if (res.ok) {
+        setIsStarted(true);
+        setCompletedTopics([]);
+      }
+    } catch (err) {
+      console.error("Failed to start roadmap", err);
+    } finally {
+      setProgressLoading(false);
+    }
+  };
+
+  const toggleTopicCompletion = async (topicLabel: string, completed: boolean) => {
+    try {
+      // Optimistic update
+      setCompletedTopics(prev => 
+        completed ? [...prev, topicLabel] : prev.filter(t => t !== topicLabel)
+      );
+      
+      await fetch('/api/roadmaps/topics/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roadmapId: role, topicLabel, completed })
+      });
+    } catch (err) {
+      console.error("Failed to toggle topic", err);
+      // Revert on error
+      setCompletedTopics(prev => 
+        !completed ? [...prev, topicLabel] : prev.filter(t => t !== topicLabel)
+      );
+    }
+  };
 
   const displayTitle = role
     .split('-')
@@ -84,9 +148,39 @@ export default function RoleRoadmapPage() {
 
             {/* Roadmap Body */}
             {!loading && !error && nodes && (
-              <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8f9fa]">
-                <div className="max-w-6xl mx-auto">
-                  <RoadmapRenderer nodesData={nodes} edgesData={edges ?? []} title={role} />
+              <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8f9fa] relative">
+                
+                {/* Start Roadmap Overlay */}
+                {!isStarted && (
+                  <div className="absolute inset-0 z-10 bg-slate-50/50 backdrop-blur-[2px] flex items-center justify-center p-4">
+                    <div className="bg-white p-8 rounded-3xl shadow-2xl border border-slate-200/60 max-w-md text-center">
+                      <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
+                        🚀
+                      </div>
+                      <h2 className="text-2xl font-black text-slate-800 mb-2">Ready to start?</h2>
+                      <p className="text-slate-500 mb-6 text-sm">
+                        Set this roadmap as your active target. You'll be able to track your progress, mark topics as complete, and build your skillset step-by-step.
+                      </p>
+                      <button 
+                        onClick={startRoadmap}
+                        disabled={progressLoading}
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                      >
+                        {progressLoading ? "Starting..." : "Start this Roadmap"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className={`max-w-6xl mx-auto ${!isStarted ? 'opacity-30 pointer-events-none select-none blur-sm transition-all duration-500' : ''}`}>
+                  <RoadmapRenderer 
+                    nodesData={nodes} 
+                    edgesData={edges ?? []} 
+                    title={role} 
+                    isStarted={isStarted}
+                    completedTopics={completedTopics}
+                    onToggleComplete={toggleTopicCompletion}
+                  />
                 </div>
               </div>
             )}

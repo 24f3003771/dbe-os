@@ -81,24 +81,38 @@ const SECTION_ACCENTS = [
 ];
 
 // ─── Info Modal (Macbook Pop) ────────────────────────────────────────────────────────
-function InfoModal({ topic, onClose }: { topic: { label: string; description?: string } | null; onClose: () => void }) {
+function InfoModal({ 
+  topic, 
+  onClose,
+  isCompleted,
+  onToggleComplete
+}: { 
+  topic: { label: string; description?: string } | null; 
+  onClose: () => void;
+  isCompleted: boolean;
+  onToggleComplete: (label: string, completed: boolean) => void;
+}) {
   if (!topic) return null;
   const note = topic.description || getTopicNote(topic.label);
   return (
     <>
       <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 animate-in fade-in duration-200" onClick={onClose} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] shadow-2xl w-full max-w-sm overflow-hidden pointer-events-auto animate-in zoom-in-95 duration-200" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5) inset' }}>
-          <div className="px-6 py-5 border-b border-slate-200/50 flex items-start justify-between">
+        <div className="bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] shadow-2xl w-full max-w-sm overflow-hidden pointer-events-auto animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5) inset' }}>
+          <div className="px-6 py-5 border-b border-slate-200/50 flex items-start justify-between shrink-0">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Topic Notes</p>
-              <h3 className="font-black text-slate-800 text-lg leading-tight">{topic.label}</h3>
+              <h3 className="font-black text-slate-800 text-lg leading-tight flex items-center gap-2">
+                {topic.label}
+                {isCompleted && <span className="w-5 h-5 bg-green-500 text-white rounded-full flex items-center justify-center text-xs shadow-sm">✓</span>}
+              </h3>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors flex-shrink-0" aria-label="Close">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
             </button>
           </div>
-          <div className="max-h-[60vh] overflow-y-auto p-6 flex flex-col gap-6">
+          
+          <div className="overflow-y-auto p-6 flex flex-col gap-6 flex-1">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> How to Learn
@@ -137,6 +151,22 @@ function InfoModal({ topic, onClose }: { topic: { label: string; description?: s
                 ))}
               </div>
             </div>
+          </div>
+
+          <div className="p-4 border-t border-slate-200/50 shrink-0 bg-slate-50">
+            <button 
+              onClick={() => onToggleComplete(topic.label, !isCompleted)}
+              className={`w-full py-3.5 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center gap-2 text-sm
+                ${isCompleted 
+                  ? 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100' 
+                  : 'bg-green-500 hover:bg-green-600 text-white shadow-md hover:shadow-lg'}`}
+            >
+              {isCompleted ? (
+                <><span>↺</span> Mark as Incomplete</>
+              ) : (
+                <><span>✓</span> Mark as Completed</>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -184,12 +214,27 @@ function HowToModal({ onClose }: { onClose: () => void }) {
 }
 
 // ─── Main Renderer ────────────────────────────────────────────────────────────
-export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { nodesData: any[]; edgesData?: any[]; title?: string }) {
+export default function RoadmapRenderer({ 
+  nodesData, 
+  edgesData = [], 
+  title,
+  isStarted = false,
+  completedTopics = [],
+  onToggleComplete = () => {}
+}: { 
+  nodesData: any[]; 
+  edgesData?: any[]; 
+  title?: string;
+  isStarted?: boolean;
+  completedTopics?: string[];
+  onToggleComplete?: (label: string, completed: boolean) => void;
+}) {
   const [selectedTopic, setSelectedTopic] = useState<{ label: string; description?: string } | null>(null);
   const [showHowTo, setShowHowTo] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const sections = useMemo(() => parseRoadmap(nodesData), [nodesData]);
+  const totalTopics = useMemo(() => sections.reduce((a, s) => a + s.topics.length, 0), [sections]);
 
   const scrollToSection = useCallback((id: string) => {
     document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -209,6 +254,24 @@ export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { 
             className="w-5 h-5 rounded-full bg-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-300 transition-colors text-[10px] font-black flex items-center justify-center"
             title="How to use this roadmap">i</button>
         </div>
+        
+        {isStarted && (
+          <div className="px-2 mb-4">
+            <div className="bg-white rounded-xl p-3 border border-slate-200 shadow-sm">
+              <div className="flex justify-between items-end mb-2">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Progress</span>
+                <span className="text-xs font-black text-slate-700">{completedTopics.length} / {totalTopics}</span>
+              </div>
+              <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-green-500 transition-all duration-500 rounded-full"
+                  style={{ width: `${Math.round((completedTopics.length / Math.max(totalTopics, 1)) * 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="overflow-y-auto flex-1 pb-4">
           {sections.map((sec, i) => {
             const accent = SECTION_ACCENTS[i % SECTION_ACCENTS.length];
@@ -263,15 +326,24 @@ export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { 
                     {/* Topics area */}
                     {sec.topics.length > 0 ? (
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
-                        {sec.topics.map((topic) => (
-                          <button
-                            key={topic.id}
-                            onClick={() => setSelectedTopic({ label: topic.label, description: topic.description })}
-                            className="text-left bg-slate-50 hover:bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm rounded-xl px-3.5 py-3 text-[13px] font-semibold text-slate-600 hover:text-slate-900 transition-all duration-200 hover:-translate-y-0.5 leading-tight group/topic"
-                          >
-                            <span className="line-clamp-2">{topic.label}</span>
-                          </button>
-                        ))}
+                        {sec.topics.map((topic) => {
+                          const isCompleted = completedTopics.includes(topic.label);
+                          return (
+                            <button
+                              key={topic.id}
+                              onClick={() => setSelectedTopic({ label: topic.label, description: topic.description })}
+                              className={`text-left border hover:shadow-sm rounded-xl px-3.5 py-3 text-[13px] font-semibold transition-all duration-200 hover:-translate-y-0.5 leading-tight group/topic flex items-start gap-2
+                                ${isCompleted 
+                                  ? 'bg-green-50/50 border-green-200 text-green-800 hover:bg-green-50' 
+                                  : 'bg-slate-50 hover:bg-white border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-900'}`}
+                            >
+                              <div className="flex-1 min-w-0 line-clamp-2">{topic.label}</div>
+                              {isCompleted && (
+                                <span className="text-green-500 font-black text-[10px] mt-0.5 shrink-0">✓</span>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     ) : (
                       <div className="text-slate-400 text-sm italic">
@@ -290,7 +362,7 @@ export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { 
               <div className="w-4 h-4 rounded-full bg-slate-300 ring-4 ring-[#f8f9fa]" />
             </div>
             <div className="flex-1 py-4 text-slate-400 font-bold text-sm">
-              You've reached the end! · {sections.reduce((a, s) => a + s.topics.length, 0)} topics total
+              You've reached the end! · {totalTopics} topics total
             </div>
           </div>
         </div>
@@ -302,7 +374,14 @@ export default function RoadmapRenderer({ nodesData, edgesData = [], title }: { 
         aria-label="How to use">i</button>
 
       {showHowTo && <HowToModal onClose={() => setShowHowTo(false)} />}
-      {selectedTopic && <InfoModal topic={selectedTopic} onClose={() => setSelectedTopic(null)} />}
+      {selectedTopic && (
+        <InfoModal 
+          topic={selectedTopic} 
+          onClose={() => setSelectedTopic(null)} 
+          isCompleted={completedTopics.includes(selectedTopic.label)}
+          onToggleComplete={onToggleComplete}
+        />
+      )}
     </div>
   );
 }
