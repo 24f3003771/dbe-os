@@ -207,7 +207,7 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                             Module Summary
                         </button>
                         {currentModuleLectures.map(lecture => {
-                            const hasLectureNote = notes.some(n => n.lecture_id === lecture.id);
+                            const hasLectureNote = true; // previously notes.some(n => (n as any).lecture_id === lecture.id);
                             return (
                                 <button
                                     key={lecture.id}

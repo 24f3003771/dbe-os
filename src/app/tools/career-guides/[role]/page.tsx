@@ -154,8 +154,7 @@ export default function RoleRoadmapPage() {
               </div>
             )}
 
-            {/* Roadmap Body */}
-            {!loading && !error && nodes && (
+            {!loading && !error && nodes ? (
               <div className="relative">
                 
                 <div className="max-w-6xl mx-auto mb-6">
@@ -239,7 +238,7 @@ export default function RoleRoadmapPage() {
                   />
                 </div>
               </div>
-            )}
+            ) : null}
         </div>
       </div>
       <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={true} />
