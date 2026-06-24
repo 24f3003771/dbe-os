@@ -151,20 +151,24 @@ function LoginPageContent() {
 
     return (
         <div 
-            className="min-h-screen bg-cover bg-center bg-no-repeat relative flex flex-col font-body" 
-            style={{ backgroundImage: "url('/login-bg.jpg')" }}
+            className="min-h-screen relative flex flex-col font-body overflow-hidden" 
         >
-            {/* Subtle overlay to ensure text is readable against the background */}
-            <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+            {/* Background Image with beautiful blending */}
+            <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat saturate-[1.1] contrast-[1.05]"
+                style={{ backgroundImage: "url('/login-bg.jpg')" }}
+            />
+            {/* Subtle warm gradient overlay to blend edges */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9]/40 via-transparent to-[#FFFDF9]/80 pointer-events-none" />
 
             {/* Floating Navbar */}
-            <div className="w-full max-w-7xl mx-auto px-4 pt-6 md:pt-10 relative z-20">
-                <div className="bg-white/95 backdrop-blur-md rounded-full px-6 py-4 shadow-xl flex items-center justify-between border border-stone-200/50">
+            <div className="w-full max-w-[80rem] mx-auto px-4 pt-6 md:pt-8 relative z-20">
+                <div className="bg-[#FFFDF9]/80 backdrop-blur-xl rounded-[2rem] px-6 py-3.5 shadow-sm border border-white/50 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <img src="/logo.png" alt="DBEOS Logo" className="h-8 md:h-10 object-contain" />
+                        <img src="/logo.png" alt="DBEOS Logo" className="h-6 md:h-8 object-contain" />
                     </div>
                     <div className="flex items-center gap-4">
-                        <Link href="/register" className="bg-[#FF9056] hover:bg-[#ff7b36] text-white px-8 py-2.5 rounded-full font-black text-sm transition-all shadow-md shadow-orange-500/20 active:scale-95">
+                        <Link href="/register" className="bg-[#F28C60] hover:bg-[#E57A4E] text-white px-8 py-2.5 rounded-full font-bold text-sm transition-all shadow-md shadow-[#F28C60]/20 active:scale-95">
                             Register
                         </Link>
                     </div>
@@ -172,19 +176,19 @@ function LoginPageContent() {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 w-full max-w-7xl mx-auto px-4 flex flex-col items-center justify-center relative z-10 pt-12 pb-24">
+            <div className="flex-1 w-full max-w-7xl mx-auto px-4 flex flex-col items-center justify-center relative z-10 pt-10 pb-24">
                 
                 {/* Hero Typography */}
                 <motion.div 
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: "easeOut" }}
-                    className="text-center mb-12 md:mb-16"
+                    className="text-center mb-10 md:mb-14"
                 >
-                    <h1 className="text-5xl md:text-[5rem] leading-[1.1] font-black text-white tracking-tight mb-8 drop-shadow-2xl">
+                    <h1 className="text-6xl md:text-[5.5rem] leading-[1.1] font-black text-white tracking-tight mb-6 drop-shadow-md">
                         the best, one-stop,<br/>study platform
                     </h1>
-                    <div className="inline-block bg-white/30 backdrop-blur-md border border-white/40 text-white font-bold px-8 py-4 rounded-full shadow-2xl text-sm md:text-lg">
+                    <div className="inline-block bg-[#E5D7CC]/30 backdrop-blur-md border border-white/40 text-white font-bold px-8 py-3 rounded-full shadow-lg text-sm md:text-[15px]">
                         designed to get you into your dream college
                     </div>
                 </motion.div>
