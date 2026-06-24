@@ -27,6 +27,95 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
         }
     }, [user, isInitialized, fetchFarmData]);
 
+    const [controls, setControls] = useState({
+        darkMode: false,
+        focusMode: false,
+        strictMode: false,
+        notifications: false,
+    });
+
+    useEffect(() => {
+        const loadControls = () => {
+            if (typeof window !== 'undefined') {
+                const saved = localStorage.getItem('dbe_controls');
+                if (saved) {
+                    setControls(JSON.parse(saved));
+                }
+            }
+        };
+        loadControls();
+        if (typeof window !== 'undefined') {
+            window.addEventListener('dbe_controls_updated', loadControls);
+            return () => window.removeEventListener('dbe_controls_updated', loadControls);
+        }
+    }, []);
+
+    // 1. Dark Mode
+    useEffect(() => {
+        if (controls.darkMode) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.filter = 'invert(0.9) hue-rotate(180deg)';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.filter = 'none';
+        }
+    }, [controls.darkMode]);
+
+    // 2. Focus Mode
+    useEffect(() => {
+        if (controls.focusMode) {
+            document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+    }, [controls.focusMode]);
+
+    // 3. Strict Mode
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            if (!controls.strictMode) return;
+            const target = e.target as HTMLElement;
+            const link = target.closest('a');
+            if (link) {
+                const href = link.getAttribute('href');
+                if (href && !href.startsWith('/quiz') && !href.startsWith('/notes') && href !== '/') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    alert('Strict Mode is enabled! Access to this section is disabled to help you focus entirely on your Quiz and Notes.');
+                }
+            }
+        };
+        
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (controls.strictMode) {
+                e.preventDefault();
+                e.returnValue = 'Strict Mode is active! Are you sure you want to leave your focus session?';
+            }
+        };
+        
+        if (typeof window !== 'undefined') {
+            document.addEventListener('click', handleClick, true);
+            window.addEventListener('beforeunload', handleBeforeUnload);
+            
+            return () => {
+                document.removeEventListener('click', handleClick, true);
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+            };
+        }
+    }, [controls.strictMode]);
+
+    // 4. Notifications
+    useEffect(() => {
+        if (controls.notifications) {
+            if (typeof window !== 'undefined' && 'Notification' in window) {
+                Notification.requestPermission();
+            }
+        }
+    }, [controls.notifications]);
+
+
     if (pathname.startsWith('/hq-admin')) {
         return null;
     }

@@ -20,71 +20,31 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
 
   // Control Center State
-  const [controls, setControls] = useState({
-    darkMode: false,
-    focusMode: false,
-    strictMode: false,
-    notifications: false,
-    performanceMode: false,
-    theme: 'Peach'
+  const [controls, setControls] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('dbe_controls');
+      if (saved) return JSON.parse(saved);
+    }
+    return {
+      darkMode: false,
+      focusMode: false,
+      strictMode: false,
+      notifications: false,
+      performanceMode: false,
+      theme: 'Peach'
+    };
   });
 
   const toggleControl = (key: keyof typeof controls) => {
     if (typeof controls[key] === 'boolean') {
-        setControls(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
+        const newControls = { ...controls, [key]: !controls[key] };
+        setControls(newControls);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('dbe_controls', JSON.stringify(newControls));
+            window.dispatchEvent(new Event('dbe_controls_updated'));
+        }
     }
   };
-
-  // --- Actual Features for DBE Controls ---
-  
-  // 1. Dark Mode
-  useEffect(() => {
-    if (controls.darkMode) {
-      document.documentElement.classList.add('dark');
-      // A fun actual working hack if dark classes aren't fully configured
-      document.documentElement.style.filter = 'invert(0.9) hue-rotate(180deg)';
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.filter = 'none';
-    }
-  }, [controls.darkMode]);
-
-  // 2. Focus Mode (Fullscreen toggle)
-  useEffect(() => {
-    if (controls.focusMode) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
-  }, [controls.focusMode]);
-
-  // 3. Strict Mode (Prevent closing the tab)
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (controls.strictMode) {
-        e.preventDefault();
-        e.returnValue = 'Strict Mode is active! Are you sure you want to leave your focus session?';
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [controls.strictMode]);
-
-  // 4. Notifications
-  useEffect(() => {
-    if (controls.notifications) {
-      if ('Notification' in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
-            new Notification('DBE OS', { body: 'System notifications have been successfully enabled!' });
-          }
-        });
-      }
-    }
-  }, [controls.notifications]);
-
 
   // Focus Mode State
   const [isFocusFlipped, setIsFocusFlipped] = useState(false);
