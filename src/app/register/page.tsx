@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User as UserIcon, ArrowRight, Loader2, ArrowLeft, MapPin, Building, Phone, GraduationCap, Compass, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, User as UserIcon, ArrowRight, Loader2, ArrowLeft, MapPin, Building, Phone, GraduationCap, Compass, CheckCircle2, Code2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -412,6 +412,13 @@ export default function RegisterPage() {
                     </AnimatePresence>
                 </div>
             </motion.div>
+
+            {/* Minimal Developers Link */}
+            <div className="absolute bottom-6 opacity-40 hover:opacity-100 transition-opacity z-10">
+                <Link href="/developers" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-primary transition-colors">
+                    <Code2 className="w-3.5 h-3.5" /> Meet the Developers
+                </Link>
+            </div>
         </div>
     );
 }

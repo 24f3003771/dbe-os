@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2, KeyRound, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, KeyRound, ArrowLeft, CheckCircle2, Code2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -160,7 +160,7 @@ function LoginPageContent() {
                 />
 
                 {/* Main Content - Only the Login Box */}
-                <div className="relative z-10 w-full px-4 flex items-center justify-center">
+                <div className="relative z-10 w-full px-4 flex flex-col items-center justify-center h-full">
                     
                     {/* Login Form Box */}
                     <motion.div 
@@ -362,6 +362,13 @@ function LoginPageContent() {
                         )}
                     </AnimatePresence>
                 </motion.div>
+
+                {/* Minimal Developers Link */}
+                <div className="absolute bottom-6 opacity-40 hover:opacity-100 transition-opacity">
+                    <Link href="/developers" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 hover:text-stone-900 transition-colors">
+                        <Code2 className="w-3.5 h-3.5" /> Meet the Developers
+                    </Link>
+                </div>
                 </div>
             </div>
         </div>
