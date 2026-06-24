@@ -164,8 +164,6 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                         </div>
                     )}
                 </div>
-
-                </div>
             </div>
 
             {/* Main Content Area */}
