@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Loader2, CheckCircle2, AlertCircle, Trash2, Tag, Hash } from "lucide-react";
+import { Loader2, CheckCircle2, AlertCircle, Trash2, Tag, Hash, Info } from "lucide-react";
 import MDEditor from '@uiw/react-md-editor';
 import { upsertNote, deleteNote, type Note, type Subject, type Topic } from "@/actions/curriculum";
 
@@ -165,6 +165,55 @@ export default function NotesTab({
                         >
                             {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Save Note"}
                         </button>
+                    </div>
+                </div>
+
+                {/* AI Prompt Generator & ToC Info */}
+                <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                        <div>
+                            <h4 className="text-sm font-black text-indigo-900 flex items-center gap-2">
+                                🤖 AI Notes Generator
+                            </h4>
+                            <p className="text-xs font-bold text-indigo-600 mt-1 leading-relaxed">
+                                Copy this prompt and paste it into ChatGPT/Claude along with your raw notes. It will automatically format them with beautiful HTML styles, examples, formulas, and mid-quizzes!
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => {
+                                const prompt = `Act as an expert educational content creator. I will provide you with raw notes or text. You must convert it into a beautifully formatted Markdown file using HTML with inline CSS. Use the following exact styling guidelines:
+
+1. Module Title: \`<h1 style="color: #2c3e50; border-bottom: 2px solid #eef2f5; padding-bottom: 10px;">Module X — [Name]</h1>\`
+2. Subtopics: \`<h2 style="color: #2980b9; margin-top: 30px;">X.X [Subtopic Name]</h2>\`
+   (Note: The frontend automatically reads these <h2> tags to build the Table of Contents in the sidebar!)
+3. Main Content Blocks: Wrap paragraphs in \`<div style="background-color: #ffffff; border: 1px solid #eef2f5; padding: 18px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">...</div>\`
+4. Important Quotes/Concepts: \`<div style="border: 3px dashed #1abc9c; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.4em; color: #2c3e50; background-color: #f4fdfb; margin-bottom: 15px;"><strong style="color: #16a085;">[Text]</strong></div>\`
+5. Easy Everyday Examples: \`<div style="border: 2px dashed #27ae60; padding: 18px; border-radius: 12px; background-color: #eafaf1; margin-bottom: 15px;">🍵 <strong style="color: #27ae60; font-size: 1.1em;">Easy Everyday Example: [Title]</strong><br><br>[Example text]</div>\` (Vary the border/text colors and emojis like #2980b9 for 📊, #8e44ad for 🏭, #d4ac0d for 🤝, #c0392b for 🚫).
+6. Definition blocks: \`<div style="border-left: 4px solid #8e44ad; padding: 15px; background-color: #f4f6f7; margin-top: 10px; border-radius: 0 8px 8px 0;"><strong style="color: #8e44ad;">🧮 Definition:</strong><br><code style="font-size: 1.15em; color: #2c3e50; font-family: inherit;">[Definition Text]</code></div>\`
+7. Formulas Block: Same as definition block, but with heading '🧮 The Math Formulas:'.
+8. Lists: Use \`<ul style="list-style-type: none; padding-left: 15px; margin-top: 8px; margin-bottom: 15px;">\` and \`<li style="margin-bottom: 5px;">➤ [Item]</li>\`.
+9. Mid-Quizzes: After each major topic section, include a 2-3 question short quiz using the format:
+\`<div style="border: 3px dashed #34495e; padding: 25px; border-radius: 15px; background-color: #f8f9f9; color: #2c3e50;">
+<h2 style="color: #2c3e50; text-align: center; margin-top: 0;">🧠 Quick Knowledge Check</h2>
+<div style="background-color: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #ecf0f1; margin-bottom: 10px;"><strong style="color: #2980b9;">Q1. [Question]</strong></div>
+<details><summary><strong style="color: #27ae60; cursor: pointer; font-size: 1.2em; display: block; background-color: #eafaf1; padding: 15px; border-radius: 8px; border: 2px solid #2ecc71; text-align: center;">✅ Click here to reveal the Answer Key</strong></summary>
+<div style="margin-top: 15px; padding: 20px; background-color: #ffffff; border-left: 5px solid #2ecc71; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"><p><strong>A1:</strong> [Answer]</p></div></details></div>\`
+
+Now, process the following raw notes into this format:
+[INSERT RAW NOTES HERE]`;
+                                navigator.clipboard.writeText(prompt);
+                                alert("Prompt copied to clipboard!");
+                            }}
+                            className="shrink-0 px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-colors"
+                        >
+                            Copy Prompt
+                        </button>
+                    </div>
+                    <div className="pt-3 border-t border-indigo-100 flex items-center gap-2">
+                        <Info className="w-4 h-4 text-indigo-400 shrink-0" />
+                        <p className="text-xs font-bold text-indigo-500">
+                            <strong>Note on Topics:</strong> You do NOT need to manually add topics below. The frontend sidebar Table of Contents is <strong>automatically generated</strong> from any <code className="bg-indigo-100 px-1 py-0.5 rounded text-indigo-700">## Headings</code> in your markdown!
+                        </p>
                     </div>
                 </div>
 
