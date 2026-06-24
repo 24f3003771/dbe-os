@@ -56,53 +56,8 @@ export default function CareerGuidesPage() {
 
   return (
     <>
-    <div className="w-full h-[calc(100vh-5rem)] p-2 md:p-4 bg-[#fdfaf6] perspective-1000">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8, y: 100, rotateX: 10 }}
-        animate={isClosing ? "closing" : "visible"}
-        variants={{
-          visible: { opacity: 1, scale: 1, y: 0, scaleX: 1, rotateX: 0, filter: "blur(0px)", transition: { type: "spring", damping: 25, stiffness: 200 } },
-          closing: { opacity: 0, scale: 0.05, y: -500, scaleX: 0.1, rotateX: -20, filter: "blur(20px)", transition: { duration: 0.4, ease: [0.32, 0, 0.67, 0] } }
-        }}
-        style={{ transformOrigin: "top center" }}
-        className="w-full h-full bg-[#fcfaf8] rounded-3xl shadow-2xl border border-stone-200/60 flex flex-col overflow-hidden relative"
-      >
-        {/* Mac OS Header */}
-        <div className="h-12 bg-white/80 backdrop-blur-md border-b border-stone-200/60 w-full flex items-center px-4 relative shrink-0 z-20 group/mac">
-          <div className="flex gap-2 absolute left-4">
-            <button 
-              onClick={handleClose}
-              className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] flex items-center justify-center relative overflow-hidden"
-              title="Close"
-            >
-              <span className="opacity-0 group-hover/mac:opacity-100 text-[#4d0000] text-[8px] font-black leading-none">×</span>
-            </button>
-            <button 
-              onClick={handleMinimize}
-              className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] flex items-center justify-center relative overflow-hidden"
-              title="Minimize"
-            >
-              <span className="opacity-0 group-hover/mac:opacity-100 text-[#5c4300] text-[10px] font-black leading-none mt-[-4px]">-</span>
-            </button>
-            <button 
-              onClick={() => {
-                if (!document.fullscreenElement) {
-                  document.documentElement.requestFullscreen().catch(() => {});
-                } else {
-                  document.exitFullscreen();
-                }
-              }}
-              className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] flex items-center justify-center relative overflow-hidden"
-              title="Fullscreen"
-            >
-              <span className="opacity-0 group-hover/mac:opacity-100 text-[#004d00] text-[8px] font-black leading-none rotate-45">⤢</span>
-            </button>
-          </div>
-        </div>
-        
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-stone-200/80 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-stone-300/80">
-          <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 max-w-7xl mx-auto">
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-stone-200/80 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-stone-300/80">
+        <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 max-w-7xl mx-auto">
       
       <Link href="/tools" className="inline-flex items-center gap-2 text-stone-400 hover:text-[#1A1A1A] font-bold text-sm transition-colors group mb-2 w-fit">
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Opportunity Hub
@@ -207,12 +162,9 @@ export default function CareerGuidesPage() {
           )}
         </div>
       </div>
-      
-          </div>
         </div>
-      </motion.div>
-    </div>
-    <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={false} />
+      </div>
+      <HowToUseRoadmapModal isOpen={showHowTo} onClose={() => setShowHowTo(false)} showDontShowAgain={false} />
     </>
   );
 }
