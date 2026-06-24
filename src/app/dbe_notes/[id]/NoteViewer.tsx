@@ -14,19 +14,25 @@ type Subject = { id: string; name: string; code: string; module_count: number; t
 
 // Helper to extract headings for the Table of Contents
 function extractHeadings(markdown: string) {
-    const headingRegex = /^(#{1,3})\s+(.+)$/gm;
+    const mdRegex = /^(#{1,3})\s+(.+)$/gm;
+    const htmlRegex = /<h([1-3])[^>]*>(.*?)<\/h\1>/gi;
     const headings = [];
+    
     let match;
-    while ((match = headingRegex.exec(markdown)) !== null) {
-        const text = match[2].trim();
+    while ((match = mdRegex.exec(markdown)) !== null) {
+        const text = match[2].replace(/<[^>]+>/g, '').trim();
         const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        headings.push({
-            level: match[1].length,
-            text,
-            id
-        });
+        headings.push({ level: match[1].length, text, id, index: match.index });
     }
-    return headings;
+    
+    while ((match = htmlRegex.exec(markdown)) !== null) {
+        const text = match[2].replace(/<[^>]+>/g, '').trim();
+        const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        headings.push({ level: parseInt(match[1]), text, id, index: match.index });
+    }
+    
+    headings.sort((a, b) => a.index - b.index);
+    return headings.map(h => ({ level: h.level, text: h.text, id: h.id }));
 }
 
 // Generate an ID for headers rendered by ReactMarkdown

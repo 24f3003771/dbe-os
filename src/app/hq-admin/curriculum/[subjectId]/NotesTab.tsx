@@ -183,21 +183,24 @@ export default function NotesTab({
                             onClick={() => {
                                 const prompt = `Act as an expert educational content creator. I will provide you with raw notes or text. You must convert it into a beautifully formatted Markdown file using HTML with inline CSS. Use the following exact styling guidelines:
 
-1. Module Title: \`<h1 style="color: #2c3e50; border-bottom: 2px solid #eef2f5; padding-bottom: 10px;">Module X — [Name]</h1>\`
-2. Subtopics: \`<h2 style="color: #2980b9; margin-top: 30px;">X.X [Subtopic Name]</h2>\`
+1. Length & Depth: The notes should neither be too brief nor exhaustively in-depth. Keep it at the sweet spot—concise enough to be highly readable, but deep enough to cover all crucial topics thoroughly.
+2. Module Title: \`<h1 style="color: #2c3e50; border-bottom: 2px solid #eef2f5; padding-bottom: 10px;">Module X — [Name]</h1>\`
+3. Subtopics: \`<h2 style="color: #2980b9; margin-top: 30px;">X.X [Subtopic Name]</h2>\`
    (Note: The frontend automatically reads these <h2> tags to build the Table of Contents in the sidebar!)
-3. Main Content Blocks: Wrap paragraphs in \`<div style="background-color: #ffffff; border: 1px solid #eef2f5; padding: 18px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">...</div>\`
-4. Important Quotes/Concepts: \`<div style="border: 3px dashed #1abc9c; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.4em; color: #2c3e50; background-color: #f4fdfb; margin-bottom: 15px;"><strong style="color: #16a085;">[Text]</strong></div>\`
-5. Easy Everyday Examples: \`<div style="border: 2px dashed #27ae60; padding: 18px; border-radius: 12px; background-color: #eafaf1; margin-bottom: 15px;">🍵 <strong style="color: #27ae60; font-size: 1.1em;">Easy Everyday Example: [Title]</strong><br><br>[Example text]</div>\` (Vary the border/text colors and emojis like #2980b9 for 📊, #8e44ad for 🏭, #d4ac0d for 🤝, #c0392b for 🚫).
-6. Definition blocks: \`<div style="border-left: 4px solid #8e44ad; padding: 15px; background-color: #f4f6f7; margin-top: 10px; border-radius: 0 8px 8px 0;"><strong style="color: #8e44ad;">🧮 Definition:</strong><br><code style="font-size: 1.15em; color: #2c3e50; font-family: inherit;">[Definition Text]</code></div>\`
-7. Formulas Block: Same as definition block, but with heading '🧮 The Math Formulas:'.
-8. Lists: Use \`<ul style="list-style-type: none; padding-left: 15px; margin-top: 8px; margin-bottom: 15px;">\` and \`<li style="margin-bottom: 5px;">➤ [Item]</li>\`.
-9. Mid-Quizzes: After each major topic section, include a 2-3 question short quiz using the format:
+4. Main Content Blocks: Wrap paragraphs in \`<div style="background-color: #ffffff; border: 1px solid #eef2f5; padding: 18px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">...</div>\`
+5. Important Quotes/Concepts: \`<div style="border: 3px dashed #1abc9c; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.4em; color: #2c3e50; background-color: #f4fdfb; margin-bottom: 15px;"><strong style="color: #16a085;">[Text]</strong></div>\`
+6. Easy Everyday Examples: \`<div style="border: 2px dashed #27ae60; padding: 18px; border-radius: 12px; background-color: #eafaf1; margin-bottom: 15px;">🍵 <strong style="color: #27ae60; font-size: 1.1em;">Easy Everyday Example: [Title]</strong><br><br>[Example text]</div>\` (Vary the border/text colors and emojis like #2980b9 for 📊, #8e44ad for 🏭, #d4ac0d for 🤝, #c0392b for 🚫).
+7. Definition blocks: \`<div style="border-left: 4px solid #8e44ad; padding: 15px; background-color: #f4f6f7; margin-top: 10px; border-radius: 0 8px 8px 0;"><strong style="color: #8e44ad;">🧮 Definition:</strong><br><code style="font-size: 1.15em; color: #2c3e50; font-family: inherit;">[Definition Text]</code></div>\`
+8. Formulas Block: Same as definition block, but with heading '🧮 The Math Formulas:'.
+9. Lists: Use \`<ul style="list-style-type: none; padding-left: 15px; margin-top: 8px; margin-bottom: 15px;">\` and \`<li style="margin-bottom: 5px;">➤ [Item]</li>\`.
+10. Mid-Quizzes: After each major topic section, include a 4-5 question Multiple Choice quiz using the format:
 \`<div style="border: 3px dashed #34495e; padding: 25px; border-radius: 15px; background-color: #f8f9f9; color: #2c3e50;">
 <h2 style="color: #2c3e50; text-align: center; margin-top: 0;">🧠 Quick Knowledge Check</h2>
-<div style="background-color: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #ecf0f1; margin-bottom: 10px;"><strong style="color: #2980b9;">Q1. [Question]</strong></div>
+<div style="background-color: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #ecf0f1; margin-bottom: 10px;"><strong style="color: #2980b9;">Q1. [Question]</strong><br><br>A) [Option A]<br>B) [Option B]<br>C) [Option C]<br>D) [Option D]</div>
+<!-- Add Q2, Q3, Q4, Q5 in the same format above -->
 <details><summary><strong style="color: #27ae60; cursor: pointer; font-size: 1.2em; display: block; background-color: #eafaf1; padding: 15px; border-radius: 8px; border: 2px solid #2ecc71; text-align: center;">✅ Click here to reveal the Answer Key</strong></summary>
-<div style="margin-top: 15px; padding: 20px; background-color: #ffffff; border-left: 5px solid #2ecc71; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"><p><strong>A1:</strong> [Answer]</p></div></details></div>\`
+<div style="margin-top: 15px; padding: 20px; background-color: #ffffff; border-left: 5px solid #2ecc71; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"><p><strong>A1:</strong> [Correct Option Letter] - [Explanation]</p></div></details></div>\`
+11. Progress Checkpoint: At the very end of the notes, include this EXACT HTML block: \`<div style="text-align: center; margin-top: 50px; padding-top: 30px; border-top: 2px dashed #eef2f5;"><h3 style="color: #2c3e50; font-size: 1.8em; margin-bottom: 20px;">🎉 You made it to the end!</h3><button style="background-color: #2ecc71; color: white; padding: 18px 40px; font-size: 1.2em; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 12px rgba(46,204,113,0.3); font-family: inherit;">✅ Mark Module as Complete</button></div>\`
 
 Now, process the following raw notes into this format:
 [INSERT RAW NOTES HERE]`;
