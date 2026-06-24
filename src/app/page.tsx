@@ -22,9 +22,9 @@ export default function Dashboard() {
   // Control Center State
   const [controls, setControls] = useState({
     darkMode: false,
-    focusMode: true,
+    focusMode: false,
     strictMode: false,
-    notifications: true,
+    notifications: false,
     performanceMode: false,
     theme: 'Peach'
   });
@@ -34,6 +34,57 @@ export default function Dashboard() {
         setControls(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
     }
   };
+
+  // --- Actual Features for DBE Controls ---
+  
+  // 1. Dark Mode
+  useEffect(() => {
+    if (controls.darkMode) {
+      document.documentElement.classList.add('dark');
+      // A fun actual working hack if dark classes aren't fully configured
+      document.documentElement.style.filter = 'invert(0.9) hue-rotate(180deg)';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.filter = 'none';
+    }
+  }, [controls.darkMode]);
+
+  // 2. Focus Mode (Fullscreen toggle)
+  useEffect(() => {
+    if (controls.focusMode) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  }, [controls.focusMode]);
+
+  // 3. Strict Mode (Prevent closing the tab)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (controls.strictMode) {
+        e.preventDefault();
+        e.returnValue = 'Strict Mode is active! Are you sure you want to leave your focus session?';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [controls.strictMode]);
+
+  // 4. Notifications
+  useEffect(() => {
+    if (controls.notifications) {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            new Notification('DBE OS', { body: 'System notifications have been successfully enabled!' });
+          }
+        });
+      }
+    }
+  }, [controls.notifications]);
+
 
   // Focus Mode State
   const [isFocusFlipped, setIsFocusFlipped] = useState(false);
@@ -242,11 +293,11 @@ export default function Dashboard() {
               </div>
           </div>
 
-          {/* Control Center */}
+          {/* DBE Controls */}
           <div className="lg:col-span-4 flex flex-col">
               <div className="bg-[#FAF9F6] rounded-[2rem] p-8 border border-stone-100 shadow-sm flex flex-col flex-1">
                   <div className="flex items-center justify-between mb-8">
-                      <h3 className="font-black text-stone-900 text-sm md:text-base">Control Center</h3>
+                      <h3 className="font-black text-stone-900 text-sm md:text-base">DBE Controls</h3>
                       <Settings className="w-5 h-5 text-stone-400" />
                   </div>
 
