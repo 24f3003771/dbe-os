@@ -27,7 +27,7 @@ const Founders = [
   }
 ];
 
-export default function AboutPage() {
+export default function DevelopersPage() {
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center py-12 px-4">
       {/* Hero Section */}
@@ -36,11 +36,11 @@ export default function AboutPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-20 space-y-4"
       >
-        <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-1.5 rounded-full text-primary font-black text-[10px] tracking-widest uppercase mb-4">
-          <Rocket className="w-3.5 h-3.5" /> The Minds Behind The OS
+        <div className="inline-flex items-center gap-2 bg-[#FF5F56]/10 px-4 py-1.5 rounded-full text-[#FF5F56] font-black text-[10px] tracking-widest uppercase mb-4">
+          <Code2 className="w-3.5 h-3.5" /> The Developers Behind The OS
         </div>
         <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter text-on-surface leading-tight">
-          Architecting the <span className="text-primary italic">Future</span> <br/> of Academic Growth.
+          Meet the <span className="text-[#FF5F56] italic">Founders</span> <br/> of DBE OS.
         </h1>
         <p className="text-on-surface-variant max-w-2xl mx-auto font-medium text-lg">
           We built DBE OS to solve our own problems as IIM Bangalore scholars. Now, we're sharing that command center with you.
