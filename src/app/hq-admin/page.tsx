@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import AdminTable from "./AdminTable";
 import WaitlistPanel from "./WaitlistPanel";
 import AnnouncementsPanel from "./AnnouncementsPanel";
+import AssignmentsPanel from "./AssignmentsPanel";
 
 export default async function HQAdminPage() {
   const cookieStore = await cookies();
@@ -50,6 +51,12 @@ export default async function HQAdminPage() {
 
       {/* Announcements Management */}
       <AnnouncementsPanel />
+
+      {/* Divider */}
+      <div className="border-t border-outline-variant/20" />
+
+      {/* Global Assignments Management */}
+      <AssignmentsPanel />
     </div>
   );
 }

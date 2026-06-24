@@ -11,6 +11,8 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { getTomatoHistory } from "@/actions/farm";
+import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
+import TodaysMission from "@/components/TodaysMission";
 import { Caveat } from "next/font/google";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
@@ -350,49 +352,7 @@ export default function Dashboard() {
           </div>
 
           {/* To-Do (Today's Mission) */}
-          <div className="flex flex-col">
-              <div className="bg-white rounded-[2rem] p-8 border border-stone-100 shadow-sm flex flex-col flex-1 min-h-[350px]">
-                  <div className="flex items-center justify-between mb-8">
-                      <div className="flex items-center gap-2 text-indigo-600">
-                          <Target className="w-5 h-5" />
-                          <h3 className="font-black text-stone-900 text-base">Today's Mission</h3>
-                      </div>
-                      <MoreHorizontal className="w-5 h-5 text-stone-400 cursor-pointer" />
-                  </div>
-
-                  <div className="space-y-4 flex-1">
-                      <div className="flex items-center gap-3 cursor-pointer group p-1.5 -mx-1.5 rounded-lg hover:bg-stone-50 transition-colors">
-                          <div className="w-5 h-5 rounded-md bg-rose-500 flex items-center justify-center text-white shrink-0 shadow-sm shadow-rose-200 group-hover:bg-rose-600 transition-colors">
-                              <Check className="w-3.5 h-3.5 stroke-[3]" />
-                          </div>
-                          <span className="text-sm font-bold text-stone-500 line-through">Finish Economics Notes</span>
-                      </div>
-                      <div className="flex items-center gap-3 cursor-pointer group p-1.5 -mx-1.5 rounded-lg hover:bg-stone-50 transition-colors">
-                          <div className="w-5 h-5 rounded-md bg-rose-500 flex items-center justify-center text-white shrink-0 shadow-sm shadow-rose-200 group-hover:bg-rose-600 transition-colors">
-                              <Check className="w-3.5 h-3.5 stroke-[3]" />
-                          </div>
-                          <span className="text-sm font-bold text-stone-500 line-through">Attempt 2 Quizzes</span>
-                      </div>
-                      <div className="flex items-center gap-3 cursor-pointer group p-1.5 -mx-1.5 rounded-lg hover:bg-stone-50 transition-colors">
-                          <div className="w-5 h-5 rounded-md border-2 border-stone-200 flex items-center justify-center shrink-0 group-hover:border-rose-300 transition-colors"></div>
-                          <span className="text-sm font-bold text-stone-900">Revise Statistics Formulas</span>
-                      </div>
-                      <div className="flex items-center gap-3 cursor-pointer group p-1.5 -mx-1.5 rounded-lg hover:bg-stone-50 transition-colors">
-                          <div className="w-5 h-5 rounded-md border-2 border-stone-200 flex items-center justify-center shrink-0 group-hover:border-rose-300 transition-colors"></div>
-                          <span className="text-sm font-bold text-stone-900">Practice PYQs (10)</span>
-                      </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-stone-100">
-                      <div className="flex items-center justify-between mb-3">
-                          <span className="text-xs font-bold text-stone-500">66% Completed</span>
-                      </div>
-                      <div className="w-full bg-stone-100 h-2 rounded-full overflow-hidden flex">
-                          <div className="bg-rose-400 w-[66%] h-full rounded-l-full" />
-                      </div>
-                  </div>
-              </div>
-          </div>
+          <TodaysMission userId={user.id} />
 
           {/* Focus Mode (Functional & Flippable) */}
           <div className="flex flex-col relative" style={{ perspective: "1500px" }}>
