@@ -118,6 +118,22 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                         </h2>
                     </div>
 
+                    <div className="space-y-2 mb-6">
+                        <button
+                            onClick={() => setShowMedia(!showMedia)}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-xs shadow-sm transition-all"
+                        >
+                            {showMedia ? <ImageOff className="w-4 h-4 text-stone-400" /> : <ImageIcon className="w-4 h-4 text-indigo-500" />}
+                            {showMedia ? "Hide Media" : "Show Media"}
+                        </button>
+                        <button
+                            onClick={handlePrint}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100 rounded-xl font-black text-xs shadow-sm transition-all uppercase tracking-widest"
+                        >
+                            <Download className="w-4 h-4" /> Download PDF
+                        </button>
+                    </div>
+
                     <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-stone-400 mb-4 pb-2 border-b border-stone-200">
                         <List className="w-3.5 h-3.5" />
                         Topics
@@ -149,21 +165,6 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                     )}
                 </div>
 
-                {/* Bottom Actions */}
-                <div className="p-4 border-t border-stone-200 bg-white/50 backdrop-blur-md space-y-2">
-                    <button
-                        onClick={() => setShowMedia(!showMedia)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-xs shadow-sm transition-all"
-                    >
-                        {showMedia ? <ImageOff className="w-4 h-4 text-stone-400" /> : <ImageIcon className="w-4 h-4 text-indigo-500" />}
-                        {showMedia ? "Hide Media" : "Show Media"}
-                    </button>
-                    <button
-                        onClick={handlePrint}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100 rounded-xl font-black text-xs shadow-sm transition-all uppercase tracking-widest"
-                    >
-                        <Download className="w-4 h-4" /> Download PDF
-                    </button>
                 </div>
             </div>
 
