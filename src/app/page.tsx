@@ -352,7 +352,18 @@ export default function Dashboard() {
           </div>
 
           {/* To-Do (Today's Mission) */}
-          <TodaysMission userId={user.id} />
+          {user ? (
+            <TodaysMission userId={user.id} />
+          ) : (
+            <div className="bg-white rounded-[2rem] p-8 border border-stone-100 shadow-sm flex flex-col flex-1 min-h-[350px] animate-pulse">
+                <div className="h-6 w-32 bg-stone-100 rounded-md mb-8"></div>
+                <div className="space-y-4">
+                    <div className="h-8 bg-stone-50 rounded-lg"></div>
+                    <div className="h-8 bg-stone-50 rounded-lg"></div>
+                    <div className="h-8 bg-stone-50 rounded-lg"></div>
+                </div>
+            </div>
+          )}
 
           {/* Focus Mode (Functional & Flippable) */}
           <div className="flex flex-col relative" style={{ perspective: "1500px" }}>
