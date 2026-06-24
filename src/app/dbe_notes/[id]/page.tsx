@@ -20,7 +20,7 @@ export default async function UniversalNotePage({ params }: { params: Promise<{ 
     // Fetch all notes for this subject
     const { data: notes } = await supabase
         .from("notes")
-        .select("id, module_number, content, topic_id, lecture_id")
+        .select("id, module_number, content, topic_id")
         .eq("subject_id", id)
         .order("module_number", { ascending: true });
 

@@ -8,7 +8,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import DistributionVisualizer from "@/components/DistributionVisualizer";
 
-type Note = { id: string; module_number: number; content: string; topic_id: string | null; lecture_id?: string | null };
+type Note = { id: string; module_number: number; content: string; topic_id: string | null; };
 type Lecture = { id: string; module_number: number; lecture_number: number; title: string };
 type Subject = { id: string; name: string; code: string; module_count: number; term_id: number };
 
@@ -46,9 +46,7 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
         ? notes.find((n) => n.module_number === 99)
         : activeModule === "formula-sheet"
         ? notes.find((n) => n.module_number === 98)
-        : activeLectureId 
-        ? notes.find((n) => n.module_number === activeModule && n.lecture_id === activeLectureId)
-        : notes.find((n) => n.module_number === activeModule && !n.lecture_id);
+        : notes.find((n) => n.module_number === activeModule);
 
     const currentModuleLectures = typeof activeModule === "number" ? lectures.filter(l => l.module_number === activeModule) : [];
 
