@@ -3,6 +3,10 @@ import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import NoteViewer from "./NoteViewer";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
 export default async function UniversalNotePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const cookieStore = await cookies();
