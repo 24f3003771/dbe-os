@@ -150,25 +150,25 @@ function LoginPageContent() {
     };
 
     return (
-        <div className="h-screen w-screen overflow-hidden relative flex flex-col font-body bg-[#FAF9F6]">
-            {/* Background Image perfectly fitted, no scroll */}
-            <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('/login-bg.jpg')" }}
-            />
-            {/* Slight overlay just to ensure the login box has enough contrast if needed, but keeping it very subtle */}
-            <div className="absolute inset-0 bg-white/10 pointer-events-none" />
+        <div className="h-screen w-screen overflow-hidden flex font-body bg-[#FAF9F6] p-4 md:p-6">
+            {/* The Mac Block Container */}
+            <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden shadow-2xl flex items-center justify-center border border-stone-200/50">
+                {/* Background Image perfectly fitted with lowered saturation for blending */}
+                <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat saturate-[0.85] contrast-[0.95]"
+                    style={{ backgroundImage: "url('/login-bg.jpg')" }}
+                />
 
-            {/* Main Content - Only the Login Box */}
-            <div className="flex-1 w-full h-full flex items-center justify-center relative z-10 px-4">
-                
-                {/* Login Form Box */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="w-full max-w-md bg-white/90 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative"
-                >
+                {/* Main Content - Only the Login Box */}
+                <div className="relative z-10 w-full px-4 flex items-center justify-center">
+                    
+                    {/* Login Form Box */}
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="w-full max-w-[420px] bg-white/95 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative"
+                    >
                     <div className="text-center mb-10">
                         <div className="w-16 h-16 bg-[#FFF0EB] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
                             <KeyRound className="w-8 h-8 text-[#FF5F56]" />
