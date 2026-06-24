@@ -393,7 +393,7 @@ export default function Dashboard() {
                                   <RotateCcw className="w-5 h-5 text-stone-300 group-hover:text-rose-400 transition-colors" />
                               </div>
                               <span className="text-[8px] font-black text-stone-400 uppercase tracking-wider text-right max-w-[100px] leading-tight">
-                                  Flips this card to reveal your monthly study heat map !!
+                                  Flip card to reveal your monthly study heat map !!
                               </span>
                           </div>
                       </div>
