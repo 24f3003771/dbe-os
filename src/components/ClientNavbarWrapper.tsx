@@ -51,7 +51,7 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
                 setTimeout(() => {
                     main.classList.remove('genie-out');
                 }, 100);
-            }, 350);
+            }, 550);
         } else {
             if (action === 'close') router.push('/');
             if (action === 'minimize') router.back();
