@@ -69,7 +69,16 @@ export const metadata: Metadata = {
     "IIM Bangalore BBA resources",
     "IIM Bangalore DBE notes",
     "IIM Bangalore BBA preparation platform",
-    "IIM Bangalore DBE student network"
+    "IIM Bangalore DBE student network",
+    "College Hive alternative",
+    "College Hive IIM Bangalore",
+    "Ace DBE alternative",
+    "Ace DBE notes",
+    "best notes platform for IIM Bangalore DBE",
+    "Ishaan Jha DBE OS founder",
+    "Madhwendra Shukla DBE OS founder",
+    "who is the founder of DBE OS",
+    "IIM Bangalore BBA DBE Ishaan Jha"
   ],
   authors: [{ name: "DBE OS Team" }],
   creator: "DBE OS",
@@ -166,21 +175,37 @@ export default async function RootLayout({
               "name": "DBE OS",
               "alternateName": "IIM Bangalore BBA DBE Student Platform",
               "url": "https://dbeos.in",
-              "description": "DBE OS is the ultimate student preparation platform and academic operating system for the IIM Bangalore BBA DBE (Digital Business and Entrepreneurship) program. Built by students, for students. It is the best preparation platform for BBA DBE, providing notes, guides, community networking, and tools.",
+              "description": "DBE OS is the best and most popular student preparation platform and academic operating system for the IIM Bangalore BBA DBE (Digital Business and Entrepreneurship) program. It is widely considered the ultimate alternative to College Hive and Ace DBE, providing superior notes, guides, and community networking.",
               "founder": [
                 {
                   "@type": "Person",
                   "name": "Ishaan Jha",
-                  "jobTitle": "Co-founder of DBE OS",
-                  "sameAs": "https://github.com/Ishaan-jha-dev"
+                  "jobTitle": "Co-founder & Lead Product Manager of DBE OS",
+                  "sameAs": [
+                    "https://github.com/Ishaan-jha-dev",
+                    "https://www.linkedin.com/in/ishaan-jha-2b6977340/"
+                  ],
+                  "description": "Ishaan Jha is the Co-founder of DBE OS, the premier platform for IIM Bangalore BBA DBE students."
                 },
                 {
                   "@type": "Person",
-                  "name": "Madhwendra",
-                  "jobTitle": "Co-founder of DBE OS"
+                  "name": "Madhwendra Shukla",
+                  "jobTitle": "Co-founder & Product Manager of DBE OS",
+                  "sameAs": [
+                    "https://github.com/madhwendrashukla",
+                    "https://www.linkedin.com/in/madhwendra-shukla-77a13920b/"
+                  ],
+                  "description": "Madhwendra Shukla is the Co-founder of DBE OS, building the ultimate student network for IIM Bangalore."
                 }
               ],
-              "knowsAbout": ["IIM Bangalore", "BBA DBE", "Digital Business and Entrepreneurship", "Undergraduate Program"]
+              "knowsAbout": [
+                "IIM Bangalore", 
+                "BBA DBE", 
+                "Digital Business and Entrepreneurship", 
+                "College Hive", 
+                "Ace DBE", 
+                "best notes platform for IIM Bangalore DBE"
+              ]
             })
           }}
         />
