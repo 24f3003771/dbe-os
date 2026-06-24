@@ -116,7 +116,7 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
     }, [controls.notifications]);
 
 
-    if (pathname.startsWith('/hq-admin')) {
+    if (pathname.startsWith('/hq-admin') || pathname === '/login' || pathname === '/register') {
         return null;
     }
 

@@ -150,55 +150,24 @@ function LoginPageContent() {
     };
 
     return (
-        <div 
-            className="min-h-screen relative flex flex-col font-body overflow-hidden" 
-        >
-            {/* Background Image with beautiful blending */}
+        <div className="h-screen w-screen overflow-hidden relative flex flex-col font-body bg-[#FAF9F6]">
+            {/* Background Image perfectly fitted, no scroll */}
             <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat saturate-[1.1] contrast-[1.05]"
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: "url('/login-bg.jpg')" }}
             />
-            {/* Subtle warm gradient overlay to blend edges */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9]/40 via-transparent to-[#FFFDF9]/80 pointer-events-none" />
+            {/* Slight overlay just to ensure the login box has enough contrast if needed, but keeping it very subtle */}
+            <div className="absolute inset-0 bg-white/10 pointer-events-none" />
 
-            {/* Floating Navbar */}
-            <div className="w-full max-w-[80rem] mx-auto px-4 pt-6 md:pt-8 relative z-20">
-                <div className="bg-[#FFFDF9]/80 backdrop-blur-xl rounded-[2rem] px-6 py-3.5 shadow-sm border border-white/50 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <img src="/logo.png" alt="DBEOS Logo" className="h-6 md:h-8 object-contain" />
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Link href="/register" className="bg-[#F28C60] hover:bg-[#E57A4E] text-white px-8 py-2.5 rounded-full font-bold text-sm transition-all shadow-md shadow-[#F28C60]/20 active:scale-95">
-                            Register
-                        </Link>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="flex-1 w-full max-w-7xl mx-auto px-4 flex flex-col items-center justify-center relative z-10 pt-10 pb-24">
+            {/* Main Content - Only the Login Box */}
+            <div className="flex-1 w-full h-full flex items-center justify-center relative z-10 px-4">
                 
-                {/* Hero Typography */}
-                <motion.div 
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, ease: "easeOut" }}
-                    className="text-center mb-10 md:mb-14"
-                >
-                    <h1 className="text-6xl md:text-[5.5rem] leading-[1.1] font-black text-white tracking-tight mb-6 drop-shadow-md">
-                        the best, one-stop,<br/>study platform
-                    </h1>
-                    <div className="inline-block bg-[#E5D7CC]/30 backdrop-blur-md border border-white/40 text-white font-bold px-8 py-3 rounded-full shadow-lg text-sm md:text-[15px]">
-                        designed to get you into your dream college
-                    </div>
-                </motion.div>
-
                 {/* Login Form Box */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-                    className="w-full max-w-md bg-white/95 backdrop-blur-xl border border-stone-200/50 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative"
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="w-full max-w-md bg-white/90 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative"
                 >
                     <div className="text-center mb-10">
                         <div className="w-16 h-16 bg-[#FFF0EB] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
