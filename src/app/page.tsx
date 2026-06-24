@@ -5,7 +5,7 @@ import {
     BookOpen, Target, Flame, Trophy, Calendar, Zap, 
     MoreHorizontal, Play, Pause, CheckSquare, Square, Check,
     Clock, Grid, ChevronRight, ChevronLeft, ChevronDown, 
-    Moon, Lock, Settings, Bell, Palette, ChevronUp
+    Moon, Lock, Settings, Bell, Palette, ChevronUp, RotateCcw
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
@@ -387,8 +387,9 @@ export default function Dashboard() {
                           <div 
                               className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-stone-100 transition-colors cursor-pointer group"
                               onMouseEnter={() => setIsFocusFlipped(true)}
+                              title="Flip card to view monthly heat map"
                           >
-                              <Grid className="w-5 h-5 text-stone-300 group-hover:text-rose-400 transition-colors" />
+                              <RotateCcw className="w-5 h-5 text-stone-300 group-hover:text-rose-400 transition-colors" />
                           </div>
                       </div>
 
