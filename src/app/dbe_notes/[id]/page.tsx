@@ -18,11 +18,15 @@ export default async function UniversalNotePage({ params }: { params: Promise<{ 
     if (!subject) notFound();
 
     // Fetch all notes for this subject
-    const { data: notes } = await supabase
+    const { data: notes, error: notesError } = await supabase
         .from("notes")
-        .select("id, module_number, content, topic_id")
+        .select("*")
         .eq("subject_id", id)
         .order("module_number", { ascending: true });
+
+    if (notesError) {
+        console.error("Error fetching notes:", notesError);
+    }
 
     // Fetch lectures
     const { data: lectures } = await supabase
