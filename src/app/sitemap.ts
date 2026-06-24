@@ -40,5 +40,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    ...[
+      'best-notes-platform-for-iim-bangalore-dbe',
+      'iim-bangalore-bba-dbe',
+      'dbe-semester-1-notes',
+      'dbe-semester-2-notes',
+      'dbe-statistics-notes',
+      'dbe-economics-notes',
+      'dbe-quiz-answers',
+      'iim-bangalore-dbe-internship',
+      'dbe-career-roadmap',
+      'dbe-study-material',
+      'college-hive-alternative',
+      'ace-dbe-alternative'
+    ].map((slug) => ({
+      url: `${baseUrl}/p/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    })),
   ]
 }
