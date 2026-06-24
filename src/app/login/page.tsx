@@ -362,6 +362,7 @@ function LoginPageContent() {
                         )}
                     </AnimatePresence>
                 </motion.div>
+                </div>
             </div>
         </div>
     );
