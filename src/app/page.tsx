@@ -4,7 +4,7 @@ import { useFarmStore } from "@/hooks/useFarmStore";
 import { motion } from "framer-motion";
 import { 
     BookOpen, Target, Flame, Trophy, Calendar, Zap, 
-    MoreHorizontal, Play, CheckSquare, Square, Check,
+    MoreHorizontal, Play, Pause, CheckSquare, Square, Check,
     Clock, Grid, ChevronRight, ChevronLeft, ChevronDown, 
     Moon, Lock, Settings, Bell, Palette
 } from "lucide-react";
@@ -34,6 +34,45 @@ export default function Dashboard() {
         setControls(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
     }
   };
+
+  // Calendar Flip State
+  const [isCalendarFlipped, setIsCalendarFlipped] = useState(false);
+
+  // Focus Mode State
+  const FOCUS_TOTAL = 105 * 60; // 1h 45m
+  const [focusTime, setFocusTime] = useState(FOCUS_TOTAL);
+  const [isFocusActive, setIsFocusActive] = useState(false);
+
+  useEffect(() => {
+      let interval: NodeJS.Timeout;
+      if (isFocusActive && focusTime > 0) {
+          interval = setInterval(() => {
+              setFocusTime(prev => prev - 1);
+          }, 1000);
+      } else if (focusTime === 0) {
+          setIsFocusActive(false);
+      }
+      return () => clearInterval(interval);
+  }, [isFocusActive, focusTime]);
+
+  const toggleFocus = () => {
+      if (focusTime === 0) {
+          setFocusTime(FOCUS_TOTAL);
+          setIsFocusActive(true);
+      } else {
+          setIsFocusActive(!isFocusActive);
+      }
+  };
+
+  const formatFocusTime = (seconds: number) => {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      if (h > 0) return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const focusProgress = 553 - (553 * (focusTime / FOCUS_TOTAL));
 
   useEffect(() => {
     if (!isInitialized) fetchFarmData();
@@ -218,42 +257,113 @@ export default function Dashboard() {
       {/* Bottom Row: Calendar, To-Do, Focus Mode */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           
-          {/* Calendar (My Month) */}
-          <div className="flex flex-col">
-              <div className="bg-[#FFF4F0] rounded-[2rem] p-8 border border-[#FFEBE5] shadow-sm flex flex-col relative overflow-hidden flex-1 min-h-[350px]">
-                  <div className="flex justify-between items-center mb-8 z-10">
-                      <div className="flex items-center gap-2 text-rose-500">
-                          <Calendar className="w-5 h-5" />
-                          <h3 className="font-black text-stone-900 text-base">My Month</h3>
+          {/* Calendar / Study Heatmap (Flippable) */}
+          <div className="flex flex-col" style={{ perspective: "1000px" }}>
+              <motion.div 
+                  className="relative flex-1 w-full h-full min-h-[350px]"
+                  animate={{ rotateY: isCalendarFlipped ? 180 : 0 }}
+                  transition={{ duration: 0.6, type: "spring", stiffness: 200, damping: 20 }}
+                  style={{ transformStyle: "preserve-3d" }}
+              >
+                  {/* Front Side: My Month Calendar */}
+                  <div 
+                      className="absolute inset-0 bg-[#FFF4F0] rounded-[2rem] p-8 border border-[#FFEBE5] shadow-sm flex flex-col overflow-hidden"
+                      style={{ backfaceVisibility: "hidden" }}
+                  >
+                      <div className="flex justify-between items-center mb-8 z-10">
+                          <div className="flex items-center gap-2 text-rose-500">
+                              <Calendar className="w-5 h-5" />
+                              <h3 className="font-black text-stone-900 text-base">My Month</h3>
+                          </div>
+                          <div className="flex items-center gap-3">
+                              <span className={`text-xl text-rose-500 font-bold ${caveat.className} tracking-wide -rotate-6`}>June</span>
+                          </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                          <span className={`text-xl text-rose-500 font-bold ${caveat.className} tracking-wide -rotate-6`}>June</span>
-                      </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-7 gap-y-3 text-center text-xs font-black text-stone-400 mb-6 z-10 flex-1">
-                      {['S','M','T','W','T','F','S'].map(d => <div key={d}>{d}</div>)}
                       
-                      {/* Calendar Days Simulation */}
-                      {[...Array(30)].map((_, i) => {
-                          const d = i + 1;
-                          const isToday = d === 23;
-                          const hasGreen = d % 3 !== 0;
-                          const hasOrange = d % 5 === 0;
-                          return (
-                              <div key={i} className="relative flex flex-col items-center justify-center h-10 hover:bg-white/50 rounded-xl cursor-pointer transition-colors">
-                                  <span className={`font-bold text-sm ${isToday ? 'bg-rose-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm shadow-rose-300' : 'text-stone-700'}`}>
-                                      {d}
-                                  </span>
-                                  <div className="flex gap-1 mt-1 absolute bottom-0">
-                                      {hasGreen && <div className="w-1 h-1 rounded-full bg-emerald-400" />}
-                                      {hasOrange && <div className="w-1 h-1 rounded-full bg-orange-400" />}
+                      <div className="grid grid-cols-7 gap-y-3 text-center text-xs font-black text-stone-400 mb-6 z-10 flex-1 cursor-pointer group" onClick={() => setIsCalendarFlipped(true)}>
+                          {['S','M','T','W','T','F','S'].map(d => <div key={d} className="group-hover:text-rose-400 transition-colors">{d}</div>)}
+                          
+                          {/* Calendar Days Simulation */}
+                          {[...Array(30)].map((_, i) => {
+                              const d = i + 1;
+                              const isToday = d === 23;
+                              const hasGreen = d % 3 !== 0;
+                              const hasOrange = d % 5 === 0;
+                              return (
+                                  <div key={i} className="relative flex flex-col items-center justify-center h-10 hover:bg-white/50 rounded-xl transition-colors">
+                                      <span className={`font-bold text-sm ${isToday ? 'bg-rose-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm shadow-rose-300' : 'text-stone-700'}`}>
+                                          {d}
+                                      </span>
+                                      <div className="flex gap-1 mt-1 absolute bottom-0">
+                                          {hasGreen && <div className="w-1 h-1 rounded-full bg-emerald-400" />}
+                                          {hasOrange && <div className="w-1 h-1 rounded-full bg-orange-400" />}
+                                      </div>
                                   </div>
-                              </div>
-                          )
-                      })}
+                              )
+                          })}
+                      </div>
+
+                      <div className="mt-auto text-center pt-2">
+                          <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest cursor-pointer hover:text-stone-600 flex justify-center items-center gap-1" onClick={() => setIsCalendarFlipped(true)}>
+                              Flip for Heatmap <Grid className="w-3 h-3" />
+                          </p>
+                      </div>
                   </div>
-              </div>
+
+                  {/* Back Side: GitHub Style Study Heatmap */}
+                  <div 
+                      className="absolute inset-0 bg-[#0D1117] rounded-[2rem] p-8 border border-stone-800 shadow-sm flex flex-col overflow-hidden text-white"
+                      style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+                  >
+                      <div className="flex justify-between items-center mb-6 z-10">
+                          <div className="flex items-center gap-2 text-emerald-500 cursor-pointer" onClick={() => setIsCalendarFlipped(false)}>
+                              <Grid className="w-5 h-5" />
+                              <h3 className="font-black text-white text-base hover:underline decoration-emerald-500 decoration-2 underline-offset-4">Study Heatmap</h3>
+                          </div>
+                          <div className="flex items-center gap-3">
+                              <span className={`text-xl text-emerald-500 font-bold ${caveat.className} tracking-wide -rotate-6`}>2026</span>
+                          </div>
+                      </div>
+
+                      {/* Heatmap Grid */}
+                      <div className="flex flex-1 flex-col gap-2 justify-center pb-4">
+                          <div className="flex justify-between px-2 text-stone-500 font-bold text-[10px] uppercase tracking-widest">
+                              <span>May</span>
+                              <span>Jun</span>
+                          </div>
+                          <div className="flex gap-[4px] items-center justify-between">
+                              {Array.from({length: 12}).map((_, col) => (
+                                  <div key={col} className="flex flex-col gap-[4px]">
+                                      {Array.from({length: 7}).map((_, row) => {
+                                          const intensity = Math.random();
+                                          let bg = "bg-[#161B22]"; // Empty
+                                          if (intensity > 0.85) bg = "bg-[#39D353]"; // High
+                                          else if (intensity > 0.7) bg = "bg-[#26A641]"; // Med-High
+                                          else if (intensity > 0.5) bg = "bg-[#006D32]"; // Med
+                                          else if (intensity > 0.3) bg = "bg-[#0E4429]"; // Low
+                                          return <div key={row} className={`w-3.5 h-3.5 rounded-[3px] ${bg} hover:ring-1 hover:ring-white/50 cursor-crosshair transition-all duration-300`} />
+                                      })}
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+
+                      <div className="mt-auto flex items-center justify-between text-[10px] text-stone-500 font-bold border-t border-stone-800/50 pt-4">
+                          <p className="cursor-pointer hover:text-stone-300 flex justify-center items-center gap-1 uppercase tracking-widest" onClick={() => setIsCalendarFlipped(false)}>
+                              <Calendar className="w-3 h-3" /> Back to Month
+                          </p>
+                          <div className="flex items-center gap-1">
+                              <span>Less</span>
+                              <div className="w-3 h-3 rounded-[2px] bg-[#161B22]" />
+                              <div className="w-3 h-3 rounded-[2px] bg-[#0E4429]" />
+                              <div className="w-3 h-3 rounded-[2px] bg-[#006D32]" />
+                              <div className="w-3 h-3 rounded-[2px] bg-[#26A641]" />
+                              <div className="w-3 h-3 rounded-[2px] bg-[#39D353]" />
+                              <span>More</span>
+                          </div>
+                      </div>
+                  </div>
+              </motion.div>
           </div>
 
           {/* To-Do (Today's Mission) */}
@@ -301,7 +411,7 @@ export default function Dashboard() {
               </div>
           </div>
 
-          {/* Focus Mode */}
+          {/* Focus Mode (Functional & Animated) */}
           <div className="flex flex-col">
               <div className="bg-white rounded-[2rem] p-8 border border-stone-100 shadow-sm flex flex-col flex-1 min-h-[350px]">
                   <div className="flex items-center justify-between mb-6">
@@ -314,18 +424,42 @@ export default function Dashboard() {
 
                   <div className="flex justify-center flex-1 items-center relative py-6">
                       <svg width="160" height="160" viewBox="0 0 200 200" className="rotate-[-90deg]">
+                          {/* Background Track */}
                           <circle cx="100" cy="100" r="88" fill="none" stroke="#FFF0EB" strokeWidth="12" />
-                          <circle cx="100" cy="100" r="88" fill="none" stroke="#FF5F56" strokeWidth="12" strokeDasharray="553" strokeDashoffset="360" strokeLinecap="round" className="transition-all duration-1000 ease-in-out" />
+                          {/* Animated Progress Ring */}
+                          <circle 
+                              cx="100" cy="100" r="88" 
+                              fill="none" 
+                              stroke="#FF5F56" 
+                              strokeWidth="12" 
+                              strokeDasharray="553" 
+                              strokeDashoffset={focusProgress} 
+                              strokeLinecap="round" 
+                              className="transition-all duration-1000 ease-linear" 
+                          />
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <span className="text-2xl font-black text-stone-900 tracking-tight">01:45</span>
+                          <span className={`text-2xl font-black text-stone-900 tracking-tight transition-colors ${isFocusActive ? 'text-rose-500' : ''}`}>
+                              {formatFocusTime(focusTime)}
+                          </span>
                           <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest mt-1">Remaining</span>
                       </div>
                   </div>
 
                   <div className="mt-auto">
-                      <button className="w-full bg-rose-50 hover:bg-rose-100 text-rose-500 py-4 rounded-xl font-black text-sm transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 shadow-sm">
-                          Resume Focus <Play className="w-4 h-4 fill-current" />
+                      <button 
+                          onClick={toggleFocus}
+                          className={`w-full py-4 rounded-xl font-black text-sm transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 shadow-sm ${
+                              isFocusActive 
+                                  ? 'bg-rose-500 hover:bg-rose-600 text-white' 
+                                  : 'bg-rose-50 hover:bg-rose-100 text-rose-500'
+                          }`}
+                      >
+                          {isFocusActive ? (
+                              <>Pause Focus <Pause className="w-4 h-4 fill-current" /></>
+                          ) : (
+                              <>{focusTime === 0 ? 'Restart Session' : 'Resume Focus'} <Play className="w-4 h-4 fill-current" /></>
+                          )}
                       </button>
                   </div>
               </div>
