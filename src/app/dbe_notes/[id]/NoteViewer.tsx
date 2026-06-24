@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { ChevronLeft, Download, FileText, Image as ImageIcon, ImageOff } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ChevronLeft, Download, FileText, Image as ImageIcon, ImageOff, List, AlignLeft, Bookmark } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -11,6 +11,28 @@ import DistributionVisualizer from "@/components/DistributionVisualizer";
 type Note = { id: string; module_number: number; content: string; topic_id: string | null; lecture_id?: string | null };
 type Lecture = { id: string; module_number: number; lecture_number: number; title: string };
 type Subject = { id: string; name: string; code: string; module_count: number; term_id: number };
+
+// Helper to extract headings for the Table of Contents
+function extractHeadings(markdown: string) {
+    const headingRegex = /^(#{1,3})\s+(.+)$/gm;
+    const headings = [];
+    let match;
+    while ((match = headingRegex.exec(markdown)) !== null) {
+        const text = match[2].trim();
+        const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        headings.push({
+            level: match[1].length,
+            text,
+            id
+        });
+    }
+    return headings;
+}
+
+// Generate an ID for headers rendered by ReactMarkdown
+function generateId(text: string) {
+    return String(text).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+}
 
 export default function NoteViewer({ subject, notes, lectures = [] }: { subject: Subject; notes: Note[]; lectures?: Lecture[] }) {
     const [activeModule, setActiveModule] = useState<number | "formula-sheet" | "mind-maps">(1);
@@ -29,6 +51,8 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
         : notes.find((n) => n.module_number === activeModule && !n.lecture_id);
 
     const currentModuleLectures = typeof activeModule === "number" ? lectures.filter(l => l.module_number === activeModule) : [];
+
+    const headings = activeNote ? extractHeadings(activeNote.content) : [];
 
     const handlePrint = () => {
         const content = printRef.current?.innerHTML;
@@ -62,80 +86,122 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
         setTimeout(() => { win.print(); }, 500);
     };
 
+    const scrollToHeading = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-[#FFFEF9] text-[#2D2422]">
+        <div className="flex h-screen overflow-hidden bg-[#FFFEF9] text-[#2D2422]">
             {/* Load Kalam font */}
             <link
                 href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap"
                 rel="stylesheet"
             />
 
-            {/* Top Navigation */}
-            <div className="max-w-5xl mx-auto px-6 py-8">
-                <Link href="/notes" className="flex items-center gap-2 text-sm font-bold text-[#A69994] hover:text-[#2D2422] transition-colors">
-                    <ChevronLeft className="w-4 h-4" />
-                    Back to Notes
-                </Link>
+            {/* Sidebar Navigation */}
+            <div className="w-72 border-r border-stone-200 bg-stone-50/50 flex flex-col h-full shrink-0">
+                <div className="p-6 pb-2">
+                    <Link href="/notes" className="flex items-center gap-2 text-sm font-bold text-stone-500 hover:text-stone-900 transition-colors mb-6">
+                        <ChevronLeft className="w-4 h-4" />
+                        Back to Notes
+                    </Link>
+                    
+                    <div className="mb-6">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
+                            <FileText className="w-3.5 h-3.5" /> Study Notes
+                        </span>
+                        <h2 className="text-xl font-black text-stone-900 leading-tight">
+                            {subject.code}
+                        </h2>
+                    </div>
 
-                <div className="mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EEF2FF] text-[#6366F1] rounded-full text-xs font-bold">
-                                <FileText className="w-3.5 h-3.5" /> Study Notes
-                            </span>
-                            <span className="text-xs font-bold text-[#A69994] uppercase tracking-widest">{subject.code}</span>
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-stone-400 mb-4 pb-2 border-b border-stone-200">
+                        <List className="w-3.5 h-3.5" />
+                        Topics
+                    </div>
+                </div>
+
+                {/* Topics List (Table of Contents) */}
+                <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
+                    {headings.length > 0 ? (
+                        <div className="space-y-1 pb-4">
+                            {headings.map((heading, idx) => (
+                                <button
+                                    key={`${heading.id}-${idx}`}
+                                    onClick={() => scrollToHeading(heading.id)}
+                                    className={`w-full text-left px-3 py-2 rounded-xl text-sm font-bold transition-all flex items-start gap-2 hover:bg-white hover:shadow-sm hover:text-indigo-600 text-stone-600 ${
+                                        heading.level === 1 ? "font-black text-stone-800" :
+                                        heading.level === 2 ? "pl-6 text-sm" : "pl-10 text-xs"
+                                    }`}
+                                >
+                                    <Bookmark className="w-3.5 h-3.5 mt-0.5 shrink-0 opacity-40" />
+                                    <span className="leading-snug">{heading.text}</span>
+                                </button>
+                            ))}
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter text-[#2D2422]">
-                            {subject.name}
-                        </h1>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-3">
-                        <button
-                            onClick={() => setShowMedia(!showMedia)}
-                            className="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-sm shadow-sm transition-all shrink-0"
-                        >
-                            {showMedia ? <ImageOff className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
-                            {showMedia ? "Hide Media" : "Show Media"}
-                        </button>
-                        <button
-                            onClick={handlePrint}
-                            className="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-sm shadow-sm transition-all shrink-0"
-                        >
-                            <Download className="w-4 h-4" /> Download PDF
-                        </button>
+                    ) : (
+                        <div className="px-4 py-8 text-center">
+                            <p className="text-xs font-bold text-stone-400">No topics found in this module.</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="p-4 border-t border-stone-200 bg-white/50 backdrop-blur-md space-y-2">
+                    <button
+                        onClick={() => setShowMedia(!showMedia)}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-xs shadow-sm transition-all"
+                    >
+                        {showMedia ? <ImageOff className="w-4 h-4 text-stone-400" /> : <ImageIcon className="w-4 h-4 text-indigo-500" />}
+                        {showMedia ? "Hide Media" : "Show Media"}
+                    </button>
+                    <button
+                        onClick={handlePrint}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100 rounded-xl font-black text-xs shadow-sm transition-all uppercase tracking-widest"
+                    >
+                        <Download className="w-4 h-4" /> Download PDF
+                    </button>
+                </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col h-full bg-[#FFFEF9] relative overflow-hidden">
+                
+                {/* Top Navigation (Modules) */}
+                <div className="h-16 border-b border-stone-200 bg-white/80 backdrop-blur-md flex items-center px-6 gap-4 shrink-0 z-10 w-full overflow-x-auto custom-scrollbar">
+                    <div className="flex items-center gap-1">
+                        {modules.map((mod) => {
+                            const isMindMap = mod === "mind-maps";
+                            const isFormulaSheet = mod === "formula-sheet";
+                            const hasNote = isMindMap ? notes.some((n) => n.module_number === 99) : isFormulaSheet ? notes.some((n) => n.module_number === 98) : notes.some((n) => n.module_number === mod);
+                            const label = isMindMap ? "Mind Maps" : isFormulaSheet ? "Formula Sheet" : `Module ${mod}`;
+                            return (
+                                <button
+                                    key={mod}
+                                    onClick={() => { setActiveModule(mod); setActiveLectureId(null); }}
+                                    className={`px-4 py-2 rounded-xl text-sm font-black transition-all whitespace-nowrap ${
+                                        activeModule === mod
+                                            ? "bg-stone-100 text-[#2D2422] shadow-sm"
+                                            : "text-stone-400 hover:text-stone-600 hover:bg-stone-50"
+                                    }`}
+                                >
+                                    {label}
+                                    {!hasNote && <span className="ml-1.5 text-[10px] text-stone-300 font-bold">— empty</span>}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
-                {/* Module Tabs */}
-                <div className="flex items-center gap-1 mt-8 bg-stone-100 rounded-2xl p-1 w-fit flex-wrap">
-                    {modules.map((mod) => {
-                        const isMindMap = mod === "mind-maps";
-                        const isFormulaSheet = mod === "formula-sheet";
-                        const hasNote = isMindMap ? notes.some((n) => n.module_number === 99) : isFormulaSheet ? notes.some((n) => n.module_number === 98) : notes.some((n) => n.module_number === mod);
-                        const label = isMindMap ? "Mind Maps" : isFormulaSheet ? "Formula Sheet" : `M${mod}`;
-                        return (
-                            <button
-                                key={mod}
-                                onClick={() => { setActiveModule(mod); setActiveLectureId(null); }}
-                                className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${
-                                    activeModule === mod
-                                        ? "bg-white text-[#2D2422] shadow-sm"
-                                        : "text-stone-400 hover:text-stone-600"
-                                }`}
-                            >
-                                {label}
-                                {!hasNote && <span className="ml-1 text-[8px] text-stone-300">—</span>}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {/* Lecture Sub-Tabs */}
+                {/* Lecture Sub-Tabs (If applicable) */}
                 {currentModuleLectures.length > 0 && (
-                    <div className="flex items-center gap-2 mt-4 flex-wrap">
+                    <div className="px-8 py-3 bg-stone-50 border-b border-stone-100 flex items-center gap-2 overflow-x-auto shrink-0">
                         <button
                             onClick={() => setActiveLectureId(null)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap ${
                                 activeLectureId === null
                                     ? "bg-indigo-50 text-indigo-600 border-indigo-200"
                                     : "bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-700"
@@ -149,7 +215,7 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                 <button
                                     key={lecture.id}
                                     onClick={() => setActiveLectureId(lecture.id)}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border flex items-center gap-1.5 ${
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border flex items-center gap-1.5 whitespace-nowrap ${
                                         activeLectureId === lecture.id
                                             ? "bg-indigo-50 text-indigo-600 border-indigo-200"
                                             : "bg-white text-stone-500 border-stone-200 hover:bg-stone-50 hover:text-stone-700"
@@ -162,36 +228,16 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                         })}
                     </div>
                 )}
-            </div>
 
-            {/* Note Content */}
-            <div className="max-w-5xl mx-auto px-6 pb-32">
-                <div className="bg-white rounded-[2rem] shadow-2xl shadow-stone-200/50 border border-stone-200/40 overflow-hidden flex flex-col min-h-[600px]">
-                    {/* Mac Window Bar */}
-                    <div className="bg-[#1A1A1A] px-6 py-4 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-                            <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
-                            <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
-                        </div>
-                        <div className="text-[10px] font-mono text-stone-500 uppercase tracking-[0.3em]">
-                            {subject.code}.{activeModule === "mind-maps" ? "mind-maps" : activeModule === "formula-sheet" ? "formula-sheet" : `module-${activeModule}`}.notes
-                        </div>
-                        <div className="w-12" />
-                    </div>
-
-                    {/* Handwritten Content */}
-                    <div
-                        ref={printRef}
-                        className="flex-1 p-8 md:p-14 overflow-y-auto"
-                        style={{ fontFamily: "'Kalam', cursive" }}
-                    >
+                {/* Note Content (Scrollable) */}
+                <div className="flex-1 overflow-y-auto px-8 py-12 md:px-16 md:py-16 scroll-smooth" ref={printRef}>
+                    <div className="max-w-3xl mx-auto">
                         {activeNote ? (
-                            <div className="prose max-w-none"
+                            <div className="prose max-w-none pb-32"
                                 style={{
                                     fontFamily: "'Kalam', cursive",
-                                    fontSize: "16px",
-                                    lineHeight: "1.9",
+                                    fontSize: "18px",
+                                    lineHeight: "2",
                                     color: "#2D2422",
                                 }}
                             >
@@ -199,11 +245,11 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                     remarkPlugins={[remarkGfm]}
                                     rehypePlugins={[rehypeRaw]}
                                     components={{
-                                        h1: ({ children }) => <h1 style={{ fontFamily: "'Kalam', cursive", fontSize: "28px", fontWeight: 700, marginBottom: "12px", color: "#1A1A1A" }}>{children}</h1>,
-                                        h2: ({ children }) => <h2 style={{ fontFamily: "'Kalam', cursive", fontSize: "22px", fontWeight: 700, marginBottom: "10px", color: "#1A1A1A", borderBottom: "2px solid #f0ebe9", paddingBottom: "6px" }}>{children}</h2>,
-                                        h3: ({ children }) => <h3 style={{ fontFamily: "'Kalam', cursive", fontSize: "18px", fontWeight: 700, marginBottom: "8px" }}>{children}</h3>,
-                                        p: ({ children }) => <p style={{ fontFamily: "'Kalam', cursive", marginBottom: "14px", lineHeight: "1.9" }}>{children}</p>,
-                                        li: ({ children }) => <li style={{ fontFamily: "'Kalam', cursive", marginBottom: "6px" }}>{children}</li>,
+                                        h1: ({ children }) => <h1 id={generateId(String(children))} style={{ fontFamily: "'Kalam', cursive", fontSize: "32px", fontWeight: 700, marginBottom: "20px", color: "#1A1A1A", paddingTop: "20px" }}>{children}</h1>,
+                                        h2: ({ children }) => <h2 id={generateId(String(children))} style={{ fontFamily: "'Kalam', cursive", fontSize: "26px", fontWeight: 700, marginBottom: "16px", color: "#1A1A1A", borderBottom: "2px solid #f0ebe9", paddingBottom: "8px", paddingTop: "20px", marginTop: "20px" }}>{children}</h2>,
+                                        h3: ({ children }) => <h3 id={generateId(String(children))} style={{ fontFamily: "'Kalam', cursive", fontSize: "20px", fontWeight: 700, marginBottom: "12px", paddingTop: "16px" }}>{children}</h3>,
+                                        p: ({ children }) => <p style={{ fontFamily: "'Kalam', cursive", marginBottom: "16px", lineHeight: "2" }}>{children}</p>,
+                                        li: ({ children }) => <li style={{ fontFamily: "'Kalam', cursive", marginBottom: "8px" }}>{children}</li>,
                                         strong: ({ children }) => <strong style={{ fontWeight: 700, color: "#4F46E5" }}>{children}</strong>,
                                         img: ({ src, alt }) => {
                                             const [error, setError] = useState(false);
@@ -245,14 +291,14 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                             }
 
                                             return (
-                                                <div className="my-8 rounded-2xl overflow-hidden border border-stone-200 shadow-lg bg-white">
+                                                <div className="my-10 rounded-2xl overflow-hidden border border-stone-200 shadow-md bg-white w-full max-w-2xl mx-auto">
                                                     <img 
                                                         src={finalSrc} 
                                                         alt={alt} 
                                                         className="w-full h-auto" 
                                                         onError={() => setError(true)}
                                                     />
-                                                    {alt && <div className="px-4 py-2 bg-stone-50 text-[10px] text-stone-400 font-bold uppercase tracking-widest border-t border-stone-100">{alt}</div>}
+                                                    {alt && <div className="px-4 py-2 bg-stone-50 text-[10px] text-stone-400 font-bold uppercase tracking-widest border-t border-stone-100 text-center">{alt}</div>}
                                                 </div>
                                             );
                                         },
@@ -274,7 +320,7 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                                         );
                                                     }
                                                     return (
-                                                        <div className="my-8 rounded-2xl overflow-hidden border border-stone-200 shadow-lg bg-white w-full aspect-video relative">
+                                                        <div className="my-10 rounded-2xl overflow-hidden border border-stone-200 shadow-md bg-white w-full max-w-2xl mx-auto aspect-video relative">
                                                             <iframe
                                                                 src={`https://www.youtube.com/embed/${ytMatch[1]}`}
                                                                 className="absolute top-0 left-0 w-full h-full"
@@ -302,7 +348,7 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                                                 </a>
                                                             );
                                                         }
-                                                        return <img src={finalSrc} alt="Google Drive Embedded Image" className="w-full h-auto rounded-xl shadow-sm border border-stone-200 my-8" />;
+                                                        return <img src={finalSrc} alt="Google Drive Embedded Image" className="w-full max-w-2xl mx-auto h-auto rounded-xl shadow-sm border border-stone-200 my-8 block" />;
                                                     }
                                                 }
                                             }
@@ -325,10 +371,10 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                             if (!inline && isVisualizer) {
                                                 try {
                                                     const config = JSON.parse(String(children).replace(/\n$/, ''));
-                                                    return <DistributionVisualizer {...config} />;
+                                                    return <div className="my-8"><DistributionVisualizer {...config} /></div>;
                                                 } catch (e) {
                                                     return (
-                                                        <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono">
+                                                        <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono my-4">
                                                             Visualizer Error: Invalid JSON configuration
                                                         </div>
                                                     );
@@ -336,15 +382,15 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                             }
 
                                             return (
-                                                <code style={{ background: "#f5f5f5", padding: "2px 6px", borderRadius: "4px", fontSize: "14px", fontFamily: "monospace" }} {...props}>
+                                                <code style={{ background: "#f5f5f5", padding: "2px 6px", borderRadius: "4px", fontSize: "14px", fontFamily: "monospace", color: "#E11D48" }} {...props}>
                                                     {children}
                                                 </code>
                                             );
                                         },
-                                        blockquote: ({ children }) => <blockquote style={{ borderLeft: "3px solid #4F46E5", paddingLeft: "16px", color: "#6B6B6B", fontStyle: "italic" }}>{children}</blockquote>,
-                                        table: ({ children }) => <table style={{ borderCollapse: "collapse", width: "100%", marginBottom: "16px" }}>{children}</table>,
-                                        th: ({ children }) => <th style={{ border: "1px solid #e0d8d4", padding: "8px 12px", background: "#f8f4f2", fontWeight: 700 }}>{children}</th>,
-                                        td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "8px 12px" }}>{children}</td>,
+                                        blockquote: ({ children }) => <blockquote style={{ borderLeft: "3px solid #4F46E5", paddingLeft: "20px", color: "#6B6B6B", fontStyle: "italic", margin: "24px 0", background: "linear-gradient(to right, #EEF2FF, transparent)", padding: "16px 20px", borderRadius: "0 12px 12px 0" }}>{children}</blockquote>,
+                                        table: ({ children }) => <div className="overflow-x-auto my-8"><table style={{ borderCollapse: "collapse", width: "100%", minWidth: "600px" }}>{children}</table></div>,
+                                        th: ({ children }) => <th style={{ border: "1px solid #e0d8d4", padding: "12px 16px", background: "#f8f4f2", fontWeight: 700, textAlign: "left" }}>{children}</th>,
+                                        td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "12px 16px" }}>{children}</td>,
                                     }}
                                 >
                                     {activeNote.content
@@ -357,12 +403,12 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                 </ReactMarkdown>
                             </div>
                         ) : (
-                            <div className="flex items-center justify-center h-64">
-                                <div className="text-center space-y-2">
-                                    <p className="text-stone-300 text-2xl" style={{ fontFamily: "'Kalam', cursive" }}>
+                            <div className="flex items-center justify-center h-[50vh]">
+                                <div className="text-center space-y-3">
+                                    <p className="text-stone-300 text-3xl" style={{ fontFamily: "'Kalam', cursive" }}>
                                         {activeModule === "mind-maps" ? "No Mind Maps yet" : activeModule === "formula-sheet" ? "No Formula Sheet yet" : `No notes yet for Module ${activeModule}`}
                                     </p>
-                                    <p className="text-stone-200 text-sm" style={{ fontFamily: "'Kalam', cursive" }}>Check back soon!</p>
+                                    <p className="text-stone-300 text-lg" style={{ fontFamily: "'Kalam', cursive" }}>Check back soon!</p>
                                 </div>
                             </div>
                         )}
