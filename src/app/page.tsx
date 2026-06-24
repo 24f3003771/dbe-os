@@ -379,17 +379,22 @@ export default function Dashboard() {
                       className="absolute inset-0 bg-white rounded-[2rem] p-8 border border-stone-100 shadow-sm flex flex-col"
                       style={{ backfaceVisibility: "hidden" }}
                   >
-                      <div className="flex items-center justify-between mb-6 z-10">
-                          <div className="flex items-center gap-2 text-rose-500">
+                      <div className="flex items-start justify-between mb-6 z-10">
+                          <div className="flex items-center gap-2 text-rose-500 mt-1">
                               <Target className="w-5 h-5" />
                               <h3 className="font-black text-stone-900 text-base">Focus Mode</h3>
                           </div>
                           <div 
-                              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-stone-100 transition-colors cursor-pointer group"
+                              className="flex flex-col items-end gap-1 cursor-pointer group"
                               onMouseEnter={() => setIsFocusFlipped(true)}
                               title="Flip card to view monthly heat map"
                           >
-                              <RotateCcw className="w-5 h-5 text-stone-300 group-hover:text-rose-400 transition-colors" />
+                              <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-stone-100 transition-colors">
+                                  <RotateCcw className="w-5 h-5 text-stone-300 group-hover:text-rose-400 transition-colors" />
+                              </div>
+                              <span className="text-[8px] font-black text-stone-400 uppercase tracking-wider text-right max-w-[100px] leading-tight">
+                                  Flips this card to reveal your monthly study heat map !!
+                              </span>
                           </div>
                       </div>
 
