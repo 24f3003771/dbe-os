@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import NavLinks from "@/components/NavLinks";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -18,6 +18,7 @@ const OfflineOverlay = dynamic(() => import("@/components/OfflineOverlay"), {
 
 export default function ClientNavbarWrapper({ user }: { user: any }) {
     const pathname = usePathname();
+    const router = useRouter();
     const { tomatoesBalance, isInitialized, fetchFarmData } = useFarmStore();
 
     useEffect(() => {
@@ -30,6 +31,33 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
         return null;
     }
 
+    const handleMacAction = (action: 'close' | 'minimize' | 'maximize') => {
+        if (action === 'maximize') {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(e => console.log(e));
+            } else if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            return;
+        }
+
+        const main = document.getElementById('main-content');
+        if (main) {
+            main.classList.add('genie-out');
+            setTimeout(() => {
+                if (action === 'close') router.push('/');
+                if (action === 'minimize') router.back();
+                
+                setTimeout(() => {
+                    main.classList.remove('genie-out');
+                }, 100);
+            }, 350);
+        } else {
+            if (action === 'close') router.push('/');
+            if (action === 'minimize') router.back();
+        }
+    };
+
     return (
         <>
             <nav className="w-full pt-4 px-6 md:px-8 relative z-50">
@@ -38,10 +66,16 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
                     {/* Left: Mac Dots & Profile Greeting */}
                     <div className="flex items-center gap-6">
                         {/* Mac Dots */}
-                        <div className="flex gap-2">
-                            <div className="w-3.5 h-3.5 rounded-full bg-[#FF5F56] shadow-sm border border-[#E0443E]" />
-                            <div className="w-3.5 h-3.5 rounded-full bg-[#FFBD2E] shadow-sm border border-[#DEA123]" />
-                            <div className="w-3.5 h-3.5 rounded-full bg-[#27C93F] shadow-sm border border-[#1AAB29]" />
+                        <div className="flex gap-2 group/mac">
+                            <button onClick={() => handleMacAction('close')} className="w-3.5 h-3.5 rounded-full bg-[#FF5F56] shadow-sm border border-[#E0443E] hover:bg-[#ff4036] flex items-center justify-center transition-colors">
+                                <span className="opacity-0 group-hover/mac:opacity-100 text-[8px] text-black font-black leading-none">×</span>
+                            </button>
+                            <button onClick={() => handleMacAction('minimize')} className="w-3.5 h-3.5 rounded-full bg-[#FFBD2E] shadow-sm border border-[#DEA123] hover:bg-[#ffb000] flex items-center justify-center transition-colors">
+                                <span className="opacity-0 group-hover/mac:opacity-100 text-[8px] text-black font-black leading-none pb-0.5">−</span>
+                            </button>
+                            <button onClick={() => handleMacAction('maximize')} className="w-3.5 h-3.5 rounded-full bg-[#27C93F] shadow-sm border border-[#1AAB29] hover:bg-[#20ba36] flex items-center justify-center transition-colors">
+                                <span className="opacity-0 group-hover/mac:opacity-100 text-[7px] text-black font-black leading-none">↖</span>
+                            </button>
                         </div>
                         
                         {/* Greeting */}
