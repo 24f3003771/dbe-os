@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, ExternalLink, Rocket, Sparkles, Code2 } from "lucide-react";
+import { Github, Linkedin, Mail, ExternalLink, Code2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 const Founders = [
@@ -12,7 +12,7 @@ const Founders = [
     linkedin: "https://www.linkedin.com/in/ishaan-jha-2b6977340/",
     github: "https://github.com/Ishaan-jha-dev",
     email: "ishaan@dbeos.in",
-    image: "https://github.com/Ishaan-jha-dev.png", // Using GitHub avatar as fallback for professional use
+    image: "https://github.com/Ishaan-jha-dev.png", 
     skills: ["Product Vision", "Full Stack Dev", "System Architecture"]
   },
   {
@@ -29,104 +29,79 @@ const Founders = [
 
 export default function DevelopersPage() {
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center py-12 px-4">
-      {/* Hero Section */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-20 space-y-4"
-      >
-        <div className="inline-flex items-center gap-2 bg-[#FF5F56]/10 px-4 py-1.5 rounded-full text-[#FF5F56] font-black text-[10px] tracking-widest uppercase mb-4">
-          <Code2 className="w-3.5 h-3.5" /> The Developers Behind The OS
-        </div>
-        <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter text-on-surface leading-tight">
-          Meet the <span className="text-[#FF5F56] italic">Founders</span> <br/> of DBE OS.
-        </h1>
-        <p className="text-on-surface-variant max-w-2xl mx-auto font-medium text-lg">
-          We built DBE OS to solve our own problems as IIM Bangalore scholars. Now, we're sharing that command center with you.
-        </p>
-      </motion.div>
+    <div className="min-h-screen bg-[#FAF9F6] font-body text-stone-900 py-20 px-4 md:px-8">
+      <div className="max-w-3xl mx-auto">
+        <Link href="/" className="inline-flex items-center gap-2 text-stone-400 hover:text-stone-900 transition-colors text-xs font-black uppercase tracking-[0.2em] mb-16">
+          <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+        </Link>
 
-      {/* Founders Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
-        {Founders.map((founder, index) => (
-          <motion.div
-            key={founder.name}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.2 }}
-            className="group relative bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 overflow-hidden shadow-sm hover:shadow-xl"
-          >
-            <div className="relative z-10 flex flex-col h-full">
-              {/* Profile Image & Role */}
-              <div className="flex items-start justify-between mb-8">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-3xl overflow-hidden shadow-2xl border-2 border-white ring-4 ring-primary/5">
-                    <img 
-                      src={founder.image} 
-                      alt={founder.name} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 bg-primary text-white p-1.5 rounded-xl shadow-lg border-2 border-white">
-                    <Code2 className="w-4 h-4" />
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <a href={founder.linkedin} target="_blank" className="p-3 bg-surface-container-highest rounded-2xl text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all">
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                  <a href={founder.github} target="_blank" className="p-3 bg-surface-container-highest rounded-2xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-all">
-                    <Github className="w-5 h-5" />
-                  </a>
-                </div>
-              </div>
-
-              {/* Text Content */}
-              <div className="space-y-4 mb-8">
-                <h2 className="text-3xl font-black font-headline text-on-surface tracking-tight">{founder.name}</h2>
-                <p className="text-primary font-bold text-sm tracking-wide uppercase">{founder.role}</p>
-                <p className="text-on-surface-variant font-medium leading-relaxed italic">
-                  "{founder.description}"
-                </p>
-              </div>
-
-              {/* Skills/Tags */}
-              <div className="flex flex-wrap gap-2 mt-auto">
-                {founder.skills.map(skill => (
-                  <span key={skill} className="px-3 py-1 bg-surface-container-low border border-outline-variant/10 rounded-lg text-[10px] font-black uppercase tracking-widest text-on-surface-variant/70">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-
-              {/* Connect Link */}
-              <div className="mt-8 pt-8 border-t border-outline-variant/10 flex items-center justify-between">
-                <a href={`mailto:${founder.email}`} className="flex items-center gap-2 text-sm font-black text-on-surface hover:text-primary transition-colors group/link">
-                  <Mail className="w-4 h-4 text-primary" /> Connect via Email
-                  <ExternalLink className="w-3 h-3 opacity-0 group-hover/link:opacity-100 transition-opacity" />
-                </a>
-              </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-16"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-stone-200 flex items-center justify-center">
+              <Code2 className="w-4 h-4 text-stone-600" />
             </div>
+            <h1 className="text-3xl font-black tracking-tight">The Developers.</h1>
+          </div>
+          <p className="text-stone-500 font-medium leading-relaxed max-w-2xl">
+            We built DBE OS to solve our own problems as scholars. We believe in building minimalist, high-performance tools that get out of your way so you can focus on innovation.
+          </p>
+        </motion.div>
 
-            {/* Background Decoration */}
-            <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none group-hover:bg-primary/10 transition-colors duration-700"></div>
-          </motion.div>
-        ))}
+        <div className="space-y-12">
+          {Founders.map((founder, index) => (
+            <motion.div
+              key={founder.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.15 }}
+              className="group flex flex-col md:flex-row gap-8 items-start border-t border-stone-200 pt-12"
+            >
+              <div className="w-20 h-20 shrink-0 rounded-2xl overflow-hidden bg-stone-200 border border-stone-300">
+                <img 
+                  src={founder.image} 
+                  alt={founder.name} 
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                />
+              </div>
+
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h2 className="text-xl font-black tracking-tight mb-1">{founder.name}</h2>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">{founder.role}</p>
+                </div>
+                
+                <p className="text-stone-600 font-medium text-sm leading-relaxed max-w-xl">
+                  {founder.description}
+                </p>
+
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {founder.skills.map(skill => (
+                    <span key={skill} className="px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-md text-[9px] font-black uppercase tracking-widest text-stone-500">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-4 pt-4">
+                  <a href={founder.linkedin} target="_blank" rel="noreferrer" className="text-stone-400 hover:text-[#0077b5] transition-colors">
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                  <a href={founder.github} target="_blank" rel="noreferrer" className="text-stone-400 hover:text-stone-900 transition-colors">
+                    <Github className="w-4 h-4" />
+                  </a>
+                  <a href={`mailto:${founder.email}`} className="text-stone-400 hover:text-stone-900 transition-colors">
+                    <Mail className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-
-      {/* Philosophy Section */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="mt-24 text-center space-y-6 max-w-3xl"
-      >
-        <Sparkles className="w-8 h-8 text-secondary mx-auto" />
-        <h3 className="text-2xl font-black font-headline text-on-surface">Our Philosophy</h3>
-        <p className="text-on-surface-variant font-medium leading-relaxed">
-          DBE OS isn't just a website; it's a productivity philosophy. We believe that by automating the "busy work" of tracking deadlines and finding resources, students can spend more time what actually matters: <span className="text-primary font-bold">Innovation.</span>
-        </p>
-      </motion.div>
     </div>
   );
 }

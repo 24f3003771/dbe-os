@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { 
     Edit2, X, Loader2, GraduationCap, User as UserIcon, Mail, 
     MapPin, Building, Phone, Compass, Trophy, Star, Shield,
-    ExternalLink, Plus
+    ExternalLink, Plus, Code2
 } from "lucide-react";
 import { updateProfile } from "@/actions/profile";
 import { useRouter } from "next/navigation";
@@ -255,6 +255,13 @@ export default function ProfileClient({ profile: initialProfile, availableBatche
                         Sign Out
                     </button>
                 </form>
+            </div>
+
+            {/* Minimal Developers Link */}
+            <div className="flex justify-center pt-8 pb-4 opacity-40 hover:opacity-100 transition-opacity">
+                <Link href="/developers" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant hover:text-primary transition-colors">
+                    <Code2 className="w-3.5 h-3.5" /> Meet the Developers
+                </Link>
             </div>
 
             {/* Edit Modal */}

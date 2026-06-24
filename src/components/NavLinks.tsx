@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CalendarClock, BookOpen, Target, Rocket, Wrench, Code2 } from "lucide-react";
+import { LayoutDashboard, CalendarClock, BookOpen, Target, Rocket, Wrench } from "lucide-react";
 
 const desktopLinks = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -10,7 +10,6 @@ const desktopLinks = [
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
     { href: "/tools", label: "Tools", icon: Wrench },
-    { href: "/developers", label: "Devs", icon: Code2 },
 ];
 
 const mobileLinks = [
@@ -19,7 +18,6 @@ const mobileLinks = [
     { href: "/quiz", label: "Quiz", icon: Target },
     { href: "/deadlines", label: "Tasks", icon: CalendarClock },
     { href: "/tools", label: "Tools", icon: Wrench },
-    { href: "/developers", label: "Devs", icon: Code2 },
 ];
 
 interface NavLinksProps {
