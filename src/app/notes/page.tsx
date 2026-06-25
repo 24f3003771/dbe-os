@@ -11,6 +11,7 @@ export default async function UniversalNotesListPage() {
 
     let subjects: { id: string; name: string; code: string; module_count: number }[] = [];
     let termName = "";
+    let progressData: { subject_id: string; module_number: number; created_at: string }[] = [];
 
     if (batch) {
         const { data: term } = await supabase
@@ -28,6 +29,14 @@ export default async function UniversalNotesListPage() {
                 .eq("term_id", term.id)
                 .order("created_at", { ascending: true });
             subjects = data ?? [];
+
+            if (user) {
+                const { data: pData } = await supabase
+                    .from("user_module_progress")
+                    .select("subject_id, module_number, created_at")
+                    .eq("user_id", user.id);
+                progressData = pData ?? [];
+            }
         }
     }
 
@@ -37,6 +46,7 @@ export default async function UniversalNotesListPage() {
                 subjects={subjects}
                 termName={termName}
                 batch={batch ?? ""}
+                progressData={progressData}
             />
         </div>
     );

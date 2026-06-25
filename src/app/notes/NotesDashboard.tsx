@@ -56,10 +56,12 @@ export default function NotesDashboard({
     subjects,
     termName,
     batch,
+    progressData,
 }: {
     subjects: SubjectWithCount[];
     termName: string;
     batch: string;
+    progressData: { subject_id: string; module_number: number; created_at: string }[];
 }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState("All");
@@ -144,6 +146,24 @@ export default function NotesDashboard({
                     filtered.map((subject) => {
                         const mockData = getMockData(subject.id, subject.name);
                         
+                        // Real calculations
+                        const subjectProgress = progressData.filter(p => p.subject_id === subject.id);
+                        
+                        // Calculate percentage
+                        // Filter out non-numbered modules like formula sheet (98) or mind map (99) from the count if they exceed module_count
+                        const completedModules = subjectProgress.filter(p => p.module_number <= subject.module_count).length;
+                        const realProgress = subject.module_count > 0 ? Math.min(100, Math.round((completedModules / subject.module_count) * 100)) : 0;
+                        
+                        // Calculate days ago
+                        let daysText = "Not started yet";
+                        if (subjectProgress.length > 0) {
+                            const latestDate = new Date(Math.max(...subjectProgress.map(p => new Date(p.created_at).getTime())));
+                            const daysDiff = Math.floor((new Date().getTime() - latestDate.getTime()) / (1000 * 3600 * 24));
+                            if (daysDiff === 0) daysText = "Last opened today";
+                            else if (daysDiff === 1) daysText = "Last opened yesterday";
+                            else daysText = `Last opened ${daysDiff} days ago`;
+                        }
+
                         return (
                             <div
                                 key={subject.id}
@@ -173,11 +193,11 @@ export default function NotesDashboard({
                                 <div className="flex items-center gap-4 mb-8">
                                     <div className="flex-1 h-2 bg-stone-100 rounded-full overflow-hidden">
                                         <div 
-                                            className="h-full bg-gradient-to-r from-[#FF5F56] to-[#FFA370] rounded-full"
-                                            style={{ width: `${mockData.progress}%` }}
+                                            className="h-full bg-gradient-to-r from-[#FF5F56] to-[#FFA370] rounded-full transition-all duration-1000"
+                                            style={{ width: `${realProgress}%` }}
                                         />
                                     </div>
-                                    <span className="text-xs font-black text-stone-900 w-8">{mockData.progress}%</span>
+                                    <span className="text-xs font-black text-stone-900 w-8">{realProgress}%</span>
                                 </div>
 
                                 {/* Bottom Info Row */}
@@ -189,7 +209,7 @@ export default function NotesDashboard({
                                         </div>
                                         <div className="flex items-center gap-2 text-stone-500">
                                             <Clock className="w-4 h-4" />
-                                            <span className="text-xs font-bold">Last opened {mockData.daysAgo === 1 ? 'today' : `${mockData.daysAgo} days ago`}</span>
+                                            <span className="text-xs font-bold">{daysText}</span>
                                         </div>
                                     </div>
                                     
