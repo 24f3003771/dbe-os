@@ -183,6 +183,8 @@ export default function NotesTab({
                             onClick={() => {
                                 const prompt = `Act as an expert educational content creator. I will provide you with raw notes or text. You must convert it into a beautifully formatted Markdown file using HTML with inline CSS. Use the following exact styling guidelines:
 
+CRITICAL INSTRUCTION: Generate the ENTIRE output as a single, continuous flow of text. DO NOT wrap your entire response in a master Markdown block. The HTML/Markdown notes, the \`\`\`quiz\`\`\` code blocks, and the \`\`\`checkpoint\`\`\` block must seamlessly flow together in one single response!
+
 1. Length & Depth: The notes should neither be too brief nor exhaustively in-depth. Keep it at the sweet spot—concise enough to be highly readable, but deep enough to cover all crucial topics thoroughly.
 2. Module Title: \`<h1 style="color: #2c3e50; border-bottom: 2px solid #eef2f5; padding-bottom: 10px;">Module X — [Name]</h1>\`
 3. Subtopics: \`<h2 style="color: #2980b9; margin-top: 30px;">X.X [Subtopic Name]</h2>\`
@@ -193,7 +195,7 @@ export default function NotesTab({
 7. Definition blocks: \`<div style="border-left: 4px solid #8e44ad; padding: 15px; background-color: #f4f6f7; margin-top: 10px; border-radius: 0 8px 8px 0;"><strong style="color: #8e44ad;">🧮 Definition:</strong><br><code style="font-size: 1.15em; color: #2c3e50; font-family: inherit;">[Definition Text]</code></div>\`
 8. Formulas Block: Same as definition block, but with heading '🧮 The Math Formulas:'.
 9. Lists: Use \`<ul style="list-style-type: none; padding-left: 15px; margin-top: 8px; margin-bottom: 15px;">\` and \`<li style="margin-bottom: 5px;">➤ [Item]</li>\`.
-10. Mid-Quizzes: After each major topic section, include a 4-5 question Multiple Choice quiz using the EXACT following JSON format inside a Markdown code block with language "quiz" (this will be parsed into an interactive quiz on the frontend):
+10. Mid-Quizzes: After each major topic section, seamlessly insert a 4-5 question Multiple Choice quiz using the EXACT following JSON format inside a Markdown code block with language "quiz" (this will be parsed into an interactive quiz on the frontend):
 \`\`\`quiz
 [
   {
@@ -204,14 +206,14 @@ export default function NotesTab({
   }
 ]
 \`\`\`
-11. Progress Checkpoint: At the very end of the notes, include this EXACT JSON block inside a Markdown code block with language "checkpoint":
+11. Progress Checkpoint: At the very end of the continuous notes document, append this EXACT JSON block inside a Markdown code block with language "checkpoint":
 \`\`\`checkpoint
 {
   "message": "🎉 You made it to the end!"
 }
 \`\`\`
 
-Now, process the following raw notes into this format:
+Now, process the following raw notes into this seamless format:
 [INSERT RAW NOTES HERE]`;
                                 navigator.clipboard.writeText(prompt);
                                 alert("Prompt copied to clipboard!");
