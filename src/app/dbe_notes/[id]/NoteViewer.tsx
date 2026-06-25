@@ -424,6 +424,16 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                         table: ({ children }) => <div className="overflow-x-auto my-8"><table style={{ borderCollapse: "collapse", width: "100%", minWidth: "600px" }}>{children}</table></div>,
                                         th: ({ children }) => <th style={{ border: "1px solid #e0d8d4", padding: "12px 16px", background: "#f8f4f2", fontWeight: 700, textAlign: "left" }}>{children}</th>,
                                         td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "12px 16px" }}>{children}</td>,
+                                        pre: ({ children, ...props }: any) => {
+                                            // Bypass <pre> wrapper for our custom interactive blocks
+                                            if (children && children.props && children.props.className) {
+                                                const match = /language-(\w+)/.exec(children.props.className || '');
+                                                if (match && ['visualizer', 'quiz', 'checkpoint'].includes(match[1])) {
+                                                    return <>{children}</>;
+                                                }
+                                            }
+                                            return <pre {...props} className="overflow-x-auto p-4 bg-[#f8f9fa] rounded-lg my-4 border border-[#e0d8d4]">{children}</pre>;
+                                        },
                                     }}
                                 >
                                     {activeNote.content

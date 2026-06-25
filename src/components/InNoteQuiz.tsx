@@ -63,7 +63,8 @@ export default function InNoteQuiz({
                 totalQuestions: questions.length,
                 timerPerQuestion: 10,
                 totalTimeTaken: questions.length * 10,
-                responses
+                responses,
+                tomatoesEarned: totalTomatoes
             });
             
             if (totalTomatoes > 0) {
@@ -104,7 +105,7 @@ export default function InNoteQuiz({
                                     const isThisSelected = selected === j;
                                     const isThisCorrect = j === q.correctIndex;
                                     
-                                    let btnClass = "w-full text-left p-3 rounded-lg border transition-all ";
+                                    let btnClass = "w-full text-left p-3 rounded-lg border transition-all whitespace-normal break-words ";
                                     
                                     if (isSubmitted) {
                                         if (isThisCorrect) {
