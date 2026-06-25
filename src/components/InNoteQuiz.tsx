@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, XCircle, AlertCircle, Save, Loader2 } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, Save, Loader2, RotateCcw } from "lucide-react";
 import { saveExamResult } from "@/actions/quiz";
 import { recordTomatoEvent } from "@/actions/farm";
 import { markModuleComplete } from "@/actions/progress";
@@ -118,6 +118,13 @@ export default function InNoteQuiz({
         }
     };
 
+    const handleClear = () => {
+        setSelectedAnswers({});
+        setIsSubmitted(false);
+        setSaveStatus("idle");
+        localStorage.removeItem(storageKey);
+    };
+
     const allAnswered = Object.keys(selectedAnswers).length === questions.length;
 
     return (
@@ -207,23 +214,31 @@ export default function InNoteQuiz({
                         <CheckCircle2 className="w-4 h-4" /> Check Answers & Save
                     </button>
                 ) : (
-                    <div className="inline-flex items-center gap-3 px-6 py-3.5 bg-emerald-50 border border-emerald-100 rounded-2xl font-bold">
-                        {isSaving ? (
-                            <span className="text-emerald-600 animate-pulse flex items-center gap-2 text-sm uppercase tracking-widest"><Loader2 className="w-4 h-4 animate-spin" /> Saving progress...</span>
-                        ) : saveStatus === "saved" ? (
-                            <span className="text-emerald-700 flex items-center gap-2 text-sm">
-                                <Save className="w-4 h-4" /> Progress Saved! 
-                                {Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length > 0 && 
-                                    <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black ml-2 flex items-center gap-1.5">
-                                        🍅 +{Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length * 5} Tomatoes
-                                    </span>
-                                }
-                            </span>
-                        ) : saveStatus === "error" ? (
-                            <span className="text-red-600 flex items-center gap-2 text-sm"><AlertCircle className="w-4 h-4" /> Failed to save progress</span>
-                        ) : (
-                            <span className="text-emerald-700 flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4" /> Completed</span>
-                        )}
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="inline-flex items-center gap-3 px-6 py-3.5 bg-emerald-50 border border-emerald-100 rounded-2xl font-bold">
+                            {isSaving ? (
+                                <span className="text-emerald-600 animate-pulse flex items-center gap-2 text-sm uppercase tracking-widest"><Loader2 className="w-4 h-4 animate-spin" /> Saving progress...</span>
+                            ) : saveStatus === "saved" ? (
+                                <span className="text-emerald-700 flex items-center gap-2 text-sm">
+                                    <Save className="w-4 h-4" /> Progress Saved! 
+                                    {Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length > 0 && 
+                                        <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black ml-2 flex items-center gap-1.5">
+                                            🍅 +{Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length * 5} Tomatoes
+                                        </span>
+                                    }
+                                </span>
+                            ) : saveStatus === "error" ? (
+                                <span className="text-red-600 flex items-center gap-2 text-sm"><AlertCircle className="w-4 h-4" /> Failed to save progress</span>
+                            ) : (
+                                <span className="text-emerald-700 flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4" /> Completed</span>
+                            )}
+                        </div>
+                        <button 
+                            onClick={handleClear}
+                            className="text-stone-400 hover:text-stone-600 transition-colors text-sm font-bold flex items-center gap-1.5"
+                        >
+                            <RotateCcw className="w-3.5 h-3.5" /> Retake Quiz
+                        </button>
                     </div>
                 )}
             </div>
