@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, XCircle, AlertCircle, Save } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, Save, Loader2 } from "lucide-react";
 import { saveExamResult } from "@/actions/quiz";
 import { recordTomatoEvent } from "@/actions/farm";
 import { markModuleComplete } from "@/actions/progress";
