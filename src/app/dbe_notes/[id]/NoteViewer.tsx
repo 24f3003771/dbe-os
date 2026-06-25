@@ -7,6 +7,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import DistributionVisualizer from "@/components/DistributionVisualizer";
+import InNoteQuiz from "@/components/InNoteQuiz";
+import ModuleCheckpoint from "@/components/ModuleCheckpoint";
 
 type Note = { id: string; module_number: number; content: string; topic_id: string | null; };
 type Lecture = { id: string; module_number: number; lecture_number: number; title: string };
@@ -370,6 +372,8 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                         code: ({ node, inline, className, children, ...props }: any) => {
                                             const match = /language-(\w+)/.exec(className || '');
                                             const isVisualizer = match && match[1] === 'visualizer';
+                                            const isQuiz = match && match[1] === 'quiz';
+                                            const isCheckpoint = match && match[1] === 'checkpoint';
                                             
                                             if (!inline && isVisualizer) {
                                                 try {
@@ -379,6 +383,32 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                                     return (
                                                         <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono my-4">
                                                             Visualizer Error: Invalid JSON configuration
+                                                        </div>
+                                                    );
+                                                }
+                                            }
+
+                                            if (!inline && isQuiz) {
+                                                try {
+                                                    const questions = JSON.parse(String(children).replace(/\n$/, ''));
+                                                    return <InNoteQuiz questions={questions} subjectId={subject.id} />;
+                                                } catch (e) {
+                                                    return (
+                                                        <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono my-4">
+                                                            Quiz Error: Invalid JSON configuration
+                                                        </div>
+                                                    );
+                                                }
+                                            }
+
+                                            if (!inline && isCheckpoint) {
+                                                try {
+                                                    const config = JSON.parse(String(children).replace(/\n$/, ''));
+                                                    return <ModuleCheckpoint message={config.message} subjectId={subject.id} moduleId={activeModule} />;
+                                                } catch (e) {
+                                                    return (
+                                                        <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono my-4">
+                                                            Checkpoint Error: Invalid JSON configuration
                                                         </div>
                                                     );
                                                 }

@@ -193,14 +193,23 @@ export default function NotesTab({
 7. Definition blocks: \`<div style="border-left: 4px solid #8e44ad; padding: 15px; background-color: #f4f6f7; margin-top: 10px; border-radius: 0 8px 8px 0;"><strong style="color: #8e44ad;">🧮 Definition:</strong><br><code style="font-size: 1.15em; color: #2c3e50; font-family: inherit;">[Definition Text]</code></div>\`
 8. Formulas Block: Same as definition block, but with heading '🧮 The Math Formulas:'.
 9. Lists: Use \`<ul style="list-style-type: none; padding-left: 15px; margin-top: 8px; margin-bottom: 15px;">\` and \`<li style="margin-bottom: 5px;">➤ [Item]</li>\`.
-10. Mid-Quizzes: After each major topic section, include a 4-5 question Multiple Choice quiz using the format:
-\`<div style="border: 3px dashed #34495e; padding: 25px; border-radius: 15px; background-color: #f8f9f9; color: #2c3e50;">
-<h2 style="color: #2c3e50; text-align: center; margin-top: 0;">🧠 Quick Knowledge Check</h2>
-<div style="background-color: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #ecf0f1; margin-bottom: 10px;"><strong style="color: #2980b9;">Q1. [Question]</strong><br><br>A) [Option A]<br>B) [Option B]<br>C) [Option C]<br>D) [Option D]</div>
-<!-- Add Q2, Q3, Q4, Q5 in the same format above -->
-<details><summary><strong style="color: #27ae60; cursor: pointer; font-size: 1.2em; display: block; background-color: #eafaf1; padding: 15px; border-radius: 8px; border: 2px solid #2ecc71; text-align: center;">✅ Click here to reveal the Answer Key</strong></summary>
-<div style="margin-top: 15px; padding: 20px; background-color: #ffffff; border-left: 5px solid #2ecc71; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"><p><strong>A1:</strong> [Correct Option Letter] - [Explanation]</p></div></details></div>\`
-11. Progress Checkpoint: At the very end of the notes, include this EXACT HTML block: \`<div style="text-align: center; margin-top: 50px; padding-top: 30px; border-top: 2px dashed #eef2f5;"><h3 style="color: #2c3e50; font-size: 1.8em; margin-bottom: 20px;">🎉 You made it to the end!</h3><button style="background-color: #2ecc71; color: white; padding: 18px 40px; font-size: 1.2em; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 12px rgba(46,204,113,0.3); font-family: inherit;">✅ Mark Module as Complete</button></div>\`
+10. Mid-Quizzes: After each major topic section, include a 4-5 question Multiple Choice quiz using the EXACT following JSON format inside a Markdown code block with language "quiz" (this will be parsed into an interactive quiz on the frontend):
+\`\`\`quiz
+[
+  {
+    "question": "Question text here",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correctIndex": 0,
+    "explanation": "Explanation for the correct answer."
+  }
+]
+\`\`\`
+11. Progress Checkpoint: At the very end of the notes, include this EXACT JSON block inside a Markdown code block with language "checkpoint":
+\`\`\`checkpoint
+{
+  "message": "🎉 You made it to the end!"
+}
+\`\`\`
 
 Now, process the following raw notes into this format:
 [INSERT RAW NOTES HERE]`;
