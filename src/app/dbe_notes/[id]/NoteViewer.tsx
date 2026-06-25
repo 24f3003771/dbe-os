@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ChevronLeft, Download, FileText, Image as ImageIcon, ImageOff, List, AlignLeft, Bookmark } from "lucide-react";
+import { ChevronLeft, Download, FileText, Image as ImageIcon, ImageOff, List, AlignLeft, Bookmark, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -37,15 +37,31 @@ function extractHeadings(markdown: string) {
     return headings.map(h => ({ level: h.level, text: h.text, id: h.id }));
 }
 
-// Generate an ID for headers rendered by ReactMarkdown
-function generateId(text: string) {
-    return String(text).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+// Helper to extract text from React nodes
+function extractTextFromReactNode(node: any): string {
+    if (typeof node === 'string' || typeof node === 'number') {
+        return String(node);
+    }
+    if (Array.isArray(node)) {
+        return node.map(extractTextFromReactNode).join('');
+    }
+    if (node && node.props && node.props.children) {
+        return extractTextFromReactNode(node.props.children);
+    }
+    return '';
 }
 
-export default function NoteViewer({ subject, notes, lectures = [] }: { subject: Subject; notes: Note[]; lectures?: Lecture[] }) {
+// Generate an ID for headers rendered by ReactMarkdown
+function generateId(children: any) {
+    const text = extractTextFromReactNode(children);
+    return text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+}
+
+export default function NoteViewer({ subject, notes, lectures = [], initialCompletedModules = [] }: { subject: Subject; notes: Note[]; lectures?: Lecture[]; initialCompletedModules?: number[] }) {
     const [activeModule, setActiveModule] = useState<number | "formula-sheet" | "mind-maps">(1);
     const [activeLectureId, setActiveLectureId] = useState<string | null>(null);
     const [showMedia, setShowMedia] = useState(true);
+    const [completedModules, setCompletedModules] = useState<number[]>(initialCompletedModules);
     const printRef = useRef<HTMLDivElement>(null);
 
     const modules: (number | "formula-sheet" | "mind-maps")[] = [...Array.from({ length: subject.module_count }, (_, i) => i + 1), "formula-sheet", "mind-maps"];
@@ -59,6 +75,13 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
     const currentModuleLectures = typeof activeModule === "number" ? lectures.filter(l => l.module_number === activeModule) : [];
 
     const headings = activeNote ? extractHeadings(activeNote.content) : [];
+
+    const handleModuleComplete = (moduleId: string | number) => {
+        const modNum = typeof moduleId === 'number' ? moduleId : moduleId === 'formula-sheet' ? 98 : moduleId === 'mind-maps' ? 99 : -1;
+        if (modNum !== -1 && !completedModules.includes(modNum)) {
+            setCompletedModules([...completedModules, modNum]);
+        }
+    };
 
     const handlePrint = () => {
         const content = printRef.current?.innerHTML;
@@ -187,13 +210,16 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                 <button
                                     key={mod}
                                     onClick={() => { setActiveModule(mod); setActiveLectureId(null); }}
-                                    className={`px-4 py-2 rounded-xl text-sm font-black transition-all whitespace-nowrap ${
+                                    className={`px-4 py-2 rounded-xl text-sm font-black transition-all whitespace-nowrap flex items-center gap-1.5 ${
                                         activeModule === mod
                                             ? "bg-stone-100 text-[#2D2422] shadow-sm"
                                             : "text-stone-400 hover:text-stone-600 hover:bg-stone-50"
                                     }`}
                                 >
                                     {label}
+                                    {completedModules.includes(isMindMap ? 99 : isFormulaSheet ? 98 : mod as number) && (
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                                    )}
                                     {!hasNote && <span className="ml-1.5 text-[10px] text-stone-300 font-bold">— empty</span>}
                                 </button>
                             );
@@ -404,7 +430,12 @@ export default function NoteViewer({ subject, notes, lectures = [] }: { subject:
                                             if (!inline && isCheckpoint) {
                                                 try {
                                                     const config = JSON.parse(String(children).replace(/\n$/, ''));
-                                                    return <ModuleCheckpoint message={config.message} subjectId={subject.id} moduleId={activeModule} />;
+                                                    return <ModuleCheckpoint 
+                                                        message={config.message} 
+                                                        subjectId={subject.id} 
+                                                        moduleId={activeModule}
+                                                        onComplete={() => handleModuleComplete(activeModule)}
+                                                    />;
                                                 } catch (e) {
                                                     return (
                                                         <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono my-4">

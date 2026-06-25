@@ -40,11 +40,27 @@ export default async function UniversalNotePage({ params }: { params: Promise<{ 
         .order("module_number", { ascending: true })
         .order("lecture_number", { ascending: true });
 
+    // Fetch user progress
+    const { data: { user } } = await supabase.auth.getUser();
+    let completedModules: number[] = [];
+    if (user) {
+        const { data: progress } = await supabase
+            .from("user_module_progress")
+            .select("module_number")
+            .eq("user_id", user.id)
+            .eq("subject_id", id);
+        
+        if (progress) {
+            completedModules = progress.map((p) => p.module_number);
+        }
+    }
+
     return (
         <NoteViewer
             subject={subject}
             notes={notes ?? []}
             lectures={lectures ?? []}
+            initialCompletedModules={completedModules}
         />
     );
 }

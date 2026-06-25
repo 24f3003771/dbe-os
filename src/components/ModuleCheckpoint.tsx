@@ -3,15 +3,18 @@
 import React, { useState } from "react";
 import { CheckCircle2, Loader2, Award } from "lucide-react";
 import { recordTomatoEvent } from "@/actions/farm";
+import { markModuleComplete } from "@/actions/progress";
 
 export default function ModuleCheckpoint({ 
     message, 
     subjectId,
-    moduleId
+    moduleId,
+    onComplete
 }: { 
     message: string;
     subjectId: string;
     moduleId: string | number;
+    onComplete?: () => void;
 }) {
     const [isCompleted, setIsCompleted] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -19,6 +22,15 @@ export default function ModuleCheckpoint({
     const handleComplete = async () => {
         setIsSaving(true);
         try {
+            // Check if moduleId is a number, if so mark it complete in DB
+            if (typeof moduleId === 'number') {
+                await markModuleComplete(subjectId, moduleId);
+            } else if (moduleId === 'formula-sheet') {
+                await markModuleComplete(subjectId, 98);
+            } else if (moduleId === 'mind-maps') {
+                await markModuleComplete(subjectId, 99);
+            }
+
             // Reward 20 tomatoes
             await recordTomatoEvent({
                 actionType: "module_complete",
@@ -26,6 +38,7 @@ export default function ModuleCheckpoint({
                 tomatoes: 20,
             });
             setIsCompleted(true);
+            if (onComplete) onComplete();
         } catch (err) {
             console.error(err);
             alert("Failed to save progress.");
