@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { CheckCircle2, XCircle, AlertCircle, Save } from "lucide-react";
 import { saveExamResult } from "@/actions/quiz";
 import { recordTomatoEvent } from "@/actions/farm";
+import { markModuleComplete } from "@/actions/progress";
 
 type QuizQuestion = {
     question: string;
@@ -14,10 +15,12 @@ type QuizQuestion = {
 
 export default function InNoteQuiz({ 
     questions, 
-    subjectId 
+    subjectId,
+    moduleId
 }: { 
     questions: QuizQuestion[];
     subjectId: string;
+    moduleId: string | number;
 }) {
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -25,7 +28,7 @@ export default function InNoteQuiz({
     const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">("idle");
 
     const handleSelect = (qIndex: number, optIndex: number) => {
-        if (isSubmitted) return;
+        if (isSubmitted || selectedAnswers[qIndex] !== undefined) return;
         setSelectedAnswers(prev => ({ ...prev, [qIndex]: optIndex }));
     };
 
@@ -73,6 +76,14 @@ export default function InNoteQuiz({
                     description: `Completed Notes Knowledge Check for ${subjectId}`,
                     tomatoes: totalTomatoes,
                 });
+            }
+
+            if (typeof moduleId === 'number') {
+                await markModuleComplete(subjectId, moduleId);
+            } else if (moduleId === 'formula-sheet') {
+                await markModuleComplete(subjectId, 98);
+            } else if (moduleId === 'mind-maps') {
+                await markModuleComplete(subjectId, 99);
             }
             
             setSaveStatus("saved");
@@ -127,7 +138,7 @@ export default function InNoteQuiz({
                                         <button 
                                             key={j} 
                                             onClick={() => handleSelect(i, j)}
-                                            disabled={isSubmitted}
+                                            disabled={isSubmitted || selectedAnswers[i] !== undefined}
                                             className={btnClass}
                                         >
                                             <div className="flex items-center justify-between">

@@ -13,12 +13,6 @@ export async function markModuleComplete(subjectId: string, moduleNumber: number
 
         const { error } = await supabase
             .from("user_module_progress")
-            .insert({
-                user_id: user.id,
-                subject_id: subjectId,
-                module_number: moduleNumber
-            })
-            // Ignore if already marked complete
             .upsert({
                 user_id: user.id,
                 subject_id: subjectId,

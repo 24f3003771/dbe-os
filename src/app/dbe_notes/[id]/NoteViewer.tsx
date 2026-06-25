@@ -63,6 +63,35 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
     const [showMedia, setShowMedia] = useState(true);
     const [completedModules, setCompletedModules] = useState<number[]>(initialCompletedModules);
     const printRef = useRef<HTMLDivElement>(null);
+    const [savedBookmarks, setSavedBookmarks] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (subject?.id) {
+            const saved = localStorage.getItem(`dbe-bookmarks-${subject.id}`);
+            if (saved) {
+                try {
+                    setSavedBookmarks(JSON.parse(saved));
+                } catch (e) {}
+            }
+        }
+    }, [subject?.id]);
+
+    const toggleBookmark = (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSavedBookmarks(prev => {
+            const newBookmarks = prev.includes(id) ? prev.filter(b => b !== id) : [...prev, id];
+            localStorage.setItem(`dbe-bookmarks-${subject.id}`, JSON.stringify(newBookmarks));
+            return newBookmarks;
+        });
+    };
+
+    const handleDoubleClick = () => {
+        const text = window.getSelection()?.toString().trim();
+        if (text && text.length > 0) {
+            setSearchQuery(text);
+        }
+    };
 
     const modules: (number | "formula-sheet" | "mind-maps")[] = [...Array.from({ length: subject.module_count }, (_, i) => i + 1), "formula-sheet", "mind-maps"];
     
@@ -182,7 +211,9 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                                         heading.level === 2 ? "pl-6 text-sm" : "pl-10 text-xs"
                                     }`}
                                 >
-                                    <Bookmark className="w-3.5 h-3.5 mt-0.5 shrink-0 opacity-40" />
+                                    <div onClick={(e) => toggleBookmark(heading.id, e)} className="cursor-pointer hover:scale-110 transition-transform p-0.5">
+                                        <Bookmark className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${savedBookmarks.includes(heading.id) ? "fill-indigo-500 text-indigo-500 opacity-100" : "opacity-40"}`} />
+                                    </div>
                                     <span className="leading-snug">{heading.text}</span>
                                 </button>
                             ))}
@@ -261,7 +292,7 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                 )}
 
                 {/* Note Content (Scrollable) */}
-                <div className="flex-1 overflow-y-auto px-8 py-12 md:px-16 md:py-16 scroll-smooth" ref={printRef}>
+                <div className="flex-1 overflow-y-auto px-8 py-12 md:px-16 md:py-16 scroll-smooth" ref={printRef} onDoubleClick={handleDoubleClick}>
                     <div className="max-w-3xl mx-auto">
                         {activeNote ? (
                             <div className="prose max-w-none pb-32"
@@ -417,7 +448,7 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                                             if (!inline && isQuiz) {
                                                 try {
                                                     const questions = JSON.parse(String(children).replace(/\n$/, ''));
-                                                    return <InNoteQuiz questions={questions} subjectId={subject.id} />;
+                                                    return <InNoteQuiz questions={questions} subjectId={subject.id} moduleId={activeModule} />;
                                                 } catch (e) {
                                                     return (
                                                         <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono my-4">
@@ -489,6 +520,39 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                     </div>
                 </div>
             </div>
+
+            {searchQuery && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+                    <div className="bg-white rounded-3xl p-6 shadow-2xl max-w-md w-full animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center gap-3 mb-4 text-indigo-600">
+                            <span className="text-2xl">✨</span>
+                            <h3 className="text-xl font-black font-sans">Search Gemini</h3>
+                        </div>
+                        <p className="text-stone-600 font-sans mb-6">
+                            Would you like to search Gemini for:
+                            <br/>
+                            <strong className="text-stone-900 line-clamp-3 mt-2 block p-3 bg-stone-50 rounded-xl border border-stone-100">&quot;{searchQuery}&quot;</strong>
+                        </p>
+                        <div className="flex gap-3">
+                            <button 
+                                onClick={() => setSearchQuery(null)}
+                                className="flex-1 py-3 px-4 rounded-xl font-bold text-stone-500 bg-stone-100 hover:bg-stone-200 transition-colors font-sans"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    window.open(`https://gemini.google.com/app?q=${encodeURIComponent(searchQuery)}`, '_blank');
+                                    setSearchQuery(null);
+                                }}
+                                className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors font-sans flex items-center justify-center gap-2"
+                            >
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
