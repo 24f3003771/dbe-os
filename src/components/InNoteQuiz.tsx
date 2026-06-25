@@ -34,10 +34,7 @@ export default function InNoteQuiz({
     const storageKey = `dbe-quiz-${subjectId}-${moduleId}`;
 
     React.useEffect(() => {
-        if (isAlreadyCompleted) {
-            setIsSubmitted(true);
-            setSaveStatus("saved");
-        }
+
         const saved = localStorage.getItem(storageKey);
         if (saved) {
             try {
