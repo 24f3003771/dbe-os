@@ -1,227 +1,245 @@
 "use client";
 
-import { motion } from "framer-motion";
-import {
-  CalendarClock, Bell, Check, Loader2, Sparkles,
-  AlarmClock, BookOpen, ListTodo, GraduationCap, Zap, Shield, Calendar
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+    CalendarClock, Bell, CheckCircle2, CircleDashed,
+    Clock, AlertTriangle, PlayCircle, BookOpen,
+    ListTodo, GraduationCap, Zap, Shield, Calendar,
+    ChevronRight, Check, XCircle, MoreVertical,
+    Coffee, Sun, Target, CalendarDays, BrainCircuit, Sparkles
 } from "lucide-react";
-import { useState, useEffect } from "react";
 
-function WaitlistButton() {
-  const TOOL_ID = "task-planner";
-  const [count, setCount] = useState<number | null>(null);
-  const [joined, setJoined] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [popped, setPopped] = useState(false);
-
-  const fp = () => {
-    let id = localStorage.getItem("dbe_fp");
-    if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem("dbe_fp", id); }
-    return id;
-  };
-
-  useEffect(() => {
-    if (localStorage.getItem(`wl_${TOOL_ID}`)) setJoined(true);
-    fetch(`/api/waitlist?tool=${TOOL_ID}`).then(r => r.json()).then(d => setCount(d.count ?? 0)).catch(() => setCount(0));
-  }, []);
-
-  const join = async () => {
-    if (joined || loading) return;
-    setLoading(true);
-    try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolId: TOOL_ID, fingerprint: fp() }),
-      });
-      const d = await res.json();
-      localStorage.setItem(`wl_${TOOL_ID}`, "1");
-      setJoined(true);
-      setCount(d.count ?? (count !== null ? count + 1 : 1));
-      setPopped(true);
-      setTimeout(() => setPopped(false), 4000);
-    } catch {
-      localStorage.setItem(`wl_${TOOL_ID}`, "1");
-      setJoined(true);
-      setCount(c => c !== null ? c + 1 : 1);
-    } finally { setLoading(false); }
-  };
-
-  return (
-    <div className="relative w-full max-w-md">
-      {popped && (
-        <motion.div
-          initial={{ opacity: 0, y: 8, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-black uppercase tracking-widest px-5 py-2.5 rounded-2xl shadow-2xl whitespace-nowrap z-20"
-        >
-          🎉 You&apos;re on the list! We&apos;ll notify you first.
-        </motion.div>
-      )}
-      <button
-        onClick={join}
-        className={`w-full flex items-center justify-center gap-3 py-5 rounded-2xl font-black text-base uppercase tracking-widest transition-all duration-300 shadow-xl ${
-          joined
-            ? "bg-emerald-500 text-white shadow-emerald-500/30"
-            : "bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98]"
-        }`}
-      >
-        {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : joined ? <Check className="w-6 h-6" /> : <Bell className="w-6 h-6" />}
-        {joined ? "You're on the waitlist!" : "Notify Me When It Launches"}
-        {count !== null && (
-          <span className="bg-white/25 px-3 py-1 rounded-xl text-sm font-black">
-            {count} {count === 1 ? "person" : "people"}
-          </span>
-        )}
-      </button>
-    </div>
-  );
-}
-
-const FEATURES = [
-  {
-    icon: AlarmClock,
-    title: "Never Miss a Deadline",
-    desc: "Every assignment, quiz, and exam — synced from the official IIMB term schedule automatically. Zero manual entry.",
-    color: "bg-amber-50 text-amber-600",
-  },
-  {
-    icon: Calendar,
-    title: "Full Term Calendar View",
-    desc: "See your entire term at a glance. Weekly and monthly views with colour-coded deadlines by subject.",
-    color: "bg-blue-50 text-blue-600",
-  },
-  {
-    icon: ListTodo,
-    title: "Personal Task Planner",
-    desc: "Add your own tasks — revision sessions, group meetings, submission prep — on top of official deadlines.",
-    color: "bg-violet-50 text-violet-600",
-  },
-  {
-    icon: Zap,
-    title: "Smart Countdown Timers",
-    desc: "Real-time countdowns for every pending deadline. Know exactly how many hours you have left.",
-    color: "bg-rose-50 text-rose-600",
-  },
-  {
-    icon: GraduationCap,
-    title: "Auto-Sync with IIMB Schedule",
-    desc: "Module release dates, mid-terms, and final exam windows pre-loaded from the official programme manual.",
-    color: "bg-emerald-50 text-emerald-600",
-  },
-  {
-    icon: Shield,
-    title: "Export to Google Calendar",
-    desc: "One-click ICS export. All your DBE deadlines directly inside Google or Apple Calendar.",
-    color: "bg-indigo-50 text-indigo-600",
-  },
+// Mock Data for MVP Demo
+const UPCOMING_TASKS = [
+    { id: 1, title: "Python Assignment", subject: "Programming", due: "Tomorrow, 11:59 PM", priority: "Critical", est: "45 min", type: "assignment" },
+    { id: 2, title: "Statistics Quiz 2", subject: "Statistics", due: "3 Days Left", priority: "Urgent", est: "30 min", type: "quiz" },
+    { id: 3, title: "Financial Accounting Basics", subject: "Accounting", due: "7 Days Left", priority: "Medium", est: "2 hrs", type: "reading" },
 ];
 
-export default function DeadlinesPage() {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-start py-16 px-4 animate-in fade-in duration-700">
-      <div className="w-full max-w-3xl flex flex-col items-center gap-12">
+const SCHEDULE = [
+    { id: 1, title: "Live Session: Python", time: "10:00 AM - 12:00 PM", type: "live" },
+    { id: 2, title: "Doubt Session: Stats", time: "4:00 PM - 5:00 PM", type: "doubt" },
+];
 
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center space-y-6"
-        >
-          {/* Icon */}
-          <div className="relative inline-flex">
-            <div className="w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-[2rem] flex items-center justify-center text-white shadow-2xl shadow-amber-500/30 mx-auto">
-              <CalendarClock className="w-12 h-12" />
+const MISSED = [
+    { id: 1, title: "Week 2 Quiz", subject: "Statistics", due: "Passed", type: "quiz" }
+];
+
+const TIMELINE = [
+    { week: "Week 1", status: "completed" },
+    { week: "Week 2", status: "completed" },
+    { week: "Week 3", status: "completed" },
+    { week: "Week 4", status: "completed" },
+    { week: "Week 5", status: "today" },
+    { week: "Week 6", status: "upcoming" },
+];
+
+export default function AcademicOSDashboard() {
+    const [tasks, setTasks] = useState(UPCOMING_TASKS);
+    const [progress] = useState({ completed: 18, total: 23, percent: 78 });
+
+    const markComplete = (id: number) => {
+        setTasks(prev => prev.filter(t => t.id !== id));
+    };
+
+    return (
+        <div className="min-h-screen bg-[#FDFDFD] text-[#1a1a1a] pb-24 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+            {/* Header / Daily Digest */}
+            <div className="bg-gradient-to-b from-indigo-50/50 to-transparent pt-12 pb-8 px-6 md:px-12 border-b border-indigo-50/50">
+                <div className="max-w-6xl mx-auto">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+                    >
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-stone-200 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-600 mb-4 shadow-sm">
+                                <Sun className="w-3.5 h-3.5" /> Good Morning, Ishaan
+                            </div>
+                            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-stone-900 leading-tight">
+                                Today&apos;s <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Priority.</span>
+                            </h1>
+                            <p className="text-stone-500 font-medium mt-2 max-w-md">
+                                You have <strong className="text-indigo-600">2 Assignments</strong>, 1 Live Class, and 1 Quiz today. Estimated time: 3 hrs 20 mins.
+                            </p>
+                        </div>
+                        
+                        {/* Progress Quick View */}
+                        <div className="flex items-center gap-4 bg-white p-4 rounded-3xl border border-stone-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                            <div className="relative w-16 h-16 flex items-center justify-center">
+                                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                    <path className="text-stone-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" />
+                                    <path className="text-emerald-500" strokeDasharray={`${progress.percent}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                </svg>
+                                <div className="absolute flex flex-col items-center">
+                                    <span className="text-sm font-black text-stone-800">{progress.percent}%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-xs font-black uppercase tracking-widest text-stone-400 mb-0.5">Semester Progress</p>
+                                <p className="text-sm font-bold text-stone-800">{progress.completed} / {progress.total} Tasks Done</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
-            <span className="absolute -top-2 -right-2 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full animate-pulse">
-              Next Version
-            </span>
-          </div>
 
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-700 border border-amber-200 px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5" />
-            Something Big is Cooking for You
-          </div>
+            <div className="max-w-6xl mx-auto px-6 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
+                
+                {/* Left Column (Main Content) */}
+                <div className="lg:col-span-8 space-y-10">
+                    
+                    {/* Upcoming Deadlines */}
+                    <section>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-black text-stone-900 flex items-center gap-2">
+                                <Target className="w-5 h-5 text-indigo-500" /> Upcoming Deadlines
+                            </h2>
+                        </div>
+                        
+                        <div className="space-y-4">
+                            <AnimatePresence>
+                                {tasks.map((task) => (
+                                    <motion.div 
+                                        key={task.id}
+                                        initial={{ opacity: 0, scale: 0.98 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95, height: 0, marginBottom: 0 }}
+                                        className="group bg-white border border-stone-200 hover:border-indigo-300 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                                    >
+                                        <div className="flex items-start gap-4">
+                                            <button 
+                                                onClick={() => markComplete(task.id)}
+                                                className="w-6 h-6 rounded-full border-2 border-stone-300 flex items-center justify-center text-transparent hover:border-emerald-500 hover:text-emerald-500 hover:bg-emerald-50 transition-colors shrink-0 mt-1"
+                                            >
+                                                <Check className="w-3.5 h-3.5" />
+                                            </button>
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                                                        task.priority === 'Critical' ? 'bg-red-50 text-red-600 border border-red-100' :
+                                                        task.priority === 'Urgent' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
+                                                        'bg-blue-50 text-blue-600 border border-blue-100'
+                                                    }`}>
+                                                        {task.priority}
+                                                    </span>
+                                                    <span className="text-xs font-bold text-stone-400">{task.subject}</span>
+                                                </div>
+                                                <h3 className="text-base font-bold text-stone-900">{task.title}</h3>
+                                                <div className="flex items-center gap-4 mt-2 text-xs font-medium text-stone-500">
+                                                    <span className="flex items-center gap-1 text-red-500 font-bold bg-red-50 px-2 py-1 rounded-lg"><Clock className="w-3.5 h-3.5" /> Due {task.due}</span>
+                                                    <span className="flex items-center gap-1 bg-stone-50 px-2 py-1 rounded-lg"><Zap className="w-3.5 h-3.5 text-amber-500" /> Est. {task.est}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button className="sm:w-auto w-full px-5 py-2.5 bg-stone-900 hover:bg-indigo-600 text-white text-xs font-bold rounded-xl transition-colors shrink-0 flex items-center justify-center gap-2">
+                                            Start Now <ChevronRight className="w-3.5 h-3.5" />
+                                        </button>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                            {tasks.length === 0 && (
+                                <div className="text-center py-12 bg-stone-50 rounded-3xl border border-dashed border-stone-200">
+                                    <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+                                    <p className="font-bold text-stone-500">All caught up! Great job.</p>
+                                </div>
+                            )}
+                        </div>
+                    </section>
 
-          {/* Headline */}
-          <div className="space-y-3">
-            <h1 className="text-5xl md:text-6xl font-black font-headline tracking-tighter text-on-surface leading-[0.95]">
-              Tasks &<br />
-              <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-                Deadline Planner.
-              </span>
-            </h1>
-            <p className="text-lg md:text-xl text-on-surface-variant font-medium max-w-xl mx-auto leading-relaxed">
-              We&apos;re building the smartest academic planner for DBE students —
-              so you <strong className="text-on-surface">never miss a single assessment, module, or exam</strong> again.
-            </p>
-          </div>
-
-          {/* Promise strip */}
-          <div className="bg-surface-container border border-outline-variant/15 rounded-2xl px-6 py-4 text-sm text-on-surface-variant font-medium inline-flex items-center gap-3">
-            <BookOpen className="w-4 h-4 text-amber-500 shrink-0" />
-            Designed specifically around the <strong className="text-on-surface">IIMB BBA DBE Term Schedule</strong> — Term 3 and beyond.
-          </div>
-        </motion.div>
-
-        {/* Waitlist CTA */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-          className="w-full flex flex-col items-center gap-3"
-        >
-          <WaitlistButton />
-          <p className="text-xs text-on-surface-variant/60 font-medium">
-            Join the waitlist — the more people who sign up, the faster we build it.
-          </p>
-        </motion.div>
-
-        {/* Features Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.5 }}
-          className="w-full"
-        >
-          <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/50 text-center mb-6">
-            What&apos;s Coming
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {FEATURES.map((f, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.07 }}
-                className="bg-surface-container-lowest border border-outline-variant/15 rounded-[1.75rem] p-6 flex gap-4 hover:shadow-lg transition-all duration-300 group"
-              >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${f.color} group-hover:scale-110 transition-transform duration-300`}>
-                  <f.icon className="w-6 h-6" />
+                    {/* Today's Schedule */}
+                    <section>
+                        <h2 className="text-xl font-black text-stone-900 flex items-center gap-2 mb-6">
+                            <CalendarDays className="w-5 h-5 text-indigo-500" /> Today&apos;s Schedule
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {SCHEDULE.map((item) => (
+                                <div key={item.id} className="bg-white border border-stone-200 rounded-3xl p-5 shadow-sm flex gap-4">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${item.type === 'live' ? 'bg-indigo-50 text-indigo-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                                        {item.type === 'live' ? <PlayCircle className="w-5 h-5" /> : <BookOpen className="w-5 h-5" />}
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-1">{item.time}</p>
+                                        <h3 className="text-sm font-bold text-stone-900">{item.title}</h3>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
                 </div>
-                <div>
-                  <h3 className="font-black text-on-surface mb-1">{f.title}</h3>
-                  <p className="text-sm text-on-surface-variant font-medium leading-relaxed">{f.desc}</p>
+
+                {/* Right Column (Sidebar) */}
+                <div className="lg:col-span-4 space-y-10">
+                    
+                    {/* Student Timeline */}
+                    <section>
+                        <h2 className="text-sm font-black uppercase tracking-widest text-stone-400 mb-6 flex items-center gap-2">
+                            <Calendar className="w-4 h-4" /> Timeline
+                        </h2>
+                        <div className="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm">
+                            <div className="relative border-l-2 border-stone-100 ml-3 space-y-6">
+                                {TIMELINE.map((t, idx) => (
+                                    <div key={idx} className="relative pl-6">
+                                        <div className={`absolute -left-[9px] top-1 w-4 h-4 rounded-full flex items-center justify-center ${
+                                            t.status === 'completed' ? 'bg-emerald-500 ring-4 ring-emerald-50' :
+                                            t.status === 'today' ? 'bg-indigo-600 ring-4 ring-indigo-50 animate-pulse' :
+                                            'bg-stone-200'
+                                        }`}>
+                                            {t.status === 'completed' && <Check className="w-2.5 h-2.5 text-white" />}
+                                        </div>
+                                        <p className={`text-sm font-bold ${t.status === 'upcoming' ? 'text-stone-400' : 'text-stone-900'}`}>
+                                            {t.week}
+                                            {t.status === 'today' && <span className="ml-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">Today</span>}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Missed Deadlines */}
+                    <section>
+                        <h2 className="text-sm font-black uppercase tracking-widest text-stone-400 mb-6 flex items-center gap-2">
+                            <AlertTriangle className="w-4 h-4" /> Action Needed
+                        </h2>
+                        <div className="space-y-3">
+                            {MISSED.map(m => (
+                                <div key={m.id} className="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-red-100 text-red-500 flex items-center justify-center shrink-0">
+                                        <XCircle className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-red-900">{m.title}</h3>
+                                        <p className="text-xs text-red-700 font-medium">Missed • {m.subject}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Smart AI Assistant Teaser */}
+                    <section className="bg-gradient-to-br from-stone-900 to-slate-900 rounded-3xl p-6 text-white relative overflow-hidden shadow-xl">
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                            <BrainCircuit className="w-24 h-24" />
+                        </div>
+                        <div className="relative z-10">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-white/90 mb-4 backdrop-blur-md">
+                                <Sparkles className="w-3 h-3" /> Agent AI
+                            </div>
+                            <h3 className="text-lg font-bold mb-2">Ask your Semester Assistant</h3>
+                            <div className="bg-white/10 border border-white/10 rounded-xl p-3 text-sm font-medium text-white/70 backdrop-blur-sm cursor-text flex items-center justify-between hover:bg-white/20 transition-colors">
+                                "When is my next quiz?"
+                                <div className="w-6 h-6 bg-white text-stone-900 rounded-full flex items-center justify-center">
+                                    <ChevronRight className="w-3 h-3 font-bold" />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Bottom note */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="text-center text-xs text-on-surface-variant/50 font-medium pb-8"
-        >
-          Planning to ship before Term 3 begins. Stay tuned. 🚀
-        </motion.div>
-
-      </div>
-    </div>
-  );
+            </div>
+        </div>
+    );
 }

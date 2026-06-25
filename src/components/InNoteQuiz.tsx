@@ -16,16 +16,40 @@ type QuizQuestion = {
 export default function InNoteQuiz({ 
     questions, 
     subjectId,
-    moduleId
+    moduleId,
+    isAlreadyCompleted,
+    onComplete
 }: { 
     questions: QuizQuestion[];
     subjectId: string;
     moduleId: string | number;
+    isAlreadyCompleted?: boolean;
+    onComplete?: () => void;
 }) {
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">("idle");
+
+    const storageKey = `dbe-quiz-${subjectId}-${moduleId}`;
+
+    React.useEffect(() => {
+        if (isAlreadyCompleted) {
+            setIsSubmitted(true);
+            setSaveStatus("saved");
+        }
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.answers) setSelectedAnswers(parsed.answers);
+                if (parsed.isSubmitted) {
+                    setIsSubmitted(true);
+                    setSaveStatus("saved");
+                }
+            } catch (e) {}
+        }
+    }, [storageKey, isAlreadyCompleted]);
 
     const handleSelect = (qIndex: number, optIndex: number) => {
         if (isSubmitted || selectedAnswers[qIndex] !== undefined) return;
@@ -87,6 +111,8 @@ export default function InNoteQuiz({
             }
             
             setSaveStatus("saved");
+            localStorage.setItem(storageKey, JSON.stringify({ answers: selectedAnswers, isSubmitted: true }));
+            if (onComplete) onComplete();
         } catch (error) {
             console.error(error);
             setSaveStatus("error");
@@ -98,9 +124,11 @@ export default function InNoteQuiz({
     const allAnswered = Object.keys(selectedAnswers).length === questions.length;
 
     return (
-        <div className="my-8 border-2 border-dashed border-[#34495e] p-6 rounded-2xl bg-[#f8f9f9] text-[#2c3e50] shadow-sm font-sans">
-            <h2 className="text-xl font-bold text-center mb-6 text-[#2c3e50] flex items-center justify-center gap-2">
-                <span>🧠</span> Quick Knowledge Check
+        <div className="my-10 border border-stone-200 p-8 rounded-3xl bg-white shadow-sm font-sans relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500" />
+            <h2 className="text-2xl font-black mb-8 text-stone-900 flex items-center gap-3">
+                <span className="bg-indigo-50 text-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm">🧠</span> 
+                Quick Knowledge Check
             </h2>
             
             <div className="space-y-6">
@@ -109,28 +137,30 @@ export default function InNoteQuiz({
                     const isCorrect = selected === q.correctIndex;
                     
                     return (
-                        <div key={i} className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-                            <p className="font-bold text-[#2980b9] mb-3">Q{i + 1}. {q.question}</p>
-                            <div className="space-y-2">
+                        <div key={i} className="bg-stone-50/50 p-6 rounded-2xl border border-stone-100 transition-all hover:border-stone-200">
+                            <p className="font-bold text-stone-800 mb-4 text-base leading-relaxed">
+                                <span className="text-indigo-500 font-black mr-2">Q{i + 1}.</span> {q.question}
+                            </p>
+                            <div className="space-y-2.5">
                                 {q.options.map((opt, j) => {
                                     const isThisSelected = selected === j;
                                     const isThisCorrect = j === q.correctIndex;
                                     
-                                    let btnClass = "w-full text-left p-3 rounded-lg border transition-all whitespace-normal break-words ";
+                                    let btnClass = "w-full text-left p-3.5 rounded-xl border transition-all whitespace-normal break-words text-sm font-medium flex items-center justify-between gap-3 ";
                                     
                                     if (isSubmitted) {
                                         if (isThisCorrect) {
-                                            btnClass += "bg-green-50 border-green-500 text-green-800 font-bold";
+                                            btnClass += "bg-emerald-50 border-emerald-500 text-emerald-800 font-bold shadow-sm ring-1 ring-emerald-500/20";
                                         } else if (isThisSelected && !isThisCorrect) {
-                                            btnClass += "bg-red-50 border-red-500 text-red-800";
+                                            btnClass += "bg-red-50 border-red-200 text-red-800";
                                         } else {
-                                            btnClass += "bg-stone-50 border-stone-200 opacity-60";
+                                            btnClass += "bg-white border-stone-200 opacity-50";
                                         }
                                     } else {
                                         if (isThisSelected) {
-                                            btnClass += "bg-[#2980b9] border-[#2980b9] text-white font-bold shadow-md";
+                                            btnClass += "bg-indigo-600 border-indigo-600 text-white font-bold shadow-md shadow-indigo-600/20 ring-2 ring-indigo-600/20";
                                         } else {
-                                            btnClass += "bg-white border-stone-200 hover:border-[#2980b9] hover:bg-blue-50";
+                                            btnClass += "bg-white border-stone-200 hover:border-indigo-300 hover:bg-indigo-50/50 text-stone-600 hover:text-stone-900";
                                         }
                                     }
                                     
@@ -141,23 +171,27 @@ export default function InNoteQuiz({
                                             disabled={isSubmitted || selectedAnswers[i] !== undefined}
                                             className={btnClass}
                                         >
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3 flex-1">
+                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${isThisSelected && !isSubmitted ? 'border-white' : isSubmitted && isThisCorrect ? 'border-emerald-500' : isSubmitted && isThisSelected ? 'border-red-500' : 'border-stone-300'}`}>
+                                                    {isThisSelected && !isSubmitted && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
+                                                </div>
                                                 <span>{opt}</span>
-                                                {isSubmitted && isThisCorrect && <CheckCircle2 className="w-5 h-5 text-green-500" />}
-                                                {isSubmitted && isThisSelected && !isThisCorrect && <XCircle className="w-5 h-5 text-red-500" />}
                                             </div>
+                                            {isSubmitted && isThisCorrect && <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />}
+                                            {isSubmitted && isThisSelected && !isThisCorrect && <XCircle className="w-5 h-5 text-red-500 shrink-0" />}
                                         </button>
                                     );
                                 })}
                             </div>
                             
                             {isSubmitted && (
-                                <div className={`mt-4 p-4 rounded-lg border ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                <div className={`mt-5 p-4 rounded-xl border flex items-start gap-3 ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`}>
+                                    {isCorrect ? <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" /> : <XCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />}
                                     <p className="text-sm">
-                                        <strong className={isCorrect ? 'text-green-700' : 'text-red-700'}>
-                                            {isCorrect ? '✅ Correct! ' : '❌ Incorrect. '}
+                                        <strong className={isCorrect ? 'text-emerald-700 block mb-1' : 'text-red-700 block mb-1'}>
+                                            {isCorrect ? 'Correct!' : 'Incorrect.'}
                                         </strong>
-                                        <span className="text-stone-700">{q.explanation}</span>
+                                        <span className="text-stone-600 leading-relaxed">{q.explanation}</span>
                                     </p>
                                 </div>
                             )}
@@ -166,29 +200,33 @@ export default function InNoteQuiz({
                 })}
             </div>
             
-            <div className="mt-8 text-center">
+            <div className="mt-10 text-center pt-6 border-t border-stone-100">
                 {!isSubmitted ? (
                     <button 
                         onClick={handleSubmit}
                         disabled={!allAnswered}
-                        className={`px-8 py-3 rounded-xl font-bold text-lg transition-all shadow-md ${allAnswered ? 'bg-[#2ecc71] hover:bg-[#27ae60] text-white hover:scale-105' : 'bg-stone-300 text-stone-500 cursor-not-allowed'}`}
+                        className={`px-8 py-3.5 rounded-2xl font-black tracking-wide text-sm uppercase transition-all shadow-sm flex items-center gap-2 mx-auto ${allAnswered ? 'bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-md hover:scale-[1.02]' : 'bg-stone-100 text-stone-400 cursor-not-allowed border border-stone-200'}`}
                     >
-                        Check Answers & Save Progress
+                        <CheckCircle2 className="w-4 h-4" /> Check Answers & Save
                     </button>
                 ) : (
-                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-stone-100 rounded-xl font-bold">
+                    <div className="inline-flex items-center gap-3 px-6 py-3.5 bg-emerald-50 border border-emerald-100 rounded-2xl font-bold">
                         {isSaving ? (
-                            <span className="text-stone-500 animate-pulse flex items-center gap-2">Saving progress...</span>
+                            <span className="text-emerald-600 animate-pulse flex items-center gap-2 text-sm uppercase tracking-widest"><Loader2 className="w-4 h-4 animate-spin" /> Saving progress...</span>
                         ) : saveStatus === "saved" ? (
-                            <span className="text-green-600 flex items-center gap-2">
-                                <Save className="w-5 h-5" /> Progress Saved! 
+                            <span className="text-emerald-700 flex items-center gap-2 text-sm">
+                                <Save className="w-4 h-4" /> Progress Saved! 
                                 {Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length > 0 && 
-                                    <span className="text-[#e74c3c] ml-2 font-black">🍅 +{Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length * 5} Tomatoes!</span>
+                                    <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black ml-2 flex items-center gap-1.5">
+                                        🍅 +{Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length * 5} Tomatoes
+                                    </span>
                                 }
                             </span>
                         ) : saveStatus === "error" ? (
-                            <span className="text-red-600 flex items-center gap-2"><AlertCircle className="w-5 h-5" /> Failed to save progress</span>
-                        ) : null}
+                            <span className="text-red-600 flex items-center gap-2 text-sm"><AlertCircle className="w-4 h-4" /> Failed to save progress</span>
+                        ) : (
+                            <span className="text-emerald-700 flex items-center gap-2 text-sm"><CheckCircle2 className="w-4 h-4" /> Completed</span>
+                        )}
                     </div>
                 )}
             </div>

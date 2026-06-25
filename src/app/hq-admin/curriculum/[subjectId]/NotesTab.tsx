@@ -186,12 +186,13 @@ export default function NotesTab({
 CRITICAL INSTRUCTION: Generate the ENTIRE output as a single, continuous flow of text. DO NOT wrap your entire response in a master Markdown block. The HTML/Markdown notes, the \`\`\`quiz\`\`\` code blocks, and the \`\`\`checkpoint\`\`\` block must seamlessly flow together in one single response!
 
 1. Length & Depth: The notes should neither be too brief nor exhaustively in-depth. Keep it at the sweet spot—concise enough to be highly readable, but deep enough to cover all crucial topics thoroughly.
-2. Module Title: \`<h1 style="color: #2c3e50; border-bottom: 2px solid #eef2f5; padding-bottom: 10px;">Module X — [Name]</h1>\`
-3. Subtopics: \`<h2 style="color: #2980b9; margin-top: 30px;">X.X [Subtopic Name]</h2>\`
+2. Colors & Contrast (CRITICAL): USE PUNCHY, HIGH-CONTRAST COLORS. Do NOT use faded or overly pastel colors where text becomes unreadable. Ensure all text has excellent visibility against its background (e.g., use dark text like #1a1a1a or #2c3e50 on light backgrounds).
+3. Module Title: \`<h1 style="color: #2c3e50; border-bottom: 2px solid #eef2f5; padding-bottom: 10px;">Module X — [Name]</h1>\`
+4. Subtopics: \`<h2 style="color: #2980b9; margin-top: 30px;">X.X [Subtopic Name]</h2>\`
    (Note: The frontend automatically reads these <h2> tags to build the Table of Contents in the sidebar!)
-4. Main Content Blocks: Wrap paragraphs in \`<div style="background-color: #ffffff; border: 1px solid #eef2f5; padding: 18px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">...</div>\`
-5. Important Quotes/Concepts: \`<div style="border: 3px dashed #1abc9c; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.4em; color: #2c3e50; background-color: #f4fdfb; margin-bottom: 15px;"><strong style="color: #16a085;">[Text]</strong></div>\`
-6. Easy Everyday Examples: \`<div style="border: 2px dashed #27ae60; padding: 18px; border-radius: 12px; background-color: #eafaf1; margin-bottom: 15px;">🍵 <strong style="color: #27ae60; font-size: 1.1em;">Easy Everyday Example: [Title]</strong><br><br>[Example text]</div>\` (Vary the border/text colors and emojis like #2980b9 for 📊, #8e44ad for 🏭, #d4ac0d for 🤝, #c0392b for 🚫).
+5. Main Content Blocks: Wrap paragraphs in \`<div style="background-color: #ffffff; border: 1px solid #eef2f5; padding: 18px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); color: #333333;">...</div>\`
+6. Important Quotes/Concepts: \`<div style="border: 3px dashed #1abc9c; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.4em; color: #2c3e50; background-color: #f4fdfb; margin-bottom: 15px;"><strong style="color: #16a085;">[Text]</strong></div>\`
+7. Easy Everyday Examples: \`<div style="border: 2px dashed #27ae60; padding: 18px; border-radius: 12px; background-color: #eafaf1; margin-bottom: 15px; color: #1f3f2d;">🍵 <strong style="color: #27ae60; font-size: 1.1em;">Easy Everyday Example: [Title]</strong><br><br>[Example text]</div>\` (Vary the border/text colors and emojis like #2980b9 for 📊, #8e44ad for 🏭, #d4ac0d for 🤝, #c0392b for 🚫, ensuring text remains readable).
 7. Definition blocks: \`<div style="border-left: 4px solid #8e44ad; padding: 15px; background-color: #f4f6f7; margin-top: 10px; border-radius: 0 8px 8px 0;"><strong style="color: #8e44ad;">🧮 Definition:</strong><br><code style="font-size: 1.15em; color: #2c3e50; font-family: inherit;">[Definition Text]</code></div>\`
 8. Formulas Block: Same as definition block, but with heading '🧮 The Math Formulas:'.
 9. Lists: Use \`<ul style="list-style-type: none; padding-left: 15px; margin-top: 8px; margin-bottom: 15px;">\` and \`<li style="margin-bottom: 5px;">➤ [Item]</li>\`.

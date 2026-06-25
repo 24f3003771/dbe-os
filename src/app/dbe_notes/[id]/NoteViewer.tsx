@@ -68,10 +68,19 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
 
     useEffect(() => {
         if (subject?.id) {
-            const saved = localStorage.getItem(`dbe-bookmarks-${subject.id}`);
-            if (saved) {
+            // Load bookmarks
+            const savedB = localStorage.getItem(`dbe-bookmarks-${subject.id}`);
+            if (savedB) {
                 try {
-                    setSavedBookmarks(JSON.parse(saved));
+                    setSavedBookmarks(JSON.parse(savedB));
+                } catch (e) {}
+            }
+            // Load completed modules
+            const savedM = localStorage.getItem(`dbe-completed-modules-${subject.id}`);
+            if (savedM) {
+                try {
+                    const parsedM = JSON.parse(savedM);
+                    setCompletedModules(prev => Array.from(new Set([...prev, ...parsedM])));
                 } catch (e) {}
             }
         }
@@ -108,7 +117,9 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
     const handleModuleComplete = (moduleId: string | number) => {
         const modNum = typeof moduleId === 'number' ? moduleId : moduleId === 'formula-sheet' ? 98 : moduleId === 'mind-maps' ? 99 : -1;
         if (modNum !== -1 && !completedModules.includes(modNum)) {
-            setCompletedModules([...completedModules, modNum]);
+            const newCompleted = [...completedModules, modNum];
+            setCompletedModules(newCompleted);
+            localStorage.setItem(`dbe-completed-modules-${subject.id}`, JSON.stringify(newCompleted));
         }
     };
 
@@ -448,7 +459,9 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                                             if (!inline && isQuiz) {
                                                 try {
                                                     const questions = JSON.parse(String(children).replace(/\n$/, ''));
-                                                    return <InNoteQuiz questions={questions} subjectId={subject.id} moduleId={activeModule} />;
+                                                    const modNum = typeof activeModule === 'number' ? activeModule : activeModule === 'formula-sheet' ? 98 : activeModule === 'mind-maps' ? 99 : -1;
+                                                    const isCurrentModuleCompleted = completedModules.includes(modNum);
+                                                    return <InNoteQuiz questions={questions} subjectId={subject.id} moduleId={activeModule} isAlreadyCompleted={isCurrentModuleCompleted} onComplete={() => handleModuleComplete(activeModule)} />;
                                                 } catch (e) {
                                                     return (
                                                         <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-500 text-xs font-mono my-4">
@@ -461,10 +474,13 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                                             if (!inline && isCheckpoint) {
                                                 try {
                                                     const config = JSON.parse(String(children).replace(/\n$/, ''));
+                                                    const modNum = typeof activeModule === 'number' ? activeModule : activeModule === 'formula-sheet' ? 98 : activeModule === 'mind-maps' ? 99 : -1;
+                                                    const isCurrentModuleCompleted = completedModules.includes(modNum);
                                                     return <ModuleCheckpoint 
                                                         message={config.message} 
                                                         subjectId={subject.id} 
                                                         moduleId={activeModule}
+                                                        isAlreadyCompleted={isCurrentModuleCompleted}
                                                         onComplete={() => handleModuleComplete(activeModule)}
                                                     />;
                                                 } catch (e) {
@@ -484,8 +500,8 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                                         },
                                         blockquote: ({ children }) => <blockquote style={{ borderLeft: "3px solid #4F46E5", paddingLeft: "20px", color: "#6B6B6B", fontStyle: "italic", margin: "24px 0", background: "linear-gradient(to right, #EEF2FF, transparent)", padding: "16px 20px", borderRadius: "0 12px 12px 0" }}>{children}</blockquote>,
                                         table: ({ children }) => <div className="overflow-x-auto my-8"><table style={{ borderCollapse: "collapse", width: "100%", minWidth: "600px" }}>{children}</table></div>,
-                                        th: ({ children }) => <th style={{ border: "1px solid #e0d8d4", padding: "12px 16px", background: "#f8f4f2", fontWeight: 700, textAlign: "left" }}>{children}</th>,
-                                        td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "12px 16px" }}>{children}</td>,
+                                        th: ({ children }) => <th style={{ border: "1px solid #e0d8d4", padding: "12px 16px", background: "#f8f4f2", fontWeight: 700, textAlign: "left", color: "#2c3e50" }}>{children}</th>,
+                                        td: ({ children }) => <td style={{ border: "1px solid #e0d8d4", padding: "12px 16px", color: "#34495e" }}>{children}</td>,
                                         pre: ({ children, ...props }: any) => {
                                             // Bypass <pre> wrapper for our custom interactive blocks
                                             if (children && children.props && children.props.className) {

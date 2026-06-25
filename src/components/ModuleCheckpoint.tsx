@@ -9,15 +9,23 @@ export default function ModuleCheckpoint({
     message, 
     subjectId,
     moduleId,
+    isAlreadyCompleted,
     onComplete
 }: { 
     message: string;
     subjectId: string;
     moduleId: string | number;
+    isAlreadyCompleted?: boolean;
     onComplete?: () => void;
 }) {
-    const [isCompleted, setIsCompleted] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(isAlreadyCompleted || false);
     const [isSaving, setIsSaving] = useState(false);
+
+    React.useEffect(() => {
+        if (isAlreadyCompleted) {
+            setIsCompleted(true);
+        }
+    }, [isAlreadyCompleted]);
 
     const handleComplete = async () => {
         setIsSaving(true);
