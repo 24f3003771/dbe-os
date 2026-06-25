@@ -80,7 +80,9 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
             if (savedM) {
                 try {
                     const parsedM = JSON.parse(savedM);
-                    setCompletedModules(prev => Array.from(new Set([...prev, ...parsedM])));
+                    if (Array.isArray(parsedM)) {
+                        setCompletedModules(prev => Array.from(new Set([...prev, ...parsedM])));
+                    }
                 } catch (e) {}
             }
         }

@@ -221,9 +221,9 @@ export default function InNoteQuiz({
                             ) : saveStatus === "saved" ? (
                                 <span className="text-emerald-700 flex items-center gap-2 text-sm">
                                     <Save className="w-4 h-4" /> Progress Saved! 
-                                    {Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length > 0 && 
+                                    {Object.entries(selectedAnswers).filter(([qIdx, ans]) => ans === questions[Number(qIdx)]?.correctIndex).length > 0 && 
                                         <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black ml-2 flex items-center gap-1.5">
-                                            🍅 +{Object.values(selectedAnswers).filter((ans, idx) => ans === questions[idx].correctIndex).length * 5} Tomatoes
+                                            🍅 +{Object.entries(selectedAnswers).filter(([qIdx, ans]) => ans === questions[Number(qIdx)]?.correctIndex).length * 5} Tomatoes
                                         </span>
                                     }
                                 </span>
