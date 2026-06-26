@@ -22,6 +22,7 @@ export default function Dashboard() {
   const { fetchFarmData, isInitialized, totalTomatoesEarned, leaderboardRank, streak } = useFarmStore();
   const [user, setUser] = useState<any>(null);
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [expandedNotice, setExpandedNotice] = useState<string | null>(null);
 
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [greeting, setGreeting] = useState({ text: "Good Day", Icon: Sun });
@@ -335,12 +336,18 @@ export default function Dashboard() {
                       <div className="flex flex-col gap-3 flex-1 overflow-y-auto max-h-[160px] pr-2 custom-scrollbar">
                           {announcements.length > 0 ? (
                               announcements.map((ann, i) => (
-                                  <div key={i} className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex flex-col gap-1">
+                                  <div 
+                                      key={ann.id || i} 
+                                      onClick={() => setExpandedNotice(expandedNotice === ann.id ? null : ann.id)}
+                                      className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex flex-col gap-1 cursor-pointer hover:border-amber-200 hover:bg-amber-50/30 transition-colors"
+                                  >
                                       <div className="flex items-start justify-between gap-2">
                                           <h5 className="font-bold text-stone-900 text-xs leading-tight">{ann.title}</h5>
                                           <span className="text-[9px] font-black text-stone-400 whitespace-nowrap bg-stone-100 px-1.5 py-0.5 rounded">{ann.batch}</span>
                                       </div>
-                                      <p className="text-[10px] font-medium text-stone-500 line-clamp-2">{ann.message}</p>
+                                      <p className={`text-[10px] font-medium text-stone-500 whitespace-pre-wrap ${expandedNotice === ann.id ? '' : 'line-clamp-2'}`}>
+                                          {ann.message}
+                                      </p>
                                   </div>
                               ))
                           ) : (
