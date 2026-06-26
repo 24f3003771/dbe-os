@@ -5,12 +5,13 @@ import {
     BookOpen, Target, Flame, Trophy, Calendar, Zap, 
     MoreHorizontal, Play, Pause, CheckSquare, Square, Check,
     Clock, Grid, ChevronRight, ChevronLeft, ChevronDown, 
-    Moon, Lock, Settings, Bell, Palette, ChevronUp, RotateCcw
+    Moon, Lock, Settings, Bell, Palette, ChevronUp, RotateCcw,
+    Sun, Sunrise
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { getTomatoHistory } from "@/actions/farm";
+import { getTomatoHistory, getLeaderboard } from "@/actions/farm";
 import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
 import TodaysMission from "@/components/TodaysMission";
 import { Caveat } from "next/font/google";
@@ -18,8 +19,12 @@ import { Caveat } from "next/font/google";
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 
 export default function Dashboard() {
-  const { fetchFarmData, isInitialized } = useFarmStore();
+  const { fetchFarmData, isInitialized, totalTomatoesEarned, leaderboardRank, streak } = useFarmStore();
   const [user, setUser] = useState<any>(null);
+
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [greeting, setGreeting] = useState({ text: "Good Day", Icon: Sun });
+  const [quote, setQuote] = useState({ text: "Stay consistent, your future self will thank you.", author: "Unknown" });
 
   // Control Center State
   const [controls, setControls] = useState(() => {
@@ -116,6 +121,34 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!isInitialized) fetchFarmData();
+    
+    // Greeting and Quote
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) setGreeting({ text: "Good Morning", Icon: Sunrise });
+    else if (hour >= 12 && hour < 17) setGreeting({ text: "Good Afternoon", Icon: Sun });
+    else if (hour >= 17 && hour < 21) setGreeting({ text: "Good Evening", Icon: Moon });
+    else setGreeting({ text: "Good Night", Icon: Moon });
+
+    const quotes = [
+      { text: "Stay consistent, your future self will thank you.", author: "Ishaan" },
+      { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+      { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+      { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+      { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+      { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+      { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" }
+    ];
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
+    setQuote(quotes[dayOfYear % quotes.length]);
+
+    const fetchBoard = async () => {
+        try {
+            const data = await getLeaderboard();
+            setLeaderboard(data.slice(0, 3));
+        } catch (e) {}
+    };
+    fetchBoard();
+
     const fetchUser = async () => {
       const supabase = createClient();
       const { data } = await supabase.auth.getUser();
@@ -169,8 +202,10 @@ export default function Dashboard() {
                       <div>
                           <div className="flex justify-between items-start mb-6">
                               <div>
-                                  <h1 className="text-3xl md:text-5xl font-black text-stone-900 mb-2">Good Evening, {firstName} 👋</h1>
-                                  <p className="text-stone-600 font-medium text-base">Stay consistent, your future self will thank you.</p>
+                                  <h1 className="text-3xl md:text-5xl font-black text-stone-900 mb-2 flex items-center gap-3">
+                                      {greeting.text}, {firstName} <greeting.Icon className="w-8 h-8 md:w-10 md:h-10 text-amber-500" />
+                                  </h1>
+                                  <p className="text-stone-600 font-medium text-base italic">"{quote.text}" — <span className="font-bold text-stone-800">{quote.author}</span></p>
                               </div>
                               <div className="bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-2xl flex items-center gap-2 border border-white shadow-sm md:hidden xl:flex">
                                   <Trophy className="w-4 h-4 text-amber-500" />
@@ -185,21 +220,21 @@ export default function Dashboard() {
                               <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
                                   <div className="flex items-center gap-1.5 text-rose-500 mb-1">
                                       <Target className="w-5 h-5" />
-                                      <span className="text-3xl font-black text-stone-900">98</span>
+                                      <span className="text-3xl font-black text-stone-900">{totalTomatoesEarned}</span>
                                   </div>
                                   <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Tomo</span>
                               </div>
                               <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
                                   <div className="flex items-center gap-1.5 text-amber-500 mb-1">
                                       <Trophy className="w-5 h-5" />
-                                      <span className="text-3xl font-black text-stone-900">#2</span>
+                                      <span className="text-3xl font-black text-stone-900">#{leaderboardRank > 0 ? leaderboardRank : '-'}</span>
                                   </div>
                                   <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Your Rank</span>
                               </div>
                               <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
                                   <div className="flex items-center gap-1.5 text-orange-500 mb-1">
                                       <Flame className="w-5 h-5" />
-                                      <span className="text-3xl font-black text-stone-900">12</span>
+                                      <span className="text-3xl font-black text-stone-900">{streak}</span>
                                   </div>
                                   <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Day Streak</span>
                               </div>
@@ -217,35 +252,36 @@ export default function Dashboard() {
                       </div>
 
                       <div className="space-y-4 flex-1 flex flex-col justify-center">
-                          {/* 1st Place */}
-                          <div className="flex items-center gap-3">
-                              <div className="w-4 font-black text-stone-400 text-[10px] text-center">1</div>
-                              <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
-                                  <Trophy className="w-3.5 h-3.5" />
-                              </div>
-                              <span className="font-bold text-stone-900 text-xs flex-1 truncate">Madhwendra</span>
-                              <span className="font-black text-stone-900 text-xs">393</span>
-                          </div>
-
-                          {/* 2nd Place (User) */}
-                          <div className="flex items-center gap-3 bg-white p-2 -mx-2 rounded-lg shadow-sm border border-rose-100/50">
-                              <div className="w-4 font-black text-rose-400 text-[10px] text-center">2</div>
-                              <div className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 font-black text-[10px]">
-                                  2
-                              </div>
-                              <span className="font-bold text-stone-900 text-xs flex-1 truncate">Ishaan Jha</span>
-                              <span className="font-black text-stone-900 text-xs">98</span>
-                          </div>
-
-                          {/* 3rd Place */}
-                          <div className="flex items-center gap-3">
-                              <div className="w-4 font-black text-stone-400 text-[10px] text-center">3</div>
-                              <div className="w-6 h-6 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center shrink-0 font-black text-[10px]">
-                                  3
-                              </div>
-                              <span className="font-bold text-stone-900 text-xs flex-1 truncate">Guest</span>
-                              <span className="font-black text-stone-900 text-xs">50</span>
-                          </div>
+                          {leaderboard.length === 0 ? (
+                              <div className="text-stone-400 text-sm font-bold text-center">Loading leaderboard...</div>
+                          ) : (
+                              leaderboard.map((player, index) => {
+                                  const isCurrentUser = user && player.id === user.id;
+                                  
+                                  return (
+                                      <div key={player.id} className={`flex items-center gap-3 ${isCurrentUser ? 'bg-white p-2 -mx-2 rounded-lg shadow-sm border border-rose-100/50' : ''}`}>
+                                          <div className={`w-4 font-black text-[10px] text-center ${isCurrentUser ? 'text-rose-400' : 'text-stone-400'}`}>
+                                              {index + 1}
+                                          </div>
+                                          
+                                          {index === 0 ? (
+                                              <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                                                  <Trophy className="w-3.5 h-3.5" />
+                                              </div>
+                                          ) : (
+                                              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-black text-[10px] ${isCurrentUser ? 'bg-rose-100 text-rose-600' : 'bg-stone-100 text-stone-600'}`}>
+                                                  {index + 1}
+                                              </div>
+                                          )}
+                                          
+                                          <span className={`font-bold text-xs flex-1 truncate ${isCurrentUser ? 'text-stone-900' : 'text-stone-700'}`}>
+                                              {player.display_name || "Scholar"}
+                                          </span>
+                                          <span className="font-black text-stone-900 text-xs">{player.total_tomatoes_earned}</span>
+                                      </div>
+                                  );
+                              })
+                          )}
                       </div>
 
                       <div className="mt-4 pt-4 border-t border-rose-200/50 text-center">
