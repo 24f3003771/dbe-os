@@ -21,6 +21,7 @@ const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 export default function Dashboard() {
   const { fetchFarmData, isInitialized, totalTomatoesEarned, leaderboardRank, streak } = useFarmStore();
   const [user, setUser] = useState<any>(null);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
 
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [greeting, setGreeting] = useState({ text: "Good Day", Icon: Sun });
@@ -151,6 +152,9 @@ export default function Dashboard() {
 
     const fetchUser = async () => {
       const supabase = createClient();
+      const { data: annData } = await supabase.from('announcements').select('*').order('created_at', { ascending: false }).limit(3);
+      if (annData) setAnnouncements(annData);
+
       const { data } = await supabase.auth.getUser();
       if (data.user) {
           setUser(data.user);
@@ -291,56 +295,60 @@ export default function Dashboard() {
               </div>
           </div>
 
-          {/* DBE Controls */}
+          {/* Control Center & Notifications */}
           <div className="lg:col-span-4 flex flex-col">
               <div className="bg-[#FAF9F6] rounded-[2rem] p-8 border border-stone-100 shadow-sm flex flex-col flex-1">
-                  <div className="flex items-center justify-between mb-8">
-                      <h3 className="font-black text-stone-900 text-sm md:text-base">DBE Controls</h3>
+                  <div className="flex items-center justify-between mb-6">
+                      <h3 className="font-black text-stone-900 text-sm md:text-base">Control Center</h3>
                       <Settings className="w-5 h-5 text-stone-400" />
                   </div>
 
-                  <div className="flex flex-col gap-4 flex-1 justify-center">
-                      {/* Switches */}
-                      <div onClick={() => toggleControl('darkMode')} className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between cursor-pointer hover:bg-stone-50 transition-colors">
+                  <div className="flex flex-col gap-3 mb-6">
+                      {/* Useful Switches */}
+                      <div onClick={() => toggleControl('darkMode')} className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between cursor-pointer hover:bg-stone-50 transition-colors">
                           <div className="flex items-center gap-3">
-                              <Moon className={`w-5 h-5 ${controls.darkMode ? 'text-indigo-600' : 'text-stone-400'}`} />
-                              <span className="text-xs md:text-sm font-black text-stone-700">Dark Mode</span>
+                              <Moon className={`w-4 h-4 ${controls.darkMode ? 'text-indigo-600' : 'text-stone-400'}`} />
+                              <span className="text-xs font-black text-stone-700">Dark Mode</span>
                           </div>
-                          <div className={`w-10 h-5 rounded-full relative transition-colors flex items-center px-0.5 ${controls.darkMode ? 'bg-indigo-500 justify-end' : 'bg-stone-200 justify-start'}`}>
-                              <div className="w-4 h-4 bg-white rounded-full shadow-sm transition-all" />
+                          <div className={`w-8 h-4 rounded-full relative transition-colors flex items-center px-0.5 ${controls.darkMode ? 'bg-indigo-500 justify-end' : 'bg-stone-200 justify-start'}`}>
+                              <div className="w-3 h-3 bg-white rounded-full shadow-sm transition-all" />
                           </div>
                       </div>
                       
-                      <div onClick={() => toggleControl('focusMode')} className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between cursor-pointer hover:bg-stone-50 transition-colors">
+                      <div onClick={() => toggleControl('focusMode')} className="bg-white p-3 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between cursor-pointer hover:bg-stone-50 transition-colors">
                           <div className="flex items-center gap-3">
-                              <Target className={`w-5 h-5 ${controls.focusMode ? 'text-rose-500' : 'text-stone-400'}`} />
-                              <span className="text-xs md:text-sm font-black text-stone-700">Focus Mode</span>
+                              <Target className={`w-4 h-4 ${controls.focusMode ? 'text-rose-500' : 'text-stone-400'}`} />
+                              <span className="text-xs font-black text-stone-700">Focus Mode</span>
                           </div>
-                          <div className={`w-10 h-5 rounded-full relative transition-colors flex items-center px-0.5 ${controls.focusMode ? 'bg-rose-500 justify-end' : 'bg-stone-200 justify-start'}`}>
-                              <div className="w-4 h-4 bg-white rounded-full shadow-sm transition-all" />
+                          <div className={`w-8 h-4 rounded-full relative transition-colors flex items-center px-0.5 ${controls.focusMode ? 'bg-rose-500 justify-end' : 'bg-stone-200 justify-start'}`}>
+                              <div className="w-3 h-3 bg-white rounded-full shadow-sm transition-all" />
                           </div>
                       </div>
+                  </div>
 
-                      <div onClick={() => toggleControl('strictMode')} className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between cursor-pointer hover:bg-stone-50 transition-colors">
-                          <div className="flex items-center gap-3">
-                              <Lock className={`w-5 h-5 ${controls.strictMode ? 'text-indigo-600' : 'text-stone-400'}`} />
-                              <span className="text-xs md:text-sm font-black text-stone-700">Strict Mode</span>
-                          </div>
-                          <div className={`w-10 h-5 rounded-full relative transition-colors flex items-center px-0.5 ${controls.strictMode ? 'bg-indigo-500 justify-end' : 'bg-stone-200 justify-start'}`}>
-                              <div className="w-4 h-4 bg-white rounded-full shadow-sm transition-all" />
-                          </div>
+                  {/* Backend Notifications */}
+                  <div className="flex-1 flex flex-col">
+                      <div className="flex items-center gap-2 mb-4">
+                          <Bell className="w-4 h-4 text-amber-500" />
+                          <h4 className="text-xs font-black uppercase tracking-widest text-stone-500">Official Notices</h4>
                       </div>
-
-                      <div onClick={() => toggleControl('notifications')} className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between cursor-pointer hover:bg-stone-50 transition-colors">
-                          <div className="flex items-center gap-3">
-                              <Bell className={`w-5 h-5 ${controls.notifications ? 'text-rose-500' : 'text-stone-400'}`} />
-                              <span className="text-xs md:text-sm font-black text-stone-700">Notifications</span>
-                          </div>
-                          <div className={`w-10 h-5 rounded-full relative transition-colors flex items-center px-0.5 ${controls.notifications ? 'bg-rose-500 justify-end' : 'bg-stone-200 justify-start'}`}>
-                              <div className="w-4 h-4 bg-white rounded-full shadow-sm transition-all" />
-                          </div>
+                      <div className="flex flex-col gap-3 flex-1 overflow-y-auto max-h-[160px] pr-2 custom-scrollbar">
+                          {announcements.length > 0 ? (
+                              announcements.map((ann, i) => (
+                                  <div key={i} className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex flex-col gap-1">
+                                      <div className="flex items-start justify-between gap-2">
+                                          <h5 className="font-bold text-stone-900 text-xs leading-tight">{ann.title}</h5>
+                                          <span className="text-[9px] font-black text-stone-400 whitespace-nowrap bg-stone-100 px-1.5 py-0.5 rounded">{ann.batch}</span>
+                                      </div>
+                                      <p className="text-[10px] font-medium text-stone-500 line-clamp-2">{ann.message}</p>
+                                  </div>
+                              ))
+                          ) : (
+                              <div className="flex-1 flex items-center justify-center text-center">
+                                  <p className="text-xs font-bold text-stone-400">No new notifications</p>
+                              </div>
+                          )}
                       </div>
-
                   </div>
               </div>
           </div>
