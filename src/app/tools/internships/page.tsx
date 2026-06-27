@@ -402,7 +402,13 @@ function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, 
             onMouseLeave={() => setIsFlipped(false)}
             onClick={() => {
                 if (window.innerWidth < 768) {
-                    setIsFlipped(!isFlipped);
+                    if (!isFlipped) {
+                        setIsFlipped(true);
+                    } else {
+                        onEnter();
+                    }
+                } else {
+                    onEnter();
                 }
             }}
         >
