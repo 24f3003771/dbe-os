@@ -40,7 +40,6 @@ import Link from "next/link";
 
 // Curated Catalog of Top Companies & Portals
 const COMPANY_CATALOG = [
-    // Consumer Tech & Delivery
     { id: "swiggy", name: "Swiggy", category: "Consumer Tech", portal: "https://www.swiggy.com/careers", status: "Active", industry: "Logistics" },
     { id: "zomato", name: "Zomato", category: "Consumer Tech", portal: "https://www.zomato.com/careers", status: "Active", industry: "Food Tech" },
     { id: "blinkit", name: "Blinkit", category: "Consumer Tech", portal: "https://blinkit.com/careers", status: "Recurring", industry: "Quick Commerce" },
@@ -48,15 +47,11 @@ const COMPANY_CATALOG = [
     { id: "uber", name: "Uber", category: "Consumer Tech", portal: "https://www.uber.com/careers", status: "Active", industry: "Mobility" },
     { id: "ola", name: "Ola", category: "Consumer Tech", portal: "https://www.olacabs.com/careers", status: "Active", industry: "Mobility" },
     { id: "rapido", name: "Rapido", category: "Consumer Tech", portal: "https://rapido.xyz/careers", status: "Growth", industry: "Mobility" },
-    
-    // Big Tech (MAANG+)
     { id: "google", name: "Google", category: "Big Tech", portal: "https://careers.google.com/students/", status: "Seasonal", industry: "Tech" },
     { id: "microsoft", name: "Microsoft", category: "Big Tech", portal: "https://careers.microsoft.com/students/", status: "Seasonal", industry: "Tech" },
     { id: "amazon", name: "Amazon", category: "Big Tech", portal: "https://www.amazon.jobs/en/student-programs", status: "Active", industry: "E-commerce" },
     { id: "apple", name: "Apple", category: "Big Tech", portal: "https://www.apple.com/careers/in/students.html", status: "Selective", industry: "Consumer Electronics" },
     { id: "meta", name: "Meta", category: "Big Tech", portal: "https://www.metacareers.com/students/", status: "Selective", industry: "Social Media" },
-    
-    // SaaS & Fintech
     { id: "salesforce", name: "Salesforce", category: "SaaS & Fintech", portal: "https://www.salesforce.com/company/careers/students/", status: "Active", industry: "CRM" },
     { id: "adobe", name: "Adobe", category: "SaaS & Fintech", portal: "https://www.adobe.com/careers/university.html", status: "Active", industry: "Creative Tech" },
     { id: "atlassian", name: "Atlassian", category: "SaaS & Fintech", portal: "https://www.atlassian.com/company/careers/students", status: "Active", industry: "DevOps" },
@@ -64,16 +59,12 @@ const COMPANY_CATALOG = [
     { id: "cred", name: "CRED", category: "SaaS & Fintech", portal: "https://careers.cred.club/", status: "Exclusive", industry: "Fintech" },
     { id: "phonepe", name: "PhonePe", category: "SaaS & Fintech", portal: "https://www.phonepe.com/careers/", status: "Active", industry: "Fintech" },
     { id: "stripe", name: "Stripe", category: "SaaS & Fintech", portal: "https://stripe.com/jobs/students", status: "Selective", industry: "Payments" },
-
-    // Consulting & Strategy
     { id: "bcg", name: "BCG", category: "Consulting", portal: "https://careers.bcg.com/students", status: "Seasonal", industry: "Strategy" },
     { id: "mckinsey", name: "McKinsey", category: "Consulting", portal: "https://www.mckinsey.com/careers/students", status: "Seasonal", industry: "Strategy" },
     { id: "bain", name: "Bain & Co.", category: "Consulting", portal: "https://www.bain.com/careers/roles/internships/", status: "Seasonal", industry: "Strategy" },
     { id: "kearney", name: "Kearney", category: "Consulting", portal: "https://www.kearney.com/careers/students", status: "Active", industry: "Operations" },
     { id: "deloitte", name: "Deloitte", category: "Consulting", portal: "https://www2.deloitte.com/ui/en/pages/careers/articles/students.html", status: "Volume", industry: "Advisory" },
     { id: "ey", name: "EY", category: "Consulting", portal: "https://www.ey.com/en_gl/careers/students", status: "Volume", industry: "Advisory" },
-
-    // FMCG & Retail
     { id: "hul", name: "HUL", category: "FMCG", portal: "https://www.hul.co.in/careers/", status: "Seasonal", industry: "Consumer Goods" },
     { id: "itc", name: "ITC", category: "FMCG", portal: "https://www.itcportal.com/careers/", status: "Seasonal", industry: "Consumer Goods" },
     { id: "pg", name: "P&G", category: "FMCG", portal: "https://www.pgcareers.com/", status: "Selective", industry: "Consumer Goods" },
@@ -81,15 +72,11 @@ const COMPANY_CATALOG = [
     { id: "nestle", name: "Nestle", category: "FMCG", portal: "https://www.nestle.in/jobs", status: "Active", industry: "Nutrition" },
     { id: "reliance", name: "Reliance", category: "Corporate", portal: "https://jsf.ril.com/", status: "Volume", industry: "Conglomerate", tier: "T1" },
     { id: "tata", name: "TAS", category: "Corporate", portal: "https://www.tata.com/careers/programs/tas", status: "Seasonal", industry: "Conglomerate", tier: "T1" },
-
-    // Finance & Banks
     { id: "goldman", name: "Goldman Sachs", category: "Finance", portal: "https://www.goldmansachs.com/careers/students/", status: "Selective", industry: "IB", tier: "T1" },
     { id: "jpmorgan", name: "J.P. Morgan", category: "Finance", portal: "https://careers.jpmorgan.com/US/en/students/programs", status: "Active", industry: "IB", tier: "T1" },
     { id: "morganstanley", name: "Morgan Stanley", category: "Finance", portal: "https://www.morganstanley.com/people-opportunities/students-graduates", status: "Selective", industry: "IB", tier: "T1" },
     { id: "hsbc", name: "HSBC", category: "Finance", portal: "https://www.hsbc.com/careers/students-and-graduates", status: "Active", industry: "Banking", tier: "T2" },
     { id: "americanexpress", name: "Amex", category: "Finance", portal: "https://www.americanexpress.com/en-us/careers/students/", status: "Active", industry: "Payments", tier: "T1" },
-
-    // E-commerce & Others
     { id: "flipkart", name: "Flipkart", category: "Consumer Tech", portal: "https://www.flipkartcareers.com/", status: "Active", industry: "E-commerce", tier: "T1" },
     { id: "myntra", name: "Myntra", category: "Consumer Tech", portal: "https://careers.myntra.com/", status: "Active", industry: "E-commerce", tier: "T1" },
     { id: "nykaa", name: "Nykaa", category: "Consumer Tech", portal: "https://www.nykaa.com/gateway-api/careers", status: "Active", industry: "Beauty Tech", tier: "T1" },
@@ -152,7 +139,7 @@ export default function InternshipHunterPage() {
 
             if (!isDeleting && charIndex === currentRole.length) {
                 isDeleting = true;
-                typeSpeed = 2000; // Pause at end
+                typeSpeed = 2000;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 roleIndex = (roleIndex + 1) % ROLES.length;
@@ -182,7 +169,6 @@ export default function InternshipHunterPage() {
 
     const handleLiveSearch = async (queryOverride?: string) => {
         const query = queryOverride === "Fetch All" ? "Internship" : (queryOverride || customKeyword || "Internship");
-        console.log("Starting live search for:", query);
         setIsSearching(true);
         setHasSearched(true);
         try {
@@ -223,24 +209,21 @@ export default function InternshipHunterPage() {
     }, [searchQuery, selectedSector, selectedTier]);
 
     return (
-        <div className="min-h-screen bg-background-app text-on-surface animate-in fade-in duration-1000 pb-40">
-            {/* Minimal Header */}
-            <header className="py-8 md:py-12 px-4 md:px-6 border-b border-primary/20 bg-surface-container-lowest sticky top-0 z-40 shadow-sm">
+        <div className="min-h-screen bg-[#fbfbfd] text-slate-900 animate-in fade-in duration-1000 pb-40" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+            <header className="py-6 md:py-8 px-4 md:px-6 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div className="space-y-4">
-                        <div className="inline-flex items-center gap-2 bg-primary-container/30 text-primary px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black tracking-widest uppercase border border-primary/20">
-                            <Rocket className="w-3 h-3" /> Direct Access Engine
+                    <div className="space-y-3">
+                        <div className="inline-flex items-center gap-1.5 text-blue-500 font-medium text-[11px] tracking-wide uppercase">
+                            <Rocket className="w-3.5 h-3.5" /> Direct Access Engine
                         </div>
-                        <div className="space-y-2">
-                            <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter text-on-surface italic leading-none">
-                                Internship <span className="text-primary text-stroke-sm">Hunter.</span>
-                            </h1>
-                        </div>
+                        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900">
+                            Internship Hunter
+                        </h1>
                     </div>
                     {viewMode !== 'MENU' && (
                         <button 
                             onClick={() => setViewMode('MENU')}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-on-surface hover:bg-on-surface-variant text-surface-container-lowest rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-md"
+                            className="flex items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors"
                         >
                             <ChevronLeft className="w-4 h-4" /> Back to Menu
                         </button>
@@ -248,9 +231,9 @@ export default function InternshipHunterPage() {
                 </div>
             </header>
 
-            <section className="max-w-7xl mx-auto px-6 py-10 space-y-10">
+            <section className="max-w-7xl mx-auto px-6 py-12 space-y-12">
                 {viewMode === 'MENU' && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
                         <FlipCard 
                             title="Live LinkedIn Fetch"
                             icon={Linkedin}
@@ -258,28 +241,28 @@ export default function InternshipHunterPage() {
                             backTitle="How it Works"
                             backDesc="We use an API to fetch the most recent internships matching your criteria from LinkedIn in real-time, bypassing the noise. Start hunting instantly."
                             onEnter={() => setViewMode("LIVE")}
-                            lightColor="bg-blue-50"
-                            textColor="text-blue-600"
+                            iconBg="bg-blue-50"
+                            iconColor="text-blue-500"
                         />
                         <FlipCard 
-                            title="Official Company Portals"
+                            title="Company Portals"
                             icon={Building2}
                             frontDesc="Direct links to the official career pages of 50+ Tier-1 companies."
                             backTitle="How to Use"
                             backDesc="Stop relying on 3rd party job boards. Apply directly to the official career portals of MAANG, MBB, and top FMCGs to maximize your chances."
                             onEnter={() => setViewMode("PORTALS")}
-                            lightColor="bg-emerald-50"
-                            textColor="text-emerald-600"
+                            iconBg="bg-emerald-50"
+                            iconColor="text-emerald-500"
                         />
                         <FlipCard 
-                            title="Annual Hiring Calendar"
+                            title="Hiring Calendar"
                             icon={Calendar}
                             frontDesc="Track summer & winter internship cycles for top institutions."
                             backTitle="About Cycles"
                             backDesc="Know exactly when companies hire for summer (May-July) and winter (Dec-Jan) internships across IITs, IIMs, and off-campus drives."
                             onEnter={() => setViewMode("CALENDAR")}
-                            lightColor="bg-amber-50"
-                            textColor="text-amber-600"
+                            iconBg="bg-orange-50"
+                            iconColor="text-orange-500"
                         />
                     </div>
                 )}
@@ -287,13 +270,13 @@ export default function InternshipHunterPage() {
                 {viewMode === 'PORTALS' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <h2 className="text-2xl font-black italic text-on-surface tracking-tight">Official Portals Directory</h2>
-                            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3">
+                            <h2 className="text-xl font-semibold text-slate-900 tracking-tight">Official Portals Directory</h2>
+                            <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
                                 {SECTORS.map(sector => (
                                     <button 
                                         key={sector.id}
                                         onClick={() => setSelectedSector(sector.id)}
-                                        className={`flex items-center gap-2.5 px-4 py-2 rounded-xl text-xs font-black transition-all border ${selectedSector === sector.id ? 'bg-primary border-primary text-surface-container-lowest shadow-lg' : 'bg-surface-container-lowest border-primary/20 text-on-surface-variant hover:border-primary hover:text-primary'}`}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedSector === sector.id ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900'}`}
                                     >
                                         <sector.icon className="w-3.5 h-3.5" />
                                         {sector.name}
@@ -302,19 +285,20 @@ export default function InternshipHunterPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col md:flex-row items-center gap-4 bg-surface-container-lowest p-2 rounded-[1.5rem] border border-primary/20 shadow-sm">
+                        <div className="flex flex-col md:flex-row items-center gap-3 bg-white p-2 rounded-xl border border-slate-200/60 shadow-sm">
                             <div className="relative flex-1 w-full">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant/50" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input 
                                     type="text"
                                     placeholder="Search by company name or industry..."
-                                    className="w-full bg-surface border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 text-sm font-medium text-on-surface"
+                                    className="w-full bg-transparent border-none py-2 pl-10 pr-4 focus:ring-0 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
+                            <div className="w-px h-6 bg-slate-200 hidden md:block" />
                             <select 
-                                className="w-full md:w-auto bg-surface border-none rounded-[1rem] px-4 py-3 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20"
+                                className="w-full md:w-auto bg-transparent border-none px-4 py-2 text-sm font-medium text-slate-600 focus:ring-0 outline-none"
                                 value={selectedTier}
                                 onChange={(e) => setSelectedTier(e.target.value)}
                             >
@@ -324,7 +308,7 @@ export default function InternshipHunterPage() {
                             </select>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                             {filteredPortals.map(company => <PortalCard key={company.id} company={company} />)}
                         </div>
                     </div>
@@ -332,9 +316,9 @@ export default function InternshipHunterPage() {
 
                 {viewMode === 'LIVE' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="flex flex-col items-center gap-3">
-                            <h2 className="text-2xl font-black italic text-on-surface tracking-tight">LinkedIn Live Fetch</h2>
-                            <p className="text-sm font-medium text-on-surface-variant">Select a preset or search custom roles.</p>
+                        <div className="flex flex-col items-center gap-2">
+                            <h2 className="text-xl font-semibold text-slate-900 tracking-tight">LinkedIn Live Fetch</h2>
+                            <p className="text-sm text-slate-500">Select a preset or search custom roles.</p>
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-2">
@@ -345,7 +329,7 @@ export default function InternshipHunterPage() {
                                         setCustomKeyword(preset.label);
                                         handleLiveSearch(preset.label);
                                     }}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-lowest border border-primary/20 hover:border-blue-500 hover:bg-blue-50 text-on-surface-variant hover:text-blue-600 font-bold text-xs transition-all"
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 hover:text-slate-900 font-medium text-sm transition-all shadow-sm"
                                 >
                                     <preset.icon className="w-3.5 h-3.5" />
                                     {preset.label}
@@ -353,13 +337,13 @@ export default function InternshipHunterPage() {
                             ))}
                         </div>
 
-                        <div className="flex flex-col md:flex-row items-center gap-4 bg-surface-container-lowest p-2 rounded-[1.5rem] border border-primary/20 shadow-sm max-w-3xl mx-auto">
+                        <div className="flex flex-col md:flex-row items-center gap-3 bg-white p-2 rounded-xl border border-slate-200/60 shadow-sm max-w-2xl mx-auto">
                             <div className="relative flex-1 w-full">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant/50" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input 
                                     type="text"
                                     placeholder={`Search for ${placeholderText}`}
-                                    className="w-full bg-surface border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500/20 text-sm font-medium text-on-surface"
+                                    className="w-full bg-transparent border-none py-2 pl-10 pr-4 focus:ring-0 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none"
                                     value={customKeyword}
                                     onChange={(e) => setCustomKeyword(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleLiveSearch()}
@@ -368,14 +352,14 @@ export default function InternshipHunterPage() {
                             <button 
                                 onClick={() => handleLiveSearch()}
                                 disabled={isSearching}
-                                className="w-full md:w-auto bg-blue-600 text-white px-8 py-3 rounded-[1rem] font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="w-full md:w-auto bg-slate-900 text-white px-6 py-2 rounded-lg font-medium text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Linkedin className="w-4 h-4" />}
                                 Fetch
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                             {isSearching ? (
                                 Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
                             ) : liveJobs.length > 0 ? (
@@ -388,15 +372,15 @@ export default function InternshipHunterPage() {
                 )}
 
                 {viewMode === 'CALENDAR' && (
-                    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 text-center py-20">
-                        <div className="w-24 h-24 bg-amber-50 border-2 border-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-500 mb-8 shadow-sm">
-                            <Calendar className="w-10 h-10" />
+                    <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500 text-center py-24">
+                        <div className="w-20 h-20 bg-white border border-slate-200 rounded-2xl flex items-center justify-center mx-auto text-slate-400 mb-6 shadow-sm">
+                            <Calendar className="w-8 h-8" />
                         </div>
-                        <h2 className="text-3xl font-black italic text-on-surface tracking-tight">Hiring Calendar</h2>
-                        <p className="text-on-surface-variant font-medium max-w-md mx-auto leading-relaxed text-sm">
+                        <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Hiring Calendar</h2>
+                        <p className="text-slate-500 font-medium max-w-sm mx-auto leading-relaxed text-sm">
                             A comprehensive timeline of Summer, Winter, and Autumn hiring drives across top-tier institutions and off-campus platforms.
                         </p>
-                        <div className="bg-amber-100 text-amber-700 px-6 py-2.5 rounded-full inline-block text-[10px] font-black uppercase tracking-widest mt-4">
+                        <div className="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-md inline-block text-xs font-medium mt-4">
                             Coming Soon
                         </div>
                     </div>
@@ -407,13 +391,13 @@ export default function InternshipHunterPage() {
     );
 }
 
-function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, lightColor, textColor }: any) {
+function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, iconBg, iconColor }: any) {
     const [isFlipped, setIsFlipped] = useState(false);
 
     return (
         <div 
-            className="group relative h-96 w-full cursor-pointer"
-            style={{ perspective: '1200px' }}
+            className="group relative h-[22rem] w-full cursor-pointer"
+            style={{ perspective: '1000px' }}
             onMouseEnter={() => setIsFlipped(true)}
             onMouseLeave={() => setIsFlipped(false)}
             onClick={() => {
@@ -423,28 +407,26 @@ function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, 
             }}
         >
             <div 
-                className="w-full h-full relative transition-all duration-700 shadow-sm rounded-2xl hover:shadow-lg"
+                className="w-full h-full relative transition-all duration-700 shadow-sm rounded-2xl"
                 style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0)' }}
             >
                 {/* Front Side */}
                 <div 
-                    className="absolute inset-0 w-full h-full bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-8 flex flex-col justify-between overflow-hidden group-hover:border-primary/40 transition-colors"
+                    className="absolute inset-0 w-full h-full bg-white border border-slate-200/60 rounded-2xl p-8 flex flex-col justify-between overflow-hidden group-hover:shadow-md transition-shadow"
                     style={{ backfaceVisibility: 'hidden' }}
                 >
-                    <div className="space-y-6 relative z-10">
-                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${lightColor} ${textColor} shadow-inner`}>
-                            <Icon className="w-7 h-7" />
+                    <div className="space-y-5 relative z-10">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBg} ${iconColor}`}>
+                            <Icon className="w-6 h-6" />
                         </div>
-                        <div>
-                            <h3 className="text-2xl font-black font-headline text-on-surface tracking-tighter leading-tight mb-2">{title}</h3>
-                            <p className="text-on-surface-variant font-medium text-sm leading-relaxed max-w-[200px]">{frontDesc}</p>
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold text-slate-900 tracking-tight">{title}</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed">{frontDesc}</p>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between w-full relative z-10 border-t border-primary/10 pt-4 mt-4">
-                        <div className="flex items-center gap-2 text-on-surface-variant text-[9px] font-black uppercase tracking-widest">
-                            <span>Hover to flip</span>
-                        </div>
-                        <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                    <div className="flex items-center justify-between w-full relative z-10 pt-4">
+                        <span className="text-slate-400 text-xs font-medium">Hover to flip</span>
+                        <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 group-hover:text-slate-600 transition-colors">
                             <ArrowUpRight className="w-4 h-4" />
                         </div>
                     </div>
@@ -452,25 +434,23 @@ function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, 
 
                 {/* Back Side */}
                 <div 
-                    className={`absolute inset-0 w-full h-full ${lightColor} border-2 border-primary/20 rounded-2xl p-8 flex flex-col justify-between overflow-hidden shadow-lg`}
+                    className={`absolute inset-0 w-full h-full bg-slate-900 text-white rounded-2xl p-8 flex flex-col justify-between overflow-hidden shadow-xl`}
                     style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                 >
-                    <div className="space-y-5 relative z-10">
-                        <div className="flex items-center gap-3 border-b border-primary/10 pb-5">
-                            <div className={`bg-white p-2 rounded-lg backdrop-blur-md shadow-sm ${textColor}`}>
-                                <Check className="w-4 h-4" />
-                            </div>
-                            <h3 className={`text-xs font-black tracking-[0.2em] uppercase ${textColor}`}>{backTitle}</h3>
+                    <div className="space-y-4 relative z-10">
+                        <div className="flex items-center gap-2 border-b border-slate-700 pb-4">
+                            <Check className="w-4 h-4 text-slate-400" />
+                            <h3 className="text-sm font-semibold tracking-wide text-slate-200">{backTitle}</h3>
                         </div>
-                        <p className="text-on-surface-variant font-medium text-[13px] leading-relaxed">
+                        <p className="text-slate-400 text-sm leading-relaxed">
                             {backDesc}
                         </p>
                     </div>
                     <button 
                         onClick={(e) => { e.stopPropagation(); onEnter(); }}
-                        className={`w-full bg-surface-container-lowest border-2 border-primary/20 ${textColor} py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:border-primary/40 transition-colors flex items-center justify-center gap-2 shadow-sm relative z-10 group/btn`}
+                        className="w-full bg-white text-slate-900 py-3 rounded-lg font-semibold text-sm hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 shadow-sm"
                     >
-                        Enter Module <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        Enter <ChevronRight className="w-4 h-4" />
                     </button>
                 </div>
             </div>
@@ -485,30 +465,30 @@ function PortalCard({ company }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/40 transition-all duration-300 hover:shadow-lg relative overflow-hidden">
-                <div className="space-y-4">
+            <div className="h-full bg-white border border-slate-200/60 rounded-xl p-5 flex flex-col justify-between hover:border-slate-300 transition-all hover:shadow-sm relative overflow-hidden">
+                <div className="space-y-3">
                     <div className="flex justify-between items-start">
-                        <div className="w-12 h-12 bg-primary-container/30 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-surface-container-lowest transition-all shadow-inner border border-primary/20">
-                            <Building2 className="w-6 h-6" />
+                        <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center text-slate-600 group-hover:bg-slate-900 group-hover:text-white transition-all">
+                            <Building2 className="w-5 h-5" />
                         </div>
-                        <span className={`px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
-                            company.status === 'Active' ? 'bg-green-50 text-green-600 border-green-200' : 
-                            company.status === 'Selective' ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                            'bg-surface text-on-surface-variant border-primary/20'
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-medium border ${
+                            company.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                            company.status === 'Selective' ? 'bg-orange-50 text-orange-700 border-orange-100' :
+                            'bg-slate-50 text-slate-600 border-slate-200'
                         }`}>
                             {company.status}
                         </span>
                     </div>
                     
                     <div>
-                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">{company.industry}</p>
-                        <h3 className="text-xl font-black font-headline text-on-surface tracking-tighter leading-none">{company.name}</h3>
+                        <p className="text-[11px] font-medium text-slate-500 mb-0.5">{company.industry}</p>
+                        <h3 className="text-lg font-semibold text-slate-900 tracking-tight">{company.name}</h3>
                     </div>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between pt-4 border-t border-primary/10">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Portal</span>
-                    <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-primary/10 group-hover:text-primary text-on-surface-variant">
+                <div className="mt-5 flex items-center justify-between pt-4 border-t border-slate-100">
+                    <span className="text-[11px] font-medium text-slate-500">Visit Portal</span>
+                    <div className="text-slate-400 group-hover:text-slate-900 transition-colors group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                         <ArrowUpRight className="w-4 h-4" />
                     </div>
                 </div>
@@ -524,10 +504,10 @@ function LinkedInJobCard({ job }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/40 transition-all duration-300 hover:shadow-lg relative overflow-hidden">
-                <div className="space-y-4">
+            <div className="h-full bg-white border border-slate-200/60 rounded-xl p-5 flex flex-col justify-between hover:border-slate-300 transition-all hover:shadow-sm relative overflow-hidden">
+                <div className="space-y-3">
                     <div className="flex justify-between items-start">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-sm border border-primary/20 overflow-hidden relative">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-600 bg-slate-50 border border-slate-100 overflow-hidden relative">
                             {job.companyLogo ? (
                                 <img 
                                     src={job.companyLogo} 
@@ -536,30 +516,28 @@ function LinkedInJobCard({ job }: any) {
                                     onError={(e: any) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                                 />
                             ) : null}
-                            <div className={`w-full h-full items-center justify-center bg-gradient-to-br font-black text-lg ${
-                                ['from-indigo-500 to-blue-600', 'from-emerald-500 to-teal-600', 'from-rose-500 to-pink-600', 'from-amber-500 to-orange-600', 'from-violet-500 to-purple-600'][job.company?.length % 5 || 0]
-                            } ${job.companyLogo ? 'hidden' : 'flex'}`}>
+                            <div className={`w-full h-full items-center justify-center font-semibold text-sm bg-slate-100 text-slate-700 ${job.companyLogo ? 'hidden' : 'flex'}`}>
                                 {job.company?.charAt(0)}
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-1">
-                            <span className="px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-200">
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
                                 Live
                             </span>
-                            <span className="text-[10px] font-bold text-on-surface-variant">{job.postDate}</span>
+                            <span className="text-[11px] text-slate-500">{job.postDate}</span>
                         </div>
                     </div>
                     
                     <div className="space-y-1">
-                        <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{job.location}</p>
-                        <h3 className="text-lg font-black font-headline text-on-surface tracking-tight leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{job.title}</h3>
-                        <p className="text-on-surface-variant text-[11px] font-bold">{job.company}</p>
+                        <p className="text-[11px] font-medium text-slate-500">{job.location}</p>
+                        <h3 className="text-base font-semibold text-slate-900 tracking-tight leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">{job.title}</h3>
+                        <p className="text-slate-600 text-[13px] font-medium">{job.company}</p>
                     </div>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-primary/10 pt-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">LinkedIn</span>
-                    <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600 text-on-surface-variant">
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                    <span className="text-[11px] font-medium text-slate-500">View on LinkedIn</span>
+                    <div className="text-slate-400 group-hover:text-blue-600 transition-colors group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                         <ExternalLink className="w-4 h-4" />
                     </div>
                 </div>
@@ -570,19 +548,19 @@ function LinkedInJobCard({ job }: any) {
 
 function SkeletonCard() {
     return (
-        <div className="bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-6 animate-pulse space-y-4">
+        <div className="bg-white border border-slate-200/60 rounded-xl p-5 animate-pulse space-y-4">
             <div className="flex justify-between">
-                <div className="w-12 h-12 bg-surface rounded-xl" />
-                <div className="w-12 h-4 bg-surface rounded-full" />
+                <div className="w-10 h-10 bg-slate-100 rounded-lg" />
+                <div className="w-12 h-4 bg-slate-100 rounded-md" />
             </div>
             <div className="space-y-2">
-                <div className="w-1/3 h-3 bg-surface rounded-full" />
-                <div className="w-full h-5 bg-surface rounded-full" />
-                <div className="w-2/3 h-5 bg-surface rounded-full" />
+                <div className="w-1/3 h-3 bg-slate-100 rounded-md" />
+                <div className="w-full h-5 bg-slate-100 rounded-md" />
+                <div className="w-2/3 h-5 bg-slate-100 rounded-md" />
             </div>
-            <div className="pt-6 border-t border-primary/10 flex justify-between">
-                <div className="w-16 h-3 bg-surface rounded-full" />
-                <div className="w-8 h-8 bg-surface rounded-full" />
+            <div className="pt-5 border-t border-slate-100 flex justify-between mt-5">
+                <div className="w-16 h-3 bg-slate-100 rounded-md" />
+                <div className="w-4 h-4 bg-slate-100 rounded-md" />
             </div>
         </div>
     );
@@ -590,19 +568,19 @@ function SkeletonCard() {
 
 function EmptyState({ onReset }: any) {
     return (
-        <div className="col-span-full py-20 text-center space-y-4 bg-surface-container-lowest border-2 border-primary/20 rounded-[2rem]">
-            <div className="w-16 h-16 bg-surface rounded-full flex items-center justify-center mx-auto text-on-surface-variant/50">
-                <Search className="w-8 h-8" />
+        <div className="col-span-full py-16 text-center space-y-4 bg-white border border-slate-200/60 rounded-xl">
+            <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-400">
+                <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-black text-on-surface leading-none">No live listings found.</h3>
-            <p className="text-on-surface-variant font-medium max-w-xs mx-auto text-sm leading-relaxed">
-                LinkedIn extraction failed or returned zero results. Try broadening your keywords.
+            <h3 className="text-lg font-semibold text-slate-900">No listings found.</h3>
+            <p className="text-slate-500 text-sm max-w-xs mx-auto">
+                Try broadening your search terms or using a different preset.
             </p>
             <button 
                 onClick={onReset}
-                className="mt-4 text-xs font-black uppercase tracking-widest text-blue-600 hover:underline"
+                className="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
             >
-                Reset Search Engine
+                Reset Search
             </button>
         </div>
     );
