@@ -5,6 +5,7 @@ import {
     Search, 
     Filter, 
     ChevronRight, 
+    ChevronLeft,
     MapPin, 
     Building2, 
     Briefcase, 
@@ -107,7 +108,7 @@ const SECTORS = [
 ];
 
 export default function InternshipHunterPage() {
-    const [viewMode, setViewMode] = useState<"PORTALS" | "LIVE">("LIVE");
+    const [viewMode, setViewMode] = useState<"MENU" | "PORTALS" | "LIVE" | "CALENDAR">("MENU");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedSector, setSelectedSector] = useState("All");
     const [selectedTier, setSelectedTier] = useState("All");
@@ -129,6 +130,8 @@ export default function InternshipHunterPage() {
     ];
 
     React.useEffect(() => {
+        if (viewMode !== 'LIVE') return;
+        
         let roleIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -161,7 +164,7 @@ export default function InternshipHunterPage() {
 
         type();
         return () => clearTimeout(timeout);
-    }, []);
+    }, [viewMode]);
 
     const PRESETS = [
         { id: "All", label: "Fetch All", icon: Globe },
@@ -182,12 +185,10 @@ export default function InternshipHunterPage() {
         console.log("Starting live search for:", query);
         setIsSearching(true);
         setHasSearched(true);
-        setViewMode("LIVE");
         try {
             const response = await fetch(`/api/linkedin-jobs?keyword=${encodeURIComponent(query)}&location=India&limit=50`);
             const data = await response.json();
             if (Array.isArray(data)) {
-                // Sort by most recent (newest first)
                 const parseDate = (d: string) => {
                     const s = d.toLowerCase();
                     const n = parseInt(s.match(/\d+/)?.[0] || "0");
@@ -200,9 +201,6 @@ export default function InternshipHunterPage() {
                 };
                 const sorted = [...data].sort((a, b) => parseDate(a.postDate) - parseDate(b.postDate));
                 setLiveJobs(sorted);
-            } else if (data && data.error) {
-                console.error("LinkedIn API returned error:", data.message);
-                setLiveJobs([]);
             } else {
                 setLiveJobs([]);
             }
@@ -227,155 +225,259 @@ export default function InternshipHunterPage() {
     return (
         <div className="min-h-screen bg-stone-50/50 text-slate-900 animate-in fade-in duration-1000 pb-40">
             {/* Minimal Header */}
-            <header className="py-8 md:py-12 px-4 md:px-6 border-b border-slate-100 bg-white">
-                <div className="max-w-7xl mx-auto space-y-4">
-                    <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black tracking-widest uppercase border border-emerald-100">
-                        <Rocket className="w-3 h-3" /> Direct Access Engine
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <header className="py-8 md:py-12 px-4 md:px-6 border-b border-slate-100 bg-white sticky top-0 z-40 shadow-sm">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div className="space-y-4">
+                        <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black tracking-widest uppercase border border-emerald-100">
+                            <Rocket className="w-3 h-3" /> Direct Access Engine
+                        </div>
                         <div className="space-y-2">
                             <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter text-slate-900 italic leading-none">
                                 Internship <span className="text-emerald-500 text-stroke-sm">Hunter.</span>
                             </h1>
-                            <p className="text-slate-500 text-base md:text-xl font-medium italic leading-tight md:leading-relaxed max-w-2xl">
-                                Verified corporate portals and real-time AI extraction. Access elite global opportunities directly from the source.
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-2 text-slate-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest md:pb-2">
-                            <Globe className="w-3.5 h-3.5" /> 50+ Global Firms
                         </div>
                     </div>
+                    {viewMode !== 'MENU' && (
+                        <button 
+                            onClick={() => setViewMode('MENU')}
+                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-md"
+                        >
+                            <ChevronLeft className="w-4 h-4" /> Back to Menu
+                        </button>
+                    )}
                 </div>
             </header>
 
+            <section className="max-w-7xl mx-auto px-6 py-10 space-y-10">
+                {viewMode === 'MENU' && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
+                        <FlipCard 
+                            title="Live LinkedIn Fetch"
+                            icon={Linkedin}
+                            frontDesc="Real-time extraction of live internship postings from LinkedIn."
+                            backTitle="How it Works"
+                            backDesc="We use an API to fetch the most recent internships matching your criteria from LinkedIn in real-time, bypassing the noise. Start hunting instantly."
+                            onEnter={() => setViewMode("LIVE")}
+                            bgClass="from-blue-500 to-indigo-600"
+                        />
+                        <FlipCard 
+                            title="Official Company Portals"
+                            icon={Building2}
+                            frontDesc="Direct links to the official career pages of 50+ Tier-1 companies."
+                            backTitle="How to Use"
+                            backDesc="Stop relying on 3rd party job boards. Apply directly to the official career portals of MAANG, MBB, and top FMCGs to maximize your chances."
+                            onEnter={() => setViewMode("PORTALS")}
+                            bgClass="from-emerald-500 to-teal-600"
+                        />
+                        <FlipCard 
+                            title="Annual Hiring Calendar"
+                            icon={Calendar}
+                            frontDesc="Track summer & winter internship cycles for top institutions."
+                            backTitle="About Cycles"
+                            backDesc="Know exactly when companies hire for summer (May-July) and winter (Dec-Jan) internships across IITs, IIMs, and off-campus drives."
+                            onEnter={() => setViewMode("CALENDAR")}
+                            bgClass="from-amber-500 to-orange-600"
+                        />
+                    </div>
+                )}
 
-
-            <section className="max-w-7xl mx-auto px-6 space-y-10">
-                    {/* Simplified Switcher Bar */}
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 pt-6 md:pt-10">
-                        <div className="flex bg-slate-100 p-1 rounded-2xl md:rounded-[2rem] w-full md:w-fit border border-slate-200">
-                            <button 
-                                onClick={() => setViewMode("PORTALS")}
-                                className={`flex-1 md:flex-none px-4 md:px-10 py-2.5 md:py-3 rounded-xl md:rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'PORTALS' ? 'bg-white shadow-lg shadow-slate-200 text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                Official Portals
-                            </button>
-                            <button 
-                                onClick={() => handleLiveSearch()}
-                                className={`flex-1 md:flex-none px-4 md:px-10 py-2.5 md:py-3 rounded-xl md:rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === 'LIVE' ? 'bg-slate-900 shadow-xl text-white' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                Live AI Hunter
-                            </button>
+                {viewMode === 'PORTALS' && (
+                    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <h2 className="text-2xl font-black italic text-slate-900 tracking-tight">Official Portals Directory</h2>
+                            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3">
+                                {SECTORS.map(sector => (
+                                    <button 
+                                        key={sector.id}
+                                        onClick={() => setSelectedSector(sector.id)}
+                                        className={`flex items-center gap-2.5 px-4 py-2 rounded-xl text-xs font-black transition-all border ${selectedSector === sector.id ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white border-slate-200 text-slate-500 hover:border-emerald-500 hover:text-emerald-600'}`}
+                                    >
+                                        <sector.icon className="w-3.5 h-3.5" />
+                                        {sector.name}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                        
-                        <div className="flex flex-wrap items-center justify-center md:justify-end gap-3">
-                            {SECTORS.map(sector => (
+
+                        <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-slate-200 shadow-sm">
+                            <div className="relative flex-1 w-full">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <input 
+                                    type="text"
+                                    placeholder="Search by company name or industry..."
+                                    className="w-full bg-slate-50 border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+                            <select 
+                                className="w-full md:w-auto bg-slate-50 border-none rounded-[1rem] px-4 py-3 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-emerald-500/20"
+                                value={selectedTier}
+                                onChange={(e) => setSelectedTier(e.target.value)}
+                            >
+                                <option value="All">All Tiers</option>
+                                <option value="T1">Tier 1 (Global Elite)</option>
+                                <option value="T2">Tier 2 (Growth Firms)</option>
+                            </select>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredPortals.map(company => <PortalCard key={company.id} company={company} />)}
+                        </div>
+                    </div>
+                )}
+
+                {viewMode === 'LIVE' && (
+                    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                        <div className="flex flex-col items-center gap-3">
+                            <h2 className="text-2xl font-black italic text-slate-900 tracking-tight">LinkedIn Live Fetch</h2>
+                            <p className="text-sm font-medium text-slate-500">Select a preset or search custom roles.</p>
+                        </div>
+
+                        <div className="flex flex-wrap justify-center gap-2">
+                            {PRESETS.map((preset) => (
                                 <button 
-                                    key={sector.id}
-                                    onClick={() => setSelectedSector(sector.id)}
-                                    className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl text-xs font-black transition-all border ${selectedSector === sector.id ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200'}`}
+                                    key={preset.id}
+                                    onClick={() => {
+                                        setCustomKeyword(preset.label);
+                                        handleLiveSearch(preset.label);
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold text-xs transition-all"
                                 >
-                                    <sector.icon className="w-4 h-4" />
-                                    {sector.name}
+                                    <preset.icon className="w-3.5 h-3.5" />
+                                    {preset.label}
                                 </button>
                             ))}
                         </div>
-                    </div>
 
-                    {/* Search & Tier Filter Bar */}
-                    <div className="space-y-6">
-                        {viewMode === 'LIVE' && (
-                            <div className="flex flex-col items-center gap-3 md:gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                                <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">Tailor your Search</p>
-                                <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-                                    {PRESETS.map((preset) => (
-                                        <button 
-                                            key={preset.id}
-                                            onClick={() => {
-                                                setCustomKeyword(preset.label);
-                                                handleLiveSearch(preset.label);
-                                            }}
-                                            className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl bg-white border border-slate-100 hover:border-emerald-500 hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 font-bold text-[10px] md:text-xs transition-all shadow-sm"
-                                        >
-                                            <preset.icon className="w-3 md:w-3.5 h-3 md:h-3.5" />
-                                            {preset.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 bg-white/80 backdrop-blur-md border border-slate-100 p-3 md:p-6 rounded-[1.5rem] md:rounded-[3.5rem] shadow-2xl shadow-slate-200/40 sticky top-4 md:top-24 z-50">
+                        <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-slate-200 shadow-sm max-w-3xl mx-auto">
                             <div className="relative flex-1 w-full">
-                                <Search className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-4 md:w-6 h-4 md:h-6 text-slate-300" />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input 
                                     type="text"
-                                    placeholder={viewMode === 'PORTALS' ? "Find top firms..." : `Search for ${placeholderText}`}
-                                    className="w-full bg-slate-50 border-none rounded-xl md:rounded-[2rem] py-2.5 md:py-5 pl-10 md:pl-16 pr-4 md:pr-8 focus:ring-2 focus:ring-emerald-500/20 transition-all font-bold text-slate-700 text-xs md:text-lg placeholder:text-slate-400"
-                                    value={viewMode === 'PORTALS' ? searchQuery : customKeyword}
-                                    onChange={(e) => viewMode === 'PORTALS' ? setSearchQuery(e.target.value) : setCustomKeyword(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && (viewMode === 'LIVE' ? handleLiveSearch() : null)}
+                                    placeholder={`Search for ${placeholderText}`}
+                                    className="w-full bg-slate-50 border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500/20 text-sm font-medium"
+                                    value={customKeyword}
+                                    onChange={(e) => setCustomKeyword(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleLiveSearch()}
                                 />
                             </div>
-                            {viewMode === 'PORTALS' && (
-                                <div className="w-full md:w-auto">
-                                    <select 
-                                        className="w-full bg-slate-50 border-none rounded-xl md:rounded-[2rem] px-4 md:px-10 py-2.5 md:py-5 font-black text-[10px] md:text-sm text-slate-600 focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer appearance-none"
-                                        value={selectedTier}
-                                        onChange={(e) => setSelectedTier(e.target.value)}
-                                    >
-                                        <option value="All">All Quality Tiers</option>
-                                        <option value="T1">Tier 1 (Global Elite)</option>
-                                        <option value="T2">Tier 2 (Growth Firms)</option>
-                                    </select>
-                                </div>
-                            )}
-                            {viewMode === 'LIVE' && (
-                                <button 
-                                    onClick={() => handleLiveSearch()}
-                                    disabled={isSearching}
-                                    className="w-full md:w-auto bg-slate-900 text-white px-6 md:px-12 py-3 md:py-5 rounded-xl md:rounded-[2rem] font-black text-[10px] md:text-sm uppercase tracking-widest hover:bg-emerald-500 transition-all flex items-center gap-2 md:gap-3 disabled:opacity-50 justify-center shadow-xl shadow-slate-900/10"
-                                >
-                                    {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Linkedin className="w-4 h-4 md:w-5 md:h-5" />}
-                                    {isSearching ? "Extracting..." : "Live Fetch"}
-                                </button>
-                            )}
+                            <button 
+                                onClick={() => handleLiveSearch()}
+                                disabled={isSearching}
+                                className="w-full md:w-auto bg-blue-600 text-white px-8 py-3 rounded-[1rem] font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Linkedin className="w-4 h-4" />}
+                                Fetch
+                            </button>
                         </div>
-                    </div>
 
-                    {/* Results Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 px-4">
-                        {viewMode === 'LIVE' ? (
-                            isSearching ? (
-                                Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {isSearching ? (
+                                Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
                             ) : liveJobs.length > 0 ? (
                                 liveJobs.map((job, idx) => <LinkedInJobCard key={idx} job={job} />)
                             ) : hasSearched ? (
                                 <EmptyState onReset={() => { setHasSearched(false); setLiveJobs([]); }} />
-                            ) : (
-                                <div className="col-span-full py-20 text-center space-y-4 bg-white border border-stone-100 rounded-[3rem]">
-                                    <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto text-emerald-500">
-                                        <Search className="w-10 h-10" />
-                                    </div>
-                                    <h3 className="text-xl font-black italic leading-none">Ready to Hunt?</h3>
-                                    <p className="text-stone-500 font-medium max-w-sm mx-auto text-sm leading-relaxed">
-                                        Search for a position above or select one of the presets to fetch the latest internship opportunities.
-                                    </p>
-                                </div>
-                            )
-                        ) : (
-                            filteredPortals.map(company => <PortalCard key={company.id} company={company} />)
-                        )}
+                            ) : null}
+                        </div>
                     </div>
+                )}
+
+                {viewMode === 'CALENDAR' && (
+                    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 text-center py-20">
+                        <div className="w-24 h-24 bg-amber-50 border-2 border-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-500 mb-8 shadow-sm">
+                            <Calendar className="w-10 h-10" />
+                        </div>
+                        <h2 className="text-3xl font-black italic text-slate-900 tracking-tight">Hiring Calendar</h2>
+                        <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed text-sm">
+                            A comprehensive timeline of Summer, Winter, and Autumn hiring drives across top-tier institutions and off-campus platforms.
+                        </p>
+                        <div className="bg-amber-100 text-amber-700 px-6 py-2.5 rounded-full inline-block text-[10px] font-black uppercase tracking-widest mt-4">
+                            Coming Soon
+                        </div>
+                    </div>
+                )}
+
             </section>
-
-
-
         </div>
     );
 }
 
+function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, bgClass }: any) {
+    const [isFlipped, setIsFlipped] = useState(false);
 
+    return (
+        <div 
+            className="group relative h-96 w-full cursor-pointer"
+            style={{ perspective: '1200px' }}
+            onMouseEnter={() => setIsFlipped(true)}
+            onMouseLeave={() => setIsFlipped(false)}
+            onClick={() => {
+                if (window.innerWidth < 768) {
+                    setIsFlipped(!isFlipped);
+                }
+            }}
+        >
+            <div 
+                className="w-full h-full relative transition-all duration-700 shadow-lg rounded-[2rem] hover:shadow-2xl"
+                style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0)' }}
+            >
+                {/* Front Side */}
+                <div 
+                    className="absolute inset-0 w-full h-full bg-white border border-slate-200 rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden group-hover:border-slate-300 transition-colors"
+                    style={{ backfaceVisibility: 'hidden' }}
+                >
+                    <div className="space-y-6 relative z-10">
+                        <div className={`w-16 h-16 rounded-[1.2rem] flex items-center justify-center bg-gradient-to-br ${bgClass} text-white shadow-xl shadow-black/5`}>
+                            <Icon className="w-8 h-8" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-black italic tracking-tighter text-slate-900 leading-tight mb-3">{title}</h3>
+                            <p className="text-slate-500 font-medium text-[13px] leading-relaxed max-w-[200px]">{frontDesc}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-between w-full relative z-10">
+                        <div className="flex items-center gap-2 text-slate-400 text-[9px] font-bold uppercase tracking-widest">
+                            <span>Hover to flip</span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 transition-colors">
+                            <ArrowUpRight className="w-4 h-4" />
+                        </div>
+                    </div>
+                    {/* Subtle BG flare */}
+                    <div className={`absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-br ${bgClass} opacity-[0.03] rounded-full blur-3xl`} />
+                </div>
+
+                {/* Back Side */}
+                <div 
+                    className={`absolute inset-0 w-full h-full bg-gradient-to-br ${bgClass} text-white rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl`}
+                    style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                >
+                    <div className="space-y-5 relative z-10">
+                        <div className="flex items-center gap-3 opacity-90 border-b border-white/20 pb-5">
+                            <div className="bg-white/20 p-2 rounded-lg backdrop-blur-md">
+                                <Check className="w-4 h-4 text-white" />
+                            </div>
+                            <h3 className="text-xs font-black tracking-[0.2em] uppercase">{backTitle}</h3>
+                        </div>
+                        <p className="text-white/95 font-medium text-[13px] leading-relaxed">
+                            {backDesc}
+                        </p>
+                    </div>
+                    <button 
+                        onClick={(e) => { e.stopPropagation(); onEnter(); }}
+                        className="w-full bg-white text-slate-900 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 shadow-xl shadow-black/10 relative z-10 group/btn"
+                    >
+                        Enter Module <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                    {/* Ambient glow inside back card */}
+                    <div className="absolute top-0 right-0 w-full h-full bg-black/5" />
+                </div>
+            </div>
+        </div>
+    );
+}
 
 function PortalCard({ company }: any) {
     return (
@@ -384,36 +486,33 @@ function PortalCard({ company }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-white border border-stone-100 rounded-[1.8rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden">
-                <div className="space-y-6">
+            <div className="h-full bg-white border border-slate-100 rounded-[1.5rem] p-6 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden">
+                <div className="space-y-4">
                     <div className="flex justify-between items-start">
-                        <div className="w-12 h-12 md:w-14 md:h-14 bg-stone-50 rounded-xl md:rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-stone-100">
-                            <Building2 className="w-6 h-6 md:w-7 md:h-7" />
+                        <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-inner border border-slate-100">
+                            <Building2 className="w-6 h-6" />
                         </div>
-                        <span className={`px-2 md:px-3 py-1 rounded-full text-[7px] md:text-[8px] font-black uppercase tracking-widest border ${
+                        <span className={`px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
                             company.status === 'Active' ? 'bg-green-50 text-green-600 border-green-100' : 
                             company.status === 'Selective' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                            'bg-stone-50 text-stone-500 border-stone-100'
+                            'bg-slate-50 text-slate-500 border-slate-100'
                         }`}>
                             {company.status}
                         </span>
                     </div>
                     
                     <div>
-                        <p className="text-[9px] md:text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">{company.industry}</p>
-                        <h3 className="text-xl md:text-2xl font-black font-headline text-stone-900 tracking-tighter italic leading-none">{company.name}</h3>
+                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">{company.industry}</p>
+                        <h3 className="text-xl font-black font-headline text-slate-900 tracking-tighter italic leading-none">{company.name}</h3>
                     </div>
                 </div>
 
-                <div className="mt-8 md:mt-12 flex items-center justify-between">
-                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-stone-400">Portal</span>
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform shadow-sm">
-                        <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                <div className="mt-6 flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Portal</span>
+                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-emerald-50 group-hover:text-emerald-600">
+                        <ArrowUpRight className="w-4 h-4" />
                     </div>
                 </div>
-
-                {/* Decorative bg light */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
         </a>
     );
@@ -426,10 +525,10 @@ function LinkedInJobCard({ job }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-white border border-slate-100 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 relative overflow-hidden">
-                <div className="space-y-6 md:space-y-8">
+            <div className="h-full bg-white border border-slate-100 rounded-[1.5rem] p-6 flex flex-col justify-between hover:border-blue-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 relative overflow-hidden">
+                <div className="space-y-4">
                     <div className="flex justify-between items-start">
-                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-[1.4rem] flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-lg border border-slate-100 overflow-hidden relative">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-md border border-slate-100 overflow-hidden relative">
                             {job.companyLogo ? (
                                 <img 
                                     src={job.companyLogo} 
@@ -438,36 +537,33 @@ function LinkedInJobCard({ job }: any) {
                                     onError={(e: any) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                                 />
                             ) : null}
-                            <div className={`w-full h-full items-center justify-center bg-gradient-to-br font-black text-xl md:text-2xl ${
-                                ['from-indigo-500 to-blue-600', 'from-emerald-500 to-teal-600', 'from-rose-500 to-pink-600', 'from-amber-500 to-orange-600', 'from-violet-500 to-purple-600'][job.company?.length % 5]
+                            <div className={`w-full h-full items-center justify-center bg-gradient-to-br font-black text-lg ${
+                                ['from-indigo-500 to-blue-600', 'from-emerald-500 to-teal-600', 'from-rose-500 to-pink-600', 'from-amber-500 to-orange-600', 'from-violet-500 to-purple-600'][job.company?.length % 5 || 0]
                             } ${job.companyLogo ? 'hidden' : 'flex'}`}>
                                 {job.company?.charAt(0)}
                             </div>
                         </div>
-                        <div className="flex flex-col items-end gap-1 md:gap-1.5">
-                            <span className="px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        <div className="flex flex-col items-end gap-1">
+                            <span className="px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-100">
                                 Live
                             </span>
-                            <span className="text-[9px] md:text-[10px] font-bold text-slate-400">{job.postDate}</span>
+                            <span className="text-[10px] font-bold text-slate-400">{job.postDate}</span>
                         </div>
                     </div>
                     
-                    <div className="space-y-1 md:space-y-2">
-                        <p className="text-[9px] md:text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em]">{job.location}</p>
-                        <h3 className="text-lg md:text-xl font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-emerald-600 transition-colors line-clamp-2">{job.title}</h3>
-                        <p className="text-slate-500 text-[10px] md:text-[11px] font-bold">{job.company}</p>
+                    <div className="space-y-1">
+                        <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{job.location}</p>
+                        <h3 className="text-lg font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-blue-600 transition-colors line-clamp-2">{job.title}</h3>
+                        <p className="text-slate-500 text-[11px] font-bold">{job.company}</p>
                     </div>
                 </div>
 
-                <div className="mt-8 md:mt-12 flex items-center justify-between border-t border-slate-50 pt-6 md:pt-8">
-                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">LinkedIn</span>
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-emerald-50 group-hover:text-emerald-600">
-                        <ExternalLink className="w-5 h-5 md:w-6 md:h-6" />
+                <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">LinkedIn</span>
+                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600">
+                        <ExternalLink className="w-4 h-4" />
                     </div>
                 </div>
-
-                {/* Decorative bg light */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
         </a>
     );
@@ -475,19 +571,19 @@ function LinkedInJobCard({ job }: any) {
 
 function SkeletonCard() {
     return (
-        <div className="bg-white border border-stone-100 rounded-[2rem] p-8 animate-pulse space-y-6">
+        <div className="bg-white border border-slate-100 rounded-[1.5rem] p-6 animate-pulse space-y-4">
             <div className="flex justify-between">
-                <div className="w-14 h-14 bg-stone-100 rounded-2xl" />
-                <div className="w-16 h-4 bg-stone-100 rounded-full" />
+                <div className="w-12 h-12 bg-slate-100 rounded-xl" />
+                <div className="w-12 h-4 bg-slate-100 rounded-full" />
             </div>
-            <div className="space-y-3">
-                <div className="w-1/2 h-2 bg-stone-100 rounded-full" />
-                <div className="w-full h-4 bg-stone-100 rounded-full" />
-                <div className="w-2/3 h-4 bg-stone-100 rounded-full" />
+            <div className="space-y-2">
+                <div className="w-1/3 h-3 bg-slate-100 rounded-full" />
+                <div className="w-full h-5 bg-slate-100 rounded-full" />
+                <div className="w-2/3 h-5 bg-slate-100 rounded-full" />
             </div>
-            <div className="pt-8 flex justify-between">
-                <div className="w-20 h-2 bg-stone-100 rounded-full" />
-                <div className="w-8 h-8 bg-stone-100 rounded-full" />
+            <div className="pt-6 border-t border-slate-50 flex justify-between">
+                <div className="w-16 h-3 bg-slate-100 rounded-full" />
+                <div className="w-8 h-8 bg-slate-100 rounded-full" />
             </div>
         </div>
     );
@@ -495,21 +591,20 @@ function SkeletonCard() {
 
 function EmptyState({ onReset }: any) {
     return (
-        <div className="col-span-full py-20 text-center space-y-4 bg-white border border-stone-100 rounded-[3rem]">
-            <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto text-stone-300">
-                <Search className="w-10 h-10" />
+        <div className="col-span-full py-20 text-center space-y-4 bg-white border border-slate-100 rounded-[2rem]">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
+                <Search className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-black italic leading-none">No live listings found.</h3>
-            <p className="text-stone-500 font-medium max-w-xs mx-auto text-sm leading-relaxed">
-                LinkedIn extraction failed or returned zero results for the past month. Try broadening your keywords.
+            <p className="text-slate-500 font-medium max-w-xs mx-auto text-sm leading-relaxed">
+                LinkedIn extraction failed or returned zero results. Try broadening your keywords.
             </p>
             <button 
                 onClick={onReset}
-                className="mt-4 text-xs font-black uppercase tracking-widest text-primary hover:underline"
+                className="mt-4 text-xs font-black uppercase tracking-widest text-blue-600 hover:underline"
             >
                 Reset Search Engine
             </button>
         </div>
     );
 }
-

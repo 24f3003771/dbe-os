@@ -221,27 +221,27 @@ export default function Dashboard() {
                               </div>
                           </div>
 
-                          <div className="flex flex-wrap gap-4 mt-auto pt-6">
-                              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
-                                  <div className="flex items-center gap-1.5 text-rose-500 mb-1">
+                          <div className="flex flex-wrap gap-3 mt-auto pt-6">
+                              <div className="bg-white/90 backdrop-blur-sm rounded-2xl py-3 px-2 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
+                                  <div className="flex items-center gap-1.5 text-rose-500">
                                       <Target className="w-5 h-5" />
-                                      <span className="text-3xl font-black text-stone-900">{totalTomatoesEarned}</span>
+                                      <span className="text-3xl font-black text-stone-900 leading-none">{totalTomatoesEarned}</span>
                                   </div>
-                                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Tomo</span>
+                                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500 mt-1">Tomo</span>
                               </div>
-                              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
-                                  <div className="flex items-center gap-1.5 text-amber-500 mb-1">
+                              <div className="bg-white/90 backdrop-blur-sm rounded-2xl py-3 px-2 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
+                                  <div className="flex items-center gap-1.5 text-amber-500">
                                       <Trophy className="w-5 h-5" />
-                                      <span className="text-3xl font-black text-stone-900">#{leaderboardRank > 0 ? leaderboardRank : '-'}</span>
+                                      <span className="text-3xl font-black text-stone-900 leading-none">#{leaderboardRank > 0 ? leaderboardRank : '-'}</span>
                                   </div>
-                                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Your Rank</span>
+                                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500 mt-1">Your Rank</span>
                               </div>
-                              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
-                                  <div className="flex items-center gap-1.5 text-orange-500 mb-1">
+                              <div className="bg-white/90 backdrop-blur-sm rounded-2xl py-3 px-2 flex flex-col items-center justify-center flex-1 min-w-[90px] shadow-sm border border-white">
+                                  <div className="flex items-center gap-1.5 text-orange-500">
                                       <Flame className="w-5 h-5" />
-                                      <span className="text-3xl font-black text-stone-900">{streak}</span>
+                                      <span className="text-3xl font-black text-stone-900 leading-none">{streak}</span>
                                   </div>
-                                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Day Streak</span>
+                                  <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500 mt-1">Day Streak</span>
                               </div>
                           </div>
                       </div>
