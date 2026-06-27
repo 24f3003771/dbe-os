@@ -223,24 +223,24 @@ export default function InternshipHunterPage() {
     }, [searchQuery, selectedSector, selectedTier]);
 
     return (
-        <div className="min-h-screen bg-stone-50/50 text-slate-900 animate-in fade-in duration-1000 pb-40">
+        <div className="min-h-screen bg-background-app text-on-surface animate-in fade-in duration-1000 pb-40">
             {/* Minimal Header */}
-            <header className="py-8 md:py-12 px-4 md:px-6 border-b border-slate-100 bg-white sticky top-0 z-40 shadow-sm">
+            <header className="py-8 md:py-12 px-4 md:px-6 border-b border-primary/20 bg-surface-container-lowest sticky top-0 z-40 shadow-sm">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div className="space-y-4">
-                        <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black tracking-widest uppercase border border-emerald-100">
+                        <div className="inline-flex items-center gap-2 bg-primary-container/30 text-primary px-3 py-1 rounded-full text-[9px] md:text-[10px] font-black tracking-widest uppercase border border-primary/20">
                             <Rocket className="w-3 h-3" /> Direct Access Engine
                         </div>
                         <div className="space-y-2">
-                            <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter text-slate-900 italic leading-none">
-                                Internship <span className="text-emerald-500 text-stroke-sm">Hunter.</span>
+                            <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter text-on-surface italic leading-none">
+                                Internship <span className="text-primary text-stroke-sm">Hunter.</span>
                             </h1>
                         </div>
                     </div>
                     {viewMode !== 'MENU' && (
                         <button 
                             onClick={() => setViewMode('MENU')}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-md"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-on-surface hover:bg-on-surface-variant text-surface-container-lowest rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-md"
                         >
                             <ChevronLeft className="w-4 h-4" /> Back to Menu
                         </button>
@@ -258,7 +258,8 @@ export default function InternshipHunterPage() {
                             backTitle="How it Works"
                             backDesc="We use an API to fetch the most recent internships matching your criteria from LinkedIn in real-time, bypassing the noise. Start hunting instantly."
                             onEnter={() => setViewMode("LIVE")}
-                            bgClass="from-blue-500 to-indigo-600"
+                            lightColor="bg-blue-50"
+                            textColor="text-blue-600"
                         />
                         <FlipCard 
                             title="Official Company Portals"
@@ -267,7 +268,8 @@ export default function InternshipHunterPage() {
                             backTitle="How to Use"
                             backDesc="Stop relying on 3rd party job boards. Apply directly to the official career portals of MAANG, MBB, and top FMCGs to maximize your chances."
                             onEnter={() => setViewMode("PORTALS")}
-                            bgClass="from-emerald-500 to-teal-600"
+                            lightColor="bg-emerald-50"
+                            textColor="text-emerald-600"
                         />
                         <FlipCard 
                             title="Annual Hiring Calendar"
@@ -276,7 +278,8 @@ export default function InternshipHunterPage() {
                             backTitle="About Cycles"
                             backDesc="Know exactly when companies hire for summer (May-July) and winter (Dec-Jan) internships across IITs, IIMs, and off-campus drives."
                             onEnter={() => setViewMode("CALENDAR")}
-                            bgClass="from-amber-500 to-orange-600"
+                            lightColor="bg-amber-50"
+                            textColor="text-amber-600"
                         />
                     </div>
                 )}
@@ -284,13 +287,13 @@ export default function InternshipHunterPage() {
                 {viewMode === 'PORTALS' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <h2 className="text-2xl font-black italic text-slate-900 tracking-tight">Official Portals Directory</h2>
+                            <h2 className="text-2xl font-black italic text-on-surface tracking-tight">Official Portals Directory</h2>
                             <div className="flex flex-wrap items-center justify-center md:justify-end gap-3">
                                 {SECTORS.map(sector => (
                                     <button 
                                         key={sector.id}
                                         onClick={() => setSelectedSector(sector.id)}
-                                        className={`flex items-center gap-2.5 px-4 py-2 rounded-xl text-xs font-black transition-all border ${selectedSector === sector.id ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white border-slate-200 text-slate-500 hover:border-emerald-500 hover:text-emerald-600'}`}
+                                        className={`flex items-center gap-2.5 px-4 py-2 rounded-xl text-xs font-black transition-all border ${selectedSector === sector.id ? 'bg-primary border-primary text-surface-container-lowest shadow-lg' : 'bg-surface-container-lowest border-primary/20 text-on-surface-variant hover:border-primary hover:text-primary'}`}
                                     >
                                         <sector.icon className="w-3.5 h-3.5" />
                                         {sector.name}
@@ -299,19 +302,19 @@ export default function InternshipHunterPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-slate-200 shadow-sm">
+                        <div className="flex flex-col md:flex-row items-center gap-4 bg-surface-container-lowest p-2 rounded-[1.5rem] border border-primary/20 shadow-sm">
                             <div className="relative flex-1 w-full">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant/50" />
                                 <input 
                                     type="text"
                                     placeholder="Search by company name or industry..."
-                                    className="w-full bg-slate-50 border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium"
+                                    className="w-full bg-surface border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 text-sm font-medium text-on-surface"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
                             <select 
-                                className="w-full md:w-auto bg-slate-50 border-none rounded-[1rem] px-4 py-3 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-emerald-500/20"
+                                className="w-full md:w-auto bg-surface border-none rounded-[1rem] px-4 py-3 text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20"
                                 value={selectedTier}
                                 onChange={(e) => setSelectedTier(e.target.value)}
                             >
@@ -330,8 +333,8 @@ export default function InternshipHunterPage() {
                 {viewMode === 'LIVE' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex flex-col items-center gap-3">
-                            <h2 className="text-2xl font-black italic text-slate-900 tracking-tight">LinkedIn Live Fetch</h2>
-                            <p className="text-sm font-medium text-slate-500">Select a preset or search custom roles.</p>
+                            <h2 className="text-2xl font-black italic text-on-surface tracking-tight">LinkedIn Live Fetch</h2>
+                            <p className="text-sm font-medium text-on-surface-variant">Select a preset or search custom roles.</p>
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-2">
@@ -342,7 +345,7 @@ export default function InternshipHunterPage() {
                                         setCustomKeyword(preset.label);
                                         handleLiveSearch(preset.label);
                                     }}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold text-xs transition-all"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-lowest border border-primary/20 hover:border-blue-500 hover:bg-blue-50 text-on-surface-variant hover:text-blue-600 font-bold text-xs transition-all"
                                 >
                                     <preset.icon className="w-3.5 h-3.5" />
                                     {preset.label}
@@ -350,13 +353,13 @@ export default function InternshipHunterPage() {
                             ))}
                         </div>
 
-                        <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-slate-200 shadow-sm max-w-3xl mx-auto">
+                        <div className="flex flex-col md:flex-row items-center gap-4 bg-surface-container-lowest p-2 rounded-[1.5rem] border border-primary/20 shadow-sm max-w-3xl mx-auto">
                             <div className="relative flex-1 w-full">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant/50" />
                                 <input 
                                     type="text"
                                     placeholder={`Search for ${placeholderText}`}
-                                    className="w-full bg-slate-50 border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500/20 text-sm font-medium"
+                                    className="w-full bg-surface border-none rounded-[1rem] py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500/20 text-sm font-medium text-on-surface"
                                     value={customKeyword}
                                     onChange={(e) => setCustomKeyword(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleLiveSearch()}
@@ -389,8 +392,8 @@ export default function InternshipHunterPage() {
                         <div className="w-24 h-24 bg-amber-50 border-2 border-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-500 mb-8 shadow-sm">
                             <Calendar className="w-10 h-10" />
                         </div>
-                        <h2 className="text-3xl font-black italic text-slate-900 tracking-tight">Hiring Calendar</h2>
-                        <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed text-sm">
+                        <h2 className="text-3xl font-black italic text-on-surface tracking-tight">Hiring Calendar</h2>
+                        <p className="text-on-surface-variant font-medium max-w-md mx-auto leading-relaxed text-sm">
                             A comprehensive timeline of Summer, Winter, and Autumn hiring drives across top-tier institutions and off-campus platforms.
                         </p>
                         <div className="bg-amber-100 text-amber-700 px-6 py-2.5 rounded-full inline-block text-[10px] font-black uppercase tracking-widest mt-4">
@@ -404,7 +407,7 @@ export default function InternshipHunterPage() {
     );
 }
 
-function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, bgClass }: any) {
+function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, lightColor, textColor }: any) {
     const [isFlipped, setIsFlipped] = useState(false);
 
     return (
@@ -420,59 +423,55 @@ function FlipCard({ title, icon: Icon, frontDesc, backTitle, backDesc, onEnter, 
             }}
         >
             <div 
-                className="w-full h-full relative transition-all duration-700 shadow-lg rounded-[2rem] hover:shadow-2xl"
+                className="w-full h-full relative transition-all duration-700 shadow-sm rounded-2xl hover:shadow-lg"
                 style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0)' }}
             >
                 {/* Front Side */}
                 <div 
-                    className="absolute inset-0 w-full h-full bg-white border border-slate-200 rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden group-hover:border-slate-300 transition-colors"
+                    className="absolute inset-0 w-full h-full bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-8 flex flex-col justify-between overflow-hidden group-hover:border-primary/40 transition-colors"
                     style={{ backfaceVisibility: 'hidden' }}
                 >
                     <div className="space-y-6 relative z-10">
-                        <div className={`w-16 h-16 rounded-[1.2rem] flex items-center justify-center bg-gradient-to-br ${bgClass} text-white shadow-xl shadow-black/5`}>
-                            <Icon className="w-8 h-8" />
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${lightColor} ${textColor} shadow-inner`}>
+                            <Icon className="w-7 h-7" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-black italic tracking-tighter text-slate-900 leading-tight mb-3">{title}</h3>
-                            <p className="text-slate-500 font-medium text-[13px] leading-relaxed max-w-[200px]">{frontDesc}</p>
+                            <h3 className="text-2xl font-black font-headline text-on-surface tracking-tighter leading-tight mb-2">{title}</h3>
+                            <p className="text-on-surface-variant font-medium text-sm leading-relaxed max-w-[200px]">{frontDesc}</p>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between w-full relative z-10">
-                        <div className="flex items-center gap-2 text-slate-400 text-[9px] font-bold uppercase tracking-widest">
+                    <div className="flex items-center justify-between w-full relative z-10 border-t border-primary/10 pt-4 mt-4">
+                        <div className="flex items-center gap-2 text-on-surface-variant text-[9px] font-black uppercase tracking-widest">
                             <span>Hover to flip</span>
                         </div>
-                        <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-100 transition-colors">
+                        <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                             <ArrowUpRight className="w-4 h-4" />
                         </div>
                     </div>
-                    {/* Subtle BG flare */}
-                    <div className={`absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-br ${bgClass} opacity-[0.03] rounded-full blur-3xl`} />
                 </div>
 
                 {/* Back Side */}
                 <div 
-                    className={`absolute inset-0 w-full h-full bg-gradient-to-br ${bgClass} text-white rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden shadow-2xl`}
+                    className={`absolute inset-0 w-full h-full ${lightColor} border-2 border-primary/20 rounded-2xl p-8 flex flex-col justify-between overflow-hidden shadow-lg`}
                     style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                 >
                     <div className="space-y-5 relative z-10">
-                        <div className="flex items-center gap-3 opacity-90 border-b border-white/20 pb-5">
-                            <div className="bg-white/20 p-2 rounded-lg backdrop-blur-md">
-                                <Check className="w-4 h-4 text-white" />
+                        <div className="flex items-center gap-3 border-b border-primary/10 pb-5">
+                            <div className={`bg-white p-2 rounded-lg backdrop-blur-md shadow-sm ${textColor}`}>
+                                <Check className="w-4 h-4" />
                             </div>
-                            <h3 className="text-xs font-black tracking-[0.2em] uppercase">{backTitle}</h3>
+                            <h3 className={`text-xs font-black tracking-[0.2em] uppercase ${textColor}`}>{backTitle}</h3>
                         </div>
-                        <p className="text-white/95 font-medium text-[13px] leading-relaxed">
+                        <p className="text-on-surface-variant font-medium text-[13px] leading-relaxed">
                             {backDesc}
                         </p>
                     </div>
                     <button 
                         onClick={(e) => { e.stopPropagation(); onEnter(); }}
-                        className="w-full bg-white text-slate-900 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 shadow-xl shadow-black/10 relative z-10 group/btn"
+                        className={`w-full bg-surface-container-lowest border-2 border-primary/20 ${textColor} py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:border-primary/40 transition-colors flex items-center justify-center gap-2 shadow-sm relative z-10 group/btn`}
                     >
                         Enter Module <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
-                    {/* Ambient glow inside back card */}
-                    <div className="absolute top-0 right-0 w-full h-full bg-black/5" />
                 </div>
             </div>
         </div>
@@ -486,30 +485,30 @@ function PortalCard({ company }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-white border border-slate-100 rounded-[1.5rem] p-6 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden">
+            <div className="h-full bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/40 transition-all duration-300 hover:shadow-lg relative overflow-hidden">
                 <div className="space-y-4">
                     <div className="flex justify-between items-start">
-                        <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-inner border border-slate-100">
+                        <div className="w-12 h-12 bg-primary-container/30 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-surface-container-lowest transition-all shadow-inner border border-primary/20">
                             <Building2 className="w-6 h-6" />
                         </div>
                         <span className={`px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
-                            company.status === 'Active' ? 'bg-green-50 text-green-600 border-green-100' : 
-                            company.status === 'Selective' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                            'bg-slate-50 text-slate-500 border-slate-100'
+                            company.status === 'Active' ? 'bg-green-50 text-green-600 border-green-200' : 
+                            company.status === 'Selective' ? 'bg-amber-50 text-amber-600 border-amber-200' :
+                            'bg-surface text-on-surface-variant border-primary/20'
                         }`}>
                             {company.status}
                         </span>
                     </div>
                     
                     <div>
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">{company.industry}</p>
-                        <h3 className="text-xl font-black font-headline text-slate-900 tracking-tighter italic leading-none">{company.name}</h3>
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">{company.industry}</p>
+                        <h3 className="text-xl font-black font-headline text-on-surface tracking-tighter leading-none">{company.name}</h3>
                     </div>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Portal</span>
-                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-emerald-50 group-hover:text-emerald-600">
+                <div className="mt-6 flex items-center justify-between pt-4 border-t border-primary/10">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Portal</span>
+                    <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-primary/10 group-hover:text-primary text-on-surface-variant">
                         <ArrowUpRight className="w-4 h-4" />
                     </div>
                 </div>
@@ -525,10 +524,10 @@ function LinkedInJobCard({ job }: any) {
             target="_blank" 
             className="group block h-full"
         >
-            <div className="h-full bg-white border border-slate-100 rounded-[1.5rem] p-6 flex flex-col justify-between hover:border-blue-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 relative overflow-hidden">
+            <div className="h-full bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/40 transition-all duration-300 hover:shadow-lg relative overflow-hidden">
                 <div className="space-y-4">
                     <div className="flex justify-between items-start">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-md border border-slate-100 overflow-hidden relative">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white group-hover:scale-105 transition-all shadow-sm border border-primary/20 overflow-hidden relative">
                             {job.companyLogo ? (
                                 <img 
                                     src={job.companyLogo} 
@@ -544,23 +543,23 @@ function LinkedInJobCard({ job }: any) {
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-1">
-                            <span className="px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-100">
+                            <span className="px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-200">
                                 Live
                             </span>
-                            <span className="text-[10px] font-bold text-slate-400">{job.postDate}</span>
+                            <span className="text-[10px] font-bold text-on-surface-variant">{job.postDate}</span>
                         </div>
                     </div>
                     
                     <div className="space-y-1">
                         <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{job.location}</p>
-                        <h3 className="text-lg font-black font-headline text-slate-900 tracking-tight leading-tight italic group-hover:text-blue-600 transition-colors line-clamp-2">{job.title}</h3>
-                        <p className="text-slate-500 text-[11px] font-bold">{job.company}</p>
+                        <h3 className="text-lg font-black font-headline text-on-surface tracking-tight leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{job.title}</h3>
+                        <p className="text-on-surface-variant text-[11px] font-bold">{job.company}</p>
                     </div>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">LinkedIn</span>
-                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600">
+                <div className="mt-6 flex items-center justify-between border-t border-primary/10 pt-4">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">LinkedIn</span>
+                    <div className="w-8 h-8 rounded-full bg-surface flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600 text-on-surface-variant">
                         <ExternalLink className="w-4 h-4" />
                     </div>
                 </div>
@@ -571,19 +570,19 @@ function LinkedInJobCard({ job }: any) {
 
 function SkeletonCard() {
     return (
-        <div className="bg-white border border-slate-100 rounded-[1.5rem] p-6 animate-pulse space-y-4">
+        <div className="bg-surface-container-lowest border-2 border-primary/20 rounded-2xl p-6 animate-pulse space-y-4">
             <div className="flex justify-between">
-                <div className="w-12 h-12 bg-slate-100 rounded-xl" />
-                <div className="w-12 h-4 bg-slate-100 rounded-full" />
+                <div className="w-12 h-12 bg-surface rounded-xl" />
+                <div className="w-12 h-4 bg-surface rounded-full" />
             </div>
             <div className="space-y-2">
-                <div className="w-1/3 h-3 bg-slate-100 rounded-full" />
-                <div className="w-full h-5 bg-slate-100 rounded-full" />
-                <div className="w-2/3 h-5 bg-slate-100 rounded-full" />
+                <div className="w-1/3 h-3 bg-surface rounded-full" />
+                <div className="w-full h-5 bg-surface rounded-full" />
+                <div className="w-2/3 h-5 bg-surface rounded-full" />
             </div>
-            <div className="pt-6 border-t border-slate-50 flex justify-between">
-                <div className="w-16 h-3 bg-slate-100 rounded-full" />
-                <div className="w-8 h-8 bg-slate-100 rounded-full" />
+            <div className="pt-6 border-t border-primary/10 flex justify-between">
+                <div className="w-16 h-3 bg-surface rounded-full" />
+                <div className="w-8 h-8 bg-surface rounded-full" />
             </div>
         </div>
     );
@@ -591,12 +590,12 @@ function SkeletonCard() {
 
 function EmptyState({ onReset }: any) {
     return (
-        <div className="col-span-full py-20 text-center space-y-4 bg-white border border-slate-100 rounded-[2rem]">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
+        <div className="col-span-full py-20 text-center space-y-4 bg-surface-container-lowest border-2 border-primary/20 rounded-[2rem]">
+            <div className="w-16 h-16 bg-surface rounded-full flex items-center justify-center mx-auto text-on-surface-variant/50">
                 <Search className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-black italic leading-none">No live listings found.</h3>
-            <p className="text-slate-500 font-medium max-w-xs mx-auto text-sm leading-relaxed">
+            <h3 className="text-xl font-black text-on-surface leading-none">No live listings found.</h3>
+            <p className="text-on-surface-variant font-medium max-w-xs mx-auto text-sm leading-relaxed">
                 LinkedIn extraction failed or returned zero results. Try broadening your keywords.
             </p>
             <button 
