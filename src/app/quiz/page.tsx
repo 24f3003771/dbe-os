@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import QuizDashboard from "./QuizDashboard";
+import dynamic from "next/dynamic";
+const QuizDashboard = dynamic(() => import("./QuizDashboard"), {
+    loading: () => <div className="animate-pulse bg-white rounded-3xl h-[600px] w-full" />
+});
 
 export default async function GlobalQuizPage() {
     const cookieStore = await cookies();

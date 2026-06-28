@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import NotesDashboard from "./NotesDashboard";
+import dynamic from "next/dynamic";
+const NotesDashboard = dynamic(() => import("./NotesDashboard"), {
+    loading: () => <div className="animate-pulse bg-white rounded-3xl h-[600px] w-full" />
+});
 
 export default async function UniversalNotesListPage() {
     const cookieStore = await cookies();

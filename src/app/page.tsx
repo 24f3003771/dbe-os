@@ -12,8 +12,21 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { getTomatoHistory, getLeaderboard } from "@/actions/farm";
-import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
-import TodaysMission from "@/components/TodaysMission";
+import dynamic from "next/dynamic";
+
+const TodaysMission = dynamic(() => import("@/components/TodaysMission"), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white rounded-[2rem] p-8 border border-stone-100 shadow-sm flex flex-col flex-1 min-h-[350px] animate-pulse">
+        <div className="h-6 w-32 bg-stone-100 rounded-md mb-8"></div>
+        <div className="space-y-4">
+            <div className="h-8 bg-stone-50 rounded-lg"></div>
+            <div className="h-8 bg-stone-50 rounded-lg"></div>
+            <div className="h-8 bg-stone-50 rounded-lg"></div>
+        </div>
+    </div>
+  )
+});
 import { Caveat } from "next/font/google";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
