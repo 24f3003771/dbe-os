@@ -61,6 +61,7 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
     const [activeModule, setActiveModule] = useState<number | "formula-sheet" | "mind-maps">(1);
     const [activeLectureId, setActiveLectureId] = useState<string | null>(null);
     const [showMedia, setShowMedia] = useState(true);
+    const [showQuiz, setShowQuiz] = useState(true);
     const [completedModules, setCompletedModules] = useState<number[]>(initialCompletedModules);
     const printRef = useRef<HTMLDivElement>(null);
     const [savedBookmarks, setSavedBookmarks] = useState<string[]>([]);
@@ -196,6 +197,13 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                         >
                             {showMedia ? <ImageOff className="w-4 h-4 text-stone-400" /> : <ImageIcon className="w-4 h-4 text-indigo-500" />}
                             {showMedia ? "Hide Media" : "Show Media"}
+                        </button>
+                        <button
+                            onClick={() => setShowQuiz(!showQuiz)}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-stone-200 hover:border-stone-300 rounded-xl font-bold text-xs shadow-sm transition-all"
+                        >
+                            <CheckCircle2 className={`w-4 h-4 ${showQuiz ? 'text-stone-400' : 'text-indigo-500'}`} />
+                            {showQuiz ? "Hide Quizzes" : "Show Quizzes"}
                         </button>
                         <button
                             onClick={handlePrint}
@@ -459,6 +467,7 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                                             }
 
                                             if (!inline && isQuiz) {
+                                                if (!showQuiz) return null;
                                                 try {
                                                     const questions = JSON.parse(String(children).replace(/\n$/, ''));
                                                     const modNum = typeof activeModule === 'number' ? activeModule : activeModule === 'formula-sheet' ? 98 : activeModule === 'mind-maps' ? 99 : -1;
