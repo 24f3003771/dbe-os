@@ -150,325 +150,340 @@ function LoginPageContent() {
     };
 
     return (
-        <div className="min-h-screen w-full overflow-x-hidden flex font-body bg-[#FAF9F6] p-4 md:p-6">
-            {/* The Main Container */}
-            <div className="relative w-full min-h-[calc(100vh-3rem)] rounded-[2.5rem] overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-2 border border-stone-200/50 bg-white">
+        <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#F9FAFB] font-body overflow-x-hidden">
+            
+            {/* Left Content Area (Marketing & iPad) */}
+            <div className="relative w-full lg:w-[65%] xl:w-[70%] bg-white flex flex-col overflow-hidden min-h-[50vh]">
                 
-                {/* Left Pane - Feature Showcase (Hidden on Mobile) */}
-                <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden">
-                    {/* Background Image perfectly fitted with lowered saturation for blending */}
-                    <div 
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat saturate-[0.85] contrast-[0.95]"
-                        style={{ backgroundImage: "url('/login-bg.jpg')" }}
-                    />
-                    <div className="absolute inset-0 bg-stone-900/70 backdrop-blur-[4px]" />
-                    
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-12">
-                            <div className="w-12 h-12 bg-[#FF9056] rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-                                <BookOpen className="w-6 h-6 text-white" />
-                            </div>
-                            <h1 className="text-2xl font-black text-white tracking-tight">DBE Scholar OS</h1>
+                {/* Navbar (Mock) */}
+                <div className="flex items-center justify-between p-6 lg:px-12 lg:py-8 z-20 relative">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-[#FF9056] rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
+                            <BookOpen className="w-4 h-4 text-white" />
                         </div>
-                        
-                        <h2 className="text-4xl lg:text-5xl font-black text-white leading-tight mb-6">
-                            Everything you need to <br/> <span className="text-[#FF9056]">excel in your degree.</span>
-                        </h2>
-                        <p className="text-stone-300 font-medium text-lg max-w-md">
-                            A unified platform designed exclusively for the DBE curriculum.
-                        </p>
+                        <span className="font-black text-stone-900 text-xl tracking-tight">DBE Scholar OS</span>
                     </div>
-
-                    <div className="relative z-10 grid grid-cols-1 xl:grid-cols-2 gap-4 mt-8">
-                        {[
-                            {
-                                icon: <BrainCircuit className="w-5 h-5 text-[#FF9056]" />,
-                                title: "Interactive Quiz Engine",
-                                desc: "Exams, PYQs, and practice with real-time timers."
-                            },
-                            {
-                                icon: <FileText className="w-5 h-5 text-[#FF9056]" />,
-                                title: "AI Resume Forge",
-                                desc: "Build ATS-optimized resumes powered by NVIDIA AI."
-                            },
-                            {
-                                icon: <BookOpen className="w-5 h-5 text-[#FF9056]" />,
-                                title: "Dynamic Curriculum",
-                                desc: "Structured modules, notes, and video lectures."
-                            },
-                            {
-                                icon: <Trophy className="w-5 h-5 text-[#FF9056]" />,
-                                title: "Study Productivity",
-                                desc: "Pomodoro timers, deadlines, and leaderboards."
-                            },
-                            {
-                                icon: <Calculator className="w-5 h-5 text-[#FF9056]" />,
-                                title: "CGPA Calculator",
-                                desc: "Track and predict grades with our intuitive tool."
-                            },
-                            {
-                                icon: <Compass className="w-5 h-5 text-[#FF9056]" />,
-                                title: "Career Guides",
-                                desc: "Roadmaps and resources for technical and management roles."
-                            },
-                            {
-                                icon: <Presentation className="w-5 h-5 text-[#FF9056]" />,
-                                title: "Winning Repositories",
-                                desc: "Explore winning pitch decks and outstanding code repos."
-                            },
-                            {
-                                icon: <Briefcase className="w-5 h-5 text-[#FF9056]" />,
-                                title: "Opportunities",
-                                desc: "Latest hackathons, competitions, and internships."
-                            }
-                        ].map((feature, idx) => (
-                            <motion.div 
-                                key={idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 + idx * 0.05 }}
-                                className="flex items-start gap-3 p-4 rounded-2xl bg-white/[0.06] backdrop-blur-xl border border-white/[0.12] hover:bg-white/[0.1] hover:border-[#FF9056]/40 hover:shadow-[0_0_25px_rgba(255,144,86,0.15)] hover:-translate-y-0.5 transition-all duration-300 group"
-                            >
-                                <div className="mt-0.5 bg-[#FF9056]/10 p-2.5 rounded-xl group-hover:scale-110 group-hover:bg-[#FF9056]/20 group-hover:shadow-[0_0_15px_rgba(255,144,86,0.3)] transition-all duration-300 border border-white/5">
-                                    {feature.icon}
-                                </div>
-                                <div className="pt-1">
-                                    <h3 className="text-white font-bold text-[15px] tracking-wide leading-none mb-1.5">{feature.title}</h3>
-                                    <p className="text-stone-300 text-[13px] leading-relaxed line-clamp-2">{feature.desc}</p>
-                                </div>
-                            </motion.div>
-                        ))}
+                    
+                    <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500">
+                        <span className="cursor-pointer hover:text-stone-900 transition-colors">Features</span>
+                        <span className="cursor-pointer hover:text-stone-900 transition-colors">Resources</span>
+                        <span className="cursor-pointer hover:text-stone-900 transition-colors">Community</span>
+                        <span className="cursor-pointer hover:text-stone-900 transition-colors">About</span>
                     </div>
                 </div>
 
-                {/* Right Pane - Login Form */}
-                <div className="relative w-full flex flex-col items-center justify-center bg-[#FAF9F6]">
-                    {/* Mobile Background */}
-                    <div 
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat lg:hidden opacity-30"
-                        style={{ backgroundImage: "url('/login-bg.jpg')" }}
-                    />
-                    
-                    <div className="relative z-10 w-full px-4 lg:px-12 flex flex-col items-center justify-center h-full py-12">
-                        {/* Login Form Box */}
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            transition={{ duration: 0.5, ease: "easeOut" }}
-                            className="w-full max-w-[420px] bg-white/95 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative"
-                        >
-                    <div className="text-center mb-10">
-                        <div className="w-16 h-16 bg-[#FFF0EB] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
-                            <KeyRound className="w-8 h-8 text-[#FF5F56]" />
+                {/* Main Marketing Content */}
+                <div className="flex-1 flex items-center z-10 relative py-12 lg:py-0">
+                    <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 flex items-center relative h-full">
+                        
+                        {/* Text Content */}
+                        <div className="w-full lg:w-[50%] xl:w-[45%] flex flex-col z-20 relative">
+                            <h1 className="text-[2.5rem] md:text-5xl lg:text-6xl xl:text-[4rem] font-black text-stone-900 leading-[1.1] tracking-tight mb-6">
+                                Everything you <br className="hidden md:block" /> need to excel in <br className="hidden md:block" /> your degree.
+                            </h1>
+                            <p className="text-stone-500 text-lg md:text-xl font-medium mb-10 max-w-[400px] leading-relaxed">
+                                A modern academic OS built exclusively for IIM Bangalore DBE students.
+                            </p>
+
+                            <div className="space-y-4 mb-10">
+                                {[
+                                    { icon: <BookOpen className="w-5 h-5 text-[#FF9056]" />, text: "Structured learning" },
+                                    { icon: <BrainCircuit className="w-5 h-5 text-[#FF9056]" />, text: "Smart tools" },
+                                    { icon: <Briefcase className="w-5 h-5 text-[#FF9056]" />, text: "Career ready" },
+                                    { icon: <Code2 className="w-5 h-5 text-[#FF9056]" />, text: "Community driven" }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-4">
+                                        {item.icon}
+                                        <span className="font-bold text-stone-700 text-base md:text-lg">{item.text}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button className="bg-[#FF9056] text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all w-fit flex items-center gap-3 mb-12 lg:mb-16 text-base md:text-lg">
+                                Get Started <ArrowRight className="w-5 h-5" />
+                            </button>
+
+                            {/* Stats */}
+                            <div className="flex items-center gap-4 md:gap-8 p-5 md:p-6 bg-white border border-stone-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] w-fit">
+                                <div className="text-center">
+                                    <h4 className="font-black text-xl md:text-2xl text-stone-900">4000+</h4>
+                                    <p className="text-[9px] md:text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-1">DBE Students<br/>Onboarded</p>
+                                </div>
+                                <div className="w-px h-8 md:h-10 bg-stone-100" />
+                                <div className="text-center">
+                                    <h4 className="font-black text-xl md:text-2xl text-stone-900">4.8/5</h4>
+                                    <p className="text-[9px] md:text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-1">Student<br/>Rating</p>
+                                </div>
+                                <div className="w-px h-8 md:h-10 bg-stone-100" />
+                                <div className="text-center">
+                                    <h4 className="font-black text-xl md:text-2xl text-stone-900">95%</h4>
+                                    <p className="text-[9px] md:text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-1">Improved Weekly<br/>Consistency</p>
+                                </div>
+                            </div>
                         </div>
-                        <h2 className="text-3xl font-black text-stone-900 tracking-tight mb-2">Welcome Back.</h2>
-                        <p className="text-sm font-bold text-stone-500">Sign in to the DBE Scholar OS</p>
-                    </div>
 
-                    {error && (
-                        <motion.div 
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-xs font-bold text-center"
-                        >
-                            {error}
-                        </motion.div>
-                    )}
-
-                    <AnimatePresence mode="wait">
-                        {!isOtpMode ? (
-                            <motion.form 
-                                key="password-login"
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 20 }}
-                                className="space-y-5"
-                                onSubmit={handleLogin}
+                        {/* 3D iPad Mockup */}
+                        <div className="absolute top-1/2 -translate-y-1/2 right-[-25%] lg:right-[-15%] xl:right-[-5%] w-[900px] h-[650px] hidden lg:block z-10 pointer-events-none" style={{ perspective: '2000px' }}>
+                            <div 
+                                className="w-full h-full relative rounded-[3rem] bg-black border-[12px] border-black p-2 shadow-[30px_50px_80px_-20px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.15)] overflow-hidden"
+                                style={{
+                                    transform: 'rotateY(-18deg) rotateX(8deg) rotateZ(-2deg) scale(0.95)',
+                                    transformStyle: 'preserve-3d'
+                                }}
                             >
-                                {/* Email Input */}
-                                <div className="space-y-1.5 group">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 ml-1 group-focus-within:text-[#FF5F56] transition-colors">Email Address</label>
-                                    <div className="relative hover:scale-[1.01] transition-transform duration-300">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <Mail className="w-4 h-4 text-stone-400 group-focus-within:text-[#FF5F56] transition-colors" />
+                                {/* Glare Effect */}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 z-20 pointer-events-none transform -skew-x-12 translate-x-1/4" />
+                                
+                                {/* Inner Screen */}
+                                <div className="w-full h-full bg-white rounded-[2rem] overflow-hidden relative z-10 border border-stone-800">
+                                    {/* Dashboard Image - falls back gracefully if image is not present */}
+                                    <div className="w-full h-full bg-stone-100 flex items-center justify-center text-stone-400 relative">
+                                        <img 
+                                            src="/dashboard-preview.png" 
+                                            alt="DBE OS Dashboard"
+                                            className="absolute inset-0 w-full h-full object-cover object-left-top z-10"
+                                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                        />
+                                        <div className="text-center z-0">
+                                            <BookOpen className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                                            <p className="font-medium">Dashboard Preview</p>
+                                            <p className="text-xs mt-1">(Add public/dashboard-preview.png)</p>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Stylized Apple Pencil */}
+                            <div 
+                                className="absolute bottom-[-40px] left-[15%] w-[400px] h-4 bg-white rounded-full shadow-[5px_15px_30px_rgba(0,0,0,0.3)] z-0"
+                                style={{
+                                    transform: 'rotateZ(-15deg)',
+                                    background: 'linear-gradient(to bottom, #ffffff, #e5e5e5)'
+                                }}
+                            >
+                                <div className="absolute right-0 top-0 bottom-0 w-8 bg-stone-200 rounded-r-full border-l border-stone-300"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Sidebar Area (Login Form) */}
+            <div className="w-full lg:w-[35%] xl:w-[30%] bg-[#F9FAFB] flex flex-col items-center justify-center p-6 lg:p-10 relative z-20 min-h-[50vh]">
+                <div className="w-full max-w-[400px]">
+                    <div className="bg-white rounded-3xl p-8 lg:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-stone-100">
+                        <div className="mb-8">
+                            <h2 className="text-3xl font-bold text-stone-900 tracking-tight mb-2">Sign in</h2>
+                            <p className="text-sm font-medium text-stone-500">Welcome back! Please sign in to continue.</p>
+                        </div>
+
+                        {error && (
+                            <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-xs font-bold text-center"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
+
+                        <AnimatePresence mode="wait">
+                            {!isOtpMode ? (
+                                <motion.form 
+                                    key="password-login"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    className="space-y-5"
+                                    onSubmit={handleLogin}
+                                >
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-bold text-stone-700">Email</label>
                                         <input 
                                             type="email" 
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="your.email@example.com" 
-                                            className="w-full bg-[#FAF9F6] border border-stone-200/60 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-stone-900 placeholder:text-stone-400 hover:border-[#FF5F56]/50 focus:outline-none focus:border-[#FF5F56] focus:ring-4 focus:ring-[#FF5F56]/10 transition-all shadow-sm focus:shadow-md"
+                                            placeholder="Enter your email" 
+                                            className="w-full bg-white border border-stone-200 rounded-xl py-3.5 px-4 text-sm font-medium text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all shadow-sm"
                                             required
                                         />
                                     </div>
-                                </div>
 
-                                {/* Password Input */}
-                                <div className="space-y-1.5 group">
-                                    <div className="flex items-center justify-between ml-1">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 group-focus-within:text-[#FF5F56] transition-colors">Password</label>
-                                        <button type="button" onClick={() => setIsOtpMode(true)} className="text-[10px] font-black uppercase tracking-widest text-[#FF5F56] hover:text-[#e0443e] transition-colors">
-                                            Forgot / Use OTP?
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-bold text-stone-700">Password</label>
+                                        <div className="relative">
+                                            <input 
+                                                type="password" 
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                placeholder="Enter your password" 
+                                                className="w-full bg-white border border-stone-200 rounded-xl py-3.5 px-4 text-sm font-medium text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all shadow-sm"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-1 pb-2">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900" />
+                                            <span className="text-sm font-medium text-stone-600">Remember me</span>
+                                        </label>
+                                        <button type="button" onClick={() => setIsOtpMode(true)} className="text-sm font-bold text-[#FF9056] hover:text-[#ff7a33] transition-colors">
+                                            Forgot password?
                                         </button>
                                     </div>
-                                    <div className="relative hover:scale-[1.01] transition-transform duration-300">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <Lock className="w-4 h-4 text-stone-400 group-focus-within:text-[#FF5F56] transition-colors" />
+
+                                    <button 
+                                        type="submit" 
+                                        disabled={isLoading}
+                                        className="w-full py-3.5 bg-stone-900 text-white rounded-xl font-bold text-sm shadow-md shadow-stone-900/20 hover:bg-stone-800 hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2 group/btn"
+                                    >
+                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Continue <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" /></>}
+                                    </button>
+
+                                    <div className="relative py-4">
+                                        <div className="absolute inset-0 flex items-center">
+                                            <div className="w-full border-t border-stone-200"></div>
                                         </div>
-                                        <input 
-                                            type="password" 
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="••••••••" 
-                                            className="w-full bg-[#FAF9F6] border border-stone-200/60 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-stone-900 placeholder:text-stone-400 hover:border-[#FF5F56]/50 focus:outline-none focus:border-[#FF5F56] focus:ring-4 focus:ring-[#FF5F56]/10 transition-all shadow-sm focus:shadow-md"
-                                            required
-                                        />
+                                        <div className="relative flex justify-center text-xs">
+                                            <span className="px-2 bg-white text-stone-400 font-medium">or</span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <button 
-                                    type="submit" 
-                                    disabled={isLoading}
-                                    className="w-full py-4 bg-[#FF9056] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6 group/btn"
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setError("Google Sign-In is not currently configured.")}
+                                        className="w-full py-3.5 bg-white border border-stone-200 text-stone-700 rounded-xl font-bold text-sm hover:bg-stone-50 transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <svg className="w-4 h-4" viewBox="0 0 24 24">
+                                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                                        </svg>
+                                        Sign in with Google
+                                    </button>
+                                    
+                                    <div className="text-center pt-2">
+                                        <p className="text-xs font-medium text-stone-500">
+                                            Don't have an account?{' '}
+                                            <Link href="/register" className="text-[#FF9056] font-bold hover:text-[#ff7a33] transition-colors">
+                                                Sign up
+                                            </Link>
+                                        </p>
+                                    </div>
+                                </motion.form>
+                            ) : isOtpVerified ? (
+                                <motion.form 
+                                    key="setNewPassword"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="space-y-5"
+                                    onSubmit={handleSetNewPassword}
                                 >
-                                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Sign In <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" /></>}
-                                </button>
-                                
-                                <div className="text-center pt-4">
-                                    <p className="text-xs font-bold text-stone-500">
-                                        Don't have an account?{' '}
-                                        <Link href="/register" className="text-[#FF9056] hover:text-[#ff7a33] transition-colors">
-                                            Register here
-                                        </Link>
-                                    </p>
-                                </div>
-                            </motion.form>
-                        ) : isOtpVerified ? (
-                            <motion.form 
-                                key="setNewPassword"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.3 }}
-                                className="space-y-4"
-                                onSubmit={handleSetNewPassword}
-                            >
-                                <div className="text-center mb-6">
-                                    <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-green-100">
-                                        <CheckCircle2 className="w-8 h-8 text-green-500" />
+                                    <div className="text-center mb-6">
+                                        <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-green-100">
+                                            <CheckCircle2 className="w-8 h-8 text-green-500" />
+                                        </div>
+                                        <h2 className="text-xl font-bold text-stone-900 tracking-tight mb-2">Code Verified!</h2>
+                                        <p className="text-xs font-medium text-stone-500 px-4">
+                                            Please set a new secure password for your account before continuing.
+                                        </p>
                                     </div>
-                                    <h2 className="text-xl font-black text-stone-900 tracking-tight mb-2">Code Verified!</h2>
-                                    <p className="text-xs font-bold text-stone-500 px-4">
-                                        Please set a new secure password for your account before continuing.
-                                    </p>
-                                </div>
 
-                                <div className="space-y-1.5 group">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 ml-1 group-focus-within:text-[#FF5F56]">New Password</label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-4 top-3.5 w-4 h-4 text-stone-400 group-focus-within:text-[#FF5F56]" />
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-bold text-stone-700">New Password</label>
                                         <input 
                                             type="password" 
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             placeholder="••••••••" 
-                                            className="w-full bg-[#FAF9F6] border border-stone-200/60 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-stone-900 focus:outline-none focus:border-[#FF5F56] focus:ring-4 focus:ring-[#FF5F56]/10 transition-all"
+                                            className="w-full bg-white border border-stone-200 rounded-xl py-3.5 px-4 text-sm font-medium text-stone-900 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all shadow-sm"
                                             required
                                         />
                                     </div>
-                                </div>
 
-                                <div className="pt-2">
-                                    <button 
-                                        type="submit" 
-                                        disabled={isLoading || newPassword.length < 8}
-                                        className="w-full py-4 bg-[#FF9056] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                                    >
-                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Password & Continue"}
-                                    </button>
-                                </div>
-                            </motion.form>
-                        ) : (
-                            <motion.form 
-                                key="otp-login"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="space-y-5"
-                                onSubmit={isOtpSent ? handleVerifyOtp : handleSendOtp}
-                            >
-                                {!isOtpSent ? (
-                                    <>
-                                        <div className="space-y-1.5 group">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 ml-1 group-focus-within:text-[#FF5F56]">Email Address</label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                    <Mail className="w-4 h-4 text-stone-400 group-focus-within:text-[#FF5F56]" />
-                                                </div>
+                                    <div className="pt-2">
+                                        <button 
+                                            type="submit" 
+                                            disabled={isLoading || newPassword.length < 8}
+                                            className="w-full py-3.5 bg-stone-900 text-white rounded-xl font-bold text-sm shadow-md hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                        >
+                                            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Password & Continue"}
+                                        </button>
+                                    </div>
+                                </motion.form>
+                            ) : (
+                                <motion.form 
+                                    key="otp-login"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-5"
+                                    onSubmit={isOtpSent ? handleVerifyOtp : handleSendOtp}
+                                >
+                                    {!isOtpSent ? (
+                                        <>
+                                            <div className="space-y-1.5">
+                                                <label className="text-sm font-bold text-stone-700">Email Address</label>
                                                 <input 
                                                     type="email" 
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
-                                                    placeholder="your.email@example.com" 
-                                                    className="w-full bg-[#FAF9F6] border border-stone-200/60 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold text-stone-900 focus:outline-none focus:border-[#FF5F56] focus:ring-4 focus:ring-[#FF5F56]/10 transition-all"
+                                                    placeholder="Enter your email" 
+                                                    className="w-full bg-white border border-stone-200 rounded-xl py-3.5 px-4 text-sm font-medium text-stone-900 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all shadow-sm"
                                                     required
                                                 />
                                             </div>
-                                        </div>
-                                        <button 
-                                            type="submit" 
-                                            disabled={isLoading}
-                                            className="w-full py-4 bg-[#FF9056] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
-                                        >
-                                            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Send Login Code <ArrowRight className="w-4 h-4" /></>}
+                                            <button 
+                                                type="submit" 
+                                                disabled={isLoading}
+                                                className="w-full py-3.5 bg-stone-900 text-white rounded-xl font-bold text-sm shadow-md hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+                                            >
+                                                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Send Login Code <ArrowRight className="w-4 h-4" /></>}
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="p-4 bg-stone-50 border border-stone-200 rounded-2xl mb-6">
+                                                <p className="text-xs font-medium text-center text-stone-600">We sent a 6-digit login code to<br/><span className="text-stone-900 font-bold mt-1 inline-block">{email}</span></p>
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-sm font-bold text-stone-700">6-Digit Code</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={otp}
+                                                    onChange={(e) => setOtp(e.target.value)}
+                                                    placeholder="123456" 
+                                                    className="w-full bg-white border border-stone-200 rounded-xl py-4 px-4 text-center text-2xl tracking-[0.5em] font-black text-stone-900 focus:outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all shadow-sm"
+                                                    maxLength={6}
+                                                    required
+                                                />
+                                            </div>
+                                            <button 
+                                                type="submit" 
+                                                disabled={isLoading || otp.length !== 6}
+                                                className="w-full py-3.5 bg-stone-900 text-white rounded-xl font-bold text-sm shadow-md hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center mt-4"
+                                            >
+                                                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify Code"}
+                                            </button>
+                                        </>
+                                    )}
+                                    
+                                    <div className="text-center pt-4 border-t border-stone-100 mt-6">
+                                        <button type="button" onClick={() => setIsOtpMode(false)} className="text-xs font-bold text-stone-500 hover:text-stone-900 transition-colors">
+                                            Return to Password Login
                                         </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <div className="p-4 bg-orange-50 border border-orange-100 rounded-2xl mb-6">
-                                            <p className="text-xs font-bold text-center text-orange-600">We sent a 6-digit login code to<br/><span className="text-stone-900 font-black mt-1 inline-block">{email}</span></p>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-stone-500 ml-1">6-Digit Code</label>
-                                            <input 
-                                                type="text" 
-                                                value={otp}
-                                                onChange={(e) => setOtp(e.target.value)}
-                                                placeholder="123456" 
-                                                className="w-full bg-[#FAF9F6] border border-stone-200/60 rounded-2xl py-4 px-4 text-center text-2xl tracking-[0.5em] font-black text-stone-900 focus:outline-none focus:border-[#FF5F56] focus:ring-4 focus:ring-[#FF5F56]/10 transition-all"
-                                                maxLength={6}
-                                                required
-                                            />
-                                        </div>
-                                        <button 
-                                            type="submit" 
-                                            disabled={isLoading || otp.length !== 6}
-                                            className="w-full py-4 bg-[#FF9056] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center mt-4"
-                                        >
-                                            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify Code"}
-                                        </button>
-                                    </>
-                                )}
-                                
-                                <div className="text-center pt-4">
-                                    <button type="button" onClick={() => setIsOtpMode(false)} className="text-[10px] font-black uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors">
-                                        Return to Password Login
-                                    </button>
-                                </div>
-                            </motion.form>
-                        )}
-                    </AnimatePresence>
-                </motion.div>
-
-                {/* Minimal Developers Link */}
-                <div className="absolute bottom-6 opacity-40 hover:opacity-100 transition-opacity">
-                    <Link href="/developers" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 hover:text-stone-900 transition-colors">
-                        <Code2 className="w-3.5 h-3.5" /> Meet the Developers
-                    </Link>
-                </div>
+                                    </div>
+                                </motion.form>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     );
 }
