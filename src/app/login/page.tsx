@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2, KeyRound, ArrowLeft, CheckCircle2, Code2, BookOpen, BrainCircuit, FileText, Trophy } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, KeyRound, ArrowLeft, CheckCircle2, Code2, BookOpen, BrainCircuit, FileText, Trophy, Calculator, Compass, Presentation, Briefcase } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -179,42 +179,62 @@ function LoginPageContent() {
                         </p>
                     </div>
 
-                    <div className="relative z-10 grid gap-4 mt-8">
+                    <div className="relative z-10 grid grid-cols-1 xl:grid-cols-2 gap-4 mt-8">
                         {[
                             {
-                                icon: <BrainCircuit className="w-6 h-6 text-[#FF9056]" />,
+                                icon: <BrainCircuit className="w-5 h-5 text-[#FF9056]" />,
                                 title: "Interactive Quiz Engine",
-                                desc: "Subject-scoped exams, PYQs, and module-scoped practice with real-time timers."
+                                desc: "Exams, PYQs, and practice with real-time timers."
                             },
                             {
-                                icon: <FileText className="w-6 h-6 text-[#FF9056]" />,
+                                icon: <FileText className="w-5 h-5 text-[#FF9056]" />,
                                 title: "AI Resume Forge",
-                                desc: "Build ATS-optimized resumes powered by NVIDIA AI with intelligent JD matching."
+                                desc: "Build ATS-optimized resumes powered by NVIDIA AI."
                             },
                             {
-                                icon: <BookOpen className="w-6 h-6 text-[#FF9056]" />,
+                                icon: <BookOpen className="w-5 h-5 text-[#FF9056]" />,
                                 title: "Dynamic Curriculum",
-                                desc: "Access structured modules, comprehensive notes, and interactive learning tools."
+                                desc: "Structured modules, notes, and video lectures."
                             },
                             {
-                                icon: <Trophy className="w-6 h-6 text-[#FF9056]" />,
-                                title: "Study & Productivity",
-                                desc: "Built-in Pomodoro timers, deadline tracking, and student leaderboards."
+                                icon: <Trophy className="w-5 h-5 text-[#FF9056]" />,
+                                title: "Study Productivity",
+                                desc: "Pomodoro timers, deadlines, and leaderboards."
+                            },
+                            {
+                                icon: <Calculator className="w-5 h-5 text-[#FF9056]" />,
+                                title: "CGPA Calculator",
+                                desc: "Track and predict grades with our intuitive tool."
+                            },
+                            {
+                                icon: <Compass className="w-5 h-5 text-[#FF9056]" />,
+                                title: "Career Guides",
+                                desc: "Roadmaps and resources for technical and management roles."
+                            },
+                            {
+                                icon: <Presentation className="w-5 h-5 text-[#FF9056]" />,
+                                title: "Winning Repositories",
+                                desc: "Explore winning pitch decks and outstanding code repos."
+                            },
+                            {
+                                icon: <Briefcase className="w-5 h-5 text-[#FF9056]" />,
+                                title: "Opportunities",
+                                desc: "Latest hackathons, competitions, and internships."
                             }
                         ].map((feature, idx) => (
                             <motion.div 
                                 key={idx}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.2 + idx * 0.1 }}
-                                className="flex items-start gap-4 p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/15 transition-colors group"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 + idx * 0.05 }}
+                                className="flex items-start gap-3 p-4 rounded-2xl bg-white/[0.06] backdrop-blur-xl border border-white/[0.12] hover:bg-white/[0.1] hover:border-[#FF9056]/40 hover:shadow-[0_0_25px_rgba(255,144,86,0.15)] hover:-translate-y-0.5 transition-all duration-300 group"
                             >
-                                <div className="mt-1 bg-white/10 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                                <div className="mt-0.5 bg-[#FF9056]/10 p-2.5 rounded-xl group-hover:scale-110 group-hover:bg-[#FF9056]/20 group-hover:shadow-[0_0_15px_rgba(255,144,86,0.3)] transition-all duration-300 border border-white/5">
                                     {feature.icon}
                                 </div>
-                                <div>
-                                    <h3 className="text-white font-bold text-lg">{feature.title}</h3>
-                                    <p className="text-stone-300 text-sm mt-1 leading-relaxed">{feature.desc}</p>
+                                <div className="pt-1">
+                                    <h3 className="text-white font-bold text-[15px] tracking-wide leading-none mb-1.5">{feature.title}</h3>
+                                    <p className="text-stone-300 text-[13px] leading-relaxed line-clamp-2">{feature.desc}</p>
                                 </div>
                             </motion.div>
                         ))}
