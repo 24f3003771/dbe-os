@@ -165,10 +165,10 @@ function LoginPageContent() {
                     </div>
                     
                     <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500">
-                        <span className="cursor-pointer hover:text-stone-900 transition-colors">Features</span>
-                        <span className="cursor-pointer hover:text-stone-900 transition-colors">Resources</span>
-                        <span className="cursor-pointer hover:text-stone-900 transition-colors">Community</span>
-                        <span className="cursor-pointer hover:text-stone-900 transition-colors">About</span>
+                        <Link href="/features" className="hover:text-stone-900 transition-colors">Features</Link>
+                        <Link href="/resources" className="hover:text-stone-900 transition-colors">Resources</Link>
+                        <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" className="hover:text-stone-900 transition-colors">Join our exclusive community !!</a>
+                        <Link href="/about" className="hover:text-stone-900 transition-colors">About</Link>
                     </div>
                 </div>
 
