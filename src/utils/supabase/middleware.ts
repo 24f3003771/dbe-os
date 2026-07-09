@@ -42,7 +42,7 @@ export const updateSession = async (request: NextRequest) => {
     // refreshing the auth token
     const { data: { user } } = await supabase.auth.getUser()
 
-    const publicRoutes = ["/login", "/register", "/auth", "/api/auth"];
+    const publicRoutes = ["/login", "/register", "/auth", "/api/auth", "/features", "/developers"];
     const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route));
     const isAuthRoute = ["/login", "/register"].some(route => request.nextUrl.pathname.startsWith(route));
 
