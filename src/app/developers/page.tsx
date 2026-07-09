@@ -31,9 +31,9 @@ export default function DevelopersPage() {
   return (
     <div className="min-h-screen bg-[#FAF9F6] font-body text-stone-900 py-20 px-4 md:px-8">
       <div className="max-w-3xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-2 text-stone-400 hover:text-stone-900 transition-colors text-xs font-black uppercase tracking-[0.2em] mb-16">
-          <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-        </Link>
+        <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-stone-400 hover:text-stone-900 transition-colors text-xs font-black uppercase tracking-[0.2em] mb-16 cursor-pointer bg-transparent border-none p-0">
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
 
         <motion.div 
           initial={{ opacity: 0, y: 10 }}

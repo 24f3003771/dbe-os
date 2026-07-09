@@ -53,9 +53,9 @@ export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-[#FAF9F6] font-body text-stone-900 py-16 px-6 md:px-12 lg:px-24">
       <div className="max-w-5xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-2 text-stone-400 hover:text-stone-900 transition-colors text-xs font-black uppercase tracking-[0.2em] mb-12">
-          <ArrowLeft className="w-4 h-4" /> Back to Home
-        </Link>
+        <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-stone-400 hover:text-stone-900 transition-colors text-xs font-black uppercase tracking-[0.2em] mb-12 cursor-pointer bg-transparent border-none p-0">
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
 
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
