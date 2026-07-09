@@ -51,27 +51,27 @@ export default function DevelopersPage() {
           </p>
         </motion.div>
 
-        <div className="space-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           {Founders.map((founder, index) => (
             <motion.div
               key={founder.name}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.15 }}
-              className="group flex flex-col md:flex-row gap-8 items-start border-t border-stone-200 pt-12"
+              className="group flex flex-col gap-6 items-start border-t border-stone-200 pt-8"
             >
               <div className="w-20 h-20 shrink-0 rounded-2xl overflow-hidden bg-stone-200 border border-stone-300">
                 <img 
                   src={founder.image} 
                   alt={founder.name} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="w-full h-full object-cover transition-all duration-500"
                 />
               </div>
 
               <div className="flex-1 space-y-4">
                 <div>
                   <h2 className="text-xl font-black tracking-tight mb-1">{founder.name}</h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">{founder.role}</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">{founder.role.replace("Dev", "Developer")}</p>
                 </div>
                 
                 <p className="text-stone-600 font-medium text-sm leading-relaxed max-w-xl">
@@ -81,7 +81,7 @@ export default function DevelopersPage() {
                 <div className="flex flex-wrap gap-2 pt-2">
                   {founder.skills.map(skill => (
                     <span key={skill} className="px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-md text-[9px] font-black uppercase tracking-widest text-stone-500">
-                      {skill}
+                      {skill === "Full Stack Dev" ? "Full Stack Developer" : skill}
                     </span>
                   ))}
                 </div>
