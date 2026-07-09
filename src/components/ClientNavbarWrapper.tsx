@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import NavLinks from "@/components/NavLinks";
+import LandingNavLinks from "@/components/LandingNavLinks";
 import { usePathname, useRouter } from "next/navigation";
 import { useFarmStore } from "@/hooks/useFarmStore";
 import { useEffect, useState } from "react";
@@ -189,7 +190,7 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
 
                     {/* Center: Nav Links */}
                     <div className="hidden md:flex items-center p-1.5 bg-stone-100/50 rounded-full border border-stone-200/50">
-                        <NavLinks />
+                        {user ? <NavLinks /> : <LandingNavLinks />}
                     </div>
 
                     {/* Right: Quick Actions */}
@@ -217,8 +218,8 @@ export default function ClientNavbarWrapper({ user }: { user: any }) {
 
             {/* Mobile Bottom Nav */}
             <div className="md:hidden fixed bottom-6 inset-x-6 z-50">
-                <div className="bg-white/90 backdrop-blur-xl border border-stone-200 shadow-xl rounded-3xl p-2 flex justify-around">
-                    <NavLinks isBottomNav={true} />
+                <div className="bg-white/90 backdrop-blur-xl border border-stone-200 shadow-xl rounded-3xl p-2 flex justify-around overflow-x-auto">
+                    {user ? <NavLinks isBottomNav={true} /> : <LandingNavLinks />}
                 </div>
             </div>
 

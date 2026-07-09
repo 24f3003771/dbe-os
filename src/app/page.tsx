@@ -13,6 +13,7 @@ import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { getTomatoHistory, getLeaderboard } from "@/actions/farm";
 import dynamic from "next/dynamic";
+import LandingPage from "@/components/LandingPage";
 
 const TodaysMission = dynamic(() => import("@/components/TodaysMission"), {
   ssr: false,
@@ -34,6 +35,7 @@ const caveat = Caveat({ subsets: ["latin"], weight: ["400", "700"] });
 export default function Dashboard() {
   const { fetchFarmData, isInitialized, totalTomatoesEarned, leaderboardRank, streak } = useFarmStore();
   const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [expandedNotice, setExpandedNotice] = useState<string | null>(null);
 
@@ -201,11 +203,24 @@ export default function Dashboard() {
               setHeatmapData(Array(12 * 7).fill(0.1));
           }
       }
+      setIsLoading(false);
     };
     fetchUser();
   }, [isInitialized, fetchFarmData]);
 
   const firstName = user?.user_metadata?.full_name?.split(' ')[0] || 'Ishaan';
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[80vh]">
+        <div className="w-12 h-12 rounded-full border-4 border-stone-200 border-t-rose-500 animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LandingPage />;
+  }
 
   return (
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto pb-12 px-4 md:px-8 xl:px-12 pt-4">
