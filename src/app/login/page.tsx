@@ -177,8 +177,8 @@ function LoginPageContent() {
                     <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 flex items-center relative h-full">
                         
                         {/* Text Content */}
-                        <div className="w-full lg:w-[45%] xl:w-[45%] flex flex-col z-20 relative">
-                            <h1 className="text-[2.5rem] md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-[4rem] font-black text-stone-900 leading-[1.1] tracking-tight mb-6">
+                        <div className="w-full lg:w-[50%] xl:w-[45%] flex flex-col z-20 relative max-w-[480px]">
+                            <h1 className="text-4xl md:text-5xl lg:text-4xl xl:text-5xl font-black text-stone-900 leading-[1.1] tracking-tight mb-6">
                                 Everything you <br className="hidden md:block" /> need to excel in <br className="hidden md:block" /> your degree.
                             </h1>
                             <p className="text-stone-500 text-lg md:text-xl font-medium mb-10 max-w-[400px] leading-relaxed">
@@ -205,7 +205,7 @@ function LoginPageContent() {
                         </div>
 
                         {/* 3D iPad Mockup */}
-                        <div className="absolute top-1/2 -translate-y-1/2 lg:right-[-40%] xl:right-[-20%] 2xl:right-[0%] w-[900px] h-[650px] hidden lg:block z-10 pointer-events-none lg:scale-[0.45] xl:scale-[0.60] 2xl:scale-90 origin-right" style={{ perspective: '2000px' }}>
+                        <div className="absolute top-1/2 -translate-y-1/2 lg:right-[-50%] xl:right-[-25%] 2xl:right-[-5%] w-[900px] h-[650px] hidden lg:block z-10 pointer-events-none lg:scale-[0.40] xl:scale-[0.55] 2xl:scale-[0.85] origin-right" style={{ perspective: '2000px' }}>
                             <div 
                                 className="w-full h-full relative rounded-[3rem] bg-black border-[12px] border-black p-2 shadow-[30px_50px_80px_-20px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.15)] overflow-hidden"
                                 style={{
