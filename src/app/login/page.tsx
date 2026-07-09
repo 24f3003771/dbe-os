@@ -161,7 +161,7 @@ function LoginPageContent() {
                         <div className="w-8 h-8 bg-[#FF9056] rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
                             <BookOpen className="w-4 h-4 text-white" />
                         </div>
-                        <span className="font-black text-stone-900 text-xl tracking-tight">DBE Scholar OS</span>
+                        <span className="font-black text-stone-900 text-xl tracking-tight">DBE OS</span>
                     </div>
                     
                     <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500 z-50 relative">
