@@ -164,11 +164,11 @@ function LoginPageContent() {
                         <span className="font-black text-stone-900 text-xl tracking-tight">DBE Scholar OS</span>
                     </div>
                     
-                    <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500 z-30 relative">
-                        <a href="/features" className="hover:text-stone-900 transition-colors">Features</a>
+                    <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500 z-50 relative">
+                        <Link href="/features" className="hover:text-stone-900 transition-colors">Features</Link>
                         <button onClick={() => alert("Please sign in to access resources.")} className="hover:text-stone-900 transition-colors">Resources</button>
                         <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" className="hover:text-stone-900 transition-colors">Community</a>
-                        <a href="/developers" className="hover:text-stone-900 transition-colors">About</a>
+                        <Link href="/developers" className="hover:text-stone-900 transition-colors">About</Link>
                     </div>
                 </div>
 
