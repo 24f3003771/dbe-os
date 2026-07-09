@@ -166,9 +166,9 @@ function LoginPageContent() {
                     
                     <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500">
                         <Link href="/features" className="hover:text-stone-900 transition-colors">Features</Link>
-                        <Link href="/resources" className="hover:text-stone-900 transition-colors">Resources</Link>
-                        <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" className="hover:text-stone-900 transition-colors">Join our exclusive community !!</a>
-                        <Link href="/about" className="hover:text-stone-900 transition-colors">About Ishaan & Madhwendra</Link>
+                        <button onClick={() => alert("Please sign in to access resources.")} className="hover:text-stone-900 transition-colors">Resources</button>
+                        <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" className="hover:text-stone-900 transition-colors">Community</a>
+                        <Link href="/developers" className="hover:text-stone-900 transition-colors">About</Link>
                     </div>
                 </div>
 
