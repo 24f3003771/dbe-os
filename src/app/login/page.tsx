@@ -164,11 +164,11 @@ function LoginPageContent() {
                         <span className="font-black text-stone-900 text-xl tracking-tight">DBE Scholar OS</span>
                     </div>
                     
-                    <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500">
-                        <Link href="/features" className="hover:text-stone-900 transition-colors">Features</Link>
+                    <div className="hidden md:flex items-center gap-8 font-bold text-sm text-stone-500 z-30 relative">
+                        <a href="/features" className="hover:text-stone-900 transition-colors">Features</a>
                         <button onClick={() => alert("Please sign in to access resources.")} className="hover:text-stone-900 transition-colors">Resources</button>
                         <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" className="hover:text-stone-900 transition-colors">Community</a>
-                        <Link href="/developers" className="hover:text-stone-900 transition-colors">About</Link>
+                        <a href="/developers" className="hover:text-stone-900 transition-colors">About</a>
                     </div>
                 </div>
 
@@ -205,7 +205,7 @@ function LoginPageContent() {
                         </div>
 
                         {/* 3D iPad Mockup */}
-                        <div className="absolute top-1/2 -translate-y-1/2 lg:right-[-25%] xl:right-[-10%] 2xl:right-[5%] w-[900px] h-[650px] hidden lg:block z-10 pointer-events-none lg:scale-[0.45] xl:scale-[0.70] 2xl:scale-100 origin-right" style={{ perspective: '2000px' }}>
+                        <div className="absolute top-1/2 -translate-y-1/2 lg:right-[-40%] xl:right-[-20%] 2xl:right-[0%] w-[900px] h-[650px] hidden lg:block z-10 pointer-events-none lg:scale-[0.45] xl:scale-[0.60] 2xl:scale-90 origin-right" style={{ perspective: '2000px' }}>
                             <div 
                                 className="w-full h-full relative rounded-[3rem] bg-black border-[12px] border-black p-2 shadow-[30px_50px_80px_-20px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.15)] overflow-hidden"
                                 style={{
