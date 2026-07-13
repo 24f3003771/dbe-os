@@ -36,7 +36,7 @@ export default async function GlobalQuizPage() {
 
     // Fetch question counts per subject
     const subjectIds = subjects.map((s) => s.id);
-    let questionCounts: Record<string, number> = {};
+    const questionCounts: Record<string, number> = {};
 
     if (subjectIds.length > 0) {
         const { data: counts } = await supabase

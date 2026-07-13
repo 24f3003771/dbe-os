@@ -9,6 +9,7 @@ import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import dynamic from "next/dynamic";
 import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
+import NextTopLoader from 'nextjs-toploader';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -220,6 +221,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="bg-[#FAF7F2] text-on-surface min-h-screen selection:bg-primary-container/30 flex flex-col font-body p-2 md:p-4 lg:p-6">
+        <NextTopLoader color="#E49B0F" showSpinner={false} />
         <div id="main-content" className="flex-1 w-full h-full bg-[#FFFDFB] rounded-[2.5rem] shadow-2xl border border-[#F2EDE5] flex flex-col overflow-hidden relative transition-all duration-500">
 
 

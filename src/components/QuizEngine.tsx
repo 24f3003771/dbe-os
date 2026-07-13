@@ -81,7 +81,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
         else if (val === "=") {
             try {
                 // Extended evaluation
-                let expression = calcInput
+                const expression = calcInput
                     .replace(/sin\(/g, "Math.sin(")
                     .replace(/cos\(/g, "Math.cos(")
                     .replace(/tan\(/g, "Math.tan(")

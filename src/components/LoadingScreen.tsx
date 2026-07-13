@@ -14,14 +14,7 @@ export default function LoadingScreen({
   fullScreen = true,
   type = 'default'
 }: LoadingScreenProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
+  // Removed 'mounted' state check to allow instant skeleton rendering
   return (
     <div className={`flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm z-[9999] transition-all duration-500 ${
       fullScreen ? 'fixed inset-0 w-screen h-screen px-6' : 'w-full h-full min-h-[400px] p-6'

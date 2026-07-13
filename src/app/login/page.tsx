@@ -184,7 +184,6 @@ function LoginPageContent() {
                             <p className="text-stone-500 text-lg md:text-xl font-medium mb-10 max-w-[400px] leading-relaxed">
                                 A modern academic OS built exclusively for IIM Bangalore DBE students.
                             </p>
-
                             <div className="space-y-4 mb-10">
                                 {[
                                     { icon: <BookOpen className="w-5 h-5 text-[#FF9056]" />, text: "Structured learning" },
