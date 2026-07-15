@@ -53,16 +53,10 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(url);
     }
 
-    // Check if the user is active (type !== 0) and check admin route permissions
-    if (user && !isPublicRoute) {
-        const { data: profile } = await supabase.from('users').select('type, role').eq('id', user.id).single();
-        
-        // If disabled, we let them through to the page, but layout.tsx will render a global un-dismissible dialog.
-        // We do not sign them out so they stay logged in.
-
-
-        // If trying to access /hq-admin without SUPER_ADMIN role, redirect to dashboard
-        if (request.nextUrl.pathname.startsWith('/hq-admin') && (!profile || profile.role !== 'SUPER_ADMIN')) {
+    // Only check admin role permission when accessing /hq-admin routes
+    if (user && request.nextUrl.pathname.startsWith('/hq-admin')) {
+        const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single();
+        if (!profile || profile.role !== 'SUPER_ADMIN') {
             const url = request.nextUrl.clone();
             url.pathname = "/";
             return NextResponse.redirect(url);
