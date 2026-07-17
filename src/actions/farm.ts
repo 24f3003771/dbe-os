@@ -44,28 +44,30 @@ export async function getFarmState() {
         const user = await getAuthUser();
         const supabase = await getUserSupabase();
 
-        // 1. Get profile data
-        const { data: profile } = await supabase
-            .from("user_profiles")
-            .select("total_tomatoes_earned, tomatoes_balance")
-            .eq("id", user.id)
-            .maybeSingle();
+        // Fetch profile, position, and community stats in parallel
+        const [profileRes, rankRes, communityRes] = await Promise.all([
+            supabase
+                .from("user_profiles")
+                .select("total_tomatoes_earned, tomatoes_balance")
+                .eq("id", user.id)
+                .maybeSingle(),
+            supabase
+                .from("leaderboard")
+                .select("position")
+                .eq("id", user.id)
+                .maybeSingle(),
+            supabase
+                .from("user_profiles")
+                .select("total_tomatoes_earned")
+                .limit(100)
+        ]);
 
-        // 2. Fetch numerical position from leaderboard view
-        const { data: rankData } = await supabase
-            .from("leaderboard")
-            .select("position")
-            .eq("id", user.id)
-            .maybeSingle();
+        const profile = profileRes.data;
+        const rankData = rankRes.data;
+        const communityData = communityRes.data;
 
-        // 3. Calculate Community Total
-        const { data: communityData } = await supabase
-            .from("user_profiles")
-            .select("total_tomatoes_earned");
-        
         const communityTotal = communityData?.reduce((acc, curr) => acc + Number(curr.total_tomatoes_earned), 0) ?? 0;
 
-        // 4. Calculate Community Median (Approximate)
         let medianTomatoes = 0;
         if (communityData && communityData.length > 0) {
             const sorted = [...communityData].sort((a, b) => Number(a.total_tomatoes_earned) - Number(b.total_tomatoes_earned));
