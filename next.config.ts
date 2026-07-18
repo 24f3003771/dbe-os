@@ -22,9 +22,14 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Tree-shake large icon libraries — only bundle what's imported
+  // Tree-shake large icon and chart libraries — only bundle what's imported
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion"],
+    optimizePackageImports: [
+      "lucide-react",
+      "framer-motion",
+      "recharts",
+      "@uiw/react-md-editor"
+    ],
   },
 
   async headers() {
