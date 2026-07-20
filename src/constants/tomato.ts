@@ -12,3 +12,10 @@ export function getRank(total: number) {
     const rank = [...RANKS].reverse().find(r => total >= r.min);
     return rank ? rank.name : RANKS[0].name;
 }
+
+/**
+ * Helper function to retrieve all available scholar ranks.
+ */
+export function getAllRanks() {
+    return RANKS;
+}
