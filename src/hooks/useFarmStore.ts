@@ -81,3 +81,5 @@ export const useFarmStore = create<PointState>()((set, get) => ({
     return false;
   },
 }));
+
+// Farm store Zustand state management for tomato balances
