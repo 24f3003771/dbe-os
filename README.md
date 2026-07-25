@@ -134,3 +134,7 @@ Special thanks to the IIM Bangalore DBE community.
 ---
 
 *“Built by students, for students.”*
+
+## Performance & Caching
+- Optimized database query flow in middleware
+- Parallelized server actions for leaderboard and user profile loading
