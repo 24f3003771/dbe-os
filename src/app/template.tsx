@@ -15,3 +15,5 @@ export default function Template({ children }: { children: React.ReactNode }) {
     </motion.div>
   );
 }
+
+// Smooth page transition wrapper using framer-motion
