@@ -13,3 +13,5 @@
 - **Primary Database:** Supabase (PostgreSQL) with SSR Auth.
 - **Frontend:** Next.js 15+ Development Server.
 - **Local Dev:** Use `npm run dev` and ensure `.env.local` is configured.
+
+- Daily automated build checks verified.
