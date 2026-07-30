@@ -129,3 +129,8 @@ html {
   backface-visibility: hidden;
   perspective: 1000px;
 }
+
+/* Performance & smooth scrolling utilities */
+html {
+  scroll-behavior: smooth;
+}
