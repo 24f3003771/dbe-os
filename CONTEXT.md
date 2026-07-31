@@ -89,3 +89,5 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key # Required for admin API routes 
 
 **For future Developers & AI Sessions:**
 Whenever a new major feature is added, an architectural decision is made, or a database schema is updated, **you must update this `CONTEXT.md` file** before ending your session. This ensures the project context remains 100% accurate over time.
+
+- 2026-07-31: Completed TTFB optimization and client bundle reduction.
