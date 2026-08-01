@@ -207,7 +207,10 @@ export async function getLecturesForSubject(subjectId: string): Promise<Lecture[
         .eq("subject_id", subjectId)
         .order("module_number", { ascending: true })
         .order("lecture_number", { ascending: true });
-    if (error) throw new Error(error.message);
+    if (error) {
+        console.warn("Could not fetch lectures (table might not exist yet):", error.message);
+        return [];
+    }
     return data as Lecture[];
 }
 
