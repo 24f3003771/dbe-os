@@ -67,10 +67,22 @@ export type Question = {
     topic_id: string | null;
     quiz_set_id: string | null;
     batch: string | null;        // e.g. "Batch 1", "Batch 2" — primarily for cla/midterm
+    lecture_id?: string | null;
+    is_concept_builder?: boolean;
+    difficulty?: string | null;
     question: string;
     options: string[] | null;
     correct_index: number | null;
     word_limit: number | null;
+    created_at: string;
+};
+
+export type Lecture = {
+    id: string;
+    subject_id: string;
+    module_number: number;
+    lecture_number: number;
+    title: string;
     created_at: string;
 };
 
@@ -183,6 +195,20 @@ export async function deleteTopic(id: string, subjectId: string) {
     if (error) throw new Error(error.message);
     revalidatePath(`/hq-admin/curriculum/${subjectId}`);
     revalidatePath("/hq-admin/topics");
+}
+
+// ─── LECTURES ────────────────────────────────────────────────────────────────
+
+export async function getLecturesForSubject(subjectId: string): Promise<Lecture[]> {
+    const supabase = await getSupabase();
+    const { data, error } = await supabase
+        .from("lectures")
+        .select("*")
+        .eq("subject_id", subjectId)
+        .order("module_number", { ascending: true })
+        .order("lecture_number", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data as Lecture[];
 }
 
 // ─── NOTES ───────────────────────────────────────────────────────────────────
@@ -414,6 +440,9 @@ export async function bulkImportQuestions(
                 topic_id: q.topic_id || defaultTopicId || null,
                 quiz_set_id: effectiveQuizSetId,
                 batch: (q.batch as string) || null,
+                lecture_id: (q.lecture_id as string) || null,
+                is_concept_builder: q.is_concept_builder === true,
+                difficulty: q.difficulty || null,
                 question: q.question,
                 options: q.input_type === "mcq" ? q.options : null,
                 correct_index: q.input_type === "mcq" ? q.correct_index : null,

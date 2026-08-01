@@ -1,16 +1,17 @@
 import { notFound } from "next/navigation";
-import { getSubjectById, getTerms, getNotesForSubject, getQuestions, getTopics, getQuizSets } from "@/actions/curriculum";
+import { getSubjectById, getTerms, getNotesForSubject, getQuestions, getTopics, getQuizSets, getLecturesForSubject } from "@/actions/curriculum";
 import SubjectDetailClient from "./SubjectDetailClient";
 
 export default async function SubjectDetailPage({ params }: { params: Promise<{ subjectId: string }> }) {
     const { subjectId } = await params;
-    const [subject, terms, notes, questions, topics, quizSets] = await Promise.all([
+    const [subject, terms, notes, questions, topics, quizSets, lectures] = await Promise.all([
         getSubjectById(subjectId),
         getTerms(),
         getNotesForSubject(subjectId),
         getQuestions(subjectId),
         getTopics(subjectId),
-        getQuizSets(subjectId)
+        getQuizSets(subjectId),
+        getLecturesForSubject(subjectId)
     ]);
 
     if (!subject) notFound();
@@ -25,6 +26,7 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
             initialQuestions={questions}
             topics={topics}
             initialQuizSets={quizSets}
+            lectures={lectures}
         />
     );
 }

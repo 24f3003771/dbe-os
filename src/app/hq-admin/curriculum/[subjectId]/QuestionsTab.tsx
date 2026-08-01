@@ -5,7 +5,7 @@ import {
     Plus, Trash2, Loader2, X, Upload, CheckCircle2, AlertCircle,
     Filter, Pencil, Check
 } from "lucide-react";
-import { createQuestion, updateQuestion, deleteQuestion, bulkImportQuestions, createQuizSet, deleteQuizSet, getNoteForModule, type Question, type Subject, type Topic, type QuizSet } from "@/actions/curriculum";
+import { createQuestion, updateQuestion, deleteQuestion, bulkImportQuestions, createQuizSet, deleteQuizSet, getNoteForModule, type Question, type Subject, type Topic, type QuizSet, type Lecture } from "@/actions/curriculum";
 
 const TYPE_LABELS: Record<string, string> = { cla: "CLA", midterm: "Midterm", practice: "Practice", exam: "Exam Set" };
 const TYPE_COLORS: Record<string, string> = {
@@ -400,47 +400,42 @@ function AddQuestionForm({ subject, topics, quizSets, onSaved, onCancel }: {
     );
 }
 
-function AiImportModal({ subject, topics, onClose, onGenerate }: { subject: Subject; topics: Topic[]; onClose: () => void; onGenerate: (json: string) => void }) {
-    const [sourceType, setSourceType] = useState<"notes" | "pyq">("notes");
+function AiImportModal({ subject, topics, quizSets, lectures, onClose, onGenerate }: { subject: Subject; topics: Topic[]; quizSets: QuizSet[]; lectures: Lecture[]; onClose: () => void; onGenerate: (json: string) => void }) {
+    const [category, setCategory] = useState<"practice" | "lecture" | "concept" | "exam" | null>(null);
     const [rawQuestions, setRawQuestions] = useState("");
     const [moduleNum, setModuleNum] = useState("1");
-    const [numQs, setNumQs] = useState("5");
+    const [lectureId, setLectureId] = useState("");
+    const [examSetId, setExamSetId] = useState("");
     const [difficulty, setDifficulty] = useState("Medium");
-    const [qType, setQType] = useState<"both" | "mcq" | "text">("both");
-    const [topicId, setTopicId] = useState("");
     const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState("");
     const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null);
     const [pastedJson, setPastedJson] = useState("");
 
+    const handleCopyNotes = async () => {
+        try {
+            const noteObj = await getNoteForModule(subject.id, parseInt(moduleNum));
+            if (!noteObj?.content) throw new Error(`No notes found for Module ${moduleNum}.`);
+            await navigator.clipboard.writeText(noteObj.content);
+            alert("Module notes copied to clipboard!");
+        } catch (err: any) {
+            alert(err.message);
+        }
+    };
+
     const handleGeneratePrompt = async () => {
         setIsPending(true);
         setError("");
         try {
-            let contextText = "";
-            let taskDescription = "";
-            
-            if (sourceType === "notes") {
-                const noteObj = await getNoteForModule(subject.id, parseInt(moduleNum));
-                const notes = noteObj?.content;
-                if (!notes) throw new Error(`No notes found for Module ${moduleNum}.`);
-                contextText = `Here are the notes:\n\n${notes}`;
-                taskDescription = `Your task is to generate EXACTLY ${numQs} questions based ON THE PROVIDED NOTES.`;
-            } else {
-                if (!rawQuestions.trim()) throw new Error("Please paste the raw questions first.");
-                contextText = `Here are the unstructured raw questions:\n\n${rawQuestions}`;
-                taskDescription = `Your task is to convert and format the provided unstructured questions into our strictly formatted JSON array. Improve them if necessary.`;
-            }
+            let promptStr = "";
 
-            let typeConstraints = `- Generate a mix of "mcq" and "text" questions.`;
-            if (qType === "mcq") typeConstraints = `- Generate ONLY "mcq" questions.`;
-            if (qType === "text") typeConstraints = `- Generate ONLY "text" questions.`;
+            if (category === "concept") {
+                promptStr = `You are an expert curriculum designer. Your task is to generate EXACTLY 15 questions based STRICTLY on the module notes I will paste below.
 
-            const topicField = topicId ? `\n    "topic_id": "${topicId}",` : "";
-            const topicConstraint = topicId ? `- topic_id MUST exactly match "${topicId}".` : `- Do NOT include a topic_id field.`;
-
-            const promptStr = `You are an expert curriculum designer. ${taskDescription}
-Difficulty Level: ${difficulty}
+Difficulty Levels Required:
+- 5 Easy questions (testing basic recall and definitions)
+- 5 Medium questions (testing application and understanding)
+- 5 Hard questions (testing analysis, synthesis, or complex problem-solving)
 
 You MUST output a raw, valid JSON array. DO NOT wrap the output in markdown code blocks like \`\`\`json. DO NOT add any conversational text.
 
@@ -448,12 +443,106 @@ The JSON MUST follow this strict format:
 [
   {
     "type": "practice",
-    "input_type": "${qType === "both" ? "mcq" : qType}", // "mcq" or "text"
+    "input_type": "mcq",
     "module_from": ${moduleNum},
-    "module_to": ${moduleNum},${topicField}
+    "module_to": ${moduleNum},
+    "is_concept_builder": true,
+    "difficulty": "easy", // Must be "easy", "medium", or "hard"
     "question": "Question text here?",
-    "options": ["Opt A", "Opt B", "Opt C", "Opt D"], // Omit if input_type is "text"
-    "correct_index": 0, // Omit if input_type is "text"
+    "options": ["Opt A", "Opt B", "Opt C", "Opt D"],
+    "correct_index": 0,
+    "explanation": "Explanation here"
+  }
+]
+
+Constraints:
+- type MUST be "practice".
+- input_type MUST be "mcq".
+- is_concept_builder MUST be true.
+- difficulty MUST be "easy", "medium", or "hard" corresponding to the question's level.
+- Options must have exactly 4 items, correct_index must be 0, 1, 2, or 3.
+- Output MUST be valid JSON.
+
+Paste the generated JSON only.`;
+            } else if (category === "lecture") {
+                const selectedLecture = lectures.find(l => l.id === lectureId);
+                if (!selectedLecture) throw new Error("Please select a lecture.");
+                promptStr = `You are an expert curriculum designer. Your task is to generate EXACTLY 5 questions specifically targeting Lecture ${selectedLecture.lecture_number}: "${selectedLecture.title}".
+
+Difficulty Level: ${difficulty}
+
+You MUST output a raw, valid JSON array. DO NOT wrap the output in markdown code blocks like \`\`\`json. DO NOT add any conversational text.
+
+The JSON MUST follow this strict format:
+[
+  {
+    "type": "cla",
+    "input_type": "mcq",
+    "module_from": ${moduleNum},
+    "module_to": ${moduleNum},
+    "lecture_id": "${lectureId}",
+    "difficulty": "${difficulty.toLowerCase()}",
+    "question": "Question text here?",
+    "options": ["Opt A", "Opt B", "Opt C", "Opt D"],
+    "correct_index": 0,
+    "explanation": "Explanation here"
+  }
+]
+
+Constraints:
+- type MUST be "cla".
+- input_type MUST be "mcq".
+- lecture_id MUST exactly match "${lectureId}".
+- Options must have exactly 4 items, correct_index must be 0, 1, 2, or 3.
+- Output MUST be valid JSON.
+
+Use the lecture transcript if provided, otherwise base it on the general topic of the lecture.`;
+            } else if (category === "exam") {
+                if (!examSetId) throw new Error("Please select an Exam Set.");
+                if (!rawQuestions.trim()) throw new Error("Please paste the raw PYQ questions first.");
+                promptStr = `You are an expert curriculum designer. Your task is to convert and format the provided unstructured PYQ questions into our strictly formatted JSON array.
+
+You MUST output a raw, valid JSON array. DO NOT wrap the output in markdown code blocks like \`\`\`json. DO NOT add any conversational text.
+
+The JSON MUST follow this strict format:
+[
+  {
+    "type": "exam",
+    "input_type": "mcq", // Use "text" for subjective if necessary
+    "module_from": ${moduleNum},
+    "module_to": ${moduleNum},
+    "quiz_set_id": "${examSetId}",
+    "question": "Question text here?",
+    "options": ["Opt A", "Opt B", "Opt C", "Opt D"], // Omit for "text"
+    "correct_index": 0, // Omit for "text"
+    "explanation": "Explanation here",
+    "word_limit": 250 // Include ONLY if input_type is "text"
+  }
+]
+
+Constraints:
+- type MUST be "exam".
+- quiz_set_id MUST exactly match "${examSetId}".
+- Output MUST be valid JSON.
+
+Here are the unstructured raw questions:
+${rawQuestions}`;
+            } else if (category === "practice") {
+                if (!rawQuestions.trim()) throw new Error("Please paste the raw questions first.");
+                promptStr = `You are an expert curriculum designer. Your task is to convert and format the provided unstructured practice questions into our strictly formatted JSON array.
+
+You MUST output a raw, valid JSON array. DO NOT wrap the output in markdown code blocks like \`\`\`json. DO NOT add any conversational text.
+
+The JSON MUST follow this strict format:
+[
+  {
+    "type": "practice",
+    "input_type": "mcq", // Use "text" for subjective if necessary
+    "module_from": ${moduleNum},
+    "module_to": ${moduleNum},
+    "question": "Question text here?",
+    "options": ["Opt A", "Opt B", "Opt C", "Opt D"], // Omit for "text"
+    "correct_index": 0, // Omit for "text"
     "explanation": "Explanation here",
     "word_limit": 250 // Include ONLY if input_type is "text"
   }
@@ -461,12 +550,11 @@ The JSON MUST follow this strict format:
 
 Constraints:
 - type MUST be "practice".
-${typeConstraints}
-${topicConstraint}
-- For MCQ, options must have exactly 4 items, and correct_index must be 0, 1, 2, or 3.
-- Output MUST be valid JSON, parsing with JSON.parse() must succeed.
+- Output MUST be valid JSON.
 
-${contextText}`;
+Here are the unstructured raw questions:
+${rawQuestions}`;
+            }
 
             setGeneratedPrompt(promptStr);
         } catch (err: any) {
@@ -516,82 +604,123 @@ ${contextText}`;
         );
     }
 
+    const selectCls = "w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300";
+
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white border border-stone-200 rounded-3xl p-8 w-full max-w-sm shadow-2xl space-y-5">
+            <div className="bg-white border border-stone-200 rounded-3xl p-8 w-full max-w-lg shadow-2xl space-y-5">
                 <div className="flex items-center justify-between">
                     <p className="text-lg font-black text-stone-800">✨ AI Prompt Generator</p>
                     <button onClick={onClose} className="p-2 rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-all"><X className="w-4 h-4" /></button>
                 </div>
-                <div className="space-y-4">
-                    <div className="flex bg-stone-100 p-1 rounded-xl">
-                        <button onClick={() => setSourceType("notes")} className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${sourceType === "notes" ? "bg-white text-stone-800 shadow-sm" : "text-stone-500 hover:text-stone-700"}`}>From Notes</button>
-                        <button onClick={() => setSourceType("pyq")} className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${sourceType === "pyq" ? "bg-white text-stone-800 shadow-sm" : "text-stone-500 hover:text-stone-700"}`}>From PYQs</button>
-                    </div>
 
-                    {sourceType === "notes" ? (
+                {!category ? (
+                    <div className="space-y-3">
+                        <p className="text-xs font-bold text-stone-500 mb-4">Select the category of questions you want to generate:</p>
+                        
+                        <button onClick={() => setCategory("lecture")} className="w-full flex items-center p-4 border border-stone-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all group">
+                            <div className="flex-1 text-left">
+                                <p className="text-sm font-black text-stone-800 group-hover:text-blue-700">Lecture-Wise</p>
+                                <p className="text-[10px] font-bold text-stone-500">Generate targeted questions for a specific lecture</p>
+                            </div>
+                        </button>
+
+                        <button onClick={() => setCategory("concept")} className="w-full flex items-center p-4 border border-stone-200 rounded-2xl hover:border-emerald-300 hover:bg-emerald-50 transition-all group">
+                            <div className="flex-1 text-left">
+                                <p className="text-sm font-black text-stone-800 group-hover:text-emerald-700">Concept Builder</p>
+                                <p className="text-[10px] font-bold text-stone-500">Level-based learning generated from module notes</p>
+                            </div>
+                        </button>
+
+                        <button onClick={() => setCategory("practice")} className="w-full flex items-center p-4 border border-stone-200 rounded-2xl hover:border-amber-300 hover:bg-amber-50 transition-all group">
+                            <div className="flex-1 text-left">
+                                <p className="text-sm font-black text-stone-800 group-hover:text-amber-700">Module Practice</p>
+                                <p className="text-[10px] font-bold text-stone-500">Convert unstructured questions into untimed practice</p>
+                            </div>
+                        </button>
+
+                        <button onClick={() => setCategory("exam")} className="w-full flex items-center p-4 border border-stone-200 rounded-2xl hover:border-rose-300 hover:bg-rose-50 transition-all group">
+                            <div className="flex-1 text-left">
+                                <p className="text-sm font-black text-stone-800 group-hover:text-rose-700">PYQs & MOCK</p>
+                                <p className="text-[10px] font-bold text-stone-500">Convert raw PYQs into a specific Exam Set</p>
+                            </div>
+                        </button>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 mb-4">
+                            <button onClick={() => setCategory(null)} className="text-[10px] font-black uppercase tracking-widest text-stone-400 hover:text-stone-800 transition-all">← Back to Categories</button>
+                        </div>
+                        
                         <div>
                             <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Module</label>
-                            <select value={moduleNum} onChange={(e) => setModuleNum(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
+                            <select value={moduleNum} onChange={(e) => setModuleNum(e.target.value)} className={selectCls}>
                                 {Array.from({ length: subject.module_count }, (_, i) => i + 1).map(m => (
                                     <option key={m} value={m}>Module {m}</option>
                                 ))}
                             </select>
                         </div>
-                    ) : (
-                        <>
-                            <div>
-                                <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Raw Questions / PYQs</label>
-                                <textarea value={rawQuestions} onChange={(e) => setRawQuestions(e.target.value)} rows={4} placeholder="Paste messy questions here..." className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-mono rounded-xl px-4 py-3 outline-none focus:border-red-300 resize-none" />
-                            </div>
-                            <div>
-                                <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Assign to Module</label>
-                                <select value={moduleNum} onChange={(e) => setModuleNum(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
-                                    {Array.from({ length: subject.module_count }, (_, i) => i + 1).map(m => (
-                                        <option key={m} value={m}>Module {m}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </>
-                    )}
 
-                    <div>
-                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Difficulty</label>
-                        <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Question Type</label>
-                        <select value={qType} onChange={(e) => setQType(e.target.value as any)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
-                            <option value="both">Both (MCQ & Text)</option>
-                            <option value="mcq">MCQ Only</option>
-                            <option value="text">Subjective (Text) Only</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Topic</label>
-                        <select value={topicId} onChange={(e) => setTopicId(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
-                            <option value="">None</option>
-                            {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                        </select>
-                    </div>
-                    {sourceType === "notes" && (
-                        <div>
-                            <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Number of Questions</label>
-                            <input type="number" min="1" max="50" value={numQs} onChange={(e) => setNumQs(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300" />
+                        {category === "lecture" && (
+                            <>
+                                <div>
+                                    <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Lecture</label>
+                                    <select value={lectureId} onChange={(e) => setLectureId(e.target.value)} className={selectCls}>
+                                        <option value="">Select a lecture...</option>
+                                        {lectures.filter(l => l.module_number === parseInt(moduleNum)).map(l => (
+                                            <option key={l.id} value={l.id}>L{l.lecture_number}: {l.title}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Difficulty</label>
+                                    <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)} className={selectCls}>
+                                        <option value="Easy">Easy</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Hard">Hard</option>
+                                        <option value="Mixed">Mixed</option>
+                                    </select>
+                                </div>
+                            </>
+                        )}
+
+                        {category === "concept" && (
+                            <div className="pt-2">
+                                <p className="text-[10px] font-bold text-stone-500 mb-2">Step 1: Copy the module notes to paste into the LLM.</p>
+                                <button onClick={handleCopyNotes} className="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-700 font-black text-xs uppercase tracking-widest rounded-xl transition-all border border-stone-300">
+                                    Copy Module {moduleNum} Notes
+                                </button>
+                            </div>
+                        )}
+
+                        {(category === "exam" || category === "practice") && (
+                            <>
+                                {category === "exam" && (
+                                    <div>
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Exam Set*</label>
+                                        <select required value={examSetId} onChange={(e) => setExamSetId(e.target.value)} className={selectCls}>
+                                            <option value="">Select an exam set...</option>
+                                            {quizSets.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                        </select>
+                                    </div>
+                                )}
+                                <div>
+                                    <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Raw Questions / PYQs</label>
+                                    <textarea value={rawQuestions} onChange={(e) => setRawQuestions(e.target.value)} rows={5} placeholder="Paste messy unstructured questions here..." className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-mono rounded-xl px-4 py-3 outline-none focus:border-red-300 resize-none" />
+                                </div>
+                            </>
+                        )}
+
+                        {error && <p className="text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">{error}</p>}
+
+                        <div className="flex gap-3 mt-6">
+                            <button onClick={onClose} className="px-5 py-2.5 bg-white border border-stone-200 text-stone-500 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-stone-50 transition-all">Cancel</button>
+                            <button onClick={handleGeneratePrompt} disabled={isPending} className="flex-1 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm">
+                                {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Generate Prompt"}
+                            </button>
                         </div>
-                    )}
-                    {error && <p className="text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">{error}</p>}
-                </div>
-                <div className="flex gap-3 mt-6">
-                    <button onClick={onClose} className="px-5 py-2.5 bg-white border border-stone-200 text-stone-500 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-stone-50 transition-all">Cancel</button>
-                    <button onClick={handleGeneratePrompt} disabled={isPending} className="flex-1 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm">
-                        {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Generate Prompt"}
-                    </button>
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -661,18 +790,19 @@ function BulkImportModal({ subject, topics, quizSets, onDone, onClose, initialJs
                         <pre className="text-[10px] font-mono text-stone-600 overflow-x-auto overflow-y-auto max-h-48 whitespace-pre-wrap">
 {`[
   {
-    "type": "cla", // Purpose: Defines the exam category. Options: "cla", "midterm", "exam", "practice" (AI)
-    "input_type": "mcq", // Purpose: Determines answer format. "mcq" (Multiple Choice) or "text" (Subjective typing)
-    "module_from": 1, // Purpose: The starting module number this question belongs to.
-    "module_to": 1, // Purpose: The ending module number. Use if a question spans multiple modules (e.g., 1 to 4).
-    "batch": "Batch 1", // Purpose: Optional. Which batch this question is for. Used mainly for cla/midterm.
-    "question": "Question text...", // Purpose: The actual question displayed to the student.
-    "options": ["A", "B", "C", "D"], // Purpose: The choices for MCQ. MUST be omitted if input_type is "text".
-    "correct_index": 0, // Purpose: The 0-based index of the correct option (0=A, 1=B, 2=C, 3=D). Omit for "text".
-    "explanation": "Optional explanation text", // Purpose: Shown after answering to help the student learn.
-    "quiz_set_id": "UUID-string", // Purpose: The dynamic exam set ID. Required ONLY if type is "exam".
-    "word_limit": 250, // Purpose: The maximum allowed words for subjective answers. Required if input_type is "text".
-    "topic_id": "UUID-string" // Purpose: Optional topic UUID. Must match an existing topic.
+    "type": "cla", // "cla", "practice", or "exam"
+    "input_type": "mcq", // "mcq" or "text"
+    "module_from": 1, // Start module
+    "module_to": 1, // End module
+    "lecture_id": "UUID", // Optional. Targeted lecture ID for "cla".
+    "is_concept_builder": true, // Optional boolean for Concept Builder.
+    "difficulty": "easy", // Optional. "easy", "medium", "hard".
+    "question": "Question text...", 
+    "options": ["A", "B", "C", "D"], // Omit if "text"
+    "correct_index": 0, // 0-based index. Omit if "text"
+    "explanation": "Optional explanation text",
+    "quiz_set_id": "UUID", // Required if type is "exam"
+    "word_limit": 250 // Required if input_type is "text"
   }
 ]`}
                         </pre>
@@ -716,8 +846,8 @@ function BulkImportModal({ subject, topics, quizSets, onDone, onClose, initialJs
     );
 }
 
-export default function QuestionsTab({ subject, initialQuestions, topics, initialQuizSets }: {
-    subject: Subject; initialQuestions: Question[]; topics: Topic[]; initialQuizSets: QuizSet[];
+export default function QuestionsTab({ subject, initialQuestions, topics, initialQuizSets, lectures = [] }: {
+    subject: Subject; initialQuestions: Question[]; topics: Topic[]; initialQuizSets: QuizSet[]; lectures?: Lecture[];
 }) {
     const [questions, setQuestions] = useState<Question[]>(initialQuestions);
     const [quizSets, setQuizSets] = useState<QuizSet[]>(initialQuizSets);
@@ -818,7 +948,7 @@ export default function QuestionsTab({ subject, initialQuestions, topics, initia
             )}
 
             {showAiImport && (
-                <AiImportModal subject={subject} topics={topics} onClose={() => setShowAiImport(false)} onGenerate={(j) => {
+                <AiImportModal subject={subject} topics={topics} quizSets={quizSets} lectures={lectures} onClose={() => setShowAiImport(false)} onGenerate={(j) => {
                     setAiJson(j);
                     setShowAiImport(false);
                     setShowBulk(true);

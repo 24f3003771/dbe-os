@@ -5,12 +5,12 @@ import { ChevronLeft, BookOpen, HelpCircle, Layers, Clock, Hash } from "lucide-r
 import Link from "next/link";
 import NotesTab from "./NotesTab";
 import QuestionsTab from "./QuestionsTab";
-import { type Subject, type Note, type Question, type Topic, type QuizSet } from "@/actions/curriculum";
+import { type Subject, type Note, type Question, type Topic, type QuizSet, type Lecture } from "@/actions/curriculum";
 
 type Tab = "notes" | "questions";
 
-export default function SubjectDetailClient({ subject, termName, initialNotes, initialQuestions, topics, initialQuizSets }: {
-    subject: Subject; termName: string; initialNotes: Note[]; initialQuestions: Question[]; topics: Topic[]; initialQuizSets: QuizSet[];
+export default function SubjectDetailClient({ subject, termName, initialNotes, initialQuestions, topics, initialQuizSets, lectures }: {
+    subject: Subject; termName: string; initialNotes: Note[]; initialQuestions: Question[]; topics: Topic[]; initialQuizSets: QuizSet[]; lectures: Lecture[];
 }) {
     const [activeTab, setActiveTab] = useState<Tab>("notes");
 
@@ -60,7 +60,7 @@ export default function SubjectDetailClient({ subject, termName, initialNotes, i
             {/* Content */}
             {activeTab === "notes"
                 ? <NotesTab subject={subject} initialNotes={initialNotes} topics={topics} />
-                : <QuestionsTab subject={subject} initialQuestions={initialQuestions} topics={topics} initialQuizSets={initialQuizSets} />
+                : <QuestionsTab subject={subject} initialQuestions={initialQuestions} topics={topics} initialQuizSets={initialQuizSets} lectures={lectures} />
             }
         </div>
     );
