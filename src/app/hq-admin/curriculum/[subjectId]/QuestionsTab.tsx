@@ -401,6 +401,8 @@ function AddQuestionForm({ subject, topics, quizSets, onSaved, onCancel }: {
 }
 
 function AiImportModal({ subject, topics, onClose, onGenerate }: { subject: Subject; topics: Topic[]; onClose: () => void; onGenerate: (json: string) => void }) {
+    const [sourceType, setSourceType] = useState<"notes" | "pyq">("notes");
+    const [rawQuestions, setRawQuestions] = useState("");
     const [moduleNum, setModuleNum] = useState("1");
     const [numQs, setNumQs] = useState("5");
     const [difficulty, setDifficulty] = useState("Medium");
@@ -415,9 +417,20 @@ function AiImportModal({ subject, topics, onClose, onGenerate }: { subject: Subj
         setIsPending(true);
         setError("");
         try {
-            const noteObj = await getNoteForModule(subject.id, parseInt(moduleNum));
-            const notes = noteObj?.content;
-            if (!notes) throw new Error(`No notes found for Module ${moduleNum}.`);
+            let contextText = "";
+            let taskDescription = "";
+            
+            if (sourceType === "notes") {
+                const noteObj = await getNoteForModule(subject.id, parseInt(moduleNum));
+                const notes = noteObj?.content;
+                if (!notes) throw new Error(`No notes found for Module ${moduleNum}.`);
+                contextText = `Here are the notes:\n\n${notes}`;
+                taskDescription = `Your task is to generate EXACTLY ${numQs} questions based ON THE PROVIDED NOTES.`;
+            } else {
+                if (!rawQuestions.trim()) throw new Error("Please paste the raw questions first.");
+                contextText = `Here are the unstructured raw questions:\n\n${rawQuestions}`;
+                taskDescription = `Your task is to convert and format the provided unstructured questions into our strictly formatted JSON array. Improve them if necessary.`;
+            }
 
             let typeConstraints = `- Generate a mix of "mcq" and "text" questions.`;
             if (qType === "mcq") typeConstraints = `- Generate ONLY "mcq" questions.`;
@@ -426,7 +439,7 @@ function AiImportModal({ subject, topics, onClose, onGenerate }: { subject: Subj
             const topicField = topicId ? `\n    "topic_id": "${topicId}",` : "";
             const topicConstraint = topicId ? `- topic_id MUST exactly match "${topicId}".` : `- Do NOT include a topic_id field.`;
 
-            const promptStr = `You are an expert curriculum designer. Your task is to generate EXACTLY ${numQs} questions based ON THE PROVIDED NOTES.
+            const promptStr = `You are an expert curriculum designer. ${taskDescription}
 Difficulty Level: ${difficulty}
 
 You MUST output a raw, valid JSON array. DO NOT wrap the output in markdown code blocks like \`\`\`json. DO NOT add any conversational text.
@@ -453,9 +466,7 @@ ${topicConstraint}
 - For MCQ, options must have exactly 4 items, and correct_index must be 0, 1, 2, or 3.
 - Output MUST be valid JSON, parsing with JSON.parse() must succeed.
 
-Here are the notes:
-
-${notes}`;
+${contextText}`;
 
             setGeneratedPrompt(promptStr);
         } catch (err: any) {
@@ -513,14 +524,37 @@ ${notes}`;
                     <button onClick={onClose} className="p-2 rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-all"><X className="w-4 h-4" /></button>
                 </div>
                 <div className="space-y-4">
-                    <div>
-                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Module</label>
-                        <select value={moduleNum} onChange={(e) => setModuleNum(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
-                            {Array.from({ length: subject.module_count }, (_, i) => i + 1).map(m => (
-                                <option key={m} value={m}>Module {m}</option>
-                            ))}
-                        </select>
+                    <div className="flex bg-stone-100 p-1 rounded-xl">
+                        <button onClick={() => setSourceType("notes")} className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${sourceType === "notes" ? "bg-white text-stone-800 shadow-sm" : "text-stone-500 hover:text-stone-700"}`}>From Notes</button>
+                        <button onClick={() => setSourceType("pyq")} className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${sourceType === "pyq" ? "bg-white text-stone-800 shadow-sm" : "text-stone-500 hover:text-stone-700"}`}>From PYQs</button>
                     </div>
+
+                    {sourceType === "notes" ? (
+                        <div>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Module</label>
+                            <select value={moduleNum} onChange={(e) => setModuleNum(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
+                                {Array.from({ length: subject.module_count }, (_, i) => i + 1).map(m => (
+                                    <option key={m} value={m}>Module {m}</option>
+                                ))}
+                            </select>
+                        </div>
+                    ) : (
+                        <>
+                            <div>
+                                <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Raw Questions / PYQs</label>
+                                <textarea value={rawQuestions} onChange={(e) => setRawQuestions(e.target.value)} rows={4} placeholder="Paste messy questions here..." className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-mono rounded-xl px-4 py-3 outline-none focus:border-red-300 resize-none" />
+                            </div>
+                            <div>
+                                <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Assign to Module</label>
+                                <select value={moduleNum} onChange={(e) => setModuleNum(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
+                                    {Array.from({ length: subject.module_count }, (_, i) => i + 1).map(m => (
+                                        <option key={m} value={m}>Module {m}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </>
+                    )}
+
                     <div>
                         <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Difficulty</label>
                         <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300">
@@ -544,10 +578,12 @@ ${notes}`;
                             {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                         </select>
                     </div>
-                    <div>
-                        <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Number of Questions</label>
-                        <input type="number" min="1" max="50" value={numQs} onChange={(e) => setNumQs(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300" />
-                    </div>
+                    {sourceType === "notes" && (
+                        <div>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-stone-500 block mb-1">Number of Questions</label>
+                            <input type="number" min="1" max="50" value={numQs} onChange={(e) => setNumQs(e.target.value)} className="w-full bg-white border border-stone-200 text-stone-600 text-xs font-bold rounded-xl px-4 py-3 outline-none focus:border-red-300" />
+                        </div>
+                    )}
                     {error && <p className="text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">{error}</p>}
                 </div>
                 <div className="flex gap-3 mt-6">
