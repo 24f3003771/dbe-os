@@ -68,3 +68,4 @@ export default function NavLinks({ showLabels = false, isBottomNav = false }: Na
         </div>
     );
 }
+
