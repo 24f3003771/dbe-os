@@ -21,6 +21,7 @@ function mapQuestion(q: any): Question {
         module_from: q.module_from,
         module_to: q.module_to,
         lecture_id: q.lecture_id ?? null,
+        difficulty: q.difficulty ?? null,
     };
 }
 

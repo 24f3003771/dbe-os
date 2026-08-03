@@ -32,8 +32,12 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
     const [quizSubMode, setQuizSubMode] = useState<"practice" | "exam-set">("practice");
     const [activeQuizSetId, setActiveQuizSetId] = useState<string | null>(null);
 
+    // Difficulty picker state
+    const [pendingModuleId2, setPendingModuleId2] = useState<number | null>(null);
+    const [pendingLectureId, setPendingLectureId] = useState<string | null>(null);
+    const [activeDifficultyFilter, setActiveDifficultyFilter] = useState<string | null>(null);
+
     // Module-level mode selection state
-    const [pendingModuleId, setPendingModuleId] = useState<number | null>(null);
     const [examTimer, setExamTimer] = useState<number | undefined>(undefined);
     const [resultToAnalyze, setResultToAnalyze] = useState<any | null>(null);
 
@@ -66,6 +70,15 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         }
     };
 
+    // Difficulty breakdown helper
+    const getDiffCounts = (qs: Question[]) => ({
+        easy: qs.filter(q => q.difficulty?.toLowerCase() === "easy").length,
+        medium: qs.filter(q => q.difficulty?.toLowerCase() === "medium").length,
+        hard: qs.filter(q => q.difficulty?.toLowerCase() === "hard").length,
+        total: qs.length,
+        tagged: qs.filter(q => q.difficulty).length,
+    });
+
     // Module click (Practice mode only)
     const handleStartModuleQuiz = (moduleId: number, lectureId: string | null = null) => {
         setQuizSubMode("practice");
@@ -74,6 +87,47 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         setActiveQuizSetId(null);
         setActiveModuleId(moduleId);
         setActiveLectureId(lectureId);
+        setActiveDifficultyFilter(null);
+        setActiveTab("quiz");
+    };
+
+    // Open difficulty picker for a module
+    const openModuleDifficultyPicker = (moduleId: number) => {
+        const mod = data.modules.find(m => m.id === moduleId);
+        if (!mod) return;
+        const practiceQs = mod.questions.filter(q => q.type !== "exam");
+        const tagged = practiceQs.filter(q => q.difficulty).length;
+        // Skip picker if no questions are tagged with difficulty
+        if (tagged === 0) { handleStartModuleQuiz(moduleId); return; }
+        setPendingModuleId2(moduleId);
+        setPendingLectureId(null);
+    };
+
+    // Open difficulty picker for a lecture
+    const openLectureDifficultyPicker = (moduleId: number, lectureId: string) => {
+        const mod = data.modules.find(m => m.id === moduleId);
+        if (!mod) return;
+        const lectureQs = mod.questions.filter(q => q.lecture_id === lectureId && q.type !== "exam" && q.type !== "practice");
+        const tagged = lectureQs.filter(q => q.difficulty).length;
+        if (tagged === 0) { handleStartModuleQuiz(moduleId, lectureId); return; }
+        setPendingModuleId2(moduleId);
+        setPendingLectureId(lectureId);
+    };
+
+    // Confirm difficulty selection and start quiz
+    const confirmDifficultyAndStart = (diffFilter: string | null) => {
+        const modId = pendingModuleId2;
+        const lecId = pendingLectureId;
+        setPendingModuleId2(null);
+        setPendingLectureId(null);
+        if (!modId) return;
+        setQuizSubMode("practice");
+        setQuizMode("practice");
+        setExamTimer(undefined);
+        setActiveQuizSetId(null);
+        setActiveModuleId(modId);
+        setActiveLectureId(lecId);
+        setActiveDifficultyFilter(diffFilter);
         setActiveTab("quiz");
     };
 
@@ -120,6 +174,50 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                 </div>
             )}
 
+            {/* Difficulty Picker Overlay */}
+            {pendingModuleId2 !== null && (() => {
+                const mod = data.modules.find(m => m.id === pendingModuleId2)!;
+                const baseQs = pendingLectureId
+                    ? mod.questions.filter(q => q.lecture_id === pendingLectureId && q.type !== "exam" && q.type !== "practice")
+                    : mod.questions.filter(q => q.type !== "exam" && q.type !== "practice");
+                const counts = getDiffCounts(baseQs);
+                const DIFF_OPTIONS = [
+                    { key: null, label: "All Questions", count: counts.total, color: "border-primary/40 bg-primary/5 text-primary" },
+                    { key: "easy", label: "Easy Only", count: counts.easy, color: "border-emerald-500/40 bg-emerald-500/5 text-emerald-600" },
+                    { key: "medium", label: "Medium Only", count: counts.medium, color: "border-amber-500/40 bg-amber-500/5 text-amber-600" },
+                    { key: "hard", label: "Hard Only", count: counts.hard, color: "border-red-500/40 bg-red-500/5 text-red-600" },
+                ];
+                return (
+                    <div className="fixed inset-0 z-[250] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+                        <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-[2rem] p-8 w-full max-w-sm shadow-2xl space-y-6">
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">
+                                    {pendingLectureId ? "Lecture Practice" : mod.title}
+                                </p>
+                                <h2 className="text-xl font-black text-on-surface tracking-tight">Filter by Difficulty</h2>
+                                <p className="text-xs text-on-surface-variant mt-1 font-medium">{counts.total} total questions · {counts.tagged} tagged</p>
+                            </div>
+                            <div className="space-y-2">
+                                {DIFF_OPTIONS.map(opt => (
+                                    <button
+                                        key={String(opt.key)}
+                                        disabled={opt.key !== null && opt.count === 0}
+                                        onClick={() => confirmDifficultyAndStart(opt.key)}
+                                        className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border-2 font-black text-sm transition-all hover:-translate-y-0.5 disabled:opacity-30 disabled:cursor-not-allowed ${opt.color}`}
+                                    >
+                                        <span>{opt.label}</span>
+                                        <span className="text-xs font-black opacity-70">{opt.count} Qs</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <button
+                                onClick={() => { setPendingModuleId2(null); setPendingLectureId(null); }}
+                                className="w-full text-center text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors"
+                            >Cancel</button>
+                        </div>
+                    </div>
+                );
+            })()}
             {/* Quiz view — module practice */}
             {activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule && (
                 <div className="fixed inset-0 z-[200] bg-surface flex flex-col p-4 animate-in fade-in duration-300">
@@ -128,6 +226,11 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             <div>
                                 <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">Practice Mode</span>
                                 <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
+                                {activeDifficultyFilter && (
+                                    <span className="text-xs font-bold text-on-surface-variant mt-1 block">
+                                        Filtering: <span className="capitalize text-primary">{activeDifficultyFilter}</span> questions
+                                    </span>
+                                )}
                             </div>
                         </div>
                         <QuizEngine
@@ -137,9 +240,15 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             moduleTitle={activeModule.title}
                             quizSubMode="practice"
                             questions={
-                                activeLectureId
-                                ? activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice" && q.lecture_id === activeLectureId)
-                                : activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice")
+                                (() => {
+                                    let qs = activeLectureId
+                                        ? activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice" && q.lecture_id === activeLectureId)
+                                        : activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice");
+                                    if (activeDifficultyFilter) {
+                                        qs = qs.filter(q => q.difficulty?.toLowerCase() === activeDifficultyFilter.toLowerCase());
+                                    }
+                                    return qs;
+                                })()
                             }
                             mode="practice"
                             showCalculator={data.calculatorEnabled}
@@ -149,6 +258,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                 setActiveTab("overview");
                                 setActiveModuleId(null);
                                 setActiveLectureId(null);
+                                setActiveDifficultyFilter(null);
                             }}
                         />
                     </div>
@@ -436,14 +546,16 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                     </p>
                                 ) : (
                                     data.modules.map((mod) => {
-                                        const practiceCount = mod.questions.filter(q => q.type !== "exam").length;
+                                        const practiceQs = mod.questions.filter(q => q.type !== "exam");
+                                        const practiceCount = practiceQs.length;
+                                        const counts = getDiffCounts(practiceQs);
                                         return (
                                             <div
                                                 key={mod.id}
                                                 className="group p-6 rounded-[2rem] bg-surface-container-low border border-outline-variant/15 hover:border-primary/50 transition-all hover:bg-surface-container flex flex-col cursor-pointer hover-lift shadow-sm"
-                                                onClick={() => handleStartModuleQuiz(mod.id)}
+                                                onClick={() => openModuleDifficultyPicker(mod.id)}
                                             >
-                                                <div className="flex items-center justify-between">
+                                                <div className="flex items-center justify-between mb-3">
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="font-black text-lg text-on-surface group-hover:text-primary transition-colors leading-tight truncate uppercase tracking-tight">{mod.title}</h3>
                                                         <p className="text-xs text-on-surface-variant font-black uppercase tracking-widest mt-1 opacity-50">{practiceCount} Questions</p>
@@ -452,6 +564,13 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                                         <Play className="w-5 h-5 ml-1" />
                                                     </div>
                                                 </div>
+                                                {counts.tagged > 0 && (
+                                                    <div className="flex gap-2 flex-wrap mt-1">
+                                                        {counts.easy > 0 && <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{counts.easy} Easy</span>}
+                                                        {counts.medium > 0 && <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">{counts.medium} Medium</span>}
+                                                        {counts.hard > 0 && <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 border border-red-500/20">{counts.hard} Hard</span>}
+                                                    </div>
+                                                )}
                                             </div>
                                         );
                                     })
@@ -483,12 +602,14 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                             ) : (
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                                     {mod.lectures.map(lecture => {
-                                                        const lectureQCount = mod.questions.filter(q => q.lecture_id === lecture.id && q.type !== "exam" && q.type !== "practice").length;
+                                                        const lectureQs = mod.questions.filter(q => q.lecture_id === lecture.id && q.type !== "exam" && q.type !== "practice");
+                                                        const lectureQCount = lectureQs.length;
+                                                        const counts = getDiffCounts(lectureQs);
                                                         return (
                                                             <div
                                                                 key={lecture.id}
                                                                 className="group p-4 rounded-2xl bg-surface-container-low border border-outline-variant/15 hover:border-emerald-500/50 transition-all hover:bg-surface-container flex flex-col cursor-pointer shadow-sm"
-                                                                onClick={() => handleStartModuleQuiz(mod.id, lecture.id)}
+                                                                onClick={() => openLectureDifficultyPicker(mod.id, lecture.id)}
                                                             >
                                                                 <div className="flex items-center justify-between mb-2">
                                                                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -498,9 +619,16 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                                                         {lectureQCount} Qs
                                                                     </span>
                                                                 </div>
-                                                                <h4 className="font-bold text-sm text-on-surface group-hover:text-emerald-600 transition-colors leading-tight line-clamp-2">
+                                                                <h4 className="font-bold text-sm text-on-surface group-hover:text-emerald-600 transition-colors leading-tight line-clamp-2 mb-2">
                                                                     {lecture.title}
                                                                 </h4>
+                                                                {counts.tagged > 0 && (
+                                                                    <div className="flex gap-1.5 flex-wrap">
+                                                                        {counts.easy > 0 && <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{counts.easy}E</span>}
+                                                                        {counts.medium > 0 && <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">{counts.medium}M</span>}
+                                                                        {counts.hard > 0 && <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-600 border border-red-500/20">{counts.hard}H</span>}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         );
                                                     })}

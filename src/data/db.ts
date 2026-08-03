@@ -14,6 +14,7 @@ export interface Question {
     module_from?: number;
     module_to?: number;
     lecture_id?: string | null;
+    difficulty?: string | null;
 }
 
 export interface Lecture {
