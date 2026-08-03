@@ -6,6 +6,7 @@ import {
     Filter, Pencil, Check
 } from "lucide-react";
 import { createQuestion, updateQuestion, deleteQuestion, bulkImportQuestions, createQuizSet, deleteQuizSet, getNoteForModule, type Question, type Subject, type Topic, type QuizSet, type Lecture } from "@/actions/curriculum";
+import { CreationHub } from "./components/CreationHub";
 
 const TYPE_LABELS: Record<string, string> = { cla: "CLA", midterm: "Midterm", practice: "Practice", exam: "Exam Set" };
 const TYPE_COLORS: Record<string, string> = {
@@ -979,9 +980,8 @@ export default function QuestionsTab({ subject, initialQuestions, topics, initia
 }) {
     const [questions, setQuestions] = useState<Question[]>(initialQuestions);
     const [quizSets, setQuizSets] = useState<QuizSet[]>(initialQuizSets);
-    const [showAdd, setShowAdd] = useState(false);
+    const [showCreationHub, setShowCreationHub] = useState(false);
     const [showBulk, setShowBulk] = useState(false);
-    const [showAiImport, setShowAiImport] = useState(false);
     const [aiJson, setAiJson] = useState("");
     const [filterType, setFilterType] = useState("");
 
@@ -1041,22 +1041,25 @@ export default function QuestionsTab({ subject, initialQuestions, topics, initia
                     <span className="text-xs font-bold text-stone-400">{filtered.length} question{filtered.length !== 1 ? "s" : ""}</span>
                 </div>
                 <div className="flex gap-2">
-                    <button onClick={() => setShowAiImport(true)} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 border border-purple-200 text-purple-700 hover:bg-purple-50 font-black text-xs uppercase tracking-widest rounded-xl transition-all">
-                        ✨ AI Import
-                    </button>
                     <button onClick={() => setShowBulk(true)} className="flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 text-stone-600 hover:text-stone-800 hover:bg-stone-50 font-black text-xs uppercase tracking-widest rounded-xl transition-all">
                         <Upload className="w-3.5 h-3.5" /> Bulk Import
                     </button>
-                    <button onClick={() => setShowAdd((v) => !v)} className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-red-700 transition-all shadow-sm">
-                        <Plus className="w-3.5 h-3.5" /> Add Question
+                    <button onClick={() => setShowCreationHub((v) => !v)} className={`flex items-center gap-2 px-4 py-2 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-sm ${showCreationHub ? "bg-stone-200 text-stone-800" : "bg-stone-800 text-white hover:bg-stone-900"}`}>
+                        <Plus className={`w-3.5 h-3.5 transition-transform ${showCreationHub ? "rotate-45" : ""}`} /> Create Questions
                     </button>
                 </div>
             </div>
 
-            {showAdd && (
-                <AddQuestionForm subject={subject} topics={topics} quizSets={quizSets}
-                    onSaved={(q) => { setQuestions((prev) => [q, ...prev]); setShowAdd(false); }}
-                    onCancel={() => setShowAdd(false)}
+            {showCreationHub && (
+                <CreationHub 
+                    subject={subject} 
+                    topics={topics} 
+                    quizSets={quizSets} 
+                    lectures={lectures} 
+                    onClose={() => setShowCreationHub(false)} 
+                    onManualSave={(q) => { setQuestions((prev) => [q, ...prev]); setShowCreationHub(false); }}
+                    onBulkImportDone={(qs) => setQuestions(qs)}
+                    AddQuestionForm={AddQuestionForm}
                 />
             )}
 
@@ -1073,14 +1076,6 @@ export default function QuestionsTab({ subject, initialQuestions, topics, initia
                         />
                     ))}
                 </div>
-            )}
-
-            {showAiImport && (
-                <AiImportModal subject={subject} topics={topics} quizSets={quizSets} lectures={lectures} onClose={() => setShowAiImport(false)} onGenerate={(j) => {
-                    setAiJson(j);
-                    setShowAiImport(false);
-                    setShowBulk(true);
-                }} />
             )}
 
             {showBulk && (
