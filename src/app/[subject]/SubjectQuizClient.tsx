@@ -93,25 +93,12 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
 
     // Open difficulty picker for a module
     const openModuleDifficultyPicker = (moduleId: number) => {
-        const mod = data.modules.find(m => m.id === moduleId);
-        if (!mod) return;
-        const practiceQs = mod.questions.filter(q => q.type !== "exam");
-        const tagged = practiceQs.filter(q => q.difficulty).length;
-        // Skip picker if no questions are tagged with difficulty
-        if (tagged === 0) { handleStartModuleQuiz(moduleId); return; }
-        setPendingModuleId2(moduleId);
-        setPendingLectureId(null);
+        handleStartModuleQuiz(moduleId);
     };
 
     // Open difficulty picker for a lecture
     const openLectureDifficultyPicker = (moduleId: number, lectureId: string) => {
-        const mod = data.modules.find(m => m.id === moduleId);
-        if (!mod) return;
-        const lectureQs = mod.questions.filter(q => q.lecture_id === lectureId && q.type !== "exam" && q.type !== "practice");
-        const tagged = lectureQs.filter(q => q.difficulty).length;
-        if (tagged === 0) { handleStartModuleQuiz(moduleId, lectureId); return; }
-        setPendingModuleId2(moduleId);
-        setPendingLectureId(lectureId);
+        handleStartModuleQuiz(moduleId, lectureId);
     };
 
     // Confirm difficulty selection and start quiz
@@ -174,50 +161,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                 </div>
             )}
 
-            {/* Difficulty Picker Overlay */}
-            {pendingModuleId2 !== null && (() => {
-                const mod = data.modules.find(m => m.id === pendingModuleId2)!;
-                const baseQs = pendingLectureId
-                    ? mod.questions.filter(q => q.lecture_id === pendingLectureId && q.type !== "exam" && q.type !== "practice")
-                    : mod.questions.filter(q => q.type !== "exam" && q.type !== "practice");
-                const counts = getDiffCounts(baseQs);
-                const DIFF_OPTIONS = [
-                    { key: null, label: "All Questions", count: counts.total, color: "border-primary/40 bg-primary/5 text-primary" },
-                    { key: "easy", label: "Easy Only", count: counts.easy, color: "border-emerald-500/40 bg-emerald-500/5 text-emerald-600" },
-                    { key: "medium", label: "Medium Only", count: counts.medium, color: "border-amber-500/40 bg-amber-500/5 text-amber-600" },
-                    { key: "hard", label: "Hard Only", count: counts.hard, color: "border-red-500/40 bg-red-500/5 text-red-600" },
-                ];
-                return (
-                    <div className="fixed inset-0 z-[250] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-                        <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-[2rem] p-8 w-full max-w-sm shadow-2xl space-y-6">
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">
-                                    {pendingLectureId ? "Lecture Practice" : mod.title}
-                                </p>
-                                <h2 className="text-xl font-black text-on-surface tracking-tight">Filter by Difficulty</h2>
-                                <p className="text-xs text-on-surface-variant mt-1 font-medium">{counts.total} total questions · {counts.tagged} tagged</p>
-                            </div>
-                            <div className="space-y-2">
-                                {DIFF_OPTIONS.map(opt => (
-                                    <button
-                                        key={String(opt.key)}
-                                        disabled={opt.key !== null && opt.count === 0}
-                                        onClick={() => confirmDifficultyAndStart(opt.key)}
-                                        className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border-2 font-black text-sm transition-all hover:-translate-y-0.5 disabled:opacity-30 disabled:cursor-not-allowed ${opt.color}`}
-                                    >
-                                        <span>{opt.label}</span>
-                                        <span className="text-xs font-black opacity-70">{opt.count} Qs</span>
-                                    </button>
-                                ))}
-                            </div>
-                            <button
-                                onClick={() => { setPendingModuleId2(null); setPendingLectureId(null); }}
-                                className="w-full text-center text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors"
-                            >Cancel</button>
-                        </div>
-                    </div>
-                );
-            })()}
+
             {/* Quiz view — module practice */}
             {activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule && (
                 <div className="fixed inset-0 z-[200] bg-surface flex flex-col p-4 animate-in fade-in duration-300">
