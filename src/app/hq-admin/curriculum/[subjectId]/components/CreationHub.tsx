@@ -174,13 +174,11 @@ Constraints:
                                             </div>
                                         </div>
                                         
-                                        {promptCopied && notesCopied && (
-                                            <div className="flex justify-end pt-2 animate-in slide-in-from-bottom-2">
-                                                <button onClick={() => setStep(2)} className="px-8 py-3 bg-stone-800 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-stone-900 transition-all shadow-lg hover:-translate-y-0.5">
-                                                    Next Step →
-                                                </button>
-                                            </div>
-                                        )}
+                                        <div className="flex justify-end pt-2">
+                                            <button onClick={() => setStep(2)} className="px-8 py-3 bg-stone-800 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-stone-900 transition-all shadow-lg hover:-translate-y-0.5">
+                                                Paste JSON Output →
+                                            </button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
