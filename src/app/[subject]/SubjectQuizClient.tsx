@@ -186,8 +186,8 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                             questions={
                                 (() => {
                                     let qs = activeLectureId
-                                        ? activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice" && q.lecture_id === activeLectureId)
-                                        : activeModule.questions.filter((q) => q.type !== "exam" && q.type !== "practice");
+                                        ? activeModule.questions.filter((q) => q.type !== "exam" && q.lecture_id === activeLectureId)
+                                        : activeModule.questions.filter((q) => q.type !== "exam");
                                     if (activeDifficultyFilter) {
                                         qs = qs.filter(q => q.difficulty?.toLowerCase() === activeDifficultyFilter.toLowerCase());
                                     }
@@ -546,7 +546,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                             ) : (
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                                     {mod.lectures.map(lecture => {
-                                                        const lectureQs = mod.questions.filter(q => q.lecture_id === lecture.id && q.type !== "exam" && q.type !== "practice");
+                                                        const lectureQs = mod.questions.filter(q => q.lecture_id === lecture.id && q.type !== "exam");
                                                         const lectureQCount = lectureQs.length;
                                                         const counts = getDiffCounts(lectureQs);
                                                         return (
