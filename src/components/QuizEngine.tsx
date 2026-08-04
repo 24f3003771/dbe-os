@@ -679,283 +679,346 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
         );
     }
 
+    const StatusPill = ({ count, label, colorClass, hasTick = false }: { count: number, label: string, colorClass: string, hasTick?: boolean }) => (
+        <div className="flex items-center gap-3">
+            <div className={`relative w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black flex-shrink-0 ${colorClass}`}>
+                {count}
+                {hasTick && (
+                    <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-400 rounded-full border-[1.5px] border-surface flex items-center justify-center">
+                        <Check className="w-2 h-2 text-surface" strokeWidth={4} />
+                    </div>
+                )}
+            </div>
+            <span className="text-[10px] font-bold text-on-surface-variant leading-tight flex-1">{label}</span>
+        </div>
+    );
+
     return (
         <div className="fixed inset-0 z-[60] bg-surface flex flex-col md:static md:h-[calc(100vh-140px)] md:inset-auto md:z-auto animate-in fade-in duration-300 overflow-hidden">
-            {/* Header */}
-            <div className="bg-surface-container border-b border-outline-variant/10 px-4 py-2.5 flex items-center justify-between shrink-0">
-                {/* Left: Q counter */}
-                <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-black text-primary/70 uppercase tracking-widest">Q</span>
-                    <span className="font-black text-on-surface text-xs tabular-nums">{currentIndex + 1}</span>
-                    <span className="text-[9px] text-on-surface-variant/40 font-bold">/</span>
-                    <span className="text-[9px] text-on-surface-variant/60 font-bold tabular-nums">{questions.length}</span>
+            {/* Top Header - Exam Style */}
+            <div className="bg-surface-container border-b border-outline-variant/20 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm relative z-20">
+                {/* Left: Subject / Module */}
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-2 mb-0.5">
+                        <h2 className="text-sm font-black font-headline text-on-surface tracking-widest">{subjectTitle || subjectId}</h2>
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary/70">{moduleTitle || (quizSubMode === 'exam-set' ? "Full Exam" : "Practice")}</span>
                 </div>
 
-                {/* Right: timers + calculator */}
-                <div className="flex items-center gap-3">
-                    {/* Total elapsed */}
-                    <div className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-primary/60" />
-                        <span className="font-black text-[11px] text-on-surface tabular-nums">{formatTime(currentQuestionTimer + (questionTimes[currentIndex] || 0))}</span>
+                {/* Center: Timer & Calc */}
+                <div className="hidden md:flex items-center gap-6 bg-surface-container-highest/30 px-6 py-2 rounded-2xl border border-outline-variant/10 shadow-inner">
+                    <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-primary" />
+                            <span className="font-black text-sm text-on-surface tabular-nums">{formatTime(currentQuestionTimer + (questionTimes[currentIndex] || 0))}</span>
+                        </div>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant/70 mt-0.5">Time Spent</span>
                     </div>
 
                     {mode === "exam" && examDurationSeconds && (
-                        <div className={`flex items-center gap-1 border-l border-outline-variant/20 pl-3 ${examTimer <= 60 ? "animate-pulse text-error" : "text-on-surface-variant"}`}>
-                            <span className="text-[9px] font-black uppercase tracking-wider">Left</span>
-                            <span className="font-black text-[11px] tabular-nums">{formatTime(examTimer)}</span>
+                        <div className={`flex flex-col items-center border-l border-outline-variant/20 pl-6 ${examTimer <= 60 ? "text-error animate-pulse" : "text-amber-600"}`}>
+                            <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4" />
+                                <span className="font-black text-sm tabular-nums">{formatTime(examTimer)}</span>
+                            </div>
+                            <span className="text-[8px] font-black uppercase tracking-widest opacity-80 mt-0.5">Time Left</span>
                         </div>
                     )}
 
-                    {/* Calculator */}
+                    {/* Calculator Toggle */}
                     {showCalculator && (
-                        <div className="relative">
-                        <button
-                            onClick={() => setShowCalc(!showCalc)}
-                            className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${showCalc ? "bg-primary text-on-primary" : "bg-surface-container-highest text-on-surface-variant hover:text-on-surface"}`}
-                        >
-                            <Calculator className="w-3.5 h-3.5" />
-                        </button>
-                        {showCalc && (
-                            <div className="absolute top-10 right-0 z-[110] w-64 bg-surface rounded-2xl shadow-2xl border border-outline-variant/20 p-4 animate-in zoom-in-95 duration-200">
-                                <div className="flex justify-between items-center mb-2">
-                                    <div className="flex items-center gap-1.5">
-                                        <h3 className="font-black text-on-surface text-[10px] uppercase tracking-widest">Calc</h3>
-                                        <button
-                                            onClick={() => setScientificMode(!scientificMode)}
-                                            className="text-[8px] font-black text-primary px-1.5 py-0.5 bg-primary/10 rounded uppercase"
-                                        >
-                                            {scientificMode ? "Basic" : "Adv"}
-                                        </button>
+                        <div className="relative border-l border-outline-variant/20 pl-6">
+                            <button
+                                onClick={() => setShowCalc(!showCalc)}
+                                className={`p-2 rounded-xl transition-all flex items-center justify-center ${showCalc ? "bg-primary text-on-primary shadow-lg shadow-primary/20" : "bg-surface text-on-surface hover:bg-surface-container-highest shadow-sm border border-outline-variant/10"}`}
+                            >
+                                <Calculator className="w-4 h-4" />
+                            </button>
+                            {showCalc && (
+                                <div className="absolute top-12 left-1/2 -translate-x-1/2 z-[110] w-64 bg-surface rounded-2xl shadow-2xl border border-outline-variant/20 p-4 animate-in zoom-in-95 duration-200">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <div className="flex items-center gap-1.5">
+                                            <h3 className="font-black text-on-surface text-[10px] uppercase tracking-widest">Calc</h3>
+                                            <button onClick={() => setScientificMode(!scientificMode)} className="text-[8px] font-black text-primary px-1.5 py-0.5 bg-primary/10 rounded uppercase">
+                                                {scientificMode ? "Basic" : "Adv"}
+                                            </button>
+                                        </div>
+                                        <X className="w-3.5 h-3.5 text-on-surface-variant cursor-pointer hover:text-error transition-colors" onClick={() => setShowCalc(false)} />
                                     </div>
-                                    <X className="w-3.5 h-3.5 text-on-surface-variant cursor-pointer hover:text-error transition-colors" onClick={() => setShowCalc(false)} />
+                                    <div className="w-full bg-surface-container-highest text-on-surface font-mono font-bold text-base p-2.5 rounded-xl mb-2 text-right shadow-inner border border-outline-variant/10 min-h-[40px] flex items-center justify-end break-all">
+                                        {calcInput || "0"}
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-1">
+                                        {scientificMode && (
+                                            <>
+                                                {["sin(","cos(","tan(","log(","ln(","sqrt(","pi","^"].map(btn => (
+                                                    <CalcButton key={btn} val={btn} onClick={handleCalc} scientific />
+                                                ))}
+                                            </>
+                                        )}
+                                        {["("," )","del","C"].map(btn => (
+                                            <CalcButton key={btn} val={btn} onClick={handleCalc} specialty />
+                                        ))}
+                                        {["7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"].map(btn => (
+                                            <CalcButton key={btn} val={btn} onClick={handleCalc} />
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="w-full bg-surface-container-highest text-on-surface font-mono font-bold text-base p-2.5 rounded-xl mb-2 text-right shadow-inner border border-outline-variant/10 min-h-[40px] flex items-center justify-end break-all">
-                                    {calcInput || "0"}
-                                </div>
-                                <div className="grid grid-cols-4 gap-1">
-                                    {scientificMode && (
-                                        <>
-                                            {["sin(","cos(","tan(","log(","ln(","sqrt(","pi","^"].map(btn => (
-                                                <CalcButton key={btn} val={btn} onClick={handleCalc} scientific />
-                                            ))}
-                                        </>
-                                    )}
-                                    {["("," )","del","C"].map(btn => (
-                                        <CalcButton key={btn} val={btn} onClick={handleCalc} specialty />
-                                    ))}
-                                    {["7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"].map(btn => (
-                                        <CalcButton key={btn} val={btn} onClick={handleCalc} />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                            )}
                         </div>
                     )}
                 </div>
+
+                {/* Right: User */}
+                <div className="flex items-center gap-3">
+                    <div className="hidden sm:flex flex-col text-right">
+                        <span className="text-xs font-black text-on-surface uppercase tracking-tight">{userData?.name || "Scholar"}</span>
+                        <span className="text-[9px] font-bold text-on-surface-variant">{userData?.email}</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-lg border-2 border-primary/20 shadow-sm shrink-0">
+                        {(userData?.name || "S").charAt(0).toUpperCase()}
+                    </div>
+                </div>
             </div>
 
-            {/* Main scrollable area */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar pb-20">
-                <div className="max-w-3xl mx-auto px-4 py-4 space-y-3">
-                    {/* Question Card */}
-                    <div className="bg-surface border border-outline-variant/10 rounded-2xl p-4 shadow-sm">
-                        {/* Tags row */}
-                        <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-                            {question.type && (
-                                <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${
-                                    question.type === "cla" ? "bg-blue-50 text-blue-600 border-blue-200" :
-                                    question.type === "midterm" ? "bg-purple-50 text-purple-600 border-purple-200" :
-                                    question.type === "exam" ? "bg-rose-50 text-rose-600 border-rose-200" :
-                                    "bg-emerald-50 text-emerald-600 border-emerald-200"
-                                }`}>
-                                    {question.type === "cla" ? "CLA" : question.type === "midterm" ? "Midterm" : question.type === "exam" ? "Exam Set" : "Practice"}
-                                </span>
-                            )}
-                            {question.input_type && (
-                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border bg-stone-50 text-stone-500 border-stone-200">
-                                    {question.input_type === "mcq" ? "MCQ" : "Subjective"}
-                                </span>
-                            )}
-                            {question.module_from && (
-                                <span className="text-[9px] font-medium text-stone-400 bg-stone-50 px-2 py-0.5 rounded border border-stone-100">
-                                    Mod {question.module_from === question.module_to ? question.module_from : `${question.module_from}–${question.module_to}`}
-                                </span>
-                            )}
-                            {(question.type === "cla" || question.type === "midterm") && question.batch && (
-                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border bg-amber-50 text-amber-600 border-amber-200">
-                                    {question.batch}
-                                </span>
-                            )}
-                            {/* Legacy pyq_year/pyq_month display removed — use Exam Set badge instead */}
-                            {question.input_type === "text" && question.word_limit && (
-                                <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">
-                                    {question.word_limit} words
-                                </span>
-                            )}
-                        </div>
-                        {/* Question text */}
-                        <p className="text-sm font-semibold text-on-surface leading-relaxed mb-4 tracking-tight">
-                            {question.text}
-                        </p>
-
-                        <div className="grid grid-cols-1 gap-2">
-                            {question.input_type === "text" ? (
-                                (() => {
-                                    const currentText = textAnswers[currentIndex] || "";
-                                    const wordCount = currentText.trim() === "" ? 0 : currentText.trim().split(/\s+/).length;
-                                    const limit = question.word_limit || null;
-                                    const isOver = limit !== null && wordCount > limit;
-
-                                    const handleTextChange = (val: string) => {
-                                        const next = [...textAnswers];
-                                        next[currentIndex] = val;
-                                        setTextAnswers(next);
-                                        // Mark as answered if user has typed something
-                                        setStatuses((prev) => {
-                                            const ns = [...prev];
-                                            ns[currentIndex] = val.trim().length > 0 ? "answered" : "unanswered";
-                                            return ns;
-                                        });
-                                    };
-
-                                    return (
-                                        <div className="space-y-2">
-                                            <textarea
-                                                value={currentText}
-                                                onChange={(e) => handleTextChange(e.target.value)}
-                                                disabled={submitted}
-                                                rows={8}
-                                                placeholder="Write your answer here..."
-                                                className="w-full p-4 rounded-xl border-2 border-outline-variant/20 bg-surface text-on-surface font-medium text-sm leading-relaxed resize-none outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-on-surface-variant/40 disabled:opacity-60"
-                                            />
-                                            <div className="flex items-center justify-between px-1">
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
-                                                    Word Count
-                                                </span>
-                                                <span className={`text-xs font-black tabular-nums ${
-                                                    isOver ? "text-error" : limit && wordCount >= limit * 0.9 ? "text-amber-500" : "text-on-surface-variant"
-                                                }`}>
-                                                    {wordCount}{limit ? ` / ${limit}` : ""}
-                                                    {isOver && <span className="ml-1 text-[9px]">⚠ Over limit</span>}
-                                                </span>
-                                            </div>
-                                            {showAnswer && question.explanation && (
-                                                <div className="mt-3 p-4 rounded-xl bg-primary/5 border border-primary/10">
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-primary mb-1.5">Model Answer / Explanation</p>
-                                                    <p className="text-[12px] font-medium text-on-surface-variant leading-relaxed italic">{question.explanation}</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })()
-                            ) : question.options.map((opt, idx) => {
-                                const isSelected = selectedOption === idx;
-                                const isCorrect = idx === question.correctAnswer;
-
-                                let btnClass = "w-full p-3 rounded-xl border-2 text-left transition-all relative font-bold group flex items-start gap-3 ";
-
-                                if (showAnswer) {
-                                    if (isCorrect) {
-                                        btnClass += "bg-green-500/10 border-green-500 text-green-700";
-                                    } else if (isSelected && !isCorrect) {
-                                        btnClass += "bg-error/10 border-error text-error";
-                                    } else {
-                                        btnClass += "bg-surface border-outline-variant/10 text-on-surface-variant opacity-40";
-                                    }
-                                } else if (isSelected) {
-                                    btnClass += "bg-primary/5 border-primary text-primary shadow-md shadow-primary/5";
-                                } else {
-                                    btnClass += "bg-surface border-outline-variant/20 text-on-surface active:scale-[0.99]";
-                                }
-
-                                return (
-                                    <button key={idx} onClick={() => selectOption(idx)} className={btnClass} disabled={showAnswer}>
-                                        <div className={`mt-0.5 w-3.5 h-3.5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-                                            isSelected || (showAnswer && isCorrect) ? "bg-current border-transparent" : "border-outline-variant"
-                                        }`}>
-                                            {(isSelected || (showAnswer && isCorrect)) && <Check className="w-2.5 h-2.5 text-white" strokeWidth={4} />}
-                                        </div>
-                                        <span className="flex-1 text-sm leading-tight tracking-tight">{opt}</span>
-                                        {showAnswer && isCorrect && <CheckCircle2 className="w-4 h-4 text-current mt-0.5" />}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex items-center gap-2">
-                        <button onClick={markForReview} className="flex-1 py-2 rounded-xl bg-[#9b59b6]/10 text-[#9b59b6] font-black text-[9px] uppercase tracking-widest border border-[#9b59b6]/20 hover:bg-[#9b59b6]/20 transition-all">Review</button>
-                        <button onClick={clearResponse} className="flex-1 py-2 rounded-xl bg-surface border border-outline-variant/30 text-on-surface-variant font-black text-[9px] uppercase tracking-widest hover:bg-surface-container transition-all">Reset</button>
-                        {mode === "practice" && (
-                            <button onClick={() => setShowAnswer(!showAnswer)} className={`flex-1 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest border transition-all ${
-                                showAnswer ? "bg-primary text-on-primary border-transparent" : "bg-surface border-primary/20 text-primary hover:bg-primary/5"
-                            }`}>
-                                {showAnswer ? "Hide" : "Answer"}
-                            </button>
-                        )}
-                        <button onClick={submitAndNext} className="flex-[2] py-2.5 rounded-xl bg-primary text-on-primary font-black text-[10px] uppercase tracking-wide shadow-sm shadow-primary/20 flex items-center justify-center gap-1.5 hover:opacity-90 transition-all">
-                            {currentIndex === questions.length - 1 ? "Submit" : "Next"} <ArrowRight className="w-3 h-3" />
-                        </button>
-                    </div>
-
-                    {/* Question Palette */}
-                    <div className="pt-4 border-t border-outline-variant/10 space-y-3">
-                        <div className="flex items-center justify-between">
-                            <p className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest">{subjectId} · Module {moduleId}</p>
-                            <div className="flex items-center gap-3">
-                                {/* Background AI eval indicator */}
-                                {aiEvaluatingSet.size > 0 && (
-                                    <span className="text-[8px] font-black text-amber-500 animate-pulse flex items-center gap-0.5">
-                                        🤖 Grading Q{[...aiEvaluatingSet].map(i => i + 1).join(",")}...
+            {/* Split Layout */}
+            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-surface-container-lowest relative z-10">
+                {/* Left Panel (Question Area) */}
+                <div className="flex-1 flex flex-col overflow-hidden border-r border-outline-variant/10">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10">
+                        <div className="max-w-4xl mx-auto w-full">
+                            {/* Question Header */}
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 border-b border-outline-variant/10 pb-4">
+                                <div className="flex items-center gap-3">
+                                    <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight">Question {currentIndex + 1}</h3>
+                                    <span className="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] font-black uppercase tracking-widest border border-outline-variant/10">
+                                        Of {questions.length}
                                     </span>
-                                )}
-                                <div className="flex items-center gap-1">
-                                    <div className="w-2 h-2 rounded-full bg-[#27ae60]" />
-                                    <span className="text-[9px] font-black text-on-surface-variant">{counts.answered}</span>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <div className="w-2 h-2 rounded-full bg-[#ff6b6b]" />
-                                    <span className="text-[9px] font-black text-on-surface-variant">{counts.unanswered}</span>
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                    {question.type && (
+                                        <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${
+                                            question.type === "cla" ? "bg-blue-50 text-blue-600 border-blue-200" :
+                                            question.type === "midterm" ? "bg-purple-50 text-purple-600 border-purple-200" :
+                                            question.type === "exam" ? "bg-rose-50 text-rose-600 border-rose-200" :
+                                            "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                        }`}>
+                                            {question.type === "cla" ? "CLA" : question.type === "midterm" ? "Midterm" : question.type === "exam" ? "Exam Set" : "Practice"}
+                                        </span>
+                                    )}
+                                    {question.input_type && (
+                                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border bg-stone-50 text-stone-500 border-stone-200">
+                                            {question.input_type === "mcq" ? "MCQ" : "Subjective"}
+                                        </span>
+                                    )}
+                                    {question.module_from && (
+                                        <span className="text-[9px] font-medium text-stone-400 bg-stone-50 px-2 py-0.5 rounded border border-stone-100">
+                                            Mod {question.module_from === question.module_to ? question.module_from : `${question.module_from}–${question.module_to}`}
+                                        </span>
+                                    )}
+                                    {(question.type === "cla" || question.type === "midterm") && question.batch && (
+                                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border bg-amber-50 text-amber-600 border-amber-200">
+                                            {question.batch}
+                                        </span>
+                                    )}
+                                    {question.input_type === "text" && question.word_limit && (
+                                        <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">
+                                            {question.word_limit} words
+                                        </span>
+                                    )}
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <div className="w-2 h-2 rounded-full bg-surface-container-highest border border-outline-variant/40" />
-                                    <span className="text-[9px] font-black text-on-surface-variant">{counts.notVisited}</span>
+                            </div>
+
+                            {/* Question Content */}
+                            <div className="mb-10 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                <p className="text-lg md:text-xl font-medium text-on-surface leading-relaxed tracking-tight mb-8">
+                                    {question.text}
+                                </p>
+
+                                <div className="grid grid-cols-1 gap-3">
+                                    {question.input_type === "text" ? (
+                                        (() => {
+                                            const currentText = textAnswers[currentIndex] || "";
+                                            const wordCount = currentText.trim() === "" ? 0 : currentText.trim().split(/\s+/).length;
+                                            const limit = question.word_limit || null;
+                                            const isOver = limit !== null && wordCount > limit;
+
+                                            const handleTextChange = (val: string) => {
+                                                const next = [...textAnswers];
+                                                next[currentIndex] = val;
+                                                setTextAnswers(next);
+                                                setStatuses((prev) => {
+                                                    const ns = [...prev];
+                                                    // Preserve marked state if it exists
+                                                    const isMarked = ns[currentIndex] === "marked" || ns[currentIndex] === "answered-marked";
+                                                    if (val.trim().length > 0) {
+                                                        ns[currentIndex] = isMarked ? "answered-marked" : "answered";
+                                                    } else {
+                                                        ns[currentIndex] = isMarked ? "marked" : "unanswered";
+                                                    }
+                                                    return ns;
+                                                });
+                                            };
+
+                                            return (
+                                                <div className="space-y-3">
+                                                    <textarea
+                                                        value={currentText}
+                                                        onChange={(e) => handleTextChange(e.target.value)}
+                                                        disabled={submitted}
+                                                        rows={12}
+                                                        placeholder="Type your comprehensive answer here..."
+                                                        className="w-full p-5 rounded-2xl border-2 border-outline-variant/20 bg-surface text-on-surface font-medium text-base leading-relaxed resize-none outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-on-surface-variant/40 disabled:opacity-60 shadow-inner"
+                                                    />
+                                                    <div className="flex items-center justify-between px-2">
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                                                            Word Count
+                                                        </span>
+                                                        <span className={`text-sm font-black tabular-nums ${
+                                                            isOver ? "text-error" : limit && wordCount >= limit * 0.9 ? "text-amber-500" : "text-on-surface-variant"
+                                                        }`}>
+                                                            {wordCount}{limit ? ` / ${limit}` : ""}
+                                                            {isOver && <span className="ml-2 text-[10px]">⚠ Exceeded limit</span>}
+                                                        </span>
+                                                    </div>
+                                                    {showAnswer && question.explanation && (
+                                                        <div className="mt-6 p-5 rounded-2xl bg-primary/5 border border-primary/10 animate-in fade-in">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <Eye className="w-4 h-4 text-primary" />
+                                                                <p className="text-[10px] font-black uppercase tracking-widest text-primary">Model Answer / Explanation</p>
+                                                            </div>
+                                                            <p className="text-sm font-medium text-on-surface-variant leading-relaxed italic">{question.explanation}</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })()
+                                    ) : question.options.map((opt, idx) => {
+                                        const isSelected = selectedOption === idx;
+                                        const isCorrect = idx === question.correctAnswer;
+
+                                        let btnClass = "w-full p-4 rounded-2xl border-2 text-left transition-all relative font-bold group flex items-start gap-4 ";
+
+                                        if (showAnswer) {
+                                            if (isCorrect) {
+                                                btnClass += "bg-green-500/10 border-green-500 text-green-700 shadow-md shadow-green-500/10";
+                                            } else if (isSelected && !isCorrect) {
+                                                btnClass += "bg-error/10 border-error text-error";
+                                            } else {
+                                                btnClass += "bg-surface border-outline-variant/10 text-on-surface-variant opacity-50";
+                                            }
+                                        } else if (isSelected) {
+                                            btnClass += "bg-primary/5 border-primary text-primary shadow-lg shadow-primary/10 scale-[1.01]";
+                                        } else {
+                                            btnClass += "bg-surface border-outline-variant/20 text-on-surface hover:border-outline-variant hover:bg-surface-container-lowest active:scale-[0.99]";
+                                        }
+
+                                        return (
+                                            <button key={idx} onClick={() => selectOption(idx)} className={btnClass} disabled={showAnswer}>
+                                                <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                                                    isSelected || (showAnswer && isCorrect) ? "bg-current border-transparent" : "border-outline-variant"
+                                                }`}>
+                                                    {(isSelected || (showAnswer && isCorrect)) && <Check className="w-3.5 h-3.5 text-white" strokeWidth={4} />}
+                                                </div>
+                                                <span className="flex-1 text-base leading-snug tracking-tight">{opt}</span>
+                                                {showAnswer && isCorrect && <CheckCircle2 className="w-5 h-5 text-current mt-0.5" />}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-8 sm:grid-cols-12 gap-1">
+                    {/* Left Panel Bottom Action Bar */}
+                    <div className="p-4 md:px-8 md:py-5 bg-surface border-t border-outline-variant/10 flex flex-wrap items-center justify-between gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-20">
+                        <div className="flex flex-wrap gap-3">
+                            <button onClick={markForReview} className="px-5 py-3 rounded-xl bg-purple-500/10 text-purple-600 font-black text-[11px] uppercase tracking-widest border border-purple-500/20 hover:bg-purple-500/20 transition-all flex items-center gap-2 active:scale-95">
+                                <Flag className="w-4 h-4" /> Mark for Review & Next
+                            </button>
+                            <button onClick={clearResponse} className="px-5 py-3 rounded-xl bg-surface-container-highest border border-outline-variant/20 text-on-surface-variant font-black text-[11px] uppercase tracking-widest hover:text-on-surface hover:bg-surface-container transition-all flex items-center gap-2 active:scale-95">
+                                <Eraser className="w-4 h-4" /> Clear Response
+                            </button>
+                            {mode === "practice" && (
+                                <button onClick={() => setShowAnswer(!showAnswer)} className={`px-5 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest border transition-all flex items-center gap-2 active:scale-95 ${
+                                    showAnswer ? "bg-primary text-on-primary border-primary shadow-lg shadow-primary/20" : "bg-primary/5 border-primary/20 text-primary hover:bg-primary/10"
+                                }`}>
+                                    <Eye className="w-4 h-4" /> {showAnswer ? "Hide Answer" : "Show Answer"}
+                                </button>
+                            )}
+                        </div>
+                        <button onClick={submitAndNext} className="ml-auto px-8 py-3 rounded-xl bg-primary text-on-primary font-black text-xs md:text-sm uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-2 hover:-translate-y-0.5 hover:shadow-primary/40 transition-all active:scale-95">
+                            {currentIndex === questions.length - 1 ? "Submit" : "Save & Next"} <ArrowRight className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Right Panel (Status & Palette) */}
+                <div className="w-full lg:w-[360px] flex flex-col bg-surface overflow-hidden shrink-0 shadow-[-10px_0_30px_rgba(0,0,0,0.03)] z-20">
+                    {/* Status Legend Box */}
+                    <div className="p-5 border-b border-outline-variant/10 bg-surface">
+                        <h4 className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-4">Question Status</h4>
+                        <div className="grid grid-cols-2 gap-y-5 gap-x-3">
+                            <StatusPill count={counts.notVisited} label="Not Visited" colorClass="bg-surface-container-highest border border-outline-variant/20 text-on-surface-variant" />
+                            <StatusPill count={counts.unanswered} label="Not Answered" colorClass="bg-error text-white shadow-sm shadow-error/20" />
+                            <StatusPill count={counts.answered} label="Answered" colorClass="bg-[#27ae60] text-white shadow-sm shadow-green-500/20" />
+                            <StatusPill count={counts.marked} label="Marked for Review" colorClass="bg-purple-500 text-white shadow-sm shadow-purple-500/20" />
+                            <div className="col-span-2">
+                                <StatusPill count={counts.answeredMarked} label="Answered & Marked for Review (will be considered for evaluation)" colorClass="bg-purple-500 text-white shadow-sm shadow-purple-500/20" hasTick={true} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Palette Box */}
+                    <div className="flex-1 overflow-y-auto p-5 bg-surface-container-lowest custom-scrollbar">
+                        <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Question Palette</h4>
+                            {aiEvaluatingSet.size > 0 && (
+                                <span className="text-[9px] font-black text-amber-600 animate-pulse bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                                    🤖 AI Evaluating...
+                                </span>
+                            )}
+                        </div>
+                        <div className="grid grid-cols-5 gap-3">
                             {questions.map((_, i) => {
                                 const status = statuses[i];
                                 const isCurrent = i === currentIndex;
                                 let style = "bg-surface-container-highest text-on-surface-variant border border-outline-variant/30";
-                                if (status === "unanswered") style = "bg-[#ff6b6b] text-white border-transparent";
-                                if (status === "answered") style = "bg-[#27ae60] text-white border-transparent";
-                                if (status === "marked") style = "bg-[#9b59b6] text-white border-transparent";
-                                if (status === "answered-marked") style = "bg-[#9b59b6] text-white border-[#27ae60] border-2";
+                                if (status === "unanswered") style = "bg-error text-white border-transparent shadow-sm shadow-error/20";
+                                if (status === "answered") style = "bg-[#27ae60] text-white border-transparent shadow-sm shadow-green-500/20";
+                                if (status === "marked") style = "bg-purple-500 text-white border-transparent shadow-sm shadow-purple-500/20";
+                                if (status === "answered-marked") style = "bg-purple-500 text-white";
+                                
                                 return (
                                     <button
                                         key={i}
                                         onClick={() => {
-                                            recordQuestionTime(currentIndex);    // save time
-                                            triggerAiEvalIfNeeded(currentIndex); // fire AI eval in background
+                                            recordQuestionTime(currentIndex);
+                                            triggerAiEvalIfNeeded(currentIndex);
                                             setCurrentIndex(i);
                                         }}
-                                        className={`aspect-square rounded-md text-[9px] font-black flex items-center justify-center transition-all ${style} ${isCurrent ? "ring-2 ring-primary ring-offset-1 ring-offset-surface scale-110 z-10" : "hover:opacity-90"}`}
+                                        className={`relative aspect-square rounded-xl text-sm font-black flex items-center justify-center transition-all ${style} ${isCurrent ? "ring-4 ring-primary/30 scale-110 z-10 shadow-lg border-2 border-primary" : "hover:scale-105 hover:shadow-md"}`}
                                     >
                                         {i + 1}
+                                        {status === "answered-marked" && (
+                                            <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#27ae60] rounded-full border-2 border-surface flex items-center justify-center">
+                                                <Check className="w-2.5 h-2.5 text-white" strokeWidth={4} />
+                                            </div>
+                                        )}
                                     </button>
                                 );
                             })}
                         </div>
+                    </div>
 
-                        <div className="flex gap-2 pt-1">
-                            <button onClick={onComplete} className="flex-1 py-2 rounded-xl bg-error/10 text-error font-black text-[9px] uppercase tracking-wide hover:bg-error/20 transition-all">Abort</button>
-                            <button onClick={() => submitAll()} disabled={isSaving || isEvaluating} className="flex-[2] py-2 rounded-xl bg-green-600 text-white font-black text-[9px] uppercase tracking-wide flex items-center justify-center gap-1.5 hover:bg-green-700 transition-all disabled:opacity-70 disabled:cursor-not-allowed">
-                                {isEvaluating ? "🤖 AI Evaluating..." : isSaving ? "Saving..." : "Submit All"} <Save className="w-3 h-3" />
-                            </button>
-                        </div>
+                    {/* Bottom Global Actions */}
+                    <div className="p-4 bg-surface-container-low border-t border-outline-variant/10 shrink-0 flex gap-3">
+                        <button onClick={onComplete} className="flex-1 py-4 rounded-xl bg-error/10 text-error font-black text-xs uppercase tracking-widest hover:bg-error/20 hover:-translate-y-0.5 transition-all active:scale-95">
+                            Abort
+                        </button>
+                        <button onClick={() => submitAll()} disabled={isSaving || isEvaluating} className="flex-[2] py-4 rounded-xl bg-[#27ae60] text-white font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#219653] hover:shadow-xl hover:shadow-green-500/20 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:hover:transform-none disabled:hover:shadow-none active:scale-95">
+                            {isEvaluating ? "Evaluating..." : isSaving ? "Saving..." : "Submit Test"} <CheckCircle2 className="w-5 h-5" />
+                        </button>
                     </div>
                 </div>
             </div>
