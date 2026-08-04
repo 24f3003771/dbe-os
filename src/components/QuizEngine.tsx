@@ -459,7 +459,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
 
     if (showInstructions) {
         return (
-            <div className="w-full h-full flex flex-col-reverse md:flex-row gap-6 animate-in fade-in duration-300 overflow-y-auto custom-scrollbar pb-10 md:pb-0">
+            <div className="w-full h-full flex flex-col-reverse md:flex-row gap-6 animate-in fade-in duration-300 overflow-y-auto custom-scrollbar pb-24 md:pb-0">
                 <div className="flex-1 bg-surface-container rounded-3xl p-6 md:p-10 border border-outline-variant/10 shadow-sm flex flex-col justify-between min-h-[65vh] shrink-0">
                     <div>
                         <div className="flex items-center gap-4 mb-8">
@@ -962,7 +962,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     </div>
 
                     {/* Left Panel Bottom Action Bar */}
-                    <div className="p-4 md:px-8 md:py-5 bg-surface border-t border-outline-variant/10 flex flex-wrap items-center justify-between gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-20 shrink-0">
+                    <div className="px-4 pt-4 pb-8 md:px-8 md:py-5 bg-surface border-t border-outline-variant/10 flex flex-wrap items-center justify-between gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-20 shrink-0">
                         <div className="flex flex-1 sm:flex-none flex-wrap gap-2 sm:gap-3">
                             <button onClick={markForReview} className="flex-1 sm:flex-none px-4 py-3 rounded-xl bg-purple-500/10 text-purple-600 font-black text-[10px] sm:text-[11px] uppercase tracking-widest border border-purple-500/20 hover:bg-purple-500/20 transition-all flex items-center justify-center gap-1.5 active:scale-95">
                                 <Flag className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Mark for Review & Next</span><span className="sm:hidden">Mark</span>
@@ -1052,7 +1052,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                         </div>
 
                         {/* Bottom Global Actions */}
-                        <div className="p-4 bg-surface border-t border-outline-variant/10 shrink-0 flex gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+                        <div className="p-4 pb-8 lg:p-4 bg-surface border-t border-outline-variant/10 shrink-0 flex gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
                             <button onClick={onComplete} className="flex-1 py-4 rounded-xl bg-error/10 text-error font-black text-[11px] lg:text-xs uppercase tracking-widest hover:bg-error/20 hover:-translate-y-0.5 transition-all active:scale-95">
                                 Abort
                             </button>
