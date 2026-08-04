@@ -459,8 +459,8 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
 
     if (showInstructions) {
         return (
-            <div className="w-full flex flex-col md:flex-row gap-6 animate-in fade-in duration-300">
-                <div className="flex-1 bg-surface-container rounded-3xl p-10 border border-outline-variant/10 shadow-sm flex flex-col justify-between min-h-[65vh]">
+            <div className="w-full h-full flex flex-col-reverse md:flex-row gap-6 animate-in fade-in duration-300 overflow-y-auto custom-scrollbar pb-10 md:pb-0">
+                <div className="flex-1 bg-surface-container rounded-3xl p-6 md:p-10 border border-outline-variant/10 shadow-sm flex flex-col justify-between min-h-[65vh] shrink-0">
                     <div>
                         <div className="flex items-center gap-4 mb-8">
                             <div className="p-3 bg-primary/10 rounded-2xl text-primary">
@@ -486,7 +486,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
                     </div>
                 </div>
                 
-                <div className="w-full md:w-[340px] flex flex-col gap-6">
+                <div className="w-full md:w-[340px] flex flex-col gap-6 shrink-0">
                     <div className="bg-surface-container rounded-3xl p-8 border border-outline-variant/10 shadow-sm flex flex-col items-center">
                         <div className="relative mb-6">
                            <div className="w-24 h-24 rounded-full border-4 border-primary/20 shadow-xl bg-surface-container-highest flex items-center justify-center">
