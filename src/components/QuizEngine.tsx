@@ -695,7 +695,7 @@ export default function QuizEngine({ subjectId, subjectTitle, moduleId, moduleTi
     );
 
     return (
-        <div className="w-full h-full flex flex-col bg-surface relative z-10 overflow-hidden animate-in fade-in duration-300">
+        <div className="w-full flex-1 min-h-0 flex flex-col bg-surface relative z-10 overflow-hidden animate-in fade-in duration-300">
             {/* Top Header - Exam Style */}
             <div className="bg-surface-container border-b border-outline-variant/20 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm relative z-20">
                 {/* Left: Subject / Module */}

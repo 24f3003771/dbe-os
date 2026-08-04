@@ -168,9 +168,9 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
 
             {/* Quiz view — module practice */}
             {activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule && (
-                <div className="fixed inset-0 z-[200] bg-surface flex flex-col p-4 animate-in fade-in duration-300">
-                    <div className="max-w-[1600px] mx-auto w-full flex flex-col h-full">
-                        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="fixed inset-0 z-[200] bg-surface flex flex-col sm:p-4 animate-in fade-in duration-300">
+                    <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 min-h-0">
+                        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0 shrink-0">
                             <div>
                                 <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">Practice Mode</span>
                                 <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
@@ -215,9 +215,9 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
 
             {/* Quiz view — exam set (subject-scoped, all modules) */}
             {activeTab === "quiz" && quizSubMode === "exam-set" && activeQuizSetId && (
-                <div className="fixed inset-0 z-[200] bg-surface flex flex-col p-4 animate-in fade-in duration-300">
-                    <div className="max-w-[1600px] mx-auto w-full flex flex-col h-full">
-                        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="fixed inset-0 z-[200] bg-surface flex flex-col sm:p-4 animate-in fade-in duration-300">
+                    <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 min-h-0">
+                        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0 shrink-0">
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase">
