@@ -93,12 +93,16 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
 
     // Open difficulty picker for a module
     const openModuleDifficultyPicker = (moduleId: number) => {
-        handleStartModuleQuiz(moduleId);
+        setPendingModuleId2(moduleId);
+        setPendingLectureId(null);
+        setActiveDifficultyFilter("all");
     };
 
     // Open difficulty picker for a lecture
     const openLectureDifficultyPicker = (moduleId: number, lectureId: string) => {
-        handleStartModuleQuiz(moduleId, lectureId);
+        setPendingModuleId2(moduleId);
+        setPendingLectureId(lectureId);
+        setActiveDifficultyFilter("all");
     };
 
     // Confirm difficulty selection and start quiz
@@ -188,7 +192,7 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                                     let qs = activeLectureId
                                         ? activeModule.questions.filter((q) => q.type !== "exam" && q.lecture_id === activeLectureId)
                                         : activeModule.questions.filter((q) => q.type !== "exam");
-                                    if (activeDifficultyFilter) {
+                                    if (activeDifficultyFilter && activeDifficultyFilter !== "all") {
                                         qs = qs.filter(q => q.difficulty?.toLowerCase() === activeDifficultyFilter.toLowerCase());
                                     }
                                     return qs;
@@ -654,6 +658,39 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                 </section>
             )}
 
+            {/* Difficulty Modal */}
+            {pendingModuleId2 && (
+                <div className="fixed inset-0 z-[100] bg-surface/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-surface rounded-[2rem] border border-outline-variant/20 shadow-2xl w-full max-w-md p-8 animate-in zoom-in-95 duration-300">
+                        <div className="flex items-center gap-3 mb-6">
+                            <Target className="w-6 h-6 text-primary" />
+                            <h3 className="text-xl font-black font-headline text-on-surface">Select Difficulty</h3>
+                        </div>
+                        <p className="text-sm font-medium text-on-surface-variant mb-6">
+                            Filter the practice questions by difficulty level, or choose "All Mixed" for a comprehensive set.
+                        </p>
+                        <div className="grid grid-cols-2 gap-3 mb-8">
+                            <button onClick={() => confirmDifficultyAndStart("easy")} className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-bold hover:bg-emerald-500/20 transition-all flex flex-col items-center gap-2">
+                                <span className="text-xl">🟢</span> Easy
+                            </button>
+                            <button onClick={() => confirmDifficultyAndStart("medium")} className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 font-bold hover:bg-amber-500/20 transition-all flex flex-col items-center gap-2">
+                                <span className="text-xl">🟡</span> Medium
+                            </button>
+                            <button onClick={() => confirmDifficultyAndStart("hard")} className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 font-bold hover:bg-red-500/20 transition-all flex flex-col items-center gap-2">
+                                <span className="text-xl">🔴</span> Hard
+                            </button>
+                            <button onClick={() => confirmDifficultyAndStart("all")} className="p-4 rounded-2xl bg-surface-container-highest border border-outline-variant/20 text-on-surface font-bold hover:bg-surface-container transition-all flex flex-col items-center gap-2">
+                                <span className="text-xl">📚</span> All Mixed
+                            </button>
+                        </div>
+                        <div className="flex justify-end">
+                            <button onClick={() => { setPendingModuleId2(null); setPendingLectureId(null); }} className="px-6 py-2 rounded-xl text-sm font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
