@@ -151,6 +151,97 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
         data.modules.some((m) => m.questions.some((q) => q.type === "exam" && q.quiz_set_id === set.id))
     );
 
+    if (activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule) {
+        return (
+            <div className="fixed inset-0 z-[200] bg-surface flex flex-col sm:p-4 animate-in fade-in duration-300">
+                <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 min-h-0">
+                    <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0 shrink-0">
+                        <div>
+                            <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">Practice Mode</span>
+                            <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
+                            {activeDifficultyFilter && (
+                                <span className="text-xs font-bold text-on-surface-variant mt-1 block">
+                                    Filtering: <span className="capitalize text-primary">{activeDifficultyFilter}</span> questions
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <QuizEngine
+                        subjectId={data.id}
+                        subjectTitle={data.title}
+                        moduleId={activeModule.id}
+                        moduleTitle={activeModule.title}
+                        quizSubMode="practice"
+                        questions={
+                            (() => {
+                                let qs = activeLectureId
+                                    ? activeModule.questions.filter((q) => q.type !== "exam" && q.lecture_id === activeLectureId)
+                                    : activeModule.questions.filter((q) => q.type !== "exam");
+                                if (activeDifficultyFilter && activeDifficultyFilter !== "all") {
+                                    qs = qs.filter(q => q.difficulty?.toLowerCase() === activeDifficultyFilter.toLowerCase());
+                                }
+                                return qs;
+                            })()
+                        }
+                        mode="practice"
+                        showCalculator={data.calculatorEnabled}
+                        negativeMarking={false}
+                        examDurationSeconds={undefined}
+                        onComplete={() => {
+                            setActiveTab("overview");
+                            setActiveModuleId(null);
+                            setActiveLectureId(null);
+                            setActiveDifficultyFilter(null);
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    if (activeTab === "quiz" && quizSubMode === "exam-set" && activeQuizSetId) {
+        return (
+            <div className="fixed inset-0 z-[200] bg-surface flex flex-col sm:p-4 animate-in fade-in duration-300">
+                <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 min-h-0">
+                    <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0 shrink-0">
+                        <div>
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase">
+                                    Exam Mode
+                                </span>
+                                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
+                                    {data.strictTimeLimit}m TIMED
+                                </span>
+                            </div>
+                            <h1 className="text-2xl font-bold text-on-surface tracking-tight">
+                                {data.quizSets.find((s) => s.id === activeQuizSetId)?.name ?? "Exam"}
+                            </h1>
+                            <p className="text-xs text-on-surface-variant font-medium mt-1">{allExamSetQuestions.length} questions · Full subject scope</p>
+                        </div>
+                    </div>
+                    <QuizEngine
+                        subjectId={data.id}
+                        subjectTitle={data.title}
+                        moduleId={0}
+                        quizSetId={activeQuizSetId || undefined}
+                        quizSubMode="exam-set"
+                        questions={allExamSetQuestions}
+                        mode="exam"
+                        showCalculator={data.calculatorEnabled}
+                        negativeMarking={data.negativeMarking}
+                        negMarkingValue={data.negMarkingValue}
+                        examDurationSeconds={examTimer}
+                        onComplete={() => {
+                            loadHistory(); // Refresh locks immediately
+                            setActiveTab("overview");
+                            setActiveQuizSetId(null);
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-5xl mx-auto space-y-10 pb-20">
             {/* Exam Analysis Modal */}
@@ -162,96 +253,6 @@ export default function SubjectQuizClient({ data }: { data: SubjectData }) {
                         quizSets={data.quizSets}
                         onClose={() => setResultToAnalyze(null)} 
                     />
-                </div>
-            )}
-
-
-            {/* Quiz view — module practice */}
-            {activeTab === "quiz" && quizSubMode !== "exam-set" && activeModule && (
-                <div className="fixed inset-0 z-[200] bg-surface flex flex-col sm:p-4 animate-in fade-in duration-300">
-                    <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 min-h-0">
-                        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0 shrink-0">
-                            <div>
-                                <span className="text-indigo-400 font-mono text-xs font-bold tracking-widest uppercase block mb-1">Practice Mode</span>
-                                <h1 className="text-2xl font-bold text-on-surface tracking-tight">{activeModule.title}</h1>
-                                {activeDifficultyFilter && (
-                                    <span className="text-xs font-bold text-on-surface-variant mt-1 block">
-                                        Filtering: <span className="capitalize text-primary">{activeDifficultyFilter}</span> questions
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                        <QuizEngine
-                            subjectId={data.id}
-                            subjectTitle={data.title}
-                            moduleId={activeModule.id}
-                            moduleTitle={activeModule.title}
-                            quizSubMode="practice"
-                            questions={
-                                (() => {
-                                    let qs = activeLectureId
-                                        ? activeModule.questions.filter((q) => q.type !== "exam" && q.lecture_id === activeLectureId)
-                                        : activeModule.questions.filter((q) => q.type !== "exam");
-                                    if (activeDifficultyFilter && activeDifficultyFilter !== "all") {
-                                        qs = qs.filter(q => q.difficulty?.toLowerCase() === activeDifficultyFilter.toLowerCase());
-                                    }
-                                    return qs;
-                                })()
-                            }
-                            mode="practice"
-                            showCalculator={data.calculatorEnabled}
-                            negativeMarking={false}
-                            examDurationSeconds={undefined}
-                            onComplete={() => {
-                                setActiveTab("overview");
-                                setActiveModuleId(null);
-                                setActiveLectureId(null);
-                                setActiveDifficultyFilter(null);
-                            }}
-                        />
-                    </div>
-                </div>
-            )}
-
-            {/* Quiz view — exam set (subject-scoped, all modules) */}
-            {activeTab === "quiz" && quizSubMode === "exam-set" && activeQuizSetId && (
-                <div className="fixed inset-0 z-[200] bg-surface flex flex-col sm:p-4 animate-in fade-in duration-300">
-                    <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 min-h-0">
-                        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0 shrink-0">
-                            <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase">
-                                        Exam Mode
-                                    </span>
-                                    <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
-                                        {data.strictTimeLimit}m TIMED
-                                    </span>
-                                </div>
-                                <h1 className="text-2xl font-bold text-on-surface tracking-tight">
-                                    {data.quizSets.find((s) => s.id === activeQuizSetId)?.name ?? "Exam"}
-                                </h1>
-                                <p className="text-xs text-on-surface-variant font-medium mt-1">{allExamSetQuestions.length} questions · Full subject scope</p>
-                            </div>
-                        </div>
-                        <QuizEngine
-                            subjectId={data.id}
-                            subjectTitle={data.title}
-                            moduleId={0}
-                            quizSetId={activeQuizSetId || undefined}
-                            quizSubMode="exam-set"
-                            questions={allExamSetQuestions}
-                            mode="exam"
-                            showCalculator={data.calculatorEnabled}
-                            negativeMarking={data.negativeMarking}
-                            negMarkingValue={data.negMarkingValue}
-                            examDurationSeconds={examTimer}
-                            onComplete={() => {
-                                loadHistory(); // Refresh locks immediately
-                                setActiveTab("overview");
-                                setActiveQuizSetId(null);
-                            }}
-                        />
-                    </div>
                 </div>
             )}
 
