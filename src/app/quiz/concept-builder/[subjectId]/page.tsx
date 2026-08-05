@@ -36,14 +36,12 @@ export default async function ConceptBuilderPage({
         );
     }
 
-    // Fetch ONLY concept builder questions (is_concept_builder = true)
-    // This keeps them completely separate from practice questions
+    // Fetch ALL MCQ questions for this subject across all 3 places (Practice, Lecture-Wise, PYQs/Exams)
     const { data: allQuestions, error: qError } = await supabase
         .from("questions")
-        .select("id, question, options, correct_index, explanation, difficulty, module_from, module_to, type")
+        .select("id, question, options, correct_index, explanation, difficulty, module_from, module_to, type, lecture_id")
         .eq("subject_id", subjectId)
         .eq("input_type", "mcq")
-        .eq("is_concept_builder", true)
         .order("module_from", { ascending: true });
 
     const questions = (qError ? [] : (allQuestions ?? [])) as any[];
@@ -54,15 +52,18 @@ export default async function ConceptBuilderPage({
         const modNum = i + 1;
         // A question belongs to this module if module_from <= modNum <= module_to
         const modQuestions = questions.filter(
-            (q) => q.module_from <= modNum && q.module_to >= modNum
+            (q) => (q.module_from ?? 1) <= modNum && (q.module_to ?? modNum) >= modNum
         );
         return {
             number: modNum,
             title: `Module ${modNum}`,
-            // Bucket by difficulty
-            easy:   modQuestions.filter(q => q.difficulty === "easy"   || !q.difficulty),
-            medium: modQuestions.filter(q => q.difficulty === "medium"),
-            hard:   modQuestions.filter(q => q.difficulty === "hard"),
+            // Bucket by difficulty (case-insensitive, fallback untagged to Easy)
+            easy:   modQuestions.filter(q => {
+                const d = (q.difficulty || "").toLowerCase();
+                return d === "easy" || !d;
+            }),
+            medium: modQuestions.filter(q => (q.difficulty || "").toLowerCase() === "medium"),
+            hard:   modQuestions.filter(q => (q.difficulty || "").toLowerCase() === "hard"),
         };
     });
 

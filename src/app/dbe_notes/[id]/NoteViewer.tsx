@@ -313,8 +313,8 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                 )}
 
                 {/* Note Content (Scrollable) */}
-                <div className="flex-1 overflow-y-auto px-8 py-12 md:px-16 md:py-16 scroll-smooth" ref={printRef} onDoubleClick={handleDoubleClick}>
-                    <div className="max-w-3xl mx-auto">
+                <div className="flex-1 overflow-y-auto px-6 py-8 md:px-8 md:py-12 scroll-smooth" ref={printRef} onDoubleClick={handleDoubleClick}>
+                    <div className="w-full max-w-7xl mx-auto">
                         {activeNote ? (
                             <div className="prose max-w-none pb-32"
                                 style={{
