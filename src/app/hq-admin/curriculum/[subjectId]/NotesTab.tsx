@@ -181,7 +181,22 @@ export default function NotesTab({
                         </div>
                         <button
                             onClick={() => {
-                                const prompt = `Act as an expert educational content creator. I will provide you with raw notes or text. You must convert it into a beautifully formatted Markdown file using HTML with inline CSS. Use the following exact styling guidelines:
+                                const prompt = selectedModule === 99
+                                    ? `Act as an expert frontend developer and educational designer. I will provide you with all the notes from various modules of a subject. Your task is to generate a comprehensive, highly interactive Mind Map using ONLY HTML and inline CSS (or a <style> block). 
+The output MUST be a single, self-contained HTML snippet that will be embedded inside a React Markdown component.
+Key requirements:
+1. OVERVIEW: Start with a visual overview of the entire subject and its core themes.
+2. INTERACTIVITY (TABS): Use HTML/CSS to create a tabbed interface (e.g., using hidden radio buttons + labels for CSS-only tabs) where users can tap to switch between different modules or key topics.
+3. VISUALS: Make it look stunning, colorful, and engaging. Use modern UI practices (rounded corners, soft shadows, vibrant colors).
+4. NO JAVASCRIPT: Because this will be rendered in Markdown, you MUST use CSS-only techniques for interactivity (like the checkbox/radio hack for tabs and accordions).
+5. RESPONSIVE: Ensure it looks great on both mobile and desktop screens.
+6. CONTENT: Distill the provided notes into key points, branches, and connections. Do not just paste text; organize it visually like a true mind map or interactive study dashboard.
+
+CRITICAL INSTRUCTION: Output ONLY the HTML/CSS code. Do not wrap the output in a global Markdown code block.
+
+Here are the module notes to transform into an interactive mind map:
+[INSERT ALL MODULE NOTES HERE]`
+                                    : `Act as an expert educational content creator. I will provide you with raw notes or text. You must convert it into a beautifully formatted Markdown file using HTML with inline CSS. Use the following exact styling guidelines:
 
 CRITICAL INSTRUCTION: Generate the ENTIRE output as a single, continuous flow of text. DO NOT wrap your entire response in a master Markdown block. The HTML/Markdown notes, the \`\`\`quiz\`\`\` code blocks, and the \`\`\`checkpoint\`\`\` block must seamlessly flow together in one single response!
 
