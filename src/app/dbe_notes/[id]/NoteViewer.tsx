@@ -67,22 +67,32 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
     const [savedBookmarks, setSavedBookmarks] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState<string | null>(null);
     const [aiPromptOpen, setAiPromptOpen] = useState(false);
-
     const handleAiRedirect = (ai: 'chatgpt' | 'gemini' | 'claude', content: string, subjectName: string, moduleName: string) => {
         const tmp = document.createElement("DIV");
         tmp.innerHTML = content;
         const cleanContent = tmp.textContent || tmp.innerText || "";
         
-        const prompt = `Act as an expert tutor for a university student. I am studying ${subjectName} (${moduleName}). \n\nHere are my notes for this topic:\n---\n${cleanContent}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
+        let prompt = `Act as an expert tutor for a university student. I am studying ${subjectName} (${moduleName}). \n\nHere are my notes for this topic:\n---\n${cleanContent}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
         
-        navigator.clipboard.writeText(prompt).then(() => {
-            if (ai === 'chatgpt') window.open('https://chatgpt.com', '_blank');
-            else if (ai === 'gemini') window.open('https://gemini.google.com/app', '_blank');
-            else if (ai === 'claude') window.open('https://claude.ai', '_blank');
-            setAiPromptOpen(false);
-        }).catch(err => {
-            alert("Failed to copy to clipboard. Please try again.");
-        });
+        // Truncate if extremely long to avoid URL length limits
+        if (prompt.length > 7000) {
+            prompt = prompt.substring(0, 7000) + "\n...[Content truncated due to length]...";
+        }
+
+        const encodedPrompt = encodeURIComponent(prompt);
+
+        // Copy to clipboard as a fallback
+        navigator.clipboard.writeText(prompt).catch(() => {});
+
+        if (ai === 'chatgpt') {
+            window.open(`https://chatgpt.com/?q=${encodedPrompt}`, '_blank');
+        } else if (ai === 'gemini') {
+            window.open(`https://gemini.google.com/app?q=${encodedPrompt}`, '_blank');
+        } else if (ai === 'claude') {
+            // Claude might not fully support ?q=, but clipboard fallback is there
+            window.open(`https://claude.ai/new?q=${encodedPrompt}`, '_blank');
+        }
+        setAiPromptOpen(false);
     };
 
     useEffect(() => {

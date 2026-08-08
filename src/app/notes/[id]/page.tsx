@@ -44,16 +44,26 @@ export default function NoteDetailPage({ params }: { params: Promise<{ id: strin
         tmp.innerHTML = content;
         const cleanContent = tmp.textContent || tmp.innerText || "";
         
-        const prompt = `Act as an expert tutor for a university student. I am studying ${title}. \n\nHere are my notes for this topic:\n---\n${cleanContent}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
+        let prompt = `Act as an expert tutor for a university student. I am studying ${title}. \n\nHere are my notes for this topic:\n---\n${cleanContent}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
         
-        navigator.clipboard.writeText(prompt).then(() => {
-            if (ai === 'chatgpt') window.open('https://chatgpt.com', '_blank');
-            else if (ai === 'gemini') window.open('https://gemini.google.com/app', '_blank');
-            else if (ai === 'claude') window.open('https://claude.ai', '_blank');
-            setAiPromptOpen(false);
-        }).catch(err => {
-            alert("Failed to copy to clipboard. Please try again.");
-        });
+        // Truncate if extremely long to avoid URL length limits
+        if (prompt.length > 7000) {
+            prompt = prompt.substring(0, 7000) + "\n...[Content truncated due to length]...";
+        }
+
+        const encodedPrompt = encodeURIComponent(prompt);
+
+        // Copy to clipboard as a fallback
+        navigator.clipboard.writeText(prompt).catch(() => {});
+
+        if (ai === 'chatgpt') {
+            window.open(`https://chatgpt.com/?q=${encodedPrompt}`, '_blank');
+        } else if (ai === 'gemini') {
+            window.open(`https://gemini.google.com/app?q=${encodedPrompt}`, '_blank');
+        } else if (ai === 'claude') {
+            window.open(`https://claude.ai/new?q=${encodedPrompt}`, '_blank');
+        }
+        setAiPromptOpen(false);
     };
 
     useEffect(() => {
