@@ -68,6 +68,23 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
     const [searchQuery, setSearchQuery] = useState<string | null>(null);
     const [aiPromptOpen, setAiPromptOpen] = useState(false);
 
+    const handleAiRedirect = (ai: 'chatgpt' | 'gemini' | 'claude', content: string, subjectName: string, moduleName: string) => {
+        const tmp = document.createElement("DIV");
+        tmp.innerHTML = content;
+        const cleanContent = tmp.textContent || tmp.innerText || "";
+        
+        const prompt = `Act as an expert tutor for a university student. I am studying ${subjectName} (${moduleName}). \n\nHere are my notes for this topic:\n---\n${cleanContent}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
+        
+        navigator.clipboard.writeText(prompt).then(() => {
+            if (ai === 'chatgpt') window.open('https://chatgpt.com', '_blank');
+            else if (ai === 'gemini') window.open('https://gemini.google.com/app', '_blank');
+            else if (ai === 'claude') window.open('https://claude.ai', '_blank');
+            setAiPromptOpen(false);
+        }).catch(err => {
+            alert("Failed to copy to clipboard. Please try again.");
+        });
+    };
+
     useEffect(() => {
         if (subject?.id) {
             // Load bookmarks
@@ -560,43 +577,40 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
 
             {aiPromptOpen && activeNote && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-                    <div className="bg-white rounded-3xl p-6 shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col animate-in fade-in zoom-in duration-200">
-                        <div className="flex items-center gap-3 mb-4 text-indigo-600 shrink-0">
-                            <span className="text-2xl">✨</span>
-                            <h3 className="text-xl font-black font-sans">Learn with AI</h3>
+                    <div className="bg-white rounded-3xl p-6 shadow-2xl max-w-sm w-full flex flex-col animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2 text-indigo-600">
+                                <span className="text-2xl">✨</span>
+                                <h3 className="text-xl font-black font-sans">Learn with AI</h3>
+                            </div>
+                            <button onClick={() => setAiPromptOpen(false)} className="text-stone-400 hover:text-stone-600">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
                         </div>
-                        <p className="text-stone-600 font-sans mb-4 shrink-0 text-sm">
-                            Copy this prompt and paste it into ChatGPT, Gemini, or Claude to get a personalized tutor session for this topic!
+                        <p className="text-stone-500 font-sans mb-6 text-sm">
+                            Select your preferred AI. We'll copy the prompt to your clipboard and open the AI—just paste and send!
                         </p>
-                        <div className="flex-1 overflow-y-auto mb-6 bg-stone-50 rounded-xl border border-stone-200 p-4 font-mono text-sm whitespace-pre-wrap text-stone-700 custom-scrollbar">
-                            {`Act as an expert tutor for a university student. I am studying ${subject.name} (${activeModule === "mind-maps" ? "Mind Maps" : activeModule === "formula-sheet" ? "Formula Sheet" : `Module ${activeModule}`}). 
-
-Here are my notes for this topic:
----
-${activeNote.content}
----
-
-Please do the following:
-1. Summarize the core concepts simply and intuitively.
-2. Provide a real-world example or analogy for the most difficult concept.
-3. Give me 3 multiple-choice questions to test my understanding.`}
-                        </div>
-                        <div className="flex gap-3 shrink-0">
+                        <div className="flex flex-col gap-3">
                             <button 
-                                onClick={() => setAiPromptOpen(false)}
-                                className="flex-1 py-3 px-4 rounded-xl font-bold text-stone-500 bg-stone-100 hover:bg-stone-200 transition-colors font-sans"
+                                onClick={() => handleAiRedirect('chatgpt', activeNote.content, subject.name, activeModule === "mind-maps" ? "Mind Maps" : activeModule === "formula-sheet" ? "Formula Sheet" : `Module ${activeModule}`)}
+                                className="w-full py-3 px-4 rounded-xl font-bold text-stone-700 bg-white border border-stone-200 hover:border-emerald-500 hover:bg-emerald-50 transition-all font-sans flex items-center gap-3"
                             >
-                                Close
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="ChatGPT" className="w-5 h-5" />
+                                Open in ChatGPT
                             </button>
                             <button 
-                                onClick={() => {
-                                    const prompt = `Act as an expert tutor for a university student. I am studying ${subject.name} (${activeModule === "mind-maps" ? "Mind Maps" : activeModule === "formula-sheet" ? "Formula Sheet" : `Module ${activeModule}`}). \n\nHere are my notes for this topic:\n---\n${activeNote.content}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
-                                    navigator.clipboard.writeText(prompt);
-                                    alert("Prompt copied to clipboard!");
-                                }}
-                                className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors font-sans flex items-center justify-center gap-2"
+                                onClick={() => handleAiRedirect('gemini', activeNote.content, subject.name, activeModule === "mind-maps" ? "Mind Maps" : activeModule === "formula-sheet" ? "Formula Sheet" : `Module ${activeModule}`)}
+                                className="w-full py-3 px-4 rounded-xl font-bold text-stone-700 bg-white border border-stone-200 hover:border-blue-500 hover:bg-blue-50 transition-all font-sans flex items-center gap-3"
                             >
-                                Copy Prompt
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg" alt="Gemini" className="w-5 h-5" />
+                                Open in Gemini
+                            </button>
+                            <button 
+                                onClick={() => handleAiRedirect('claude', activeNote.content, subject.name, activeModule === "mind-maps" ? "Mind Maps" : activeModule === "formula-sheet" ? "Formula Sheet" : `Module ${activeModule}`)}
+                                className="w-full py-3 px-4 rounded-xl font-bold text-stone-700 bg-white border border-stone-200 hover:border-orange-500 hover:bg-orange-50 transition-all font-sans flex items-center gap-3"
+                            >
+                                <span className="text-xl leading-none">🧠</span>
+                                Open in Claude
                             </button>
                         </div>
                     </div>
