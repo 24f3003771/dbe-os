@@ -39,13 +39,23 @@ export default function NoteDetailPage({ params }: { params: Promise<{ id: strin
     const containerRef = useRef<HTMLDivElement>(null);
     const subjects = getAllSubjects();
 
-    const handleAiRedirect = (ai: 'chatgpt' | 'gemini' | 'claude', content: string, title: string) => {
+    const handleAiRedirect = (ai: 'chatgpt' | 'gemini' | 'claude' | 'copy', content: string, title: string) => {
         const tmp = document.createElement("DIV");
         tmp.innerHTML = content;
         const cleanContent = tmp.textContent || tmp.innerText || "";
         
         let prompt = `Act as an expert tutor for a university student. I am studying ${title}. \n\nHere are my notes for this topic:\n---\n${cleanContent}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
         
+        if (ai === 'copy') {
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert("Prompt and full notes copied to clipboard!");
+                setAiPromptOpen(false);
+            }).catch(() => {
+                alert("Failed to copy. Please try again.");
+            });
+            return;
+        }
+
         // Truncate if extremely long to avoid URL length limits
         if (prompt.length > 7000) {
             prompt = prompt.substring(0, 7000) + "\n...[Content truncated due to length]...";
@@ -274,6 +284,14 @@ export default function NoteDetailPage({ params }: { params: Promise<{ id: strin
                             >
                                 <span className="text-xl leading-none">🧠</span>
                                 Open in Claude
+                            </button>
+                            <div className="my-2 border-t border-stone-200" />
+                            <button 
+                                onClick={() => handleAiRedirect('copy', note.content, `${subjectTitle} - ${note.title}`)}
+                                className="w-full py-3 px-4 rounded-xl font-bold text-stone-600 bg-stone-100 hover:bg-stone-200 border border-transparent transition-all font-sans flex items-center justify-center gap-2"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                                Copy Prompt & Full Notes
                             </button>
                         </div>
                     </div>
