@@ -66,6 +66,7 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
     const printRef = useRef<HTMLDivElement>(null);
     const [savedBookmarks, setSavedBookmarks] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState<string | null>(null);
+    const [aiPromptOpen, setAiPromptOpen] = useState(false);
 
     useEffect(() => {
         if (subject?.id) {
@@ -316,7 +317,16 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                 <div className="flex-1 overflow-y-auto px-6 py-8 md:px-8 md:py-12 scroll-smooth" ref={printRef} onDoubleClick={handleDoubleClick}>
                     <div className="w-full max-w-7xl mx-auto">
                         {activeNote ? (
-                            <div className="prose max-w-none pb-32"
+                            <div className="relative">
+                                <div className="flex justify-end mb-4">
+                                    <button 
+                                        onClick={() => setAiPromptOpen(true)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 text-sm font-sans"
+                                    >
+                                        <span className="text-base">✨</span> Learn with AI
+                                    </button>
+                                </div>
+                                <div className="prose max-w-none pb-32"
                                 style={{
                                     fontFamily: "'Kalam', cursive",
                                     fontSize: "18px",
@@ -529,10 +539,10 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                                         // 1. Fix common missing parenthesis error: ![alt]http... -> ![alt](http...)
                                         .replace(/!\[([^\]]*)\](?!\()(https?:\/\/[^\s\)]+)\)*/g, '![$1]($2)')
                                         // 2. Auto-convert Drive links that are just links: [text](drive_url) -> ![text](drive_url)
-                                        // Only if NOT preceded by an exclamation mark
                                         .replace(/(?<!\!)\[([^\]]*)\](https:\/\/drive\.google\.com\/[^\s\)]+)/g, '![$1]($2)')
                                     }
                                 </ReactMarkdown>
+                                </div>
                             </div>
                         ) : (
                             <div className="flex items-center justify-center h-[50vh]">
@@ -547,6 +557,51 @@ export default function NoteViewer({ subject, notes, lectures = [], initialCompl
                     </div>
                 </div>
             </div>
+
+            {aiPromptOpen && activeNote && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+                    <div className="bg-white rounded-3xl p-6 shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center gap-3 mb-4 text-indigo-600 shrink-0">
+                            <span className="text-2xl">✨</span>
+                            <h3 className="text-xl font-black font-sans">Learn with AI</h3>
+                        </div>
+                        <p className="text-stone-600 font-sans mb-4 shrink-0 text-sm">
+                            Copy this prompt and paste it into ChatGPT, Gemini, or Claude to get a personalized tutor session for this topic!
+                        </p>
+                        <div className="flex-1 overflow-y-auto mb-6 bg-stone-50 rounded-xl border border-stone-200 p-4 font-mono text-sm whitespace-pre-wrap text-stone-700 custom-scrollbar">
+                            {`Act as an expert tutor for a university student. I am studying ${subject.name} (${activeModule === "mind-maps" ? "Mind Maps" : activeModule === "formula-sheet" ? "Formula Sheet" : `Module ${activeModule}`}). 
+
+Here are my notes for this topic:
+---
+${activeNote.content}
+---
+
+Please do the following:
+1. Summarize the core concepts simply and intuitively.
+2. Provide a real-world example or analogy for the most difficult concept.
+3. Give me 3 multiple-choice questions to test my understanding.`}
+                        </div>
+                        <div className="flex gap-3 shrink-0">
+                            <button 
+                                onClick={() => setAiPromptOpen(false)}
+                                className="flex-1 py-3 px-4 rounded-xl font-bold text-stone-500 bg-stone-100 hover:bg-stone-200 transition-colors font-sans"
+                            >
+                                Close
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    const prompt = `Act as an expert tutor for a university student. I am studying ${subject.name} (${activeModule === "mind-maps" ? "Mind Maps" : activeModule === "formula-sheet" ? "Formula Sheet" : `Module ${activeModule}`}). \n\nHere are my notes for this topic:\n---\n${activeNote.content}\n---\n\nPlease do the following:\n1. Summarize the core concepts simply and intuitively.\n2. Provide a real-world example or analogy for the most difficult concept.\n3. Give me 3 multiple-choice questions to test my understanding.`;
+                                    navigator.clipboard.writeText(prompt);
+                                    alert("Prompt copied to clipboard!");
+                                }}
+                                className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors font-sans flex items-center justify-center gap-2"
+                            >
+                                Copy Prompt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {searchQuery && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
